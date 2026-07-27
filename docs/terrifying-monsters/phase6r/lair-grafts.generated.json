@@ -1,0 +1,677 @@
+{
+  "version": "monster-lair-graft-editorial-audit-v1.0",
+  "editorialVersion": "monster-lair-graft-editorial-v1.0",
+  "expectedTotal": 7,
+  "total": 7,
+  "passing": 7,
+  "warning": 0,
+  "error": 0,
+  "abilityCount": 7,
+  "bundleCount": 0,
+  "scaledCount": 4,
+  "bySource": {
+    "decomposition": 2,
+    "jikininki": 2,
+    "wolf-spiders": 3
+  },
+  "byDecision": {
+    "REWRITE_AND_SCALE_LOW_GROUND_HAZARD": 1,
+    "REWRITE_AND_SCALE_CORPSE_MINEFIELD": 1,
+    "REWRITE_AND_SCALE_ANCHORED_SILENCE": 1,
+    "REWRITE_AS_RITUAL_LURE": 1,
+    "REWRITE_AND_SCALE_MAINTAINED_PRISON": 1,
+    "REWRITE_AS_PERSISTENT_VIBRATION_TERRAIN": 1,
+    "REWRITE_AS_ONE_SHOT_WEB_TRAPS": 1
+  },
+  "reports": [
+    {
+      "version": "monster-lair-graft-editorial-audit-v1.0",
+      "applicable": true,
+      "id": "choking-air",
+      "title": "Choking Air",
+      "source": "decomposition",
+      "decision": "REWRITE_AND_SCALE_LOW_GROUND_HAZARD",
+      "status": "pass",
+      "pass": true,
+      "abilityCount": 1,
+      "counterplayChannels": [
+        "telegraph",
+        "positioning",
+        "breakCondition",
+        "nonDamage"
+      ],
+      "scaling": {
+        "declared": true,
+        "expected": true,
+        "bandCount": 3,
+        "sampledBandIds": [
+          "choking-air-cr-0-7-stale-pocket",
+          "choking-air-cr-8-14-choking-room",
+          "choking-air-cr-15-30-dead-atmosphere"
+        ],
+        "sampledRuleVariants": 3,
+        "pass": true
+      },
+      "snapshots": [
+        {
+          "targetCr": 5,
+          "bandId": "choking-air-cr-0-7-stale-pocket",
+          "abilityCount": 1,
+          "abilityIds": [
+            "choking-air"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"lairAction\",\"actionEconomy\":\"lairAction\",\"usage\":{\"type\":\"lair\"},\"trigger\":\"On initiative count 20 (losing initiative ties).\",\"resolution\":{\"type\":\"savingThrow\",\"ability\":\"constitution\",\"dc\":\"monster\"},\"targeting\":{\"type\":\"area\",\"shape\":\"radius\",\"size\":10,\"unit\":\"ft\",\"range\":60,\"targets\":\"breathing creatures that start their turns in the cloud\"},\"areaEffect\":{\"enabled\":true,\"type\":\"hazard\",\"shape\":\"radius\",\"size\":10,\"unit\":\"ft\",\"origin\":\"point\",\"timing\":\"initiativeCount20\",\"repeatTiming\":\"startsTurnInArea\",\"targets\":\"breathing creatures\",\"excludes\":[\"creatures at least 5 feet above the floor\",\"creatures that do not need to breathe\"],\"text\":\"On initiative count 20, the monster chooses a point on the floor within 60 feet that contains a corpse, drain, vent, or standing fluid. A 10-foot-radius cloud of low, visibly thick air fills that area until initiative count 20 on the next round. The area is Lightly Obscured. A breathing creature that starts its turn in the cloud makes a Constitution saving throw. On a failed save, its Speed is reduced by 10 feet and it can't take Reactions until the start of its next turn. A creature at least 5 feet above the floor automatically succeeds. A creature that doesn't need to breathe is unaffected. Opening or destroying an exterior door, window, or vent connected to the cloud ends the effect.\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"On initiative count 20 (losing initiative ties).\",\"escapeCondition\":\"Leave the cloud or move at least 5 feet above the floor.\",\"releaseCondition\":\"Open or destroy a connected exterior door, window, or vent.\",\"text\":\"On initiative count 20, the monster chooses a point on the floor within 60 feet that contains a corpse, drain, vent, or standing fluid. A 10-foot-radius cloud of low, visibly thick air fills that area until initiative count 20 on the next round. The area is Lightly Obscured. A breathing creature that starts its turn in the cloud makes a Constitution saving throw. On a failed save, its Speed is reduced by 10 feet and it can't take Reactions until the start of its next turn. A creature at least 5 feet above the floor automatically succeeds. A creature that doesn't need to breathe is unaffected. Opening or destroying an exterior door, window, or vent connected to the cloud ends the effect.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null},\"effects\":[],\"text\":{\"failure\":\"The target's Speed is reduced by 10 feet, and it can't take Reactions until the start of its next turn.\",\"success\":\"No effect.\",\"effect\":\"On initiative count 20, the monster chooses a point on the floor within 60 feet that contains a corpse, drain, vent, or standing fluid. A 10-foot-radius cloud of low, visibly thick air fills that area until initiative count 20 on the next round. The area is Lightly Obscured. A breathing creature that starts its turn in the cloud makes a Constitution saving throw. On a failed save, its Speed is reduced by 10 feet and it can't take Reactions until the start of its next turn. A creature at least 5 feet above the floor automatically succeeds. A creature that doesn't need to breathe is unaffected. Opening or destroying an exterior door, window, or vent connected to the cloud ends the effect.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": []
+        },
+        {
+          "targetCr": 10,
+          "bandId": "choking-air-cr-8-14-choking-room",
+          "abilityCount": 1,
+          "abilityIds": [
+            "choking-air"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"lairAction\",\"actionEconomy\":\"lairAction\",\"usage\":{\"type\":\"lair\"},\"trigger\":\"On initiative count 20 (losing initiative ties).\",\"resolution\":{\"type\":\"savingThrow\",\"ability\":\"constitution\",\"dc\":\"monster\"},\"targeting\":{\"type\":\"area\",\"shape\":\"radius\",\"size\":15,\"unit\":\"ft\",\"range\":60,\"targets\":\"breathing creatures that start their turns in the cloud\"},\"areaEffect\":{\"enabled\":true,\"type\":\"hazard\",\"shape\":\"radius\",\"size\":15,\"unit\":\"ft\",\"origin\":\"point\",\"timing\":\"initiativeCount20\",\"repeatTiming\":\"startsTurnInArea\",\"targets\":\"breathing creatures\",\"excludes\":[\"creatures at least 5 feet above the floor\",\"creatures that do not need to breathe\"],\"text\":\"On initiative count 20, the monster chooses a point on the floor within 60 feet that contains a corpse, drain, vent, or standing fluid. A 15-foot-radius cloud of low, visibly thick air fills that area until initiative count 20 on the next round. The area is Lightly Obscured. A breathing creature that starts its turn in the cloud makes a Constitution saving throw. On a failed save, its Speed is reduced by 10 feet and it can't take Reactions until the start of its next turn. A creature at least 5 feet above the floor automatically succeeds. A creature that doesn't need to breathe is unaffected. Opening or destroying an exterior door, window, or vent connected to the cloud ends the effect.\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"On initiative count 20 (losing initiative ties).\",\"escapeCondition\":\"Leave the cloud or move at least 5 feet above the floor.\",\"releaseCondition\":\"Open or destroy a connected exterior door, window, or vent.\",\"text\":\"On initiative count 20, the monster chooses a point on the floor within 60 feet that contains a corpse, drain, vent, or standing fluid. A 15-foot-radius cloud of low, visibly thick air fills that area until initiative count 20 on the next round. The area is Lightly Obscured. A breathing creature that starts its turn in the cloud makes a Constitution saving throw. On a failed save, its Speed is reduced by 10 feet and it can't take Reactions until the start of its next turn. A creature at least 5 feet above the floor automatically succeeds. A creature that doesn't need to breathe is unaffected. Opening or destroying an exterior door, window, or vent connected to the cloud ends the effect.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null},\"effects\":[],\"text\":{\"failure\":\"The target's Speed is reduced by 10 feet, and it can't take Reactions until the start of its next turn.\",\"success\":\"No effect.\",\"effect\":\"On initiative count 20, the monster chooses a point on the floor within 60 feet that contains a corpse, drain, vent, or standing fluid. A 15-foot-radius cloud of low, visibly thick air fills that area until initiative count 20 on the next round. The area is Lightly Obscured. A breathing creature that starts its turn in the cloud makes a Constitution saving throw. On a failed save, its Speed is reduced by 10 feet and it can't take Reactions until the start of its next turn. A creature at least 5 feet above the floor automatically succeeds. A creature that doesn't need to breathe is unaffected. Opening or destroying an exterior door, window, or vent connected to the cloud ends the effect.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": []
+        },
+        {
+          "targetCr": 15,
+          "bandId": "choking-air-cr-15-30-dead-atmosphere",
+          "abilityCount": 1,
+          "abilityIds": [
+            "choking-air"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"lairAction\",\"actionEconomy\":\"lairAction\",\"usage\":{\"type\":\"lair\"},\"trigger\":\"On initiative count 20 (losing initiative ties).\",\"resolution\":{\"type\":\"savingThrow\",\"ability\":\"constitution\",\"dc\":\"monster\"},\"targeting\":{\"type\":\"area\",\"shape\":\"radius\",\"size\":20,\"unit\":\"ft\",\"range\":60,\"targets\":\"breathing creatures that start their turns in the cloud\"},\"areaEffect\":{\"enabled\":true,\"type\":\"hazard\",\"shape\":\"radius\",\"size\":20,\"unit\":\"ft\",\"origin\":\"point\",\"timing\":\"initiativeCount20\",\"repeatTiming\":\"startsTurnInArea\",\"targets\":\"breathing creatures\",\"excludes\":[\"creatures at least 5 feet above the floor\",\"creatures that do not need to breathe\"],\"text\":\"On initiative count 20, the monster chooses a point on the floor within 60 feet that contains a corpse, drain, vent, or standing fluid. A 20-foot-radius cloud of low, visibly thick air fills that area until initiative count 20 on the next round. The area is Lightly Obscured. A breathing creature that starts its turn in the cloud makes a Constitution saving throw. On a failed save, its Speed is reduced by 10 feet and it can't take Reactions until the start of its next turn. A creature at least 5 feet above the floor automatically succeeds. A creature that doesn't need to breathe is unaffected. Opening or destroying an exterior door, window, or vent connected to the cloud ends the effect.\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"On initiative count 20 (losing initiative ties).\",\"escapeCondition\":\"Leave the cloud or move at least 5 feet above the floor.\",\"releaseCondition\":\"Open or destroy a connected exterior door, window, or vent.\",\"text\":\"On initiative count 20, the monster chooses a point on the floor within 60 feet that contains a corpse, drain, vent, or standing fluid. A 20-foot-radius cloud of low, visibly thick air fills that area until initiative count 20 on the next round. The area is Lightly Obscured. A breathing creature that starts its turn in the cloud makes a Constitution saving throw. On a failed save, its Speed is reduced by 10 feet and it can't take Reactions until the start of its next turn. A creature at least 5 feet above the floor automatically succeeds. A creature that doesn't need to breathe is unaffected. Opening or destroying an exterior door, window, or vent connected to the cloud ends the effect.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null},\"effects\":[],\"text\":{\"failure\":\"The target's Speed is reduced by 10 feet, and it can't take Reactions until the start of its next turn.\",\"success\":\"No effect.\",\"effect\":\"On initiative count 20, the monster chooses a point on the floor within 60 feet that contains a corpse, drain, vent, or standing fluid. A 20-foot-radius cloud of low, visibly thick air fills that area until initiative count 20 on the next round. The area is Lightly Obscured. A breathing creature that starts its turn in the cloud makes a Constitution saving throw. On a failed save, its Speed is reduced by 10 feet and it can't take Reactions until the start of its next turn. A creature at least 5 feet above the floor automatically succeeds. A creature that doesn't need to breathe is unaffected. Opening or destroying an exterior door, window, or vent connected to the cloud ends the effect.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": []
+        },
+        {
+          "targetCr": 20,
+          "bandId": "choking-air-cr-15-30-dead-atmosphere",
+          "abilityCount": 1,
+          "abilityIds": [
+            "choking-air"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"lairAction\",\"actionEconomy\":\"lairAction\",\"usage\":{\"type\":\"lair\"},\"trigger\":\"On initiative count 20 (losing initiative ties).\",\"resolution\":{\"type\":\"savingThrow\",\"ability\":\"constitution\",\"dc\":\"monster\"},\"targeting\":{\"type\":\"area\",\"shape\":\"radius\",\"size\":20,\"unit\":\"ft\",\"range\":60,\"targets\":\"breathing creatures that start their turns in the cloud\"},\"areaEffect\":{\"enabled\":true,\"type\":\"hazard\",\"shape\":\"radius\",\"size\":20,\"unit\":\"ft\",\"origin\":\"point\",\"timing\":\"initiativeCount20\",\"repeatTiming\":\"startsTurnInArea\",\"targets\":\"breathing creatures\",\"excludes\":[\"creatures at least 5 feet above the floor\",\"creatures that do not need to breathe\"],\"text\":\"On initiative count 20, the monster chooses a point on the floor within 60 feet that contains a corpse, drain, vent, or standing fluid. A 20-foot-radius cloud of low, visibly thick air fills that area until initiative count 20 on the next round. The area is Lightly Obscured. A breathing creature that starts its turn in the cloud makes a Constitution saving throw. On a failed save, its Speed is reduced by 10 feet and it can't take Reactions until the start of its next turn. A creature at least 5 feet above the floor automatically succeeds. A creature that doesn't need to breathe is unaffected. Opening or destroying an exterior door, window, or vent connected to the cloud ends the effect.\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"On initiative count 20 (losing initiative ties).\",\"escapeCondition\":\"Leave the cloud or move at least 5 feet above the floor.\",\"releaseCondition\":\"Open or destroy a connected exterior door, window, or vent.\",\"text\":\"On initiative count 20, the monster chooses a point on the floor within 60 feet that contains a corpse, drain, vent, or standing fluid. A 20-foot-radius cloud of low, visibly thick air fills that area until initiative count 20 on the next round. The area is Lightly Obscured. A breathing creature that starts its turn in the cloud makes a Constitution saving throw. On a failed save, its Speed is reduced by 10 feet and it can't take Reactions until the start of its next turn. A creature at least 5 feet above the floor automatically succeeds. A creature that doesn't need to breathe is unaffected. Opening or destroying an exterior door, window, or vent connected to the cloud ends the effect.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null},\"effects\":[],\"text\":{\"failure\":\"The target's Speed is reduced by 10 feet, and it can't take Reactions until the start of its next turn.\",\"success\":\"No effect.\",\"effect\":\"On initiative count 20, the monster chooses a point on the floor within 60 feet that contains a corpse, drain, vent, or standing fluid. A 20-foot-radius cloud of low, visibly thick air fills that area until initiative count 20 on the next round. The area is Lightly Obscured. A breathing creature that starts its turn in the cloud makes a Constitution saving throw. On a failed save, its Speed is reduced by 10 feet and it can't take Reactions until the start of its next turn. A creature at least 5 feet above the floor automatically succeeds. A creature that doesn't need to breathe is unaffected. Opening or destroying an exterior door, window, or vent connected to the cloud ends the effect.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": []
+        }
+      ],
+      "issues": [],
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "version": "monster-lair-graft-editorial-audit-v1.0",
+      "applicable": true,
+      "id": "corpse-pressure-room",
+      "title": "Pressure Corpses",
+      "source": "decomposition",
+      "decision": "REWRITE_AND_SCALE_CORPSE_MINEFIELD",
+      "status": "pass",
+      "pass": true,
+      "abilityCount": 1,
+      "counterplayChannels": [
+        "telegraph",
+        "positioning",
+        "breakCondition",
+        "nonDamage"
+      ],
+      "scaling": {
+        "declared": true,
+        "expected": true,
+        "bandCount": 3,
+        "sampledBandIds": [
+          "pressure-corpses-cr-0-7-single-mine",
+          "pressure-corpses-cr-8-14-paired-mines",
+          "pressure-corpses-cr-15-30-corpse-field"
+        ],
+        "sampledRuleVariants": 3,
+        "pass": true
+      },
+      "snapshots": [
+        {
+          "targetCr": 5,
+          "bandId": "pressure-corpses-cr-0-7-single-mine",
+          "abilityCount": 1,
+          "abilityIds": [
+            "pressure-corpses"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"lairAction\",\"actionEconomy\":\"lairAction\",\"usage\":{\"type\":\"lair\"},\"trigger\":\"On initiative count 20 (losing initiative ties).\",\"resolution\":{\"type\":\"savingThrow\",\"ability\":\"constitution\",\"dc\":\"monster\"},\"targeting\":{\"type\":\"area\",\"shape\":\"radius\",\"size\":5,\"unit\":\"ft\",\"range\":60,\"targets\":\"the first creature other than the monster to enter or start within 5 feet of the selected corpse\"},\"areaEffect\":{\"enabled\":true,\"type\":\"hazard\",\"shape\":\"radius\",\"size\":5,\"unit\":\"ft\",\"origin\":\"location\",\"timing\":\"initiativeCount20\",\"repeatTiming\":\"entersArea\",\"targets\":\"one creature from one pressure corpse\",\"excludes\":[\"the monster\"],\"text\":\"Up to two selected corpses remain armed until initiative count 20 on the next round or until triggered or neutralized.\"},\"damage\":{\"mode\":\"budget\",\"budgetRole\":\"lairPulse\",\"types\":[\"poison\"],\"scale\":\"minor\",\"budgetShare\":0.4,\"expectedTargets\":1.25,\"roundWeight\":[1,1,1],\"parts\":[],\"activation\":null},\"condition\":{\"names\":[\"poisoned\"],\"severity\":\"moderate\",\"direction\":\"enemy\",\"duration\":\"until the start of its next turn\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"targetLimit\":\"one intact corpse or substantial body part\",\"prerequisite\":\"On initiative count 20 (losing initiative ties).\",\"entryEffect\":\"Each selected corpse visibly swells and becomes a 5-foot-radius triggered hazard.\",\"escapeCondition\":\"Avoid the corpse until the next initiative count 20.\",\"releaseCondition\":\"Vent it with Medicine or destroy it with Fire or Radiant damage.\",\"text\":\"Select the corpses, mark their 5-foot hazard areas, and remove each marker when it bursts, is vented, or is safely destroyed.\",\"internalState\":\"\",\"ongoingDamage\":null},\"effects\":[],\"text\":{\"failure\":\"The target takes {damage} Poison damage and has the Poisoned condition until the start of its next turn.\",\"success\":\"The target takes half as much damage only.\",\"effect\":\"Fire or Radiant damage destroys a pressure corpse harmlessly. Other damage triggers it. An adjacent creature can take an action and succeed on a Medicine check against the monster's save DC to vent it harmlessly.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": []
+        },
+        {
+          "targetCr": 10,
+          "bandId": "pressure-corpses-cr-8-14-paired-mines",
+          "abilityCount": 1,
+          "abilityIds": [
+            "pressure-corpses"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"lairAction\",\"actionEconomy\":\"lairAction\",\"usage\":{\"type\":\"lair\"},\"trigger\":\"On initiative count 20 (losing initiative ties).\",\"resolution\":{\"type\":\"savingThrow\",\"ability\":\"constitution\",\"dc\":\"monster\"},\"targeting\":{\"type\":\"area\",\"shape\":\"radius\",\"size\":5,\"unit\":\"ft\",\"range\":60,\"targets\":\"the first creature other than the monster to enter or start within 5 feet of each selected corpse\"},\"areaEffect\":{\"enabled\":true,\"type\":\"hazard\",\"shape\":\"radius\",\"size\":5,\"unit\":\"ft\",\"origin\":\"location\",\"timing\":\"initiativeCount20\",\"repeatTiming\":\"entersArea\",\"targets\":\"one creature from each of up to two pressure corpses\",\"excludes\":[\"the monster\"],\"text\":\"Up to two selected corpses remain armed until initiative count 20 on the next round or until triggered or neutralized.\"},\"damage\":{\"mode\":\"budget\",\"budgetRole\":\"lairPulse\",\"types\":[\"poison\"],\"scale\":\"minor\",\"budgetShare\":0.4,\"expectedTargets\":1.25,\"roundWeight\":[1,1,1],\"parts\":[],\"activation\":null},\"condition\":{\"names\":[\"poisoned\"],\"severity\":\"moderate\",\"direction\":\"enemy\",\"duration\":\"until the start of its next turn\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"targetLimit\":\"up to two intact corpses or substantial body parts\",\"prerequisite\":\"On initiative count 20 (losing initiative ties).\",\"entryEffect\":\"Each selected corpse visibly swells and becomes a 5-foot-radius triggered hazard.\",\"escapeCondition\":\"Avoid the corpse until the next initiative count 20.\",\"releaseCondition\":\"Vent it with Medicine or destroy it with Fire or Radiant damage.\",\"text\":\"Select the corpses, mark their 5-foot hazard areas, and remove each marker when it bursts, is vented, or is safely destroyed.\",\"internalState\":\"\",\"ongoingDamage\":null},\"effects\":[],\"text\":{\"failure\":\"The target takes {damage} Poison damage and has the Poisoned condition until the start of its next turn.\",\"success\":\"The target takes half as much damage only.\",\"effect\":\"Fire or Radiant damage destroys a pressure corpse harmlessly. Other damage triggers it. An adjacent creature can take an action and succeed on a Medicine check against the monster's save DC to vent it harmlessly.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": []
+        },
+        {
+          "targetCr": 15,
+          "bandId": "pressure-corpses-cr-15-30-corpse-field",
+          "abilityCount": 1,
+          "abilityIds": [
+            "pressure-corpses"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"lairAction\",\"actionEconomy\":\"lairAction\",\"usage\":{\"type\":\"lair\"},\"trigger\":\"On initiative count 20 (losing initiative ties).\",\"resolution\":{\"type\":\"savingThrow\",\"ability\":\"constitution\",\"dc\":\"monster\"},\"targeting\":{\"type\":\"area\",\"shape\":\"radius\",\"size\":5,\"unit\":\"ft\",\"range\":60,\"targets\":\"the first creature other than the monster to enter or start within 5 feet of each selected corpse\"},\"areaEffect\":{\"enabled\":true,\"type\":\"hazard\",\"shape\":\"radius\",\"size\":5,\"unit\":\"ft\",\"origin\":\"location\",\"timing\":\"initiativeCount20\",\"repeatTiming\":\"entersArea\",\"targets\":\"one creature from each of up to three pressure corpses\",\"excludes\":[\"the monster\"],\"text\":\"Up to two selected corpses remain armed until initiative count 20 on the next round or until triggered or neutralized.\"},\"damage\":{\"mode\":\"budget\",\"budgetRole\":\"lairPulse\",\"types\":[\"poison\"],\"scale\":\"minor\",\"budgetShare\":0.4,\"expectedTargets\":1.25,\"roundWeight\":[1,1,1],\"parts\":[],\"activation\":null},\"condition\":{\"names\":[\"poisoned\"],\"severity\":\"moderate\",\"direction\":\"enemy\",\"duration\":\"until the start of its next turn\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"targetLimit\":\"up to three intact corpses or substantial body parts\",\"prerequisite\":\"On initiative count 20 (losing initiative ties).\",\"entryEffect\":\"Each selected corpse visibly swells and becomes a 5-foot-radius triggered hazard.\",\"escapeCondition\":\"Avoid the corpse until the next initiative count 20.\",\"releaseCondition\":\"Vent it with Medicine or destroy it with Fire or Radiant damage.\",\"text\":\"Select the corpses, mark their 5-foot hazard areas, and remove each marker when it bursts, is vented, or is safely destroyed.\",\"internalState\":\"\",\"ongoingDamage\":null},\"effects\":[],\"text\":{\"failure\":\"The target takes {damage} Poison damage and has the Poisoned condition until the start of its next turn.\",\"success\":\"The target takes half as much damage only.\",\"effect\":\"Fire or Radiant damage destroys a pressure corpse harmlessly. Other damage triggers it. An adjacent creature can take an action and succeed on a Medicine check against the monster's save DC to vent it harmlessly.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": []
+        },
+        {
+          "targetCr": 20,
+          "bandId": "pressure-corpses-cr-15-30-corpse-field",
+          "abilityCount": 1,
+          "abilityIds": [
+            "pressure-corpses"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"lairAction\",\"actionEconomy\":\"lairAction\",\"usage\":{\"type\":\"lair\"},\"trigger\":\"On initiative count 20 (losing initiative ties).\",\"resolution\":{\"type\":\"savingThrow\",\"ability\":\"constitution\",\"dc\":\"monster\"},\"targeting\":{\"type\":\"area\",\"shape\":\"radius\",\"size\":5,\"unit\":\"ft\",\"range\":60,\"targets\":\"the first creature other than the monster to enter or start within 5 feet of each selected corpse\"},\"areaEffect\":{\"enabled\":true,\"type\":\"hazard\",\"shape\":\"radius\",\"size\":5,\"unit\":\"ft\",\"origin\":\"location\",\"timing\":\"initiativeCount20\",\"repeatTiming\":\"entersArea\",\"targets\":\"one creature from each of up to three pressure corpses\",\"excludes\":[\"the monster\"],\"text\":\"Up to two selected corpses remain armed until initiative count 20 on the next round or until triggered or neutralized.\"},\"damage\":{\"mode\":\"budget\",\"budgetRole\":\"lairPulse\",\"types\":[\"poison\"],\"scale\":\"minor\",\"budgetShare\":0.4,\"expectedTargets\":1.25,\"roundWeight\":[1,1,1],\"parts\":[],\"activation\":null},\"condition\":{\"names\":[\"poisoned\"],\"severity\":\"moderate\",\"direction\":\"enemy\",\"duration\":\"until the start of its next turn\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"targetLimit\":\"up to three intact corpses or substantial body parts\",\"prerequisite\":\"On initiative count 20 (losing initiative ties).\",\"entryEffect\":\"Each selected corpse visibly swells and becomes a 5-foot-radius triggered hazard.\",\"escapeCondition\":\"Avoid the corpse until the next initiative count 20.\",\"releaseCondition\":\"Vent it with Medicine or destroy it with Fire or Radiant damage.\",\"text\":\"Select the corpses, mark their 5-foot hazard areas, and remove each marker when it bursts, is vented, or is safely destroyed.\",\"internalState\":\"\",\"ongoingDamage\":null},\"effects\":[],\"text\":{\"failure\":\"The target takes {damage} Poison damage and has the Poisoned condition until the start of its next turn.\",\"success\":\"The target takes half as much damage only.\",\"effect\":\"Fire or Radiant damage destroys a pressure corpse harmlessly. Other damage triggers it. An adjacent creature can take an action and succeed on a Medicine check against the monster's save DC to vent it harmlessly.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": []
+        }
+      ],
+      "issues": [],
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "version": "monster-lair-graft-editorial-audit-v1.0",
+      "applicable": true,
+      "id": "funeral-silence-lair",
+      "title": "Funeral Silence",
+      "source": "jikininki",
+      "decision": "REWRITE_AND_SCALE_ANCHORED_SILENCE",
+      "status": "pass",
+      "pass": true,
+      "abilityCount": 1,
+      "counterplayChannels": [
+        "telegraph",
+        "positioning",
+        "breakCondition",
+        "nonDamage"
+      ],
+      "scaling": {
+        "declared": true,
+        "expected": true,
+        "bandCount": 3,
+        "sampledBandIds": [
+          "funeral-silence-cr-0-7-hushed-grave",
+          "funeral-silence-cr-8-14-funeral-sphere",
+          "funeral-silence-cr-15-30-silenced-sanctuary"
+        ],
+        "sampledRuleVariants": 3,
+        "pass": true
+      },
+      "snapshots": [
+        {
+          "targetCr": 5,
+          "bandId": "funeral-silence-cr-0-7-hushed-grave",
+          "abilityCount": 1,
+          "abilityIds": [
+            "funeral-silence"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"lairAction\",\"actionEconomy\":\"lairAction\",\"usage\":{\"type\":\"lair\"},\"trigger\":\"On initiative count 20 (losing initiative ties).\",\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"area\",\"shape\":\"radius\",\"size\":10,\"unit\":\"ft\",\"range\":60,\"targets\":\"creatures entirely inside the silent sphere\"},\"areaEffect\":{\"enabled\":true,\"type\":\"zone\",\"shape\":\"radius\",\"size\":10,\"unit\":\"ft\",\"origin\":\"location\",\"timing\":\"initiativeCount20\",\"repeatTiming\":\"whileInArea\",\"targets\":\"creatures entirely inside the sphere\",\"excludes\":[],\"text\":\"On initiative count 20, the monster chooses one visible funerary object, grave marker, shroud, or corpse within 60 feet. Until initiative count 20 on the next round, a 10-foot-radius Sphere centered on that anchor is silent. No sound can be created within or pass through the area. A creature entirely inside it has the Deafened condition and can't cast a spell with a Verbal component. Moving the anchor at least 10 feet, covering it completely, or dealing Radiant damage to it ends the effect.\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[\"deafened\"],\"severity\":\"moderate\",\"direction\":\"enemy\",\"duration\":\"while entirely inside the silent sphere\",\"special\":[\"A creature entirely inside the sphere can't cast a spell with a Verbal component.\"],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"On initiative count 20 (losing initiative ties).\",\"escapeCondition\":\"Leave the sphere.\",\"releaseCondition\":\"Move the anchor 10 feet, cover it completely, or deal Radiant damage to it.\",\"text\":\"On initiative count 20, the monster chooses one visible funerary object, grave marker, shroud, or corpse within 60 feet. Until initiative count 20 on the next round, a 10-foot-radius Sphere centered on that anchor is silent. No sound can be created within or pass through the area. A creature entirely inside it has the Deafened condition and can't cast a spell with a Verbal component. Moving the anchor at least 10 feet, covering it completely, or dealing Radiant damage to it ends the effect.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null},\"effects\":[],\"text\":{\"effect\":\"On initiative count 20, the monster chooses one visible funerary object, grave marker, shroud, or corpse within 60 feet. Until initiative count 20 on the next round, a 10-foot-radius Sphere centered on that anchor is silent. No sound can be created within or pass through the area. A creature entirely inside it has the Deafened condition and can't cast a spell with a Verbal component. Moving the anchor at least 10 feet, covering it completely, or dealing Radiant damage to it ends the effect.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": []
+        },
+        {
+          "targetCr": 10,
+          "bandId": "funeral-silence-cr-8-14-funeral-sphere",
+          "abilityCount": 1,
+          "abilityIds": [
+            "funeral-silence"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"lairAction\",\"actionEconomy\":\"lairAction\",\"usage\":{\"type\":\"lair\"},\"trigger\":\"On initiative count 20 (losing initiative ties).\",\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"area\",\"shape\":\"radius\",\"size\":20,\"unit\":\"ft\",\"range\":60,\"targets\":\"creatures entirely inside the silent sphere\"},\"areaEffect\":{\"enabled\":true,\"type\":\"zone\",\"shape\":\"radius\",\"size\":20,\"unit\":\"ft\",\"origin\":\"location\",\"timing\":\"initiativeCount20\",\"repeatTiming\":\"whileInArea\",\"targets\":\"creatures entirely inside the sphere\",\"excludes\":[],\"text\":\"On initiative count 20, the monster chooses one visible funerary object, grave marker, shroud, or corpse within 60 feet. Until initiative count 20 on the next round, a 20-foot-radius Sphere centered on that anchor is silent. No sound can be created within or pass through the area. A creature entirely inside it has the Deafened condition and can't cast a spell with a Verbal component. Moving the anchor at least 10 feet, covering it completely, or dealing Radiant damage to it ends the effect.\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[\"deafened\"],\"severity\":\"moderate\",\"direction\":\"enemy\",\"duration\":\"while entirely inside the silent sphere\",\"special\":[\"A creature entirely inside the sphere can't cast a spell with a Verbal component.\"],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"On initiative count 20 (losing initiative ties).\",\"escapeCondition\":\"Leave the sphere.\",\"releaseCondition\":\"Move the anchor 10 feet, cover it completely, or deal Radiant damage to it.\",\"text\":\"On initiative count 20, the monster chooses one visible funerary object, grave marker, shroud, or corpse within 60 feet. Until initiative count 20 on the next round, a 20-foot-radius Sphere centered on that anchor is silent. No sound can be created within or pass through the area. A creature entirely inside it has the Deafened condition and can't cast a spell with a Verbal component. Moving the anchor at least 10 feet, covering it completely, or dealing Radiant damage to it ends the effect.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null},\"effects\":[],\"text\":{\"effect\":\"On initiative count 20, the monster chooses one visible funerary object, grave marker, shroud, or corpse within 60 feet. Until initiative count 20 on the next round, a 20-foot-radius Sphere centered on that anchor is silent. No sound can be created within or pass through the area. A creature entirely inside it has the Deafened condition and can't cast a spell with a Verbal component. Moving the anchor at least 10 feet, covering it completely, or dealing Radiant damage to it ends the effect.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": []
+        },
+        {
+          "targetCr": 15,
+          "bandId": "funeral-silence-cr-15-30-silenced-sanctuary",
+          "abilityCount": 1,
+          "abilityIds": [
+            "funeral-silence"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"lairAction\",\"actionEconomy\":\"lairAction\",\"usage\":{\"type\":\"lair\"},\"trigger\":\"On initiative count 20 (losing initiative ties).\",\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"area\",\"shape\":\"radius\",\"size\":30,\"unit\":\"ft\",\"range\":60,\"targets\":\"creatures entirely inside the silent sphere\"},\"areaEffect\":{\"enabled\":true,\"type\":\"zone\",\"shape\":\"radius\",\"size\":30,\"unit\":\"ft\",\"origin\":\"location\",\"timing\":\"initiativeCount20\",\"repeatTiming\":\"whileInArea\",\"targets\":\"creatures entirely inside the sphere\",\"excludes\":[],\"text\":\"On initiative count 20, the monster chooses one visible funerary object, grave marker, shroud, or corpse within 60 feet. Until initiative count 20 on the next round, a 30-foot-radius Sphere centered on that anchor is silent. No sound can be created within or pass through the area. A creature entirely inside it has the Deafened condition and can't cast a spell with a Verbal component. Moving the anchor at least 10 feet, covering it completely, or dealing Radiant damage to it ends the effect.\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[\"deafened\"],\"severity\":\"moderate\",\"direction\":\"enemy\",\"duration\":\"while entirely inside the silent sphere\",\"special\":[\"A creature entirely inside the sphere can't cast a spell with a Verbal component.\"],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"On initiative count 20 (losing initiative ties).\",\"escapeCondition\":\"Leave the sphere.\",\"releaseCondition\":\"Move the anchor 10 feet, cover it completely, or deal Radiant damage to it.\",\"text\":\"On initiative count 20, the monster chooses one visible funerary object, grave marker, shroud, or corpse within 60 feet. Until initiative count 20 on the next round, a 30-foot-radius Sphere centered on that anchor is silent. No sound can be created within or pass through the area. A creature entirely inside it has the Deafened condition and can't cast a spell with a Verbal component. Moving the anchor at least 10 feet, covering it completely, or dealing Radiant damage to it ends the effect.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null},\"effects\":[],\"text\":{\"effect\":\"On initiative count 20, the monster chooses one visible funerary object, grave marker, shroud, or corpse within 60 feet. Until initiative count 20 on the next round, a 30-foot-radius Sphere centered on that anchor is silent. No sound can be created within or pass through the area. A creature entirely inside it has the Deafened condition and can't cast a spell with a Verbal component. Moving the anchor at least 10 feet, covering it completely, or dealing Radiant damage to it ends the effect.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": []
+        },
+        {
+          "targetCr": 20,
+          "bandId": "funeral-silence-cr-15-30-silenced-sanctuary",
+          "abilityCount": 1,
+          "abilityIds": [
+            "funeral-silence"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"lairAction\",\"actionEconomy\":\"lairAction\",\"usage\":{\"type\":\"lair\"},\"trigger\":\"On initiative count 20 (losing initiative ties).\",\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"area\",\"shape\":\"radius\",\"size\":30,\"unit\":\"ft\",\"range\":60,\"targets\":\"creatures entirely inside the silent sphere\"},\"areaEffect\":{\"enabled\":true,\"type\":\"zone\",\"shape\":\"radius\",\"size\":30,\"unit\":\"ft\",\"origin\":\"location\",\"timing\":\"initiativeCount20\",\"repeatTiming\":\"whileInArea\",\"targets\":\"creatures entirely inside the sphere\",\"excludes\":[],\"text\":\"On initiative count 20, the monster chooses one visible funerary object, grave marker, shroud, or corpse within 60 feet. Until initiative count 20 on the next round, a 30-foot-radius Sphere centered on that anchor is silent. No sound can be created within or pass through the area. A creature entirely inside it has the Deafened condition and can't cast a spell with a Verbal component. Moving the anchor at least 10 feet, covering it completely, or dealing Radiant damage to it ends the effect.\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[\"deafened\"],\"severity\":\"moderate\",\"direction\":\"enemy\",\"duration\":\"while entirely inside the silent sphere\",\"special\":[\"A creature entirely inside the sphere can't cast a spell with a Verbal component.\"],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"On initiative count 20 (losing initiative ties).\",\"escapeCondition\":\"Leave the sphere.\",\"releaseCondition\":\"Move the anchor 10 feet, cover it completely, or deal Radiant damage to it.\",\"text\":\"On initiative count 20, the monster chooses one visible funerary object, grave marker, shroud, or corpse within 60 feet. Until initiative count 20 on the next round, a 30-foot-radius Sphere centered on that anchor is silent. No sound can be created within or pass through the area. A creature entirely inside it has the Deafened condition and can't cast a spell with a Verbal component. Moving the anchor at least 10 feet, covering it completely, or dealing Radiant damage to it ends the effect.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null},\"effects\":[],\"text\":{\"effect\":\"On initiative count 20, the monster chooses one visible funerary object, grave marker, shroud, or corpse within 60 feet. Until initiative count 20 on the next round, a 30-foot-radius Sphere centered on that anchor is silent. No sound can be created within or pass through the area. A creature entirely inside it has the Deafened condition and can't cast a spell with a Verbal component. Moving the anchor at least 10 feet, covering it completely, or dealing Radiant damage to it ends the effect.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": []
+        }
+      ],
+      "issues": [],
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "version": "monster-lair-graft-editorial-audit-v1.0",
+      "applicable": true,
+      "id": "graveyard-offerings-lair",
+      "title": "Graveyard Offerings",
+      "source": "jikininki",
+      "decision": "REWRITE_AS_RITUAL_LURE",
+      "status": "pass",
+      "pass": true,
+      "abilityCount": 1,
+      "counterplayChannels": [
+        "telegraph",
+        "positioning",
+        "breakCondition",
+        "nonDamage"
+      ],
+      "scaling": {
+        "declared": false,
+        "expected": false,
+        "bandCount": 0,
+        "sampledBandIds": [],
+        "sampledRuleVariants": 1,
+        "pass": true
+      },
+      "snapshots": [
+        {
+          "targetCr": 5,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "graveyard-offerings"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"lairAction\",\"actionEconomy\":\"lairAction\",\"usage\":{\"type\":\"lair\"},\"trigger\":\"On initiative count 20 (losing initiative ties).\",\"resolution\":{\"type\":\"savingThrow\",\"ability\":\"wisdom\",\"dc\":\"monster\"},\"targeting\":{\"type\":\"area\",\"shape\":\"radius\",\"size\":10,\"unit\":\"ft\",\"range\":60,\"targets\":\"creatures that start their turns in the mourners' area\"},\"areaEffect\":{\"enabled\":true,\"type\":\"zone\",\"shape\":\"radius\",\"size\":10,\"unit\":\"ft\",\"origin\":\"location\",\"timing\":\"initiativeCount20\",\"repeatTiming\":\"startsTurnInArea\",\"targets\":\"creatures\",\"excludes\":[],\"text\":\"Spectral mourners fill a 10-foot-radius area around one selected funerary anchor until initiative count 20 on the next round.\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"On initiative count 20 (losing initiative ties).\",\"entryEffect\":\"Spectral mourners circle the selected funerary anchor.\",\"escapeCondition\":\"Leave the 10-foot-radius area.\",\"releaseCondition\":\"Move or restore the anchor, or place a respectful offering beside it with an action.\",\"text\":\"A respectful offering can be food, coin, flowers, incense, a grave good, or another culturally appropriate funerary object.\",\"targetLimit\":\"\",\"internalState\":\"\",\"ongoingDamage\":null},\"effects\":[],\"text\":{\"failure\":\"The target is pulled up to 10 feet toward the anchor and can't take Reactions until the start of its next turn.\",\"success\":\"No effect.\",\"effect\":\"Moving or restoring the anchor, or placing a respectful offering beside it with an action, ends the effect.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": []
+        },
+        {
+          "targetCr": 10,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "graveyard-offerings"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"lairAction\",\"actionEconomy\":\"lairAction\",\"usage\":{\"type\":\"lair\"},\"trigger\":\"On initiative count 20 (losing initiative ties).\",\"resolution\":{\"type\":\"savingThrow\",\"ability\":\"wisdom\",\"dc\":\"monster\"},\"targeting\":{\"type\":\"area\",\"shape\":\"radius\",\"size\":10,\"unit\":\"ft\",\"range\":60,\"targets\":\"creatures that start their turns in the mourners' area\"},\"areaEffect\":{\"enabled\":true,\"type\":\"zone\",\"shape\":\"radius\",\"size\":10,\"unit\":\"ft\",\"origin\":\"location\",\"timing\":\"initiativeCount20\",\"repeatTiming\":\"startsTurnInArea\",\"targets\":\"creatures\",\"excludes\":[],\"text\":\"Spectral mourners fill a 10-foot-radius area around one selected funerary anchor until initiative count 20 on the next round.\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"On initiative count 20 (losing initiative ties).\",\"entryEffect\":\"Spectral mourners circle the selected funerary anchor.\",\"escapeCondition\":\"Leave the 10-foot-radius area.\",\"releaseCondition\":\"Move or restore the anchor, or place a respectful offering beside it with an action.\",\"text\":\"A respectful offering can be food, coin, flowers, incense, a grave good, or another culturally appropriate funerary object.\",\"targetLimit\":\"\",\"internalState\":\"\",\"ongoingDamage\":null},\"effects\":[],\"text\":{\"failure\":\"The target is pulled up to 10 feet toward the anchor and can't take Reactions until the start of its next turn.\",\"success\":\"No effect.\",\"effect\":\"Moving or restoring the anchor, or placing a respectful offering beside it with an action, ends the effect.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": []
+        },
+        {
+          "targetCr": 15,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "graveyard-offerings"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"lairAction\",\"actionEconomy\":\"lairAction\",\"usage\":{\"type\":\"lair\"},\"trigger\":\"On initiative count 20 (losing initiative ties).\",\"resolution\":{\"type\":\"savingThrow\",\"ability\":\"wisdom\",\"dc\":\"monster\"},\"targeting\":{\"type\":\"area\",\"shape\":\"radius\",\"size\":10,\"unit\":\"ft\",\"range\":60,\"targets\":\"creatures that start their turns in the mourners' area\"},\"areaEffect\":{\"enabled\":true,\"type\":\"zone\",\"shape\":\"radius\",\"size\":10,\"unit\":\"ft\",\"origin\":\"location\",\"timing\":\"initiativeCount20\",\"repeatTiming\":\"startsTurnInArea\",\"targets\":\"creatures\",\"excludes\":[],\"text\":\"Spectral mourners fill a 10-foot-radius area around one selected funerary anchor until initiative count 20 on the next round.\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"On initiative count 20 (losing initiative ties).\",\"entryEffect\":\"Spectral mourners circle the selected funerary anchor.\",\"escapeCondition\":\"Leave the 10-foot-radius area.\",\"releaseCondition\":\"Move or restore the anchor, or place a respectful offering beside it with an action.\",\"text\":\"A respectful offering can be food, coin, flowers, incense, a grave good, or another culturally appropriate funerary object.\",\"targetLimit\":\"\",\"internalState\":\"\",\"ongoingDamage\":null},\"effects\":[],\"text\":{\"failure\":\"The target is pulled up to 10 feet toward the anchor and can't take Reactions until the start of its next turn.\",\"success\":\"No effect.\",\"effect\":\"Moving or restoring the anchor, or placing a respectful offering beside it with an action, ends the effect.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": []
+        },
+        {
+          "targetCr": 20,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "graveyard-offerings"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"lairAction\",\"actionEconomy\":\"lairAction\",\"usage\":{\"type\":\"lair\"},\"trigger\":\"On initiative count 20 (losing initiative ties).\",\"resolution\":{\"type\":\"savingThrow\",\"ability\":\"wisdom\",\"dc\":\"monster\"},\"targeting\":{\"type\":\"area\",\"shape\":\"radius\",\"size\":10,\"unit\":\"ft\",\"range\":60,\"targets\":\"creatures that start their turns in the mourners' area\"},\"areaEffect\":{\"enabled\":true,\"type\":\"zone\",\"shape\":\"radius\",\"size\":10,\"unit\":\"ft\",\"origin\":\"location\",\"timing\":\"initiativeCount20\",\"repeatTiming\":\"startsTurnInArea\",\"targets\":\"creatures\",\"excludes\":[],\"text\":\"Spectral mourners fill a 10-foot-radius area around one selected funerary anchor until initiative count 20 on the next round.\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"On initiative count 20 (losing initiative ties).\",\"entryEffect\":\"Spectral mourners circle the selected funerary anchor.\",\"escapeCondition\":\"Leave the 10-foot-radius area.\",\"releaseCondition\":\"Move or restore the anchor, or place a respectful offering beside it with an action.\",\"text\":\"A respectful offering can be food, coin, flowers, incense, a grave good, or another culturally appropriate funerary object.\",\"targetLimit\":\"\",\"internalState\":\"\",\"ongoingDamage\":null},\"effects\":[],\"text\":{\"failure\":\"The target is pulled up to 10 feet toward the anchor and can't take Reactions until the start of its next turn.\",\"success\":\"No effect.\",\"effect\":\"Moving or restoring the anchor, or placing a respectful offering beside it with an action, ends the effect.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": []
+        }
+      ],
+      "issues": [],
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "version": "monster-lair-graft-editorial-audit-v1.0",
+      "applicable": true,
+      "id": "broodmother-web-lair",
+      "title": "Broodmother Web",
+      "source": "wolf-spiders",
+      "decision": "REWRITE_AND_SCALE_MAINTAINED_PRISON",
+      "status": "pass",
+      "pass": true,
+      "abilityCount": 1,
+      "counterplayChannels": [
+        "telegraph",
+        "positioning",
+        "breakCondition",
+        "nonDamage"
+      ],
+      "scaling": {
+        "declared": true,
+        "expected": true,
+        "bandCount": 3,
+        "sampledBandIds": [
+          "broodmother-web-cr-0-7-hunting-net",
+          "broodmother-web-cr-8-14-brood-prison",
+          "broodmother-web-cr-15-30-nest-collapse"
+        ],
+        "sampledRuleVariants": 3,
+        "pass": true
+      },
+      "snapshots": [
+        {
+          "targetCr": 5,
+          "bandId": "broodmother-web-cr-0-7-hunting-net",
+          "abilityCount": 1,
+          "abilityIds": [
+            "broodmother-web"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"lairAction\",\"actionEconomy\":\"lairAction\",\"usage\":{\"type\":\"lair\"},\"trigger\":\"On initiative count 20 (losing initiative ties).\",\"resolution\":{\"type\":\"savingThrow\",\"ability\":\"dexterity\",\"dc\":\"monster\"},\"targeting\":{\"type\":\"area\",\"shape\":\"cube\",\"size\":10,\"unit\":\"ft\",\"range\":60,\"targets\":\"creatures in the selected Cube that lack Web Walker\"},\"areaEffect\":{\"enabled\":true,\"type\":\"zone\",\"shape\":\"cube\",\"size\":10,\"unit\":\"ft\",\"origin\":\"point\",\"timing\":\"initiativeCount20\",\"repeatTiming\":\"whileInArea\",\"targets\":\"creatures without Web Walker\",\"excludes\":[\"creatures with Web Walker\"],\"text\":\"On initiative count 20, the monster creates a mass of webbing in a 10-foot Cube at a point it can see within 60 feet. Each creature in the Cube that lacks Web Walker makes a Dexterity saving throw. On a failed save, a creature has the Restrained condition until it escapes or its section of web is destroyed. A restrained creature can take an action to make a Strength (Athletics) check against the monster's save DC, ending the condition on itself on a success. A 5-foot section of web has AC 10, 5 Hit Points, vulnerability to Fire damage, and immunity to Poison and Psychic damage. The monster can maintain only one Broodmother Web; creating another destroys the previous one, and it can't use another Lair Effect while this web remains.\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[\"restrained\"],\"severity\":\"major\",\"direction\":\"enemy\",\"duration\":\"until the creature escapes or its section of web is destroyed\",\"special\":[\"The monster can maintain only one Broodmother Web and can't use another Lair Effect while it remains.\"],\"sizeLimit\":\"\",\"escape\":{\"enabled\":true,\"dc\":\"monster\",\"ability\":\"strength\",\"check\":\"Athletics\",\"actionCost\":\"action\",\"text\":\"A restrained creature can take an action to make a Strength (Athletics) check against the monster's save DC, ending the condition on itself on a success.\",\"dcSource\":\"monster\"},\"repeatSave\":null},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"On initiative count 20 (losing initiative ties).\",\"escapeCondition\":\"Succeed on the Athletics escape check or destroy the creature's 5-foot section of web.\",\"releaseCondition\":\"Destroy all relevant sections, create a new Broodmother Web, or end the encounter.\",\"text\":\"On initiative count 20, the monster creates a mass of webbing in a 10-foot Cube at a point it can see within 60 feet. Each creature in the Cube that lacks Web Walker makes a Dexterity saving throw. On a failed save, a creature has the Restrained condition until it escapes or its section of web is destroyed. A restrained creature can take an action to make a Strength (Athletics) check against the monster's save DC, ending the condition on itself on a success. A 5-foot section of web has AC 10, 5 Hit Points, vulnerability to Fire damage, and immunity to Poison and Psychic damage. The monster can maintain only one Broodmother Web; creating another destroys the previous one, and it can't use another Lair Effect while this web remains.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null},\"effects\":[],\"text\":{\"failure\":\"The target has the Restrained condition until it escapes or its section of web is destroyed.\",\"success\":\"No effect.\",\"effect\":\"On initiative count 20, the monster creates a mass of webbing in a 10-foot Cube at a point it can see within 60 feet. Each creature in the Cube that lacks Web Walker makes a Dexterity saving throw. On a failed save, a creature has the Restrained condition until it escapes or its section of web is destroyed. A restrained creature can take an action to make a Strength (Athletics) check against the monster's save DC, ending the condition on itself on a success. A 5-foot section of web has AC 10, 5 Hit Points, vulnerability to Fire damage, and immunity to Poison and Psychic damage. The monster can maintain only one Broodmother Web; creating another destroys the previous one, and it can't use another Lair Effect while this web remains.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": []
+        },
+        {
+          "targetCr": 10,
+          "bandId": "broodmother-web-cr-8-14-brood-prison",
+          "abilityCount": 1,
+          "abilityIds": [
+            "broodmother-web"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"lairAction\",\"actionEconomy\":\"lairAction\",\"usage\":{\"type\":\"lair\"},\"trigger\":\"On initiative count 20 (losing initiative ties).\",\"resolution\":{\"type\":\"savingThrow\",\"ability\":\"dexterity\",\"dc\":\"monster\"},\"targeting\":{\"type\":\"area\",\"shape\":\"cube\",\"size\":20,\"unit\":\"ft\",\"range\":60,\"targets\":\"creatures in the selected Cube that lack Web Walker\"},\"areaEffect\":{\"enabled\":true,\"type\":\"zone\",\"shape\":\"cube\",\"size\":20,\"unit\":\"ft\",\"origin\":\"point\",\"timing\":\"initiativeCount20\",\"repeatTiming\":\"whileInArea\",\"targets\":\"creatures without Web Walker\",\"excludes\":[\"creatures with Web Walker\"],\"text\":\"On initiative count 20, the monster creates a mass of webbing in a 20-foot Cube at a point it can see within 60 feet. Each creature in the Cube that lacks Web Walker makes a Dexterity saving throw. On a failed save, a creature has the Restrained condition until it escapes or its section of web is destroyed. A restrained creature can take an action to make a Strength (Athletics) check against the monster's save DC, ending the condition on itself on a success. A 5-foot section of web has AC 10, 5 Hit Points, vulnerability to Fire damage, and immunity to Poison and Psychic damage. The monster can maintain only one Broodmother Web; creating another destroys the previous one, and it can't use another Lair Effect while this web remains.\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[\"restrained\"],\"severity\":\"major\",\"direction\":\"enemy\",\"duration\":\"until the creature escapes or its section of web is destroyed\",\"special\":[\"The monster can maintain only one Broodmother Web and can't use another Lair Effect while it remains.\"],\"sizeLimit\":\"\",\"escape\":{\"enabled\":true,\"dc\":\"monster\",\"ability\":\"strength\",\"check\":\"Athletics\",\"actionCost\":\"action\",\"text\":\"A restrained creature can take an action to make a Strength (Athletics) check against the monster's save DC, ending the condition on itself on a success.\",\"dcSource\":\"monster\"},\"repeatSave\":null},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"On initiative count 20 (losing initiative ties).\",\"escapeCondition\":\"Succeed on the Athletics escape check or destroy the creature's 5-foot section of web.\",\"releaseCondition\":\"Destroy all relevant sections, create a new Broodmother Web, or end the encounter.\",\"text\":\"On initiative count 20, the monster creates a mass of webbing in a 20-foot Cube at a point it can see within 60 feet. Each creature in the Cube that lacks Web Walker makes a Dexterity saving throw. On a failed save, a creature has the Restrained condition until it escapes or its section of web is destroyed. A restrained creature can take an action to make a Strength (Athletics) check against the monster's save DC, ending the condition on itself on a success. A 5-foot section of web has AC 10, 5 Hit Points, vulnerability to Fire damage, and immunity to Poison and Psychic damage. The monster can maintain only one Broodmother Web; creating another destroys the previous one, and it can't use another Lair Effect while this web remains.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null},\"effects\":[],\"text\":{\"failure\":\"The target has the Restrained condition until it escapes or its section of web is destroyed.\",\"success\":\"No effect.\",\"effect\":\"On initiative count 20, the monster creates a mass of webbing in a 20-foot Cube at a point it can see within 60 feet. Each creature in the Cube that lacks Web Walker makes a Dexterity saving throw. On a failed save, a creature has the Restrained condition until it escapes or its section of web is destroyed. A restrained creature can take an action to make a Strength (Athletics) check against the monster's save DC, ending the condition on itself on a success. A 5-foot section of web has AC 10, 5 Hit Points, vulnerability to Fire damage, and immunity to Poison and Psychic damage. The monster can maintain only one Broodmother Web; creating another destroys the previous one, and it can't use another Lair Effect while this web remains.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": []
+        },
+        {
+          "targetCr": 15,
+          "bandId": "broodmother-web-cr-15-30-nest-collapse",
+          "abilityCount": 1,
+          "abilityIds": [
+            "broodmother-web"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"lairAction\",\"actionEconomy\":\"lairAction\",\"usage\":{\"type\":\"lair\"},\"trigger\":\"On initiative count 20 (losing initiative ties).\",\"resolution\":{\"type\":\"savingThrow\",\"ability\":\"dexterity\",\"dc\":\"monster\"},\"targeting\":{\"type\":\"area\",\"shape\":\"cube\",\"size\":30,\"unit\":\"ft\",\"range\":60,\"targets\":\"creatures in the selected Cube that lack Web Walker\"},\"areaEffect\":{\"enabled\":true,\"type\":\"zone\",\"shape\":\"cube\",\"size\":30,\"unit\":\"ft\",\"origin\":\"point\",\"timing\":\"initiativeCount20\",\"repeatTiming\":\"whileInArea\",\"targets\":\"creatures without Web Walker\",\"excludes\":[\"creatures with Web Walker\"],\"text\":\"On initiative count 20, the monster creates a mass of webbing in a 30-foot Cube at a point it can see within 60 feet. Each creature in the Cube that lacks Web Walker makes a Dexterity saving throw. On a failed save, a creature has the Restrained condition until it escapes or its section of web is destroyed. A restrained creature can take an action to make a Strength (Athletics) check against the monster's save DC, ending the condition on itself on a success. A 5-foot section of web has AC 10, 5 Hit Points, vulnerability to Fire damage, and immunity to Poison and Psychic damage. The monster can maintain only one Broodmother Web; creating another destroys the previous one, and it can't use another Lair Effect while this web remains.\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[\"restrained\"],\"severity\":\"major\",\"direction\":\"enemy\",\"duration\":\"until the creature escapes or its section of web is destroyed\",\"special\":[\"The monster can maintain only one Broodmother Web and can't use another Lair Effect while it remains.\"],\"sizeLimit\":\"\",\"escape\":{\"enabled\":true,\"dc\":\"monster\",\"ability\":\"strength\",\"check\":\"Athletics\",\"actionCost\":\"action\",\"text\":\"A restrained creature can take an action to make a Strength (Athletics) check against the monster's save DC, ending the condition on itself on a success.\",\"dcSource\":\"monster\"},\"repeatSave\":null},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"On initiative count 20 (losing initiative ties).\",\"escapeCondition\":\"Succeed on the Athletics escape check or destroy the creature's 5-foot section of web.\",\"releaseCondition\":\"Destroy all relevant sections, create a new Broodmother Web, or end the encounter.\",\"text\":\"On initiative count 20, the monster creates a mass of webbing in a 30-foot Cube at a point it can see within 60 feet. Each creature in the Cube that lacks Web Walker makes a Dexterity saving throw. On a failed save, a creature has the Restrained condition until it escapes or its section of web is destroyed. A restrained creature can take an action to make a Strength (Athletics) check against the monster's save DC, ending the condition on itself on a success. A 5-foot section of web has AC 10, 5 Hit Points, vulnerability to Fire damage, and immunity to Poison and Psychic damage. The monster can maintain only one Broodmother Web; creating another destroys the previous one, and it can't use another Lair Effect while this web remains.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null},\"effects\":[],\"text\":{\"failure\":\"The target has the Restrained condition until it escapes or its section of web is destroyed.\",\"success\":\"No effect.\",\"effect\":\"On initiative count 20, the monster creates a mass of webbing in a 30-foot Cube at a point it can see within 60 feet. Each creature in the Cube that lacks Web Walker makes a Dexterity saving throw. On a failed save, a creature has the Restrained condition until it escapes or its section of web is destroyed. A restrained creature can take an action to make a Strength (Athletics) check against the monster's save DC, ending the condition on itself on a success. A 5-foot section of web has AC 10, 5 Hit Points, vulnerability to Fire damage, and immunity to Poison and Psychic damage. The monster can maintain only one Broodmother Web; creating another destroys the previous one, and it can't use another Lair Effect while this web remains.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": []
+        },
+        {
+          "targetCr": 20,
+          "bandId": "broodmother-web-cr-15-30-nest-collapse",
+          "abilityCount": 1,
+          "abilityIds": [
+            "broodmother-web"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"lairAction\",\"actionEconomy\":\"lairAction\",\"usage\":{\"type\":\"lair\"},\"trigger\":\"On initiative count 20 (losing initiative ties).\",\"resolution\":{\"type\":\"savingThrow\",\"ability\":\"dexterity\",\"dc\":\"monster\"},\"targeting\":{\"type\":\"area\",\"shape\":\"cube\",\"size\":30,\"unit\":\"ft\",\"range\":60,\"targets\":\"creatures in the selected Cube that lack Web Walker\"},\"areaEffect\":{\"enabled\":true,\"type\":\"zone\",\"shape\":\"cube\",\"size\":30,\"unit\":\"ft\",\"origin\":\"point\",\"timing\":\"initiativeCount20\",\"repeatTiming\":\"whileInArea\",\"targets\":\"creatures without Web Walker\",\"excludes\":[\"creatures with Web Walker\"],\"text\":\"On initiative count 20, the monster creates a mass of webbing in a 30-foot Cube at a point it can see within 60 feet. Each creature in the Cube that lacks Web Walker makes a Dexterity saving throw. On a failed save, a creature has the Restrained condition until it escapes or its section of web is destroyed. A restrained creature can take an action to make a Strength (Athletics) check against the monster's save DC, ending the condition on itself on a success. A 5-foot section of web has AC 10, 5 Hit Points, vulnerability to Fire damage, and immunity to Poison and Psychic damage. The monster can maintain only one Broodmother Web; creating another destroys the previous one, and it can't use another Lair Effect while this web remains.\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[\"restrained\"],\"severity\":\"major\",\"direction\":\"enemy\",\"duration\":\"until the creature escapes or its section of web is destroyed\",\"special\":[\"The monster can maintain only one Broodmother Web and can't use another Lair Effect while it remains.\"],\"sizeLimit\":\"\",\"escape\":{\"enabled\":true,\"dc\":\"monster\",\"ability\":\"strength\",\"check\":\"Athletics\",\"actionCost\":\"action\",\"text\":\"A restrained creature can take an action to make a Strength (Athletics) check against the monster's save DC, ending the condition on itself on a success.\",\"dcSource\":\"monster\"},\"repeatSave\":null},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"On initiative count 20 (losing initiative ties).\",\"escapeCondition\":\"Succeed on the Athletics escape check or destroy the creature's 5-foot section of web.\",\"releaseCondition\":\"Destroy all relevant sections, create a new Broodmother Web, or end the encounter.\",\"text\":\"On initiative count 20, the monster creates a mass of webbing in a 30-foot Cube at a point it can see within 60 feet. Each creature in the Cube that lacks Web Walker makes a Dexterity saving throw. On a failed save, a creature has the Restrained condition until it escapes or its section of web is destroyed. A restrained creature can take an action to make a Strength (Athletics) check against the monster's save DC, ending the condition on itself on a success. A 5-foot section of web has AC 10, 5 Hit Points, vulnerability to Fire damage, and immunity to Poison and Psychic damage. The monster can maintain only one Broodmother Web; creating another destroys the previous one, and it can't use another Lair Effect while this web remains.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null},\"effects\":[],\"text\":{\"failure\":\"The target has the Restrained condition until it escapes or its section of web is destroyed.\",\"success\":\"No effect.\",\"effect\":\"On initiative count 20, the monster creates a mass of webbing in a 30-foot Cube at a point it can see within 60 feet. Each creature in the Cube that lacks Web Walker makes a Dexterity saving throw. On a failed save, a creature has the Restrained condition until it escapes or its section of web is destroyed. A restrained creature can take an action to make a Strength (Athletics) check against the monster's save DC, ending the condition on itself on a success. A 5-foot section of web has AC 10, 5 Hit Points, vulnerability to Fire damage, and immunity to Poison and Psychic damage. The monster can maintain only one Broodmother Web; creating another destroys the previous one, and it can't use another Lair Effect while this web remains.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": []
+        }
+      ],
+      "issues": [],
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "version": "monster-lair-graft-editorial-audit-v1.0",
+      "applicable": true,
+      "id": "dense-web-region",
+      "title": "Dense Webs",
+      "source": "wolf-spiders",
+      "decision": "REWRITE_AS_PERSISTENT_VIBRATION_TERRAIN",
+      "status": "pass",
+      "pass": true,
+      "abilityCount": 1,
+      "counterplayChannels": [
+        "telegraph",
+        "positioning",
+        "breakCondition",
+        "nonDamage"
+      ],
+      "scaling": {
+        "declared": false,
+        "expected": false,
+        "bandCount": 0,
+        "sampledBandIds": [],
+        "sampledRuleVariants": 1,
+        "pass": true
+      },
+      "snapshots": [
+        {
+          "targetCr": 5,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "dense-webs"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"lairAction\",\"actionEconomy\":\"lairAction\",\"usage\":{\"type\":\"lair\"},\"trigger\":\"On initiative count 20 (losing initiative ties).\",\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"area\",\"shape\":\"square\",\"size\":15,\"unit\":\"ft\",\"range\":60,\"targets\":\"creatures touching the selected surface\"},\"areaEffect\":{\"enabled\":true,\"type\":\"regional\",\"shape\":\"square\",\"size\":15,\"unit\":\"ft\",\"origin\":\"location\",\"timing\":\"initiativeCount20\",\"repeatTiming\":\"whileInArea\",\"targets\":\"creatures without Web Walker\",\"excludes\":[\"creatures with Web Walker\"],\"text\":\"The selected surface is Difficult Terrain and carries vibrations until its squares are cleared or burned. No more than two Dense Web regions can exist.\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"targetLimit\":\"one visible 15-foot Square; no more than two active regions\",\"prerequisite\":\"On initiative count 20 (losing initiative ties).\",\"releaseCondition\":\"Clear individual five-foot squares with a blade and an action or with Fire damage.\",\"text\":\"Mark no more than two persistent regions. Creating a third removes the oldest region from play.\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"A creature without Web Walker treats the region as Difficult Terrain and can't Hide from a creature with Web Walker while touching it; that creature knows its location. An adjacent creature can clear one 5-foot Square with an action and a blade, and Fire damage clears affected squares it touches.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": []
+        },
+        {
+          "targetCr": 10,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "dense-webs"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"lairAction\",\"actionEconomy\":\"lairAction\",\"usage\":{\"type\":\"lair\"},\"trigger\":\"On initiative count 20 (losing initiative ties).\",\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"area\",\"shape\":\"square\",\"size\":15,\"unit\":\"ft\",\"range\":60,\"targets\":\"creatures touching the selected surface\"},\"areaEffect\":{\"enabled\":true,\"type\":\"regional\",\"shape\":\"square\",\"size\":15,\"unit\":\"ft\",\"origin\":\"location\",\"timing\":\"initiativeCount20\",\"repeatTiming\":\"whileInArea\",\"targets\":\"creatures without Web Walker\",\"excludes\":[\"creatures with Web Walker\"],\"text\":\"The selected surface is Difficult Terrain and carries vibrations until its squares are cleared or burned. No more than two Dense Web regions can exist.\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"targetLimit\":\"one visible 15-foot Square; no more than two active regions\",\"prerequisite\":\"On initiative count 20 (losing initiative ties).\",\"releaseCondition\":\"Clear individual five-foot squares with a blade and an action or with Fire damage.\",\"text\":\"Mark no more than two persistent regions. Creating a third removes the oldest region from play.\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"A creature without Web Walker treats the region as Difficult Terrain and can't Hide from a creature with Web Walker while touching it; that creature knows its location. An adjacent creature can clear one 5-foot Square with an action and a blade, and Fire damage clears affected squares it touches.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": []
+        },
+        {
+          "targetCr": 15,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "dense-webs"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"lairAction\",\"actionEconomy\":\"lairAction\",\"usage\":{\"type\":\"lair\"},\"trigger\":\"On initiative count 20 (losing initiative ties).\",\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"area\",\"shape\":\"square\",\"size\":15,\"unit\":\"ft\",\"range\":60,\"targets\":\"creatures touching the selected surface\"},\"areaEffect\":{\"enabled\":true,\"type\":\"regional\",\"shape\":\"square\",\"size\":15,\"unit\":\"ft\",\"origin\":\"location\",\"timing\":\"initiativeCount20\",\"repeatTiming\":\"whileInArea\",\"targets\":\"creatures without Web Walker\",\"excludes\":[\"creatures with Web Walker\"],\"text\":\"The selected surface is Difficult Terrain and carries vibrations until its squares are cleared or burned. No more than two Dense Web regions can exist.\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"targetLimit\":\"one visible 15-foot Square; no more than two active regions\",\"prerequisite\":\"On initiative count 20 (losing initiative ties).\",\"releaseCondition\":\"Clear individual five-foot squares with a blade and an action or with Fire damage.\",\"text\":\"Mark no more than two persistent regions. Creating a third removes the oldest region from play.\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"A creature without Web Walker treats the region as Difficult Terrain and can't Hide from a creature with Web Walker while touching it; that creature knows its location. An adjacent creature can clear one 5-foot Square with an action and a blade, and Fire damage clears affected squares it touches.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": []
+        },
+        {
+          "targetCr": 20,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "dense-webs"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"lairAction\",\"actionEconomy\":\"lairAction\",\"usage\":{\"type\":\"lair\"},\"trigger\":\"On initiative count 20 (losing initiative ties).\",\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"area\",\"shape\":\"square\",\"size\":15,\"unit\":\"ft\",\"range\":60,\"targets\":\"creatures touching the selected surface\"},\"areaEffect\":{\"enabled\":true,\"type\":\"regional\",\"shape\":\"square\",\"size\":15,\"unit\":\"ft\",\"origin\":\"location\",\"timing\":\"initiativeCount20\",\"repeatTiming\":\"whileInArea\",\"targets\":\"creatures without Web Walker\",\"excludes\":[\"creatures with Web Walker\"],\"text\":\"The selected surface is Difficult Terrain and carries vibrations until its squares are cleared or burned. No more than two Dense Web regions can exist.\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"targetLimit\":\"one visible 15-foot Square; no more than two active regions\",\"prerequisite\":\"On initiative count 20 (losing initiative ties).\",\"releaseCondition\":\"Clear individual five-foot squares with a blade and an action or with Fire damage.\",\"text\":\"Mark no more than two persistent regions. Creating a third removes the oldest region from play.\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"A creature without Web Walker treats the region as Difficult Terrain and can't Hide from a creature with Web Walker while touching it; that creature knows its location. An adjacent creature can clear one 5-foot Square with an action and a blade, and Fire damage clears affected squares it touches.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": []
+        }
+      ],
+      "issues": [],
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "version": "monster-lair-graft-editorial-audit-v1.0",
+      "applicable": true,
+      "id": "sticky-surroundings",
+      "title": "Snapping Webs",
+      "source": "wolf-spiders",
+      "decision": "REWRITE_AS_ONE_SHOT_WEB_TRAPS",
+      "status": "pass",
+      "pass": true,
+      "abilityCount": 1,
+      "counterplayChannels": [
+        "telegraph",
+        "positioning",
+        "breakCondition",
+        "nonDamage"
+      ],
+      "scaling": {
+        "declared": false,
+        "expected": false,
+        "bandCount": 0,
+        "sampledBandIds": [],
+        "sampledRuleVariants": 1,
+        "pass": true
+      },
+      "snapshots": [
+        {
+          "targetCr": 5,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "snapping-webs"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"lairAction\",\"actionEconomy\":\"lairAction\",\"usage\":{\"type\":\"lair\"},\"trigger\":\"On initiative count 20 (losing initiative ties).\",\"resolution\":{\"type\":\"savingThrow\",\"ability\":\"dexterity\",\"dc\":\"monster\"},\"targeting\":{\"type\":\"area\",\"shape\":\"square\",\"size\":10,\"unit\":\"ft\",\"range\":60,\"targets\":\"the first creature without Web Walker to enter or start in each selected square\"},\"areaEffect\":{\"enabled\":true,\"type\":\"hazard\",\"shape\":\"square\",\"size\":10,\"unit\":\"ft\",\"origin\":\"location\",\"timing\":\"initiativeCount20\",\"repeatTiming\":\"entersArea\",\"targets\":\"one creature per selected square\",\"excludes\":[\"creatures with Web Walker\"],\"text\":\"Up to two visible squares of existing web remain armed until the next initiative count 20 or until each triggers or is disabled.\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[\"restrained\"],\"severity\":\"major\",\"direction\":\"enemy\",\"duration\":\"until the start of its next turn\",\"special\":[\"Each selected square can trigger only once.\"],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"targetLimit\":\"up to two visible 10-foot Squares of existing web\",\"prerequisite\":\"On initiative count 20 (losing initiative ties).\",\"releaseCondition\":\"The square triggers once, is cut with an action, takes Fire damage, or reaches the next initiative count 20.\",\"text\":\"Mark each armed square and remove its marker after its first trigger or when it is disabled.\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\"},\"effects\":[],\"text\":{\"failure\":\"The target has the Restrained condition until the start of its next turn.\",\"success\":\"No effect; the square still loses its tension after triggering.\",\"effect\":\"A blade and an action, or any Fire damage, disables an armed square before it triggers.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": []
+        },
+        {
+          "targetCr": 10,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "snapping-webs"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"lairAction\",\"actionEconomy\":\"lairAction\",\"usage\":{\"type\":\"lair\"},\"trigger\":\"On initiative count 20 (losing initiative ties).\",\"resolution\":{\"type\":\"savingThrow\",\"ability\":\"dexterity\",\"dc\":\"monster\"},\"targeting\":{\"type\":\"area\",\"shape\":\"square\",\"size\":10,\"unit\":\"ft\",\"range\":60,\"targets\":\"the first creature without Web Walker to enter or start in each selected square\"},\"areaEffect\":{\"enabled\":true,\"type\":\"hazard\",\"shape\":\"square\",\"size\":10,\"unit\":\"ft\",\"origin\":\"location\",\"timing\":\"initiativeCount20\",\"repeatTiming\":\"entersArea\",\"targets\":\"one creature per selected square\",\"excludes\":[\"creatures with Web Walker\"],\"text\":\"Up to two visible squares of existing web remain armed until the next initiative count 20 or until each triggers or is disabled.\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[\"restrained\"],\"severity\":\"major\",\"direction\":\"enemy\",\"duration\":\"until the start of its next turn\",\"special\":[\"Each selected square can trigger only once.\"],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"targetLimit\":\"up to two visible 10-foot Squares of existing web\",\"prerequisite\":\"On initiative count 20 (losing initiative ties).\",\"releaseCondition\":\"The square triggers once, is cut with an action, takes Fire damage, or reaches the next initiative count 20.\",\"text\":\"Mark each armed square and remove its marker after its first trigger or when it is disabled.\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\"},\"effects\":[],\"text\":{\"failure\":\"The target has the Restrained condition until the start of its next turn.\",\"success\":\"No effect; the square still loses its tension after triggering.\",\"effect\":\"A blade and an action, or any Fire damage, disables an armed square before it triggers.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": []
+        },
+        {
+          "targetCr": 15,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "snapping-webs"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"lairAction\",\"actionEconomy\":\"lairAction\",\"usage\":{\"type\":\"lair\"},\"trigger\":\"On initiative count 20 (losing initiative ties).\",\"resolution\":{\"type\":\"savingThrow\",\"ability\":\"dexterity\",\"dc\":\"monster\"},\"targeting\":{\"type\":\"area\",\"shape\":\"square\",\"size\":10,\"unit\":\"ft\",\"range\":60,\"targets\":\"the first creature without Web Walker to enter or start in each selected square\"},\"areaEffect\":{\"enabled\":true,\"type\":\"hazard\",\"shape\":\"square\",\"size\":10,\"unit\":\"ft\",\"origin\":\"location\",\"timing\":\"initiativeCount20\",\"repeatTiming\":\"entersArea\",\"targets\":\"one creature per selected square\",\"excludes\":[\"creatures with Web Walker\"],\"text\":\"Up to two visible squares of existing web remain armed until the next initiative count 20 or until each triggers or is disabled.\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[\"restrained\"],\"severity\":\"major\",\"direction\":\"enemy\",\"duration\":\"until the start of its next turn\",\"special\":[\"Each selected square can trigger only once.\"],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"targetLimit\":\"up to two visible 10-foot Squares of existing web\",\"prerequisite\":\"On initiative count 20 (losing initiative ties).\",\"releaseCondition\":\"The square triggers once, is cut with an action, takes Fire damage, or reaches the next initiative count 20.\",\"text\":\"Mark each armed square and remove its marker after its first trigger or when it is disabled.\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\"},\"effects\":[],\"text\":{\"failure\":\"The target has the Restrained condition until the start of its next turn.\",\"success\":\"No effect; the square still loses its tension after triggering.\",\"effect\":\"A blade and an action, or any Fire damage, disables an armed square before it triggers.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": []
+        },
+        {
+          "targetCr": 20,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "snapping-webs"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"lairAction\",\"actionEconomy\":\"lairAction\",\"usage\":{\"type\":\"lair\"},\"trigger\":\"On initiative count 20 (losing initiative ties).\",\"resolution\":{\"type\":\"savingThrow\",\"ability\":\"dexterity\",\"dc\":\"monster\"},\"targeting\":{\"type\":\"area\",\"shape\":\"square\",\"size\":10,\"unit\":\"ft\",\"range\":60,\"targets\":\"the first creature without Web Walker to enter or start in each selected square\"},\"areaEffect\":{\"enabled\":true,\"type\":\"hazard\",\"shape\":\"square\",\"size\":10,\"unit\":\"ft\",\"origin\":\"location\",\"timing\":\"initiativeCount20\",\"repeatTiming\":\"entersArea\",\"targets\":\"one creature per selected square\",\"excludes\":[\"creatures with Web Walker\"],\"text\":\"Up to two visible squares of existing web remain armed until the next initiative count 20 or until each triggers or is disabled.\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[\"restrained\"],\"severity\":\"major\",\"direction\":\"enemy\",\"duration\":\"until the start of its next turn\",\"special\":[\"Each selected square can trigger only once.\"],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"targetLimit\":\"up to two visible 10-foot Squares of existing web\",\"prerequisite\":\"On initiative count 20 (losing initiative ties).\",\"releaseCondition\":\"The square triggers once, is cut with an action, takes Fire damage, or reaches the next initiative count 20.\",\"text\":\"Mark each armed square and remove its marker after its first trigger or when it is disabled.\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\"},\"effects\":[],\"text\":{\"failure\":\"The target has the Restrained condition until the start of its next turn.\",\"success\":\"No effect; the square still loses its tension after triggering.\",\"effect\":\"A blade and an action, or any Fire damage, disables an armed square before it triggers.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": []
+        }
+      ],
+      "issues": [],
+      "errors": [],
+      "warnings": []
+    }
+  ],
+  "issues": [],
+  "errors": [],
+  "pass": true
+}

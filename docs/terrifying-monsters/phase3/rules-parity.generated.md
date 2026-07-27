@@ -15,11 +15,11 @@ A graft may declare `rules.parity.status = "verified"` only when:
 
 | Metric | Value |
 |---|---:|
-| Authored ability rules | 129 |
-| Verified ability rules | 96 |
-| Passed | 96 |
+| Authored ability rules | 131 |
+| Verified ability rules | 98 |
+| Passed | 98 |
 | Failed | 0 |
-| Structured effect clauses | 13 |
+| Structured effect clauses | 20 |
 | Conditional damage clauses | 3 |
 
 ## Verified grafts
@@ -45,14 +45,14 @@ A graft may declare `rules.parity.status = "verified"` only when:
 | `undead-fortitude:undead-fortitude` | Pass | 0 | 0 | 0 | 0 |
 | `siege-corpse:siege-monster` | Pass | 0 | 0 | 0 | 0 |
 | `siege-corpse:breach` | Pass | 0 | 0 | 0 | 0 |
-| `head-weak-spot:weakness` | Pass | 1 | 0 | 0 | 0 |
-| `mechanical-stress:weakness` | Pass | 2 | 0 | 0 | 0 |
-| `radiant-preservation-failure:weakness` | Pass | 0 | 0 | 0 | 0 |
-| `corpse-bloom-death:death-effect` | Pass | 0 | 0 | 0 | 0 |
-| `toxic-detonation:death-effect` | Pass | 0 | 0 | 0 | 0 |
-| `purge-fluid-flood:death-effect` | Pass | 0 | 0 | 0 | 0 |
-| `choking-air:lair-effect` | Pass | 0 | 0 | 0 | 0 |
-| `corpse-pressure-room:lair-effect` | Pass | 0 | 0 | 0 | 0 |
+| `head-weak-spot:exposed-skull` | Pass | 2 | 0 | 0 | 0 |
+| `mechanical-stress:dismemberment` | Pass | 1 | 0 | 0 | 0 |
+| `radiant-preservation-failure:radiant-disruption` | Pass | 2 | 0 | 0 | 0 |
+| `corpse-bloom-death:corpse-bloom` | Pass | 0 | 0 | 0 | 0 |
+| `toxic-detonation:toxic-detonation` | Pass | 0 | 0 | 0 | 0 |
+| `purge-fluid-flood:purge-flood` | Pass | 0 | 0 | 0 | 0 |
+| `choking-air:choking-air` | Pass | 0 | 0 | 0 | 0 |
+| `corpse-pressure-room:pressure-corpses` | Pass | 0 | 0 | 0 | 0 |
 | `shame-hunger:bearer-of-shame` | Pass | 0 | 0 | 0 | 0 |
 | `shame-hunger:profane-feeding` | Pass | 0 | 0 | 0 | 0 |
 | `corpse-craving:corpse-compulsion` | Pass | 0 | 0 | 0 | 0 |
@@ -72,14 +72,15 @@ A graft may declare `rules.parity.status = "verified"` only when:
 | `horrific-assault:false-corpse` | Pass | 0 | 0 | 0 | 0 |
 | `horrific-assault:horrific-assault` | Pass | 0 | 0 | 0 | 0 |
 | `no-witnesses-rage:witness-rage` | Pass | 0 | 0 | 0 | 0 |
-| `daytime-weakness:weakness` | Pass | 1 | 0 | 0 | 0 |
-| `shameful-feeding:weakness` | Pass | 1 | 0 | 0 | 0 |
-| `dangerous-hunger:weakness` | Pass | 0 | 0 | 0 | 0 |
-| `salt-and-names:weakness` | Pass | 0 | 0 | 0 | 0 |
-| `spectral-dust-death:death-effect` | Pass | 0 | 0 | 0 | 0 |
-| `last-meal-memory:death-effect` | Pass | 0 | 0 | 0 | 0 |
-| `funeral-silence-lair:lair-effect` | Pass | 1 | 0 | 0 | 0 |
-| `graveyard-offerings-lair:lair-effect` | Pass | 0 | 0 | 0 | 0 |
+| `daytime-weakness:sunlight-weakness` | Pass | 2 | 0 | 0 | 0 |
+| `shameful-feeding:shame` | Pass | 1 | 0 | 0 | 0 |
+| `dangerous-hunger:consecrated-bait` | Pass | 2 | 0 | 0 | 0 |
+| `salt-and-names:salt-and-true-names` | Pass | 1 | 0 | 0 | 0 |
+| `spectral-dust-death:revealing-dust` | Pass | 0 | 0 | 0 | 0 |
+| `spectral-dust-death:grave-trace` | Pass | 0 | 0 | 0 | 0 |
+| `last-meal-memory:last-meal-memory` | Pass | 0 | 0 | 0 | 0 |
+| `funeral-silence-lair:funeral-silence` | Pass | 0 | 0 | 0 | 0 |
+| `graveyard-offerings-lair:graveyard-offerings` | Pass | 0 | 0 | 0 | 0 |
 | `maternal-swarm-instinct:brood-priority` | Pass | 0 | 0 | 0 | 0 |
 | `maternal-swarm-instinct:protective-rush` | Pass | 0 | 0 | 0 | 0 |
 | `egg-carrier:exposed-clutch` | Pass | 0 | 0 | 0 | 0 |
@@ -103,22 +104,23 @@ A graft may declare `rules.parity.status = "verified"` only when:
 | `corrosive-web:corrosive-web` | Pass | 0 | 0 | 0 | 0 |
 | `hunter-spider:choose-quarry` | Pass | 0 | 0 | 0 | 0 |
 | `hunter-spider:stalkers-patience` | Pass | 0 | 0 | 0 | 0 |
-| `thin-legs:weakness` | Pass | 0 | 0 | 0 | 0 |
-| `fear-of-fire:weakness` | Pass | 0 | 0 | 0 | 0 |
-| `underbelly-weak-spot:weakness` | Pass | 1 | 0 | 0 | 0 |
-| `eyes-weak-spot:weakness` | Pass | 1 | 0 | 0 | 0 |
-| `brood-tell:weakness` | Pass | 0 | 0 | 0 | 0 |
-| `egg-hatch-death:death-effect` | Pass | 1 | 0 | 0 | 0 |
-| `silk-cocoon-remains:death-effect` | Pass | 0 | 0 | 0 | 0 |
-| `sticky-surroundings:lair-effect` | Pass | 1 | 0 | 0 | 0 |
-| `broodmother-web-lair:lair-effect` | Pass | 1 | 0 | 0 | 0 |
-| `dense-web-region:lair-effect` | Pass | 1 | 0 | 0 | 0 |
+| `thin-legs:unsteady-legs` | Pass | 1 | 0 | 0 | 0 |
+| `fear-of-fire:fear-of-fire` | Pass | 2 | 0 | 0 | 0 |
+| `underbelly-weak-spot:exposed-underbelly` | Pass | 2 | 0 | 0 | 0 |
+| `eyes-weak-spot:eye-cluster` | Pass | 1 | 0 | 0 | 0 |
+| `brood-tell:brood-sac` | Pass | 1 | 0 | 0 | 0 |
+| `egg-hatch-death:brood-burst` | Pass | 0 | 0 | 0 | 0 |
+| `silk-cocoon-remains:death-snare` | Pass | 0 | 0 | 0 | 0 |
+| `silk-cocoon-remains:cocooned-remains` | Pass | 0 | 0 | 0 | 0 |
+| `sticky-surroundings:snapping-webs` | Pass | 0 | 0 | 0 | 0 |
+| `broodmother-web-lair:broodmother-web` | Pass | 0 | 0 | 0 | 0 |
+| `dense-web-region:dense-webs` | Pass | 0 | 0 | 0 | 0 |
 | `waxen-mask-body:body-trait` | Pass | 0 | 0 | 0 | 0 |
 | `borrowed-face:recognition-shock` | Pass | 0 | 0 | 0 | 0 |
 | `shadow-stillness:unseen-advance` | Pass | 0 | 0 | 0 | 0 |
 | `mask-phase:changing-mask` | Pass | 0 | 0 | 0 | 0 |
-| `fire-softens-it:weakness` | Pass | 1 | 0 | 0 | 0 |
-| `face-curse:death-effect` | Pass | 0 | 0 | 0 | 0 |
+| `fire-softens-it:softened-wax` | Pass | 2 | 0 | 0 | 0 |
+| `face-curse:last-face-curse` | Pass | 0 | 0 | 0 | 0 |
 | `stench:stench` | Pass | 0 | 0 | 0 | 0 |
 | `crawling-dread:crawling-dread` | Pass | 0 | 0 | 0 | 0 |
 | `wail:wail` | Pass | 0 | 0 | 0 | 0 |

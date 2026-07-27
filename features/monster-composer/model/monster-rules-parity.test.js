@@ -62,6 +62,37 @@ describe("monster rules parity", () => {
     });
   });
 
+  it("renders conditional damage triggers from structured parts when authored hit text is unavailable", () => {
+    const graft = getGraft("slam-decomposition");
+    const rules = normalizeMonsterGraftRules(graft);
+    const abilityFallback = {
+      id: "heavy-slam-fallback",
+      title: "Heavy Slam",
+      slot: "attack",
+      section: "action",
+      source: graft.source,
+      mechanics: "",
+      rules: {
+        ...rules,
+        text: {},
+      },
+    };
+
+    const rendered = renderStructuredRulesText(abilityFallback, computed);
+    const report = buildMonsterRulesParityReport(abilityFallback, {
+      renderedText: rendered,
+    });
+
+    expect(rendered).toMatch(/moved at least 10 feet straight/i);
+    expect(rendered).toMatch(/extra .*bludgeoning damage/i);
+    expect(report).toMatchObject({
+      applicable: true,
+      pass: true,
+      conditionalDamageCount: 1,
+      errors: 0,
+    });
+  });
+
   it("preserves both Skin Slippage clauses as structured effects", () => {
     const graft = getGraft("skin-slippage");
     const rules = normalizeMonsterGraftRules(graft);

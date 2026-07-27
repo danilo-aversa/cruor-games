@@ -11,7 +11,7 @@
 | Passing | 78 |
 | Errors | 0 |
 | Catalog errors | 0 |
-| CR-scaled support grafts | 28 |
+| CR-scaled support grafts | 33 |
 | Verified parity | 78 |
 | Candidate parity | 0 |
 
@@ -57,14 +57,14 @@ CR scaling is sampled at CR 1, 5, 10, and 15. A declared progression must compil
 | decomposition | twist | `dangerously-unstable` | combatTwist | telegraph, positioning, breakCondition, nonDamage | 3 (cr-0-4-contained-fuse → cr-5-12-violent-fuse → cr-13-30-catastrophic-fuse) | verified | pass |
 | decomposition | twist | `undead-fortitude` | combatTwist | telegraph, positioning, breakCondition, nonDamage | static | verified | pass |
 | decomposition | twist | `siege-corpse` | combatTwist | telegraph, positioning, breakCondition, nonDamage | static | verified | pass |
-| decomposition | weakness | `head-weak-spot` | weakness | telegraph, breakCondition, nonDamage | static | verified | pass |
-| decomposition | weakness | `mechanical-stress` | weakness | telegraph, breakCondition, nonDamage | static | verified | pass |
-| decomposition | weakness | `radiant-preservation-failure` | weakness | telegraph, breakCondition, nonDamage | static | verified | pass |
-| decomposition | death | `corpse-bloom-death` | deathEffect | telegraph, positioning, nonDamage | static | verified | pass |
-| decomposition | death | `toxic-detonation` | deathEffect | telegraph, positioning, nonDamage | 3 (cr-0-4-small-burst → cr-5-12-toxic-burst → cr-13-30-toxic-wave) | verified | pass |
-| decomposition | death | `purge-fluid-flood` | deathEffect | telegraph, positioning, nonDamage | 3 (cr-0-4-spill → cr-5-12-flood → cr-13-30-inundation) | verified | pass |
-| decomposition | lair | `choking-air` | lairEffect | telegraph, positioning, nonDamage | 3 (cr-0-4-pocket → cr-5-12-cloud → cr-13-30-failing-lung) | verified | pass |
-| decomposition | lair | `corpse-pressure-room` | lairEffect | telegraph, positioning, nonDamage | 3 (cr-0-4-single-hazard → cr-5-12-pressure-network → cr-13-30-chain-reaction) | verified | pass |
+| decomposition | weakness | `head-weak-spot` | weakness | telegraph, positioning, breakCondition, nonDamage | static | verified | pass |
+| decomposition | weakness | `mechanical-stress` | weakness | telegraph, positioning, breakCondition, nonDamage | 3 (cr-0-4-fragile-joints → cr-5-12-softened-joints → cr-13-30-massive-joints) | verified | pass |
+| decomposition | weakness | `radiant-preservation-failure` | weakness | telegraph, positioning, breakCondition, nonDamage | static | verified | pass |
+| decomposition | death | `corpse-bloom-death` | deathEffect | telegraph, positioning, breakCondition, nonDamage | static | verified | pass |
+| decomposition | death | `toxic-detonation` | deathEffect | telegraph, positioning, breakCondition, nonDamage | 3 (toxic-detonation-cr-0-4-small-burst → toxic-detonation-cr-5-12-toxic-burst → toxic-detonation-cr-13-30-toxic-wave) | verified | pass |
+| decomposition | death | `purge-fluid-flood` | deathEffect | telegraph, positioning, breakCondition, nonDamage | 3 (purge-flood-cr-0-4-spill → purge-flood-cr-5-12-flood → purge-flood-cr-13-30-inundation) | verified | pass |
+| decomposition | lair | `choking-air` | lairEffect | telegraph, positioning, breakCondition, nonDamage | 3 (choking-air-cr-0-7-stale-pocket → choking-air-cr-8-14-choking-room → choking-air-cr-15-30-dead-atmosphere) | verified | pass |
+| decomposition | lair | `corpse-pressure-room` | lairEffect | telegraph, positioning, breakCondition, nonDamage | 3 (pressure-corpses-cr-0-7-single-mine → pressure-corpses-cr-8-14-paired-mines → pressure-corpses-cr-15-30-corpse-field) | verified | pass |
 | jikininki | mind | `shame-hunger` | traitBundle | telegraph, positioning, breakCondition, nonDamage | 3 (cr-0-4-gnawing-shame → cr-5-12-devouring-shame → cr-13-30-insatiable-shame) | verified | pass |
 | jikininki | mind | `corpse-craving` | traitBundle | telegraph, positioning, breakCondition, nonDamage | static | verified | pass |
 | jikininki | mind | `nocturnal-haunting` | traitBundle | telegraph, positioning, breakCondition, nonDamage | static | verified | pass |
@@ -78,14 +78,14 @@ CR scaling is sampled at CR 1, 5, 10, and 15. A declared progression must compil
 | jikininki | movement | `cunning-action-spirit` | movementPattern | telegraph, positioning, breakCondition, nonDamage | static | verified | pass |
 | jikininki | twist | `horrific-assault` | combatTwist | telegraph, positioning, breakCondition, nonDamage | static | verified | pass |
 | jikininki | twist | `no-witnesses-rage` | combatTwist | telegraph, positioning, breakCondition, nonDamage | static | verified | pass |
-| jikininki | weakness | `daytime-weakness` | weakness | telegraph, breakCondition, nonDamage | static | verified | pass |
-| jikininki | weakness | `shameful-feeding` | weakness | telegraph, breakCondition, nonDamage | static | verified | pass |
-| jikininki | weakness | `dangerous-hunger` | weakness | telegraph, breakCondition, nonDamage | static | verified | pass |
-| jikininki | weakness | `salt-and-names` | weakness | telegraph, breakCondition, nonDamage | static | verified | pass |
-| jikininki | death | `spectral-dust-death` | deathEffect | telegraph, positioning, nonDamage | static | verified | pass |
-| jikininki | death | `last-meal-memory` | deathEffect | telegraph, positioning, nonDamage | static | verified | pass |
-| jikininki | lair | `funeral-silence-lair` | lairEffect | telegraph, positioning, nonDamage | static | verified | pass |
-| jikininki | lair | `graveyard-offerings-lair` | lairEffect | telegraph, positioning, nonDamage | static | verified | pass |
+| jikininki | weakness | `daytime-weakness` | weakness | telegraph, positioning, breakCondition, nonDamage | static | verified | pass |
+| jikininki | weakness | `shameful-feeding` | weakness | telegraph, positioning, breakCondition, nonDamage | static | verified | pass |
+| jikininki | weakness | `dangerous-hunger` | weakness | telegraph, positioning, breakCondition, nonDamage | 3 (cr-0-4-consecrated-bait → cr-5-12-consecrated-bait → cr-13-30-consecrated-bait) | verified | pass |
+| jikininki | weakness | `salt-and-names` | weakness | telegraph, positioning, breakCondition, nonDamage | static | verified | pass |
+| jikininki | death | `spectral-dust-death` | deathEffect | telegraph, positioning, breakCondition, nonDamage | static | verified | pass |
+| jikininki | death | `last-meal-memory` | deathEffect | telegraph, positioning, breakCondition, nonDamage | static | verified | pass |
+| jikininki | lair | `funeral-silence-lair` | lairEffect | telegraph, positioning, breakCondition, nonDamage | 3 (funeral-silence-cr-0-7-hushed-grave → funeral-silence-cr-8-14-funeral-sphere → funeral-silence-cr-15-30-silenced-sanctuary) | verified | pass |
+| jikininki | lair | `graveyard-offerings-lair` | lairEffect | telegraph, positioning, breakCondition, nonDamage | static | verified | pass |
 | wolf-spiders | mind | `maternal-swarm-instinct` | traitBundle | telegraph, positioning, breakCondition, nonDamage | static | verified | pass |
 | wolf-spiders | body | `egg-carrier` | traitBundle | telegraph, positioning, breakCondition, nonDamage | 3 (cr-0-4-small-clutch → cr-5-12-living-clutch → cr-13-30-brood-cascade) | verified | pass |
 | wolf-spiders | body | `spider-climb` | traitBundle | telegraph, positioning, breakCondition, nonDamage | static | verified | pass |
@@ -102,22 +102,22 @@ CR scaling is sampled at CR 1, 5, 10, and 15. A declared progression must compil
 | wolf-spiders | twist | `web-architect` | combatTwist | telegraph, positioning, breakCondition, nonDamage | 3 (cr-0-4-small-network → cr-5-12-web-plan → cr-13-30-master-network) | verified | pass |
 | wolf-spiders | twist | `corrosive-web` | combatTwist | telegraph, positioning, breakCondition, nonDamage | 2 (cr-0-7-acid-pocket → cr-8-30-acid-spill) | verified | pass |
 | wolf-spiders | mind | `hunter-spider` | traitBundle | telegraph, positioning, breakCondition, nonDamage | static | verified | pass |
-| wolf-spiders | weakness | `thin-legs` | weakness | telegraph, breakCondition, nonDamage | static | verified | pass |
-| wolf-spiders | weakness | `fear-of-fire` | weakness | telegraph, breakCondition, nonDamage | static | verified | pass |
-| wolf-spiders | weakness | `underbelly-weak-spot` | weakness | telegraph, breakCondition, nonDamage | 3 (cr-0-4-soft-seam → cr-5-12-open-underbelly → cr-13-30-ruptured-underbelly) | verified | pass |
-| wolf-spiders | weakness | `eyes-weak-spot` | weakness | telegraph, breakCondition, nonDamage | static | verified | pass |
-| wolf-spiders | weakness | `brood-tell` | weakness | telegraph, breakCondition, nonDamage | static | verified | pass |
-| wolf-spiders | death | `egg-hatch-death` | deathEffect | telegraph, positioning, nonDamage | static | verified | pass |
-| wolf-spiders | death | `silk-cocoon-remains` | deathEffect | telegraph, positioning, nonDamage | static | verified | pass |
-| wolf-spiders | lair | `sticky-surroundings` | lairEffect | telegraph, positioning, nonDamage | static | verified | pass |
-| wolf-spiders | lair | `broodmother-web-lair` | lairEffect | telegraph, positioning, nonDamage | static | verified | pass |
-| wolf-spiders | lair | `dense-web-region` | lairEffect | telegraph, positioning, nonDamage | static | verified | pass |
+| wolf-spiders | weakness | `thin-legs` | weakness | telegraph, positioning, breakCondition, nonDamage | static | verified | pass |
+| wolf-spiders | weakness | `fear-of-fire` | weakness | telegraph, positioning, breakCondition, nonDamage | static | verified | pass |
+| wolf-spiders | weakness | `underbelly-weak-spot` | weakness | telegraph, positioning, breakCondition, nonDamage | 3 (cr-0-4-soft-underbelly → cr-5-12-open-underbelly → cr-13-30-ruptured-underbelly) | verified | pass |
+| wolf-spiders | weakness | `eyes-weak-spot` | weakness | telegraph, positioning, breakCondition, nonDamage | static | verified | pass |
+| wolf-spiders | weakness | `brood-tell` | weakness | telegraph, positioning, breakCondition, nonDamage | static | verified | pass |
+| wolf-spiders | death | `egg-hatch-death` | deathEffect | telegraph, positioning, breakCondition, nonDamage | 3 (brood-burst-cr-0-4-single-egg → brood-burst-cr-5-12-pair → brood-burst-cr-13-30-clutch) | verified | pass |
+| wolf-spiders | death | `silk-cocoon-remains` | deathEffect | telegraph, positioning, breakCondition, nonDamage | static | verified | pass |
+| wolf-spiders | lair | `sticky-surroundings` | lairEffect | telegraph, positioning, breakCondition, nonDamage | static | verified | pass |
+| wolf-spiders | lair | `broodmother-web-lair` | lairEffect | telegraph, positioning, breakCondition, nonDamage | 3 (broodmother-web-cr-0-7-hunting-net → broodmother-web-cr-8-14-brood-prison → broodmother-web-cr-15-30-nest-collapse) | verified | pass |
+| wolf-spiders | lair | `dense-web-region` | lairEffect | telegraph, positioning, breakCondition, nonDamage | static | verified | pass |
 | wax-death-masks | body | `waxen-mask-body` | traitBundle | telegraph, positioning, breakCondition, nonDamage | static | verified | pass |
 | wax-death-masks | mind | `borrowed-face` | traitBundle | telegraph, positioning, breakCondition, nonDamage | 3 (cr-0-7-single-memory → cr-8-15-shared-memory) | verified | pass |
 | wax-death-masks | movement | `shadow-stillness` | movementPattern | telegraph, positioning, breakCondition, nonDamage | 2 (cr-0-7-half-step → cr-8-30-full-step) | verified | pass |
 | wax-death-masks | twist | `mask-phase` | combatTwist | telegraph, positioning, breakCondition, nonDamage | static | verified | pass |
-| wax-death-masks | weakness | `fire-softens-it` | weakness | telegraph, breakCondition, nonDamage | static | verified | pass |
-| wax-death-masks | death | `face-curse` | deathEffect | telegraph, positioning, nonDamage | 2 (cr-0-7-last-glance → cr-8-30-room-of-faces) | verified | pass |
+| wax-death-masks | weakness | `fire-softens-it` | weakness | telegraph, positioning, breakCondition, nonDamage | static | verified | pass |
+| wax-death-masks | death | `face-curse` | deathEffect | telegraph, positioning, breakCondition, nonDamage | 2 (last-face-curse-cr-0-7-last-witness → last-face-curse-cr-8-30-room-of-faces) | verified | pass |
 | decomposition | horror | `stench` | horrorFeature | telegraph, positioning, breakCondition, nonDamage | 3 (cr-0-4-stench → cr-5-12-stench → cr-13-30-stench) | verified | pass |
 | wolf-spiders | horror | `crawling-dread` | horrorFeature | telegraph, positioning, breakCondition, nonDamage | 3 (cr-0-4-brood-glimpse → cr-5-12-brood-reveal → cr-13-30-brood-wave) | verified | pass |
 | wax-death-masks | horror | `wail` | horrorFeature | telegraph, positioning, breakCondition, nonDamage | 3 (cr-0-4-wail → cr-5-12-wail → cr-13-30-wail) | verified | pass |

@@ -1,0 +1,1008 @@
+{
+  "version": "monster-death-graft-editorial-audit-v1.0",
+  "editorialVersion": "monster-death-graft-editorial-v1.0",
+  "expectedTotal": 8,
+  "total": 8,
+  "passing": 8,
+  "warning": 0,
+  "error": 0,
+  "abilityCount": 10,
+  "bundleCount": 2,
+  "scaledCount": 4,
+  "bySource": {
+    "decomposition": 3,
+    "jikininki": 2,
+    "wax-death-masks": 1,
+    "wolf-spiders": 2
+  },
+  "byDecision": {
+    "REWRITE_PERSISTENT_HEALING_ZONE": 1,
+    "REWRITE_AND_SCALE_PERSISTENT_HAZARD": 1,
+    "REWRITE_AND_SCALE_DEATH_BURST": 1,
+    "REWRITE_AS_INFORMATION_BARGAIN": 1,
+    "REWRITE_AS_REVEAL_AND_TRACE_BUNDLE": 1,
+    "REWRITE_AND_SCALE_GAZE_CURSE": 1,
+    "REWRITE_AND_SCALE_BOUNDED_SUMMON": 1,
+    "REWRITE_AS_SNARE_AND_REMAINS_BUNDLE": 1
+  },
+  "reports": [
+    {
+      "version": "monster-death-graft-editorial-audit-v1.0",
+      "applicable": true,
+      "id": "corpse-bloom-death",
+      "title": "Corpse Bloom",
+      "source": "decomposition",
+      "decision": "REWRITE_PERSISTENT_HEALING_ZONE",
+      "status": "pass",
+      "pass": true,
+      "abilityCount": 1,
+      "counterplayChannels": [
+        "telegraph",
+        "positioning",
+        "breakCondition",
+        "nonDamage"
+      ],
+      "scaling": {
+        "expected": false,
+        "declared": false,
+        "bandCount": 0,
+        "sampledBandIds": [],
+        "sampledRuleVariants": 1,
+        "pass": true
+      },
+      "snapshots": [
+        {
+          "targetCr": 1,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "corpse-bloom"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"death\",\"actionEconomy\":\"deathTrigger\",\"usage\":{\"type\":\"death\"},\"trigger\":\"The monster dies or drops to 0 Hit Points.\",\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"area\",\"shape\":\"radius\",\"size\":10,\"unit\":\"ft\",\"targets\":\"creatures in the bloom\"},\"areaEffect\":{\"enabled\":true,\"type\":\"hazard\",\"shape\":\"radius\",\"size\":10,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"startsTurnInArea\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"startsTurnInArea\",\"text\":\"The area is Difficult Terrain. A creature that starts its turn in the bloom can't regain Hit Points until the start of its next turn.\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"A creature is adjacent to the corpse or can damage it with Fire or Radiant damage.\",\"text\":\"When the monster dies, a 10-foot-radius bloom spreads from its space. The area is Difficult Terrain. A creature that starts its turn in the bloom can't regain Hit Points until the start of its next turn. Fire or Radiant damage dealt to the corpse destroys the bloom. A creature adjacent to the corpse can use an action to clear one 5-foot square.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"When the monster dies, a 10-foot-radius bloom spreads from its space. The area is Difficult Terrain. A creature that starts its turn in the bloom can't regain Hit Points until the start of its next turn. Fire or Radiant damage dealt to the corpse destroys the bloom, and a creature adjacent to the corpse can use an action to clear one 5-foot square.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "corpse-bloom",
+              "renderedText": "When the monster dies, a 10-foot-radius bloom spreads from its space. The area is Difficult Terrain. A creature that starts its turn in the bloom can't regain Hit Points until the start of its next turn. Fire or Radiant damage dealt to the corpse destroys the bloom. A creature adjacent to the corpse can use an action to clear one 5-foot square."
+            }
+          ]
+        },
+        {
+          "targetCr": 5,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "corpse-bloom"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"death\",\"actionEconomy\":\"deathTrigger\",\"usage\":{\"type\":\"death\"},\"trigger\":\"The monster dies or drops to 0 Hit Points.\",\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"area\",\"shape\":\"radius\",\"size\":10,\"unit\":\"ft\",\"targets\":\"creatures in the bloom\"},\"areaEffect\":{\"enabled\":true,\"type\":\"hazard\",\"shape\":\"radius\",\"size\":10,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"startsTurnInArea\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"startsTurnInArea\",\"text\":\"The area is Difficult Terrain. A creature that starts its turn in the bloom can't regain Hit Points until the start of its next turn.\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"A creature is adjacent to the corpse or can damage it with Fire or Radiant damage.\",\"text\":\"When the monster dies, a 10-foot-radius bloom spreads from its space. The area is Difficult Terrain. A creature that starts its turn in the bloom can't regain Hit Points until the start of its next turn. Fire or Radiant damage dealt to the corpse destroys the bloom. A creature adjacent to the corpse can use an action to clear one 5-foot square.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"When the monster dies, a 10-foot-radius bloom spreads from its space. The area is Difficult Terrain. A creature that starts its turn in the bloom can't regain Hit Points until the start of its next turn. Fire or Radiant damage dealt to the corpse destroys the bloom, and a creature adjacent to the corpse can use an action to clear one 5-foot square.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "corpse-bloom",
+              "renderedText": "When the monster dies, a 10-foot-radius bloom spreads from its space. The area is Difficult Terrain. A creature that starts its turn in the bloom can't regain Hit Points until the start of its next turn. Fire or Radiant damage dealt to the corpse destroys the bloom. A creature adjacent to the corpse can use an action to clear one 5-foot square."
+            }
+          ]
+        },
+        {
+          "targetCr": 10,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "corpse-bloom"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"death\",\"actionEconomy\":\"deathTrigger\",\"usage\":{\"type\":\"death\"},\"trigger\":\"The monster dies or drops to 0 Hit Points.\",\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"area\",\"shape\":\"radius\",\"size\":10,\"unit\":\"ft\",\"targets\":\"creatures in the bloom\"},\"areaEffect\":{\"enabled\":true,\"type\":\"hazard\",\"shape\":\"radius\",\"size\":10,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"startsTurnInArea\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"startsTurnInArea\",\"text\":\"The area is Difficult Terrain. A creature that starts its turn in the bloom can't regain Hit Points until the start of its next turn.\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"A creature is adjacent to the corpse or can damage it with Fire or Radiant damage.\",\"text\":\"When the monster dies, a 10-foot-radius bloom spreads from its space. The area is Difficult Terrain. A creature that starts its turn in the bloom can't regain Hit Points until the start of its next turn. Fire or Radiant damage dealt to the corpse destroys the bloom. A creature adjacent to the corpse can use an action to clear one 5-foot square.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"When the monster dies, a 10-foot-radius bloom spreads from its space. The area is Difficult Terrain. A creature that starts its turn in the bloom can't regain Hit Points until the start of its next turn. Fire or Radiant damage dealt to the corpse destroys the bloom, and a creature adjacent to the corpse can use an action to clear one 5-foot square.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "corpse-bloom",
+              "renderedText": "When the monster dies, a 10-foot-radius bloom spreads from its space. The area is Difficult Terrain. A creature that starts its turn in the bloom can't regain Hit Points until the start of its next turn. Fire or Radiant damage dealt to the corpse destroys the bloom. A creature adjacent to the corpse can use an action to clear one 5-foot square."
+            }
+          ]
+        },
+        {
+          "targetCr": 15,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "corpse-bloom"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"death\",\"actionEconomy\":\"deathTrigger\",\"usage\":{\"type\":\"death\"},\"trigger\":\"The monster dies or drops to 0 Hit Points.\",\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"area\",\"shape\":\"radius\",\"size\":10,\"unit\":\"ft\",\"targets\":\"creatures in the bloom\"},\"areaEffect\":{\"enabled\":true,\"type\":\"hazard\",\"shape\":\"radius\",\"size\":10,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"startsTurnInArea\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"startsTurnInArea\",\"text\":\"The area is Difficult Terrain. A creature that starts its turn in the bloom can't regain Hit Points until the start of its next turn.\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"A creature is adjacent to the corpse or can damage it with Fire or Radiant damage.\",\"text\":\"When the monster dies, a 10-foot-radius bloom spreads from its space. The area is Difficult Terrain. A creature that starts its turn in the bloom can't regain Hit Points until the start of its next turn. Fire or Radiant damage dealt to the corpse destroys the bloom. A creature adjacent to the corpse can use an action to clear one 5-foot square.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"When the monster dies, a 10-foot-radius bloom spreads from its space. The area is Difficult Terrain. A creature that starts its turn in the bloom can't regain Hit Points until the start of its next turn. Fire or Radiant damage dealt to the corpse destroys the bloom, and a creature adjacent to the corpse can use an action to clear one 5-foot square.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "corpse-bloom",
+              "renderedText": "When the monster dies, a 10-foot-radius bloom spreads from its space. The area is Difficult Terrain. A creature that starts its turn in the bloom can't regain Hit Points until the start of its next turn. Fire or Radiant damage dealt to the corpse destroys the bloom. A creature adjacent to the corpse can use an action to clear one 5-foot square."
+            }
+          ]
+        }
+      ],
+      "issues": [],
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "version": "monster-death-graft-editorial-audit-v1.0",
+      "applicable": true,
+      "id": "purge-fluid-flood",
+      "title": "Purge Flood",
+      "source": "decomposition",
+      "decision": "REWRITE_AND_SCALE_PERSISTENT_HAZARD",
+      "status": "pass",
+      "pass": true,
+      "abilityCount": 1,
+      "counterplayChannels": [
+        "telegraph",
+        "positioning",
+        "breakCondition",
+        "nonDamage"
+      ],
+      "scaling": {
+        "expected": true,
+        "declared": true,
+        "bandCount": 3,
+        "sampledBandIds": [
+          "purge-flood-cr-0-4-spill",
+          "purge-flood-cr-5-12-flood",
+          "purge-flood-cr-13-30-inundation"
+        ],
+        "sampledRuleVariants": 3,
+        "pass": true
+      },
+      "snapshots": [
+        {
+          "targetCr": 1,
+          "bandId": "purge-flood-cr-0-4-spill",
+          "abilityCount": 1,
+          "abilityIds": [
+            "purge-flood"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"death\",\"actionEconomy\":\"deathTrigger\",\"usage\":{\"type\":\"death\"},\"trigger\":\"The monster dies or drops to 0 Hit Points.\",\"resolution\":{\"type\":\"savingThrow\",\"ability\":\"dexterity\",\"dc\":\"monster\"},\"targeting\":{\"type\":\"area\",\"shape\":\"radius\",\"size\":10,\"unit\":\"ft\",\"targets\":\"creatures in the slick\"},\"areaEffect\":{\"enabled\":true,\"type\":\"hazard\",\"shape\":\"radius\",\"size\":10,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"custom\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"custom\",\"text\":\"The area is Difficult Terrain. A creature that enters it for the first time on a turn or starts its turn there makes the save, falling Prone on a failure.\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[\"prone\"],\"severity\":\"moderate\",\"direction\":\"enemy\",\"duration\":\"instantaneous\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"A creature is adjacent to a square of the slick and has a suitable method of clearing it.\",\"text\":\"When the monster dies, a 10-foot-radius slick spreads from its space and lasts until cleared. The area is Difficult Terrain. A creature that enters the slick for the first time on a turn or starts its turn there makes a Dexterity saving throw, falling Prone on a failed save. A creature can use an action to clear one 5-foot square with fire, sand, cloth, water, or another suitable method.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"failure\":\"The target has the Prone condition.\",\"success\":\"No effect.\",\"effect\":\"A creature can use an action to clear one 5-foot square with fire, sand, cloth, water, or another suitable method.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "purge-flood",
+              "renderedText": "When the monster dies, a 10-foot-radius slick spreads from its space and lasts until cleared. The area is Difficult Terrain. A creature that enters the slick for the first time on a turn or starts its turn there makes a Dexterity saving throw, falling Prone on a failed save. A creature can use an action to clear one 5-foot square with fire, sand, cloth, water, or another suitable method."
+            }
+          ]
+        },
+        {
+          "targetCr": 5,
+          "bandId": "purge-flood-cr-5-12-flood",
+          "abilityCount": 1,
+          "abilityIds": [
+            "purge-flood"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"death\",\"actionEconomy\":\"deathTrigger\",\"usage\":{\"type\":\"death\"},\"trigger\":\"The monster dies or drops to 0 Hit Points.\",\"resolution\":{\"type\":\"savingThrow\",\"ability\":\"dexterity\",\"dc\":\"monster\"},\"targeting\":{\"type\":\"area\",\"shape\":\"radius\",\"size\":15,\"unit\":\"ft\",\"targets\":\"creatures in the slick\"},\"areaEffect\":{\"enabled\":true,\"type\":\"hazard\",\"shape\":\"radius\",\"size\":15,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"custom\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"custom\",\"text\":\"The area is Difficult Terrain. A creature that enters it for the first time on a turn or starts its turn there makes the save, falling Prone on a failure.\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[\"prone\"],\"severity\":\"moderate\",\"direction\":\"enemy\",\"duration\":\"instantaneous\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"A creature is adjacent to a square of the slick and has a suitable method of clearing it.\",\"text\":\"When the monster dies, a 10-foot-radius slick spreads from its space and lasts until cleared. The area is Difficult Terrain. A creature that enters the slick for the first time on a turn or starts its turn there makes a Dexterity saving throw, falling Prone on a failed save. A creature can use an action to clear one 5-foot square with fire, sand, cloth, water, or another suitable method.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"failure\":\"The target has the Prone condition.\",\"success\":\"No effect.\",\"effect\":\"A creature can use an action to clear one 5-foot square with fire, sand, cloth, water, or another suitable method.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "purge-flood",
+              "renderedText": "When the monster dies, a 10-foot-radius slick spreads from its space and lasts until cleared. The area is Difficult Terrain. A creature that enters the slick for the first time on a turn or starts its turn there makes a Dexterity saving throw, falling Prone on a failed save. A creature can use an action to clear one 5-foot square with fire, sand, cloth, water, or another suitable method."
+            }
+          ]
+        },
+        {
+          "targetCr": 10,
+          "bandId": "purge-flood-cr-5-12-flood",
+          "abilityCount": 1,
+          "abilityIds": [
+            "purge-flood"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"death\",\"actionEconomy\":\"deathTrigger\",\"usage\":{\"type\":\"death\"},\"trigger\":\"The monster dies or drops to 0 Hit Points.\",\"resolution\":{\"type\":\"savingThrow\",\"ability\":\"dexterity\",\"dc\":\"monster\"},\"targeting\":{\"type\":\"area\",\"shape\":\"radius\",\"size\":15,\"unit\":\"ft\",\"targets\":\"creatures in the slick\"},\"areaEffect\":{\"enabled\":true,\"type\":\"hazard\",\"shape\":\"radius\",\"size\":15,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"custom\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"custom\",\"text\":\"The area is Difficult Terrain. A creature that enters it for the first time on a turn or starts its turn there makes the save, falling Prone on a failure.\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[\"prone\"],\"severity\":\"moderate\",\"direction\":\"enemy\",\"duration\":\"instantaneous\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"A creature is adjacent to a square of the slick and has a suitable method of clearing it.\",\"text\":\"When the monster dies, a 10-foot-radius slick spreads from its space and lasts until cleared. The area is Difficult Terrain. A creature that enters the slick for the first time on a turn or starts its turn there makes a Dexterity saving throw, falling Prone on a failed save. A creature can use an action to clear one 5-foot square with fire, sand, cloth, water, or another suitable method.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"failure\":\"The target has the Prone condition.\",\"success\":\"No effect.\",\"effect\":\"A creature can use an action to clear one 5-foot square with fire, sand, cloth, water, or another suitable method.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "purge-flood",
+              "renderedText": "When the monster dies, a 10-foot-radius slick spreads from its space and lasts until cleared. The area is Difficult Terrain. A creature that enters the slick for the first time on a turn or starts its turn there makes a Dexterity saving throw, falling Prone on a failed save. A creature can use an action to clear one 5-foot square with fire, sand, cloth, water, or another suitable method."
+            }
+          ]
+        },
+        {
+          "targetCr": 15,
+          "bandId": "purge-flood-cr-13-30-inundation",
+          "abilityCount": 1,
+          "abilityIds": [
+            "purge-flood"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"death\",\"actionEconomy\":\"deathTrigger\",\"usage\":{\"type\":\"death\"},\"trigger\":\"The monster dies or drops to 0 Hit Points.\",\"resolution\":{\"type\":\"savingThrow\",\"ability\":\"dexterity\",\"dc\":\"monster\"},\"targeting\":{\"type\":\"area\",\"shape\":\"radius\",\"size\":25,\"unit\":\"ft\",\"targets\":\"creatures in the slick\"},\"areaEffect\":{\"enabled\":true,\"type\":\"hazard\",\"shape\":\"radius\",\"size\":25,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"custom\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"custom\",\"text\":\"The area is Difficult Terrain. A creature that enters it for the first time on a turn or starts its turn there makes the save, falling Prone on a failure.\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[\"prone\"],\"severity\":\"moderate\",\"direction\":\"enemy\",\"duration\":\"instantaneous\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"A creature is adjacent to a square of the slick and has a suitable method of clearing it.\",\"text\":\"When the monster dies, a 10-foot-radius slick spreads from its space and lasts until cleared. The area is Difficult Terrain. A creature that enters the slick for the first time on a turn or starts its turn there makes a Dexterity saving throw, falling Prone on a failed save. A creature can use an action to clear one 5-foot square with fire, sand, cloth, water, or another suitable method.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"failure\":\"The target has the Prone condition.\",\"success\":\"No effect.\",\"effect\":\"A creature can use an action to clear one 5-foot square with fire, sand, cloth, water, or another suitable method.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "purge-flood",
+              "renderedText": "When the monster dies, a 10-foot-radius slick spreads from its space and lasts until cleared. The area is Difficult Terrain. A creature that enters the slick for the first time on a turn or starts its turn there makes a Dexterity saving throw, falling Prone on a failed save. A creature can use an action to clear one 5-foot square with fire, sand, cloth, water, or another suitable method."
+            }
+          ]
+        }
+      ],
+      "issues": [],
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "version": "monster-death-graft-editorial-audit-v1.0",
+      "applicable": true,
+      "id": "toxic-detonation",
+      "title": "Toxic Detonation",
+      "source": "decomposition",
+      "decision": "REWRITE_AND_SCALE_DEATH_BURST",
+      "status": "pass",
+      "pass": true,
+      "abilityCount": 1,
+      "counterplayChannels": [
+        "telegraph",
+        "positioning",
+        "breakCondition",
+        "nonDamage"
+      ],
+      "scaling": {
+        "expected": true,
+        "declared": true,
+        "bandCount": 3,
+        "sampledBandIds": [
+          "toxic-detonation-cr-0-4-small-burst",
+          "toxic-detonation-cr-5-12-toxic-burst",
+          "toxic-detonation-cr-13-30-toxic-wave"
+        ],
+        "sampledRuleVariants": 3,
+        "pass": true
+      },
+      "snapshots": [
+        {
+          "targetCr": 1,
+          "bandId": "toxic-detonation-cr-0-4-small-burst",
+          "abilityCount": 1,
+          "abilityIds": [
+            "toxic-detonation"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"death\",\"actionEconomy\":\"deathTrigger\",\"usage\":{\"type\":\"death\"},\"trigger\":\"The monster dies or drops to 0 Hit Points.\",\"resolution\":{\"type\":\"savingThrow\",\"ability\":\"dexterity\",\"dc\":\"monster\"},\"targeting\":{\"type\":\"area\",\"shape\":\"radius\",\"size\":5,\"unit\":\"ft\",\"targets\":\"other creatures\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"budget\",\"budgetRole\":\"deathBurst\",\"types\":[\"poison\"],\"scale\":\"standard\",\"budgetShare\":1,\"expectedTargets\":2,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[\"poisoned\"],\"severity\":\"moderate\",\"direction\":\"enemy\",\"duration\":\"until the end of its next turn\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"failure\":\"The target takes {damage} Poison damage and has the Poisoned condition until the end of its next turn.\",\"success\":\"The target takes half damage only.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "toxic-detonation",
+              "renderedText": "The monster dies or drops to 0 Hit Points. Dexterity Saving Throw: DC 15, other creatures in a 5-foot Emanation originating from the creature. Failure: The target takes 18 (1d36) Poison damage and has the Poisoned condition until the end of its next turn. Success: The target takes half damage only."
+            }
+          ]
+        },
+        {
+          "targetCr": 5,
+          "bandId": "toxic-detonation-cr-5-12-toxic-burst",
+          "abilityCount": 1,
+          "abilityIds": [
+            "toxic-detonation"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"death\",\"actionEconomy\":\"deathTrigger\",\"usage\":{\"type\":\"death\"},\"trigger\":\"The monster dies or drops to 0 Hit Points.\",\"resolution\":{\"type\":\"savingThrow\",\"ability\":\"dexterity\",\"dc\":\"monster\"},\"targeting\":{\"type\":\"area\",\"shape\":\"radius\",\"size\":10,\"unit\":\"ft\",\"targets\":\"other creatures\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"budget\",\"budgetRole\":\"deathBurst\",\"types\":[\"poison\"],\"scale\":\"standard\",\"budgetShare\":1,\"expectedTargets\":2,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[\"poisoned\"],\"severity\":\"moderate\",\"direction\":\"enemy\",\"duration\":\"until the end of its next turn\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"failure\":\"The target takes {damage} Poison damage and has the Poisoned condition until the end of its next turn.\",\"success\":\"The target takes half damage only.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "toxic-detonation",
+              "renderedText": "The monster dies or drops to 0 Hit Points. Dexterity Saving Throw: DC 15, other creatures in a 10-foot Emanation originating from the creature. Failure: The target takes 18 (1d36) Poison damage and has the Poisoned condition until the end of its next turn. Success: The target takes half damage only."
+            }
+          ]
+        },
+        {
+          "targetCr": 10,
+          "bandId": "toxic-detonation-cr-5-12-toxic-burst",
+          "abilityCount": 1,
+          "abilityIds": [
+            "toxic-detonation"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"death\",\"actionEconomy\":\"deathTrigger\",\"usage\":{\"type\":\"death\"},\"trigger\":\"The monster dies or drops to 0 Hit Points.\",\"resolution\":{\"type\":\"savingThrow\",\"ability\":\"dexterity\",\"dc\":\"monster\"},\"targeting\":{\"type\":\"area\",\"shape\":\"radius\",\"size\":10,\"unit\":\"ft\",\"targets\":\"other creatures\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"budget\",\"budgetRole\":\"deathBurst\",\"types\":[\"poison\"],\"scale\":\"standard\",\"budgetShare\":1,\"expectedTargets\":2,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[\"poisoned\"],\"severity\":\"moderate\",\"direction\":\"enemy\",\"duration\":\"until the end of its next turn\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"failure\":\"The target takes {damage} Poison damage and has the Poisoned condition until the end of its next turn.\",\"success\":\"The target takes half damage only.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "toxic-detonation",
+              "renderedText": "The monster dies or drops to 0 Hit Points. Dexterity Saving Throw: DC 15, other creatures in a 10-foot Emanation originating from the creature. Failure: The target takes 18 (1d36) Poison damage and has the Poisoned condition until the end of its next turn. Success: The target takes half damage only."
+            }
+          ]
+        },
+        {
+          "targetCr": 15,
+          "bandId": "toxic-detonation-cr-13-30-toxic-wave",
+          "abilityCount": 1,
+          "abilityIds": [
+            "toxic-detonation"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"death\",\"actionEconomy\":\"deathTrigger\",\"usage\":{\"type\":\"death\"},\"trigger\":\"The monster dies or drops to 0 Hit Points.\",\"resolution\":{\"type\":\"savingThrow\",\"ability\":\"dexterity\",\"dc\":\"monster\"},\"targeting\":{\"type\":\"area\",\"shape\":\"radius\",\"size\":15,\"unit\":\"ft\",\"targets\":\"other creatures\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"budget\",\"budgetRole\":\"deathBurst\",\"types\":[\"poison\"],\"scale\":\"standard\",\"budgetShare\":1,\"expectedTargets\":2,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[\"poisoned\"],\"severity\":\"moderate\",\"direction\":\"enemy\",\"duration\":\"until the end of its next turn\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"failure\":\"The target takes {damage} Poison damage and has the Poisoned condition until the end of its next turn.\",\"success\":\"The target takes half damage only.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "toxic-detonation",
+              "renderedText": "The monster dies or drops to 0 Hit Points. Dexterity Saving Throw: DC 15, other creatures in a 15-foot Emanation originating from the creature. Failure: The target takes 18 (1d36) Poison damage and has the Poisoned condition until the end of its next turn. Success: The target takes half damage only."
+            }
+          ]
+        }
+      ],
+      "issues": [],
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "version": "monster-death-graft-editorial-audit-v1.0",
+      "applicable": true,
+      "id": "last-meal-memory",
+      "title": "Last Meal Memory",
+      "source": "jikininki",
+      "decision": "REWRITE_AS_INFORMATION_BARGAIN",
+      "status": "pass",
+      "pass": true,
+      "abilityCount": 1,
+      "counterplayChannels": [
+        "telegraph",
+        "positioning",
+        "breakCondition",
+        "nonDamage"
+      ],
+      "scaling": {
+        "expected": false,
+        "declared": false,
+        "bandCount": 0,
+        "sampledBandIds": [],
+        "sampledRuleVariants": 1,
+        "pass": true
+      },
+      "snapshots": [
+        {
+          "targetCr": 1,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "last-meal-memory"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"death\",\"actionEconomy\":\"deathTrigger\",\"usage\":{\"type\":\"death\"},\"trigger\":\"The monster dies or drops to 0 Hit Points.\",\"resolution\":{\"type\":\"savingThrow\",\"ability\":\"wisdom\",\"dc\":\"monster\"},\"targeting\":{\"type\":\"single\",\"range\":30,\"unit\":\"ft\",\"targets\":\"the creature that dealt the killing damage, or the nearest creature that can hear the monster\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[\"frightened\"],\"severity\":\"major\",\"direction\":\"enemy\",\"duration\":\"until the end of its next turn\",\"special\":[\"The target can use its Reaction to reject the memory and automatically succeed, but learns nothing.\"],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"failure\":\"The target has the Frightened condition until the end of its next turn and learns one precise image from the monster's last consumed victim.\",\"success\":\"The target learns one precise image from the monster's last consumed victim. A target that used its Reaction to reject the memory learns nothing.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "last-meal-memory",
+              "renderedText": "The monster dies or drops to 0 Hit Points. Wisdom Saving Throw: DC 15, the creature that dealt the killing damage, or the nearest creature that can hear the monster. Failure: The target has the Frightened condition until the end of its next turn and learns one precise image from the monster's last consumed victim. Success: The target learns one precise image from the monster's last consumed victim. A target that used its Reaction to reject the memory learns nothing."
+            }
+          ]
+        },
+        {
+          "targetCr": 5,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "last-meal-memory"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"death\",\"actionEconomy\":\"deathTrigger\",\"usage\":{\"type\":\"death\"},\"trigger\":\"The monster dies or drops to 0 Hit Points.\",\"resolution\":{\"type\":\"savingThrow\",\"ability\":\"wisdom\",\"dc\":\"monster\"},\"targeting\":{\"type\":\"single\",\"range\":30,\"unit\":\"ft\",\"targets\":\"the creature that dealt the killing damage, or the nearest creature that can hear the monster\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[\"frightened\"],\"severity\":\"major\",\"direction\":\"enemy\",\"duration\":\"until the end of its next turn\",\"special\":[\"The target can use its Reaction to reject the memory and automatically succeed, but learns nothing.\"],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"failure\":\"The target has the Frightened condition until the end of its next turn and learns one precise image from the monster's last consumed victim.\",\"success\":\"The target learns one precise image from the monster's last consumed victim. A target that used its Reaction to reject the memory learns nothing.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "last-meal-memory",
+              "renderedText": "The monster dies or drops to 0 Hit Points. Wisdom Saving Throw: DC 15, the creature that dealt the killing damage, or the nearest creature that can hear the monster. Failure: The target has the Frightened condition until the end of its next turn and learns one precise image from the monster's last consumed victim. Success: The target learns one precise image from the monster's last consumed victim. A target that used its Reaction to reject the memory learns nothing."
+            }
+          ]
+        },
+        {
+          "targetCr": 10,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "last-meal-memory"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"death\",\"actionEconomy\":\"deathTrigger\",\"usage\":{\"type\":\"death\"},\"trigger\":\"The monster dies or drops to 0 Hit Points.\",\"resolution\":{\"type\":\"savingThrow\",\"ability\":\"wisdom\",\"dc\":\"monster\"},\"targeting\":{\"type\":\"single\",\"range\":30,\"unit\":\"ft\",\"targets\":\"the creature that dealt the killing damage, or the nearest creature that can hear the monster\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[\"frightened\"],\"severity\":\"major\",\"direction\":\"enemy\",\"duration\":\"until the end of its next turn\",\"special\":[\"The target can use its Reaction to reject the memory and automatically succeed, but learns nothing.\"],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"failure\":\"The target has the Frightened condition until the end of its next turn and learns one precise image from the monster's last consumed victim.\",\"success\":\"The target learns one precise image from the monster's last consumed victim. A target that used its Reaction to reject the memory learns nothing.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "last-meal-memory",
+              "renderedText": "The monster dies or drops to 0 Hit Points. Wisdom Saving Throw: DC 15, the creature that dealt the killing damage, or the nearest creature that can hear the monster. Failure: The target has the Frightened condition until the end of its next turn and learns one precise image from the monster's last consumed victim. Success: The target learns one precise image from the monster's last consumed victim. A target that used its Reaction to reject the memory learns nothing."
+            }
+          ]
+        },
+        {
+          "targetCr": 15,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "last-meal-memory"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"death\",\"actionEconomy\":\"deathTrigger\",\"usage\":{\"type\":\"death\"},\"trigger\":\"The monster dies or drops to 0 Hit Points.\",\"resolution\":{\"type\":\"savingThrow\",\"ability\":\"wisdom\",\"dc\":\"monster\"},\"targeting\":{\"type\":\"single\",\"range\":30,\"unit\":\"ft\",\"targets\":\"the creature that dealt the killing damage, or the nearest creature that can hear the monster\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[\"frightened\"],\"severity\":\"major\",\"direction\":\"enemy\",\"duration\":\"until the end of its next turn\",\"special\":[\"The target can use its Reaction to reject the memory and automatically succeed, but learns nothing.\"],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"failure\":\"The target has the Frightened condition until the end of its next turn and learns one precise image from the monster's last consumed victim.\",\"success\":\"The target learns one precise image from the monster's last consumed victim. A target that used its Reaction to reject the memory learns nothing.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "last-meal-memory",
+              "renderedText": "The monster dies or drops to 0 Hit Points. Wisdom Saving Throw: DC 15, the creature that dealt the killing damage, or the nearest creature that can hear the monster. Failure: The target has the Frightened condition until the end of its next turn and learns one precise image from the monster's last consumed victim. Success: The target learns one precise image from the monster's last consumed victim. A target that used its Reaction to reject the memory learns nothing."
+            }
+          ]
+        }
+      ],
+      "issues": [],
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "version": "monster-death-graft-editorial-audit-v1.0",
+      "applicable": true,
+      "id": "spectral-dust-death",
+      "title": "Spectral Dust",
+      "source": "jikininki",
+      "decision": "REWRITE_AS_REVEAL_AND_TRACE_BUNDLE",
+      "status": "pass",
+      "pass": true,
+      "abilityCount": 2,
+      "counterplayChannels": [
+        "telegraph",
+        "positioning",
+        "breakCondition",
+        "nonDamage"
+      ],
+      "scaling": {
+        "expected": false,
+        "declared": false,
+        "bandCount": 0,
+        "sampledBandIds": [],
+        "sampledRuleVariants": 2,
+        "pass": true
+      },
+      "snapshots": [
+        {
+          "targetCr": 1,
+          "bandId": null,
+          "abilityCount": 2,
+          "abilityIds": [
+            "revealing-dust",
+            "grave-trace"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"death\",\"actionEconomy\":\"deathTrigger\",\"usage\":{\"type\":\"death\"},\"trigger\":\"The monster dies or drops to 0 Hit Points.\",\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"area\",\"shape\":\"radius\",\"size\":10,\"unit\":\"ft\",\"targets\":\"creatures and objects in the dust\"},\"areaEffect\":{\"enabled\":true,\"type\":\"zone\",\"shape\":\"radius\",\"size\":10,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures and objects\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"When the monster dies, spectral dust fills a 10-foot-radius area until the end of the next round. Invisible creatures and objects in the dust are visibly outlined and gain no benefit from being Invisible, and creatures in the dust can't take the Hide action. Strong wind disperses the dust.\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"When the monster dies, spectral dust fills a 10-foot-radius area until the end of the next round. Invisible creatures and objects in the dust are visibly outlined and gain no benefit from being Invisible, and creatures in the dust can't take the Hide action. Strong wind disperses the dust.\"}}",
+            "{\"section\":\"death\",\"actionEconomy\":\"deathTrigger\",\"usage\":{\"type\":\"death\"},\"trigger\":\"The monster dies or drops to 0 Hit Points.\",\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"custom\",\"targets\":\"one creature studying the settled dust\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"The spectral dust has settled and has not been scattered, washed away, or contaminated.\",\"text\":\"A creature uses an action to study the dust and learns either the direction of the monster's last feeding place or the identity of its last victim.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"After the dust settles, a creature can use an action to study it and learn either the direction of the monster's last feeding place or the identity of its last victim.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "revealing-dust",
+              "renderedText": "When the monster dies, spectral dust fills a 10-foot-radius area until the end of the next round. Invisible creatures and objects in the dust are visibly outlined and gain no benefit from being Invisible, and creatures in the dust can't take the Hide action. Strong wind disperses the dust."
+            },
+            {
+              "abilityId": "grave-trace",
+              "renderedText": "A creature uses an action to study the dust and learns either the direction of the monster's last feeding place or the identity of its last victim."
+            }
+          ]
+        },
+        {
+          "targetCr": 5,
+          "bandId": null,
+          "abilityCount": 2,
+          "abilityIds": [
+            "revealing-dust",
+            "grave-trace"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"death\",\"actionEconomy\":\"deathTrigger\",\"usage\":{\"type\":\"death\"},\"trigger\":\"The monster dies or drops to 0 Hit Points.\",\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"area\",\"shape\":\"radius\",\"size\":10,\"unit\":\"ft\",\"targets\":\"creatures and objects in the dust\"},\"areaEffect\":{\"enabled\":true,\"type\":\"zone\",\"shape\":\"radius\",\"size\":10,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures and objects\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"When the monster dies, spectral dust fills a 10-foot-radius area until the end of the next round. Invisible creatures and objects in the dust are visibly outlined and gain no benefit from being Invisible, and creatures in the dust can't take the Hide action. Strong wind disperses the dust.\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"When the monster dies, spectral dust fills a 10-foot-radius area until the end of the next round. Invisible creatures and objects in the dust are visibly outlined and gain no benefit from being Invisible, and creatures in the dust can't take the Hide action. Strong wind disperses the dust.\"}}",
+            "{\"section\":\"death\",\"actionEconomy\":\"deathTrigger\",\"usage\":{\"type\":\"death\"},\"trigger\":\"The monster dies or drops to 0 Hit Points.\",\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"custom\",\"targets\":\"one creature studying the settled dust\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"The spectral dust has settled and has not been scattered, washed away, or contaminated.\",\"text\":\"A creature uses an action to study the dust and learns either the direction of the monster's last feeding place or the identity of its last victim.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"After the dust settles, a creature can use an action to study it and learn either the direction of the monster's last feeding place or the identity of its last victim.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "revealing-dust",
+              "renderedText": "When the monster dies, spectral dust fills a 10-foot-radius area until the end of the next round. Invisible creatures and objects in the dust are visibly outlined and gain no benefit from being Invisible, and creatures in the dust can't take the Hide action. Strong wind disperses the dust."
+            },
+            {
+              "abilityId": "grave-trace",
+              "renderedText": "A creature uses an action to study the dust and learns either the direction of the monster's last feeding place or the identity of its last victim."
+            }
+          ]
+        },
+        {
+          "targetCr": 10,
+          "bandId": null,
+          "abilityCount": 2,
+          "abilityIds": [
+            "revealing-dust",
+            "grave-trace"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"death\",\"actionEconomy\":\"deathTrigger\",\"usage\":{\"type\":\"death\"},\"trigger\":\"The monster dies or drops to 0 Hit Points.\",\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"area\",\"shape\":\"radius\",\"size\":10,\"unit\":\"ft\",\"targets\":\"creatures and objects in the dust\"},\"areaEffect\":{\"enabled\":true,\"type\":\"zone\",\"shape\":\"radius\",\"size\":10,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures and objects\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"When the monster dies, spectral dust fills a 10-foot-radius area until the end of the next round. Invisible creatures and objects in the dust are visibly outlined and gain no benefit from being Invisible, and creatures in the dust can't take the Hide action. Strong wind disperses the dust.\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"When the monster dies, spectral dust fills a 10-foot-radius area until the end of the next round. Invisible creatures and objects in the dust are visibly outlined and gain no benefit from being Invisible, and creatures in the dust can't take the Hide action. Strong wind disperses the dust.\"}}",
+            "{\"section\":\"death\",\"actionEconomy\":\"deathTrigger\",\"usage\":{\"type\":\"death\"},\"trigger\":\"The monster dies or drops to 0 Hit Points.\",\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"custom\",\"targets\":\"one creature studying the settled dust\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"The spectral dust has settled and has not been scattered, washed away, or contaminated.\",\"text\":\"A creature uses an action to study the dust and learns either the direction of the monster's last feeding place or the identity of its last victim.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"After the dust settles, a creature can use an action to study it and learn either the direction of the monster's last feeding place or the identity of its last victim.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "revealing-dust",
+              "renderedText": "When the monster dies, spectral dust fills a 10-foot-radius area until the end of the next round. Invisible creatures and objects in the dust are visibly outlined and gain no benefit from being Invisible, and creatures in the dust can't take the Hide action. Strong wind disperses the dust."
+            },
+            {
+              "abilityId": "grave-trace",
+              "renderedText": "A creature uses an action to study the dust and learns either the direction of the monster's last feeding place or the identity of its last victim."
+            }
+          ]
+        },
+        {
+          "targetCr": 15,
+          "bandId": null,
+          "abilityCount": 2,
+          "abilityIds": [
+            "revealing-dust",
+            "grave-trace"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"death\",\"actionEconomy\":\"deathTrigger\",\"usage\":{\"type\":\"death\"},\"trigger\":\"The monster dies or drops to 0 Hit Points.\",\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"area\",\"shape\":\"radius\",\"size\":10,\"unit\":\"ft\",\"targets\":\"creatures and objects in the dust\"},\"areaEffect\":{\"enabled\":true,\"type\":\"zone\",\"shape\":\"radius\",\"size\":10,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures and objects\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"When the monster dies, spectral dust fills a 10-foot-radius area until the end of the next round. Invisible creatures and objects in the dust are visibly outlined and gain no benefit from being Invisible, and creatures in the dust can't take the Hide action. Strong wind disperses the dust.\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"When the monster dies, spectral dust fills a 10-foot-radius area until the end of the next round. Invisible creatures and objects in the dust are visibly outlined and gain no benefit from being Invisible, and creatures in the dust can't take the Hide action. Strong wind disperses the dust.\"}}",
+            "{\"section\":\"death\",\"actionEconomy\":\"deathTrigger\",\"usage\":{\"type\":\"death\"},\"trigger\":\"The monster dies or drops to 0 Hit Points.\",\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"custom\",\"targets\":\"one creature studying the settled dust\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"The spectral dust has settled and has not been scattered, washed away, or contaminated.\",\"text\":\"A creature uses an action to study the dust and learns either the direction of the monster's last feeding place or the identity of its last victim.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"After the dust settles, a creature can use an action to study it and learn either the direction of the monster's last feeding place or the identity of its last victim.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "revealing-dust",
+              "renderedText": "When the monster dies, spectral dust fills a 10-foot-radius area until the end of the next round. Invisible creatures and objects in the dust are visibly outlined and gain no benefit from being Invisible, and creatures in the dust can't take the Hide action. Strong wind disperses the dust."
+            },
+            {
+              "abilityId": "grave-trace",
+              "renderedText": "A creature uses an action to study the dust and learns either the direction of the monster's last feeding place or the identity of its last victim."
+            }
+          ]
+        }
+      ],
+      "issues": [],
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "version": "monster-death-graft-editorial-audit-v1.0",
+      "applicable": true,
+      "id": "face-curse",
+      "title": "Last Face Curse",
+      "source": "wax-death-masks",
+      "decision": "REWRITE_AND_SCALE_GAZE_CURSE",
+      "status": "pass",
+      "pass": true,
+      "abilityCount": 1,
+      "counterplayChannels": [
+        "telegraph",
+        "positioning",
+        "breakCondition",
+        "nonDamage"
+      ],
+      "scaling": {
+        "expected": true,
+        "declared": true,
+        "bandCount": 2,
+        "sampledBandIds": [
+          "last-face-curse-cr-0-7-last-witness",
+          "last-face-curse-cr-8-30-room-of-faces"
+        ],
+        "sampledRuleVariants": 2,
+        "pass": true
+      },
+      "snapshots": [
+        {
+          "targetCr": 1,
+          "bandId": "last-face-curse-cr-0-7-last-witness",
+          "abilityCount": 1,
+          "abilityIds": [
+            "last-face-curse"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"death\",\"actionEconomy\":\"deathTrigger\",\"usage\":{\"type\":\"death\"},\"trigger\":\"The monster dies or drops to 0 Hit Points.\",\"resolution\":{\"type\":\"savingThrow\",\"ability\":\"wisdom\",\"dc\":\"monster\"},\"targeting\":{\"type\":\"single\",\"range\":30,\"unit\":\"ft\",\"targets\":\"one creature that can see the mask\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[\"frightened\"],\"severity\":\"major\",\"direction\":\"enemy\",\"duration\":\"until the end of its next turn\",\"special\":[\"A target can use its Reaction to avert its gaze and automatically succeed, but can't see the corpse's space until the start of its next turn.\"],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"failure\":\"The target has the Frightened condition and can't take Reactions until the end of its next turn.\",\"success\":\"No effect. A target that averted its gaze can't see the corpse's space until the start of its next turn.\",\"effect\":\"This effect doesn't trigger if the mask was destroyed before the monster died.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "last-face-curse",
+              "renderedText": "The monster dies or drops to 0 Hit Points. Wisdom Saving Throw: DC 15, one creature that can see the mask. Failure: The target has the Frightened condition and can't take Reactions until the end of its next turn. Success: No effect. A target that averted its gaze can't see the corpse's space until the start of its next turn. This effect doesn't trigger if the mask was destroyed before the monster died."
+            }
+          ]
+        },
+        {
+          "targetCr": 5,
+          "bandId": "last-face-curse-cr-0-7-last-witness",
+          "abilityCount": 1,
+          "abilityIds": [
+            "last-face-curse"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"death\",\"actionEconomy\":\"deathTrigger\",\"usage\":{\"type\":\"death\"},\"trigger\":\"The monster dies or drops to 0 Hit Points.\",\"resolution\":{\"type\":\"savingThrow\",\"ability\":\"wisdom\",\"dc\":\"monster\"},\"targeting\":{\"type\":\"single\",\"range\":30,\"unit\":\"ft\",\"targets\":\"one creature that can see the mask\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[\"frightened\"],\"severity\":\"major\",\"direction\":\"enemy\",\"duration\":\"until the end of its next turn\",\"special\":[\"A target can use its Reaction to avert its gaze and automatically succeed, but can't see the corpse's space until the start of its next turn.\"],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"failure\":\"The target has the Frightened condition and can't take Reactions until the end of its next turn.\",\"success\":\"No effect. A target that averted its gaze can't see the corpse's space until the start of its next turn.\",\"effect\":\"This effect doesn't trigger if the mask was destroyed before the monster died.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "last-face-curse",
+              "renderedText": "The monster dies or drops to 0 Hit Points. Wisdom Saving Throw: DC 15, one creature that can see the mask. Failure: The target has the Frightened condition and can't take Reactions until the end of its next turn. Success: No effect. A target that averted its gaze can't see the corpse's space until the start of its next turn. This effect doesn't trigger if the mask was destroyed before the monster died."
+            }
+          ]
+        },
+        {
+          "targetCr": 10,
+          "bandId": "last-face-curse-cr-8-30-room-of-faces",
+          "abilityCount": 1,
+          "abilityIds": [
+            "last-face-curse"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"death\",\"actionEconomy\":\"deathTrigger\",\"usage\":{\"type\":\"death\"},\"trigger\":\"The monster dies or drops to 0 Hit Points.\",\"resolution\":{\"type\":\"savingThrow\",\"ability\":\"wisdom\",\"dc\":\"monster\"},\"targeting\":{\"type\":\"custom\",\"range\":30,\"unit\":\"ft\",\"targets\":\"up to two creatures that can see the mask\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[\"frightened\"],\"severity\":\"major\",\"direction\":\"enemy\",\"duration\":\"until the end of its next turn\",\"special\":[\"A target can use its Reaction to avert its gaze and automatically succeed, but can't see the corpse's space until the start of its next turn.\"],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"failure\":\"The target has the Frightened condition and can't take Reactions until the end of its next turn.\",\"success\":\"No effect. A target that averted its gaze can't see the corpse's space until the start of its next turn.\",\"effect\":\"This effect doesn't trigger if the mask was destroyed before the monster died.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "last-face-curse",
+              "renderedText": "The monster dies or drops to 0 Hit Points. Wisdom Saving Throw: DC 15, up to two creatures that can see the mask. Failure: The target has the Frightened condition and can't take Reactions until the end of its next turn. Success: No effect. A target that averted its gaze can't see the corpse's space until the start of its next turn. This effect doesn't trigger if the mask was destroyed before the monster died."
+            }
+          ]
+        },
+        {
+          "targetCr": 15,
+          "bandId": "last-face-curse-cr-8-30-room-of-faces",
+          "abilityCount": 1,
+          "abilityIds": [
+            "last-face-curse"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"death\",\"actionEconomy\":\"deathTrigger\",\"usage\":{\"type\":\"death\"},\"trigger\":\"The monster dies or drops to 0 Hit Points.\",\"resolution\":{\"type\":\"savingThrow\",\"ability\":\"wisdom\",\"dc\":\"monster\"},\"targeting\":{\"type\":\"custom\",\"range\":30,\"unit\":\"ft\",\"targets\":\"up to two creatures that can see the mask\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[\"frightened\"],\"severity\":\"major\",\"direction\":\"enemy\",\"duration\":\"until the end of its next turn\",\"special\":[\"A target can use its Reaction to avert its gaze and automatically succeed, but can't see the corpse's space until the start of its next turn.\"],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"failure\":\"The target has the Frightened condition and can't take Reactions until the end of its next turn.\",\"success\":\"No effect. A target that averted its gaze can't see the corpse's space until the start of its next turn.\",\"effect\":\"This effect doesn't trigger if the mask was destroyed before the monster died.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "last-face-curse",
+              "renderedText": "The monster dies or drops to 0 Hit Points. Wisdom Saving Throw: DC 15, up to two creatures that can see the mask. Failure: The target has the Frightened condition and can't take Reactions until the end of its next turn. Success: No effect. A target that averted its gaze can't see the corpse's space until the start of its next turn. This effect doesn't trigger if the mask was destroyed before the monster died."
+            }
+          ]
+        }
+      ],
+      "issues": [],
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "version": "monster-death-graft-editorial-audit-v1.0",
+      "applicable": true,
+      "id": "egg-hatch-death",
+      "title": "Brood Burst",
+      "source": "wolf-spiders",
+      "decision": "REWRITE_AND_SCALE_BOUNDED_SUMMON",
+      "status": "pass",
+      "pass": true,
+      "abilityCount": 1,
+      "counterplayChannels": [
+        "telegraph",
+        "positioning",
+        "breakCondition",
+        "nonDamage"
+      ],
+      "scaling": {
+        "expected": true,
+        "declared": true,
+        "bandCount": 3,
+        "sampledBandIds": [
+          "brood-burst-cr-0-4-single-egg",
+          "brood-burst-cr-5-12-pair",
+          "brood-burst-cr-13-30-clutch"
+        ],
+        "sampledRuleVariants": 3,
+        "pass": true
+      },
+      "snapshots": [
+        {
+          "targetCr": 1,
+          "bandId": "brood-burst-cr-0-4-single-egg",
+          "abilityCount": 1,
+          "abilityIds": [
+            "brood-burst"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"death\",\"actionEconomy\":\"deathTrigger\",\"usage\":{\"type\":\"death\"},\"trigger\":\"The monster dies or drops to 0 Hit Points.\",\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"custom\",\"targets\":\"up to one intact egg carried by the monster\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"summon\":{\"enabled\":true,\"type\":\"spawn\",\"creatureName\":\"spider minion\",\"count\":\"up to one\",\"placement\":\"an adjacent unoccupied space\",\"duration\":\"until destroyed\",\"initiative\":\"rollInitiative\",\"control\":\"alliedToSummoner\",\"limit\":\"Only intact eggs not exposed to Fire damage since the end of the monster's previous turn can hatch.\",\"trigger\":\"The monster dies or drops to 0 Hit Points.\",\"text\":\"When the monster dies, up to one intact egg it carries hatches immediately into one spider minion in an adjacent unoccupied space. The minion rolls Initiative. Destroyed or recently burned eggs can't hatch.\",\"creatureRef\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"When the monster dies, up to one intact egg it carries hatches immediately. Destroyed eggs and eggs exposed to Fire damage since the end of the monster's previous turn can't hatch.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "brood-burst",
+              "renderedText": "When the monster dies, up to one intact egg it carries hatches immediately into one spider minion in an adjacent unoccupied space. The minion rolls Initiative. Destroyed or recently burned eggs can't hatch."
+            }
+          ]
+        },
+        {
+          "targetCr": 5,
+          "bandId": "brood-burst-cr-5-12-pair",
+          "abilityCount": 1,
+          "abilityIds": [
+            "brood-burst"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"death\",\"actionEconomy\":\"deathTrigger\",\"usage\":{\"type\":\"death\"},\"trigger\":\"The monster dies or drops to 0 Hit Points.\",\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"custom\",\"targets\":\"up to two intact eggs carried by the monster\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"summon\":{\"enabled\":true,\"type\":\"spawn\",\"creatureName\":\"spider minion\",\"count\":\"up to two\",\"placement\":\"an adjacent unoccupied space\",\"duration\":\"until destroyed\",\"initiative\":\"rollInitiative\",\"control\":\"alliedToSummoner\",\"limit\":\"Only intact eggs not exposed to Fire damage since the end of the monster's previous turn can hatch.\",\"trigger\":\"The monster dies or drops to 0 Hit Points.\",\"text\":\"When the monster dies, up to two intact eggs it carries hatch immediately into spider minions in adjacent unoccupied spaces. The minions roll Initiative. Destroyed or recently burned eggs can't hatch.\",\"creatureRef\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"When the monster dies, up to one intact egg it carries hatches immediately. Destroyed eggs and eggs exposed to Fire damage since the end of the monster's previous turn can't hatch.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "brood-burst",
+              "renderedText": "When the monster dies, up to two intact eggs it carries hatch immediately into spider minions in adjacent unoccupied spaces. The minions roll Initiative. Destroyed or recently burned eggs can't hatch."
+            }
+          ]
+        },
+        {
+          "targetCr": 10,
+          "bandId": "brood-burst-cr-5-12-pair",
+          "abilityCount": 1,
+          "abilityIds": [
+            "brood-burst"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"death\",\"actionEconomy\":\"deathTrigger\",\"usage\":{\"type\":\"death\"},\"trigger\":\"The monster dies or drops to 0 Hit Points.\",\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"custom\",\"targets\":\"up to two intact eggs carried by the monster\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"summon\":{\"enabled\":true,\"type\":\"spawn\",\"creatureName\":\"spider minion\",\"count\":\"up to two\",\"placement\":\"an adjacent unoccupied space\",\"duration\":\"until destroyed\",\"initiative\":\"rollInitiative\",\"control\":\"alliedToSummoner\",\"limit\":\"Only intact eggs not exposed to Fire damage since the end of the monster's previous turn can hatch.\",\"trigger\":\"The monster dies or drops to 0 Hit Points.\",\"text\":\"When the monster dies, up to two intact eggs it carries hatch immediately into spider minions in adjacent unoccupied spaces. The minions roll Initiative. Destroyed or recently burned eggs can't hatch.\",\"creatureRef\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"When the monster dies, up to one intact egg it carries hatches immediately. Destroyed eggs and eggs exposed to Fire damage since the end of the monster's previous turn can't hatch.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "brood-burst",
+              "renderedText": "When the monster dies, up to two intact eggs it carries hatch immediately into spider minions in adjacent unoccupied spaces. The minions roll Initiative. Destroyed or recently burned eggs can't hatch."
+            }
+          ]
+        },
+        {
+          "targetCr": 15,
+          "bandId": "brood-burst-cr-13-30-clutch",
+          "abilityCount": 1,
+          "abilityIds": [
+            "brood-burst"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"death\",\"actionEconomy\":\"deathTrigger\",\"usage\":{\"type\":\"death\"},\"trigger\":\"The monster dies or drops to 0 Hit Points.\",\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"custom\",\"targets\":\"up to three intact eggs carried by the monster\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"summon\":{\"enabled\":true,\"type\":\"spawn\",\"creatureName\":\"spider minion\",\"count\":\"up to three\",\"placement\":\"an adjacent unoccupied space\",\"duration\":\"until destroyed\",\"initiative\":\"rollInitiative\",\"control\":\"alliedToSummoner\",\"limit\":\"Only intact eggs not exposed to Fire damage since the end of the monster's previous turn can hatch.\",\"trigger\":\"The monster dies or drops to 0 Hit Points.\",\"text\":\"When the monster dies, up to three intact eggs it carries hatch immediately into spider minions in adjacent unoccupied spaces. The minions roll Initiative. Destroyed or recently burned eggs can't hatch.\",\"creatureRef\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"When the monster dies, up to one intact egg it carries hatches immediately. Destroyed eggs and eggs exposed to Fire damage since the end of the monster's previous turn can't hatch.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "brood-burst",
+              "renderedText": "When the monster dies, up to three intact eggs it carries hatch immediately into spider minions in adjacent unoccupied spaces. The minions roll Initiative. Destroyed or recently burned eggs can't hatch."
+            }
+          ]
+        }
+      ],
+      "issues": [],
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "version": "monster-death-graft-editorial-audit-v1.0",
+      "applicable": true,
+      "id": "silk-cocoon-remains",
+      "title": "Death Cocoon",
+      "source": "wolf-spiders",
+      "decision": "REWRITE_AS_SNARE_AND_REMAINS_BUNDLE",
+      "status": "pass",
+      "pass": true,
+      "abilityCount": 2,
+      "counterplayChannels": [
+        "telegraph",
+        "positioning",
+        "breakCondition",
+        "nonDamage"
+      ],
+      "scaling": {
+        "expected": false,
+        "declared": false,
+        "bandCount": 0,
+        "sampledBandIds": [],
+        "sampledRuleVariants": 2,
+        "pass": true
+      },
+      "snapshots": [
+        {
+          "targetCr": 1,
+          "bandId": null,
+          "abilityCount": 2,
+          "abilityIds": [
+            "death-snare",
+            "cocooned-remains"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"death\",\"actionEconomy\":\"deathTrigger\",\"usage\":{\"type\":\"death\"},\"trigger\":\"The monster dies or drops to 0 Hit Points.\",\"resolution\":{\"type\":\"savingThrow\",\"ability\":\"dexterity\",\"dc\":\"monster\"},\"targeting\":{\"type\":\"single\",\"range\":10,\"unit\":\"ft\",\"targets\":\"the nearest creature\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[\"restrained\"],\"severity\":\"major\",\"direction\":\"enemy\",\"duration\":\"until the target escapes or the silk is destroyed\",\"special\":[\"The silk has AC 10, Hit Points equal to 5 + the monster's Proficiency Bonus, and Vulnerability to Fire damage.\"],\"sizeLimit\":\"\",\"escape\":{\"enabled\":true,\"dc\":\"monster\",\"dcSource\":\"monster\",\"ability\":\"strength\",\"text\":\"The restrained creature uses its action to make a Strength (Athletics) check, ending the condition on a success.\"},\"repeatSave\":null},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"failure\":\"The target has the Restrained condition in silk until it escapes or the silk is destroyed.\",\"success\":\"No effect.\",\"effect\":\"The silk has AC 10, Hit Points equal to 5 + the monster's Proficiency Bonus, and Vulnerability to Fire damage.\"}}",
+            "{\"section\":\"death\",\"actionEconomy\":\"deathTrigger\",\"usage\":{\"type\":\"death\"},\"trigger\":\"The monster dies or drops to 0 Hit Points.\",\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"custom\",\"targets\":\"the monster's cocooned corpse\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"A creature is adjacent to the cocoon and has a cutting tool or another suitable method.\",\"text\":\"A creature uses an action to cut open the cocoon without damaging its contents, revealing one carried trophy, clue, or sign of a missing victim.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The corpse becomes a silk cocoon with AC 10, Hit Points equal to 5 + the monster's Proficiency Bonus, and Vulnerability to Fire damage. A creature can use an action to cut open an adjacent cocoon without damaging its contents, revealing one carried trophy, clue, or sign of a missing victim.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "death-snare",
+              "renderedText": "The monster dies or drops to 0 Hit Points. Dexterity Saving Throw: DC 15, the nearest creature. Failure: The target has the Restrained condition in silk until it escapes or the silk is destroyed. Success: No effect. The silk has AC 10, Hit Points equal to 5 + the monster's Proficiency Bonus, and Vulnerability to Fire damage."
+            },
+            {
+              "abilityId": "cocooned-remains",
+              "renderedText": "A creature uses an action to cut open the cocoon without damaging its contents, revealing one carried trophy, clue, or sign of a missing victim."
+            }
+          ]
+        },
+        {
+          "targetCr": 5,
+          "bandId": null,
+          "abilityCount": 2,
+          "abilityIds": [
+            "death-snare",
+            "cocooned-remains"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"death\",\"actionEconomy\":\"deathTrigger\",\"usage\":{\"type\":\"death\"},\"trigger\":\"The monster dies or drops to 0 Hit Points.\",\"resolution\":{\"type\":\"savingThrow\",\"ability\":\"dexterity\",\"dc\":\"monster\"},\"targeting\":{\"type\":\"single\",\"range\":10,\"unit\":\"ft\",\"targets\":\"the nearest creature\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[\"restrained\"],\"severity\":\"major\",\"direction\":\"enemy\",\"duration\":\"until the target escapes or the silk is destroyed\",\"special\":[\"The silk has AC 10, Hit Points equal to 5 + the monster's Proficiency Bonus, and Vulnerability to Fire damage.\"],\"sizeLimit\":\"\",\"escape\":{\"enabled\":true,\"dc\":\"monster\",\"dcSource\":\"monster\",\"ability\":\"strength\",\"text\":\"The restrained creature uses its action to make a Strength (Athletics) check, ending the condition on a success.\"},\"repeatSave\":null},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"failure\":\"The target has the Restrained condition in silk until it escapes or the silk is destroyed.\",\"success\":\"No effect.\",\"effect\":\"The silk has AC 10, Hit Points equal to 5 + the monster's Proficiency Bonus, and Vulnerability to Fire damage.\"}}",
+            "{\"section\":\"death\",\"actionEconomy\":\"deathTrigger\",\"usage\":{\"type\":\"death\"},\"trigger\":\"The monster dies or drops to 0 Hit Points.\",\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"custom\",\"targets\":\"the monster's cocooned corpse\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"A creature is adjacent to the cocoon and has a cutting tool or another suitable method.\",\"text\":\"A creature uses an action to cut open the cocoon without damaging its contents, revealing one carried trophy, clue, or sign of a missing victim.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The corpse becomes a silk cocoon with AC 10, Hit Points equal to 5 + the monster's Proficiency Bonus, and Vulnerability to Fire damage. A creature can use an action to cut open an adjacent cocoon without damaging its contents, revealing one carried trophy, clue, or sign of a missing victim.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "death-snare",
+              "renderedText": "The monster dies or drops to 0 Hit Points. Dexterity Saving Throw: DC 15, the nearest creature. Failure: The target has the Restrained condition in silk until it escapes or the silk is destroyed. Success: No effect. The silk has AC 10, Hit Points equal to 5 + the monster's Proficiency Bonus, and Vulnerability to Fire damage."
+            },
+            {
+              "abilityId": "cocooned-remains",
+              "renderedText": "A creature uses an action to cut open the cocoon without damaging its contents, revealing one carried trophy, clue, or sign of a missing victim."
+            }
+          ]
+        },
+        {
+          "targetCr": 10,
+          "bandId": null,
+          "abilityCount": 2,
+          "abilityIds": [
+            "death-snare",
+            "cocooned-remains"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"death\",\"actionEconomy\":\"deathTrigger\",\"usage\":{\"type\":\"death\"},\"trigger\":\"The monster dies or drops to 0 Hit Points.\",\"resolution\":{\"type\":\"savingThrow\",\"ability\":\"dexterity\",\"dc\":\"monster\"},\"targeting\":{\"type\":\"single\",\"range\":10,\"unit\":\"ft\",\"targets\":\"the nearest creature\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[\"restrained\"],\"severity\":\"major\",\"direction\":\"enemy\",\"duration\":\"until the target escapes or the silk is destroyed\",\"special\":[\"The silk has AC 10, Hit Points equal to 5 + the monster's Proficiency Bonus, and Vulnerability to Fire damage.\"],\"sizeLimit\":\"\",\"escape\":{\"enabled\":true,\"dc\":\"monster\",\"dcSource\":\"monster\",\"ability\":\"strength\",\"text\":\"The restrained creature uses its action to make a Strength (Athletics) check, ending the condition on a success.\"},\"repeatSave\":null},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"failure\":\"The target has the Restrained condition in silk until it escapes or the silk is destroyed.\",\"success\":\"No effect.\",\"effect\":\"The silk has AC 10, Hit Points equal to 5 + the monster's Proficiency Bonus, and Vulnerability to Fire damage.\"}}",
+            "{\"section\":\"death\",\"actionEconomy\":\"deathTrigger\",\"usage\":{\"type\":\"death\"},\"trigger\":\"The monster dies or drops to 0 Hit Points.\",\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"custom\",\"targets\":\"the monster's cocooned corpse\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"A creature is adjacent to the cocoon and has a cutting tool or another suitable method.\",\"text\":\"A creature uses an action to cut open the cocoon without damaging its contents, revealing one carried trophy, clue, or sign of a missing victim.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The corpse becomes a silk cocoon with AC 10, Hit Points equal to 5 + the monster's Proficiency Bonus, and Vulnerability to Fire damage. A creature can use an action to cut open an adjacent cocoon without damaging its contents, revealing one carried trophy, clue, or sign of a missing victim.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "death-snare",
+              "renderedText": "The monster dies or drops to 0 Hit Points. Dexterity Saving Throw: DC 15, the nearest creature. Failure: The target has the Restrained condition in silk until it escapes or the silk is destroyed. Success: No effect. The silk has AC 10, Hit Points equal to 5 + the monster's Proficiency Bonus, and Vulnerability to Fire damage."
+            },
+            {
+              "abilityId": "cocooned-remains",
+              "renderedText": "A creature uses an action to cut open the cocoon without damaging its contents, revealing one carried trophy, clue, or sign of a missing victim."
+            }
+          ]
+        },
+        {
+          "targetCr": 15,
+          "bandId": null,
+          "abilityCount": 2,
+          "abilityIds": [
+            "death-snare",
+            "cocooned-remains"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"death\",\"actionEconomy\":\"deathTrigger\",\"usage\":{\"type\":\"death\"},\"trigger\":\"The monster dies or drops to 0 Hit Points.\",\"resolution\":{\"type\":\"savingThrow\",\"ability\":\"dexterity\",\"dc\":\"monster\"},\"targeting\":{\"type\":\"single\",\"range\":10,\"unit\":\"ft\",\"targets\":\"the nearest creature\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[\"restrained\"],\"severity\":\"major\",\"direction\":\"enemy\",\"duration\":\"until the target escapes or the silk is destroyed\",\"special\":[\"The silk has AC 10, Hit Points equal to 5 + the monster's Proficiency Bonus, and Vulnerability to Fire damage.\"],\"sizeLimit\":\"\",\"escape\":{\"enabled\":true,\"dc\":\"monster\",\"dcSource\":\"monster\",\"ability\":\"strength\",\"text\":\"The restrained creature uses its action to make a Strength (Athletics) check, ending the condition on a success.\"},\"repeatSave\":null},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"failure\":\"The target has the Restrained condition in silk until it escapes or the silk is destroyed.\",\"success\":\"No effect.\",\"effect\":\"The silk has AC 10, Hit Points equal to 5 + the monster's Proficiency Bonus, and Vulnerability to Fire damage.\"}}",
+            "{\"section\":\"death\",\"actionEconomy\":\"deathTrigger\",\"usage\":{\"type\":\"death\"},\"trigger\":\"The monster dies or drops to 0 Hit Points.\",\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"custom\",\"targets\":\"the monster's cocooned corpse\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"A creature is adjacent to the cocoon and has a cutting tool or another suitable method.\",\"text\":\"A creature uses an action to cut open the cocoon without damaging its contents, revealing one carried trophy, clue, or sign of a missing victim.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The corpse becomes a silk cocoon with AC 10, Hit Points equal to 5 + the monster's Proficiency Bonus, and Vulnerability to Fire damage. A creature can use an action to cut open an adjacent cocoon without damaging its contents, revealing one carried trophy, clue, or sign of a missing victim.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "death-snare",
+              "renderedText": "The monster dies or drops to 0 Hit Points. Dexterity Saving Throw: DC 15, the nearest creature. Failure: The target has the Restrained condition in silk until it escapes or the silk is destroyed. Success: No effect. The silk has AC 10, Hit Points equal to 5 + the monster's Proficiency Bonus, and Vulnerability to Fire damage."
+            },
+            {
+              "abilityId": "cocooned-remains",
+              "renderedText": "A creature uses an action to cut open the cocoon without damaging its contents, revealing one carried trophy, clue, or sign of a missing victim."
+            }
+          ]
+        }
+      ],
+      "issues": [],
+      "errors": [],
+      "warnings": []
+    }
+  ],
+  "issues": [],
+  "errors": [],
+  "pass": true
+}

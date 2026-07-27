@@ -1,7 +1,7 @@
 {
   "name": "cruor-games",
   "private": true,
-  "version": "33.0.0a",
+  "version": "34.0.0a",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -139,7 +139,19 @@
     "monster:qa:twist-editorial": "vitest run features/monster-composer/model/monster-twist-graft.test.js",
     "monster:audit:twist-editorial": "node scripts/monster/report-monster-twist-editorial.mjs",
     "monster:audit:twist-editorial:check": "node scripts/monster/report-monster-twist-editorial.mjs --check",
-    "monster:audit:twist-editorial:strict": "node scripts/monster/report-monster-twist-editorial.mjs --check --strict"
+    "monster:audit:twist-editorial:strict": "node scripts/monster/report-monster-twist-editorial.mjs --check --strict",
+    "monster:qa:weakness-editorial": "vitest run features/monster-composer/model/monster-weakness-graft.test.js",
+    "monster:audit:weakness-editorial": "node scripts/monster/report-monster-weakness-editorial.mjs",
+    "monster:audit:weakness-editorial:check": "node scripts/monster/report-monster-weakness-editorial.mjs --check",
+    "monster:audit:weakness-editorial:strict": "node scripts/monster/report-monster-weakness-editorial.mjs --check --strict",
+    "monster:qa:death-editorial": "vitest run features/monster-composer/model/monster-death-graft.test.js",
+    "monster:audit:death-editorial": "node scripts/monster/report-monster-death-editorial.mjs",
+    "monster:audit:death-editorial:check": "node scripts/monster/report-monster-death-editorial.mjs --check",
+    "monster:audit:death-editorial:strict": "node scripts/monster/report-monster-death-editorial.mjs --check --strict",
+    "monster:qa:lair-editorial": "vitest run features/monster-composer/model/monster-lair-graft.test.js",
+    "monster:audit:lair-editorial": "node scripts/monster/report-monster-lair-editorial.mjs",
+    "monster:audit:lair-editorial:check": "node scripts/monster/report-monster-lair-editorial.mjs --check",
+    "monster:audit:lair-editorial:strict": "node scripts/monster/report-monster-lair-editorial.mjs --check --strict"
   },
   "dependencies": {
     "@vitejs/plugin-react": "^4.3.4",

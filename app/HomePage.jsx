@@ -2,9 +2,7 @@ import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { Accordion, AccordionItem } from "../components/ui/accordion.jsx";
 import AmbientBand from "../components/ui/ambient-band.jsx";
 import { INSPIRATION_CARDS, SOURCE_DETAILS } from "../features/crucible/crucible.sources-data.js";
-import InspirationCardFront, {
-  InspirationArtwork,
-} from "../features/inspirations/components/InspirationCardFront.jsx";
+import InspirationCardFront from "../features/inspirations/components/InspirationCardFront.jsx";
 import { getInspirationCardMeta } from "../features/inspirations/inspirations.card-config.js";
 import SiteLink from "./navigation/SiteLink.jsx";
 import { notifyHomeMounted } from "./boot-screen.js";
@@ -15,9 +13,48 @@ const CRUOR_CONTACT_EMAIL = "info@cruorgames.com";
 const CRUOR_PATREON_URL = "https://www.patreon.com/c/CruorGames";
 const HOME_HERO_VIDEO_SRC = `${import.meta.env.BASE_URL || "/"}assets/video/hero-video.mp4`;
 const HOME_HERO_POSTER_SRC = `${import.meta.env.BASE_URL || "/"}assets/video/hero-video-poster.webp`;
-const WORKBENCH_PROGRESS_SCROLL_PX = 1500;
-const WORKBENCH_VIRTUAL_END = 1.25;
-const WORKBENCH_TRACK_SCROLL_PX = WORKBENCH_PROGRESS_SCROLL_PX * WORKBENCH_VIRTUAL_END;
+const WORKBENCH_PROGRESS_SCROLL_PX = 1200;
+const WORKBENCH_COLLAPSE_SCROLL_PX = 600;
+const WORKBENCH_RELEASE_HOLD_SCROLL_PX = 100;
+const WORKBENCH_TRACK_SCROLL_PX =
+  WORKBENCH_PROGRESS_SCROLL_PX +
+  WORKBENCH_COLLAPSE_SCROLL_PX +
+  WORKBENCH_RELEASE_HOLD_SCROLL_PX;
+const WORKBENCH_LEGACY_STORAGE_KEY = "cruor-home-workbench-intro-v1";
+let workbenchIntroCompletedForPageLoad = false;
+
+const clampUnit = (value) => Math.max(0, Math.min(1, value));
+const smoothstep = (value) => {
+  const progress = clampUnit(value);
+  return progress * progress * (3 - 2 * progress);
+};
+
+function getWorkbenchViewportMetrics() {
+  if (typeof window === "undefined") {
+    return { viewportHeight: 900, compactHeight: 558 };
+  }
+
+  const viewportHeight = Math.max(1, window.innerHeight);
+  const compactHeight =
+    viewportHeight <= 720
+      ? Math.min(560, Math.max(440, viewportHeight * 0.72))
+      : Math.min(700, Math.max(520, viewportHeight * 0.62));
+
+  return { viewportHeight, compactHeight };
+}
+
+function hasCompletedWorkbenchIntro() {
+  if (typeof window === "undefined") return true;
+
+  const reducedMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+  const staticLayout = window.matchMedia?.("(max-width: 900px)").matches;
+
+  return reducedMotion || staticLayout || workbenchIntroCompletedForPageLoad;
+}
+
+function rememberWorkbenchIntroCompletion() {
+  workbenchIntroCompletedForPageLoad = true;
+}
 
 const LANDING_IMAGES = {
   workbench: {
@@ -323,12 +360,6 @@ const SOURCE_CAROUSEL_CARDS = INSPIRATION_CARDS.map((card, index) => {
   };
 });
 
-const WORKBENCH_INPUT_INSPIRATION =
-  SOURCE_CAROUSEL_CARDS.find((card) => card.inspiration.title === "Decomposition") ??
-  SOURCE_CAROUSEL_CARDS[0];
-
-const WORKBENCH_INPUT_BACK_DESCRIPTION =
-  "The body breaking down after death: swelling, leakage, collapse, odor, and matter changing form. It is one of the most direct and unavoidable realities behind death, because it transforms the human body from person into process. Its horror comes not only from gore, but from slowness, inevitability, smell, loss of identity, and the sense that time itself is visibly acting on flesh. It makes mortality feel physical, gradual, and impossible to keep at a safe emotional distance.";
 
 const FAQ_ITEMS = [
   {
@@ -983,171 +1014,58 @@ function InspirationSourceCarousel() {
   );
 }
 
-function WorkbenchMiniStatBlock() {
-  const abilities = [
-    ["Str", "18", "+4", "+4", "physical"],
-    ["Dex", "7", "−2", "−2", "physical"],
-    ["Con", "16", "+3", "+5", "physical"],
-    ["Int", "5", "−3", "−3", "mental"],
-    ["Wis", "10", "+0", "+2", "mental"],
-    ["Cha", "8", "−1", "−1", "mental"],
-  ];
-
-  return (
-    <article
-      className="cruor-home__workbench-mini-stat cruor-stat-block rendered-stat-block"
-      aria-label="Rot-Swollen Zombie rendered stat block"
-    >
-      <header className="cruor-stat-block__head">
-        <h3>Rot-Swollen Zombie</h3>
-        <p>Medium Undead (Zombie), Unaligned</p>
-      </header>
-
-      <section className="cruor-stat-block__core" aria-label="Core combat statistics">
-        <article className="cruor-stat-core-card cruor-stat-core-card--ac">
-          <span>AC</span>
-          <strong>14</strong>
-        </article>
-        <article className="cruor-stat-core-card cruor-stat-core-card--hp">
-          <span>HP</span>
-          <strong>53 (7d8 + 21)</strong>
-        </article>
-        <article className="cruor-stat-core-card cruor-stat-core-card--speed">
-          <span>Speed</span>
-          <strong>30 ft.</strong>
-        </article>
-        <article className="cruor-stat-core-card cruor-stat-core-card--initiative">
-          <span>Initiative</span>
-          <strong>−2 (8)</strong>
-        </article>
-      </section>
-
-      <section className="cruor-stat-block__abilities" aria-label="Ability scores">
-        <div className="cruor-ability-grid" role="table" aria-label="Ability scores, modifiers, and saves">
-          <div className="cruor-ability-header-row" role="row" aria-hidden="true">
-            {[0, 1, 2].map((group) => (
-              <div className="cruor-ability-header-group" key={group}>
-                <span />
-                <span />
-                <span>MOD</span>
-                <span>SAVE</span>
-              </div>
-            ))}
-          </div>
-          {["physical", "mental"].map((kind) => (
-            <div className={`cruor-ability-row cruor-ability-row--${kind}`} role="row" key={kind}>
-              {abilities
-                .filter((ability) => ability[4] === kind)
-                .map(([label, score, modifier, save]) => (
-                  <div
-                    className={`cruor-ability-group cruor-ability-group--${kind}`}
-                    role="group"
-                    aria-label={`${label} ${score}, modifier ${modifier}, save ${save}`}
-                    key={label}
-                  >
-                    <div className="cruor-ability-cell cruor-ability-cell--label" role="cell">
-                      {label}
-                    </div>
-                    <div className="cruor-ability-cell cruor-ability-cell--score" role="cell">
-                      {score}
-                    </div>
-                    <div className="cruor-ability-cell cruor-ability-cell--mod" role="cell">
-                      {modifier}
-                    </div>
-                    <div className="cruor-ability-cell cruor-ability-cell--save" role="cell">
-                      {save}
-                    </div>
-                  </div>
-                ))}
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <section className="cruor-stat-block__facts" aria-label="Defenses and senses">
-        <p><strong>Skills</strong> Perception +2</p>
-        <p><strong>Resistances</strong> Necrotic; Bludgeoning, Piercing, and Slashing damage from nonmagical attacks</p>
-        <p><strong>Immunities</strong> Poison damage; Poisoned condition</p>
-        <p><strong>Senses</strong> darkvision 60 ft.</p>
-        <p><strong>Languages</strong> Understands the languages it knew in life but can’t speak</p>
-        <p className="cruor-stat-block__challenge"><strong>CR</strong> 2 (XP 450; PB +2)</p>
-      </section>
-
-      <section className="cruor-stat-block__section">
-        <h2>Traits</h2>
-        <p>
-          <strong><em>Swollen Corpse Vessel.</em></strong>{" "}
-          <span>When the creature is first bloodied. </span>
-          <em>Constitution Saving Throw:</em>
-          <span> DC 13, each creature in a 5-foot Emanation originating from the creature. </span>
-          <em>Failure:</em>
-          <span> The target has the Poisoned condition until the end of its next turn. </span>
-          <em>Success:</em>
-          <span> No effect.</span>
-        </p>
-        <p>
-          <strong><em>Mechanical Stress.</em></strong>{" "}
-          <span>
-            When the monster takes more than half its maximum Hit Points in one hit, the attacker
-            chooses head, arms, or leg. Head: the monster has the Blinded condition but dies in 2
-            rounds without triggering Gas Buildup. Arms: the monster has Disadvantage on attacks
-            requiring arms. Leg: the monster has the Prone condition, and its Speed becomes 5 feet.
-          </span>
-        </p>
-      </section>
-
-      <section className="cruor-stat-block__section">
-        <h2>Actions</h2>
-        <p>
-          <strong><em>Heavy Slam.</em></strong>{" "}
-          <em>Melee Attack Roll:</em>
-          <span> +6, reach 5 ft. </span>
-          <em>Hit:</em>
-          <span>
-            {" "}15 (2d10 + 4) Bludgeoning damage. If the creature moved at least 10 feet straight
-            toward the target this turn, add one extra damage die.
-          </span>
-        </p>
-      </section>
-
-      <section className="cruor-stat-block__section">
-        <h2>Bonus Actions</h2>
-        <p>
-          <strong><em>Rupture Charge.</em></strong>{" "}
-          <span>
-            The creature moves up to half its speed in a straight line toward a creature it can
-            see. Its next Slam before the end of the turn deals 3 (1d4) Bludgeoning damage. After
-            moving this way, roll a d6; on a 6, trigger one selected Unstable reaction without
-            spending the reaction.
-          </span>
-        </p>
-      </section>
-    </article>
-  );
-}
-
 export default function HomePage({ onOpenCrucibleTool, onOpenInspirations }) {
+  const [workbenchInitiallyComplete] = useState(() => hasCompletedWorkbenchIntro());
+  const [workbenchViewportMetrics, setWorkbenchViewportMetrics] = useState(() =>
+    getWorkbenchViewportMetrics(),
+  );
   const workbenchFlowRef = useRef(null);
-  const revealedWorkbenchStepRef = useRef(1);
-  const workbenchProgressRef = useRef(0);
-  const workbenchVirtualProgressRef = useRef(0);
-  const workbenchCompletedRef = useRef(false);
-  const workbenchReleasedRef = useRef(false);
+  const revealedWorkbenchStepRef = useRef(workbenchInitiallyComplete ? 3 : 1);
+  const workbenchProgressRef = useRef(workbenchInitiallyComplete ? 1 : 0);
+  const workbenchCollapseProgressRef = useRef(workbenchInitiallyComplete ? 1 : 0);
+  const workbenchCompletedRef = useRef(workbenchInitiallyComplete);
+  const workbenchReleasedRef = useRef(workbenchInitiallyComplete);
   const [zoomPreview, setZoomPreview] = useState(null);
   const [isContactFormOpen, setIsContactFormOpen] = useState(false);
   const [contactFormStatus, setContactFormStatus] = useState("");
   const [activeSectionId, setActiveSectionId] = useState(HOME_SECTIONS[0].id);
   const [sectionProgress, setSectionProgress] = useState(0);
-  const [revealedWorkbenchStep, setRevealedWorkbenchStep] = useState(1);
-  const [workbenchProgress, setWorkbenchProgress] = useState(0);
-  const [workbenchCompleted, setWorkbenchCompleted] = useState(false);
-  const [workbenchReleased, setWorkbenchReleased] = useState(false);
+  const [revealedWorkbenchStep, setRevealedWorkbenchStep] = useState(
+    workbenchInitiallyComplete ? 3 : 1,
+  );
+  const [workbenchProgress, setWorkbenchProgress] = useState(
+    workbenchInitiallyComplete ? 1 : 0,
+  );
+  const [workbenchCollapseProgress, setWorkbenchCollapseProgress] = useState(
+    workbenchInitiallyComplete ? 1 : 0,
+  );
+  const [workbenchCompleted, setWorkbenchCompleted] = useState(workbenchInitiallyComplete);
+  const [workbenchReleased, setWorkbenchReleased] = useState(workbenchInitiallyComplete);
   const [isHeroVideoReady, setIsHeroVideoReady] = useState(false);
   const tools = useMemo(() => TOOL_CARDS, []);
 
   useLayoutEffect(() => {
     notifyHomeMounted();
   }, []);
+
+  useLayoutEffect(() => {
+    try {
+      window.localStorage.removeItem(WORKBENCH_LEGACY_STORAGE_KEY);
+    } catch {
+      // Ignore unavailable storage; completion is intentionally kept in memory only.
+    }
+
+    const navigationEntry = window.performance
+      ?.getEntriesByType?.("navigation")
+      ?.at?.(0);
+    if (workbenchInitiallyComplete || navigationEntry?.type !== "reload") return undefined;
+
+    const resetScroll = () => window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+    resetScroll();
+    const frame = window.requestAnimationFrame(resetScroll);
+
+    return () => window.cancelAnimationFrame(frame);
+  }, [workbenchInitiallyComplete]);
 
   useEffect(() => {
     let animationFrame = null;
@@ -1201,71 +1119,103 @@ export default function HomePage({ onOpenCrucibleTool, onOpenInspirations }) {
     const staticLayoutQuery = window.matchMedia("(max-width: 900px)");
     let animationFrame = null;
 
-    const clampProgress = (value) => Math.max(0, Math.min(1, value));
-
     const getStepForProgress = (progress) => {
-      if (progress >= 0.98) return 3;
-      if (progress >= 0.48) return 2;
+      if (progress >= 0.74) return 3;
+      if (progress >= 0.38) return 2;
       return 1;
     };
 
-    const commitWorkbenchProgress = (nextVirtualProgress) => {
-      const boundedVirtualProgress = Math.max(
-        workbenchVirtualProgressRef.current,
-        Math.min(WORKBENCH_VIRTUAL_END, nextVirtualProgress),
-      );
-      const boundedProgress = clampProgress(boundedVirtualProgress);
-      workbenchVirtualProgressRef.current = boundedVirtualProgress;
+    const commitCompactState = ({ remember = false } = {}) => {
+      revealedWorkbenchStepRef.current = 3;
+      workbenchProgressRef.current = 1;
+      workbenchCollapseProgressRef.current = 1;
+      workbenchCompletedRef.current = true;
+      workbenchReleasedRef.current = true;
 
-      if (Math.abs(boundedProgress - workbenchProgressRef.current) > 0.0005) {
-        workbenchProgressRef.current = boundedProgress;
-        setWorkbenchProgress(boundedProgress);
+      setRevealedWorkbenchStep(3);
+      setWorkbenchProgress(1);
+      setWorkbenchCollapseProgress(1);
+      setWorkbenchCompleted(true);
+      setWorkbenchReleased(true);
+
+      if (remember) rememberWorkbenchIntroCompletion();
+    };
+
+    const releaseWorkbench = () => {
+      if (workbenchReleasedRef.current) return;
+
+      const section = workbenchFlowRef.current;
+      const scrollingElement = document.scrollingElement;
+      const previousScrollTop = scrollingElement?.scrollTop ?? window.scrollY;
+      const metrics = getWorkbenchViewportMetrics();
+
+      workbenchReleasedRef.current = true;
+      workbenchCollapseProgressRef.current = 1;
+      rememberWorkbenchIntroCompletion();
+
+      if (section) {
+        section.classList.add("is-released");
+        section.style.setProperty("--workbench-current-height", `${metrics.compactHeight}px`);
       }
 
-      const nextStep = getStepForProgress(boundedProgress);
+      if (scrollingElement) {
+        scrollingElement.scrollTop = Math.max(0, previousScrollTop - WORKBENCH_TRACK_SCROLL_PX);
+      }
+
+      setWorkbenchViewportMetrics(metrics);
+      setWorkbenchCollapseProgress(1);
+      setWorkbenchReleased(true);
+    };
+
+    const commitWorkbenchTravel = (travelled) => {
+      const nextProgress = Math.max(
+        workbenchProgressRef.current,
+        clampUnit(travelled / WORKBENCH_PROGRESS_SCROLL_PX),
+      );
+      const rawCollapseProgress = clampUnit(
+        (travelled - WORKBENCH_PROGRESS_SCROLL_PX) / WORKBENCH_COLLAPSE_SCROLL_PX,
+      );
+      const nextCollapseProgress = Math.max(
+        workbenchCollapseProgressRef.current,
+        smoothstep(rawCollapseProgress),
+      );
+
+      if (Math.abs(nextProgress - workbenchProgressRef.current) > 0.0005) {
+        workbenchProgressRef.current = nextProgress;
+        setWorkbenchProgress(nextProgress);
+      }
+
+      if (Math.abs(nextCollapseProgress - workbenchCollapseProgressRef.current) > 0.0005) {
+        workbenchCollapseProgressRef.current = nextCollapseProgress;
+        setWorkbenchCollapseProgress(nextCollapseProgress);
+      }
+
+      const nextStep = getStepForProgress(nextProgress);
       if (nextStep !== revealedWorkbenchStepRef.current) {
         revealedWorkbenchStepRef.current = nextStep;
         setRevealedWorkbenchStep(nextStep);
       }
-      const nextCompleted = boundedProgress >= 0.999;
+
+      const nextCompleted = nextProgress >= 0.999;
       if (nextCompleted !== workbenchCompletedRef.current) {
         workbenchCompletedRef.current = nextCompleted;
         setWorkbenchCompleted(nextCompleted);
       }
 
-      const nextReleased = boundedVirtualProgress >= WORKBENCH_VIRTUAL_END - 0.0005;
-      if (nextReleased !== workbenchReleasedRef.current) {
-        workbenchReleasedRef.current = nextReleased;
-
-        if (nextReleased && !reduceMotionQuery.matches && !staticLayoutQuery.matches) {
-          const section = workbenchFlowRef.current;
-          const scrollingElement = document.scrollingElement;
-
-          if (section && scrollingElement) {
-            const previousScrollTop = scrollingElement.scrollTop;
-            section.classList.add("is-released");
-            scrollingElement.scrollTop = Math.max(
-              0,
-              previousScrollTop - WORKBENCH_TRACK_SCROLL_PX,
-            );
-          }
-        }
-
-        setWorkbenchReleased(nextReleased);
-      }
-
+      if (travelled >= WORKBENCH_TRACK_SCROLL_PX - 0.5) releaseWorkbench();
     };
 
     const updateWorkbenchFromScroll = () => {
       animationFrame = null;
       if (reduceMotionQuery.matches || staticLayoutQuery.matches) return;
+      if (workbenchReleasedRef.current) return;
 
       const section = workbenchFlowRef.current;
-      if (!section || workbenchReleasedRef.current) return;
+      if (!section) return;
 
       const sectionTop = window.scrollY + section.getBoundingClientRect().top;
       const travelled = Math.max(0, window.scrollY - sectionTop);
-      commitWorkbenchProgress(travelled / WORKBENCH_PROGRESS_SCROLL_PX);
+      commitWorkbenchTravel(travelled);
     };
 
     const requestWorkbenchUpdate = () => {
@@ -1273,26 +1223,29 @@ export default function HomePage({ onOpenCrucibleTool, onOpenInspirations }) {
       animationFrame = window.requestAnimationFrame(updateWorkbenchFromScroll);
     };
 
-    const handleWorkbenchStaticLayout = () => {
+    const handleViewportChange = () => {
+      setWorkbenchViewportMetrics(getWorkbenchViewportMetrics());
+
       if (reduceMotionQuery.matches || staticLayoutQuery.matches) {
-        commitWorkbenchProgress(WORKBENCH_VIRTUAL_END);
-      } else {
-        requestWorkbenchUpdate();
+        commitCompactState();
+        return;
       }
+
+      requestWorkbenchUpdate();
     };
 
-    handleWorkbenchStaticLayout();
+    handleViewportChange();
     window.addEventListener("scroll", requestWorkbenchUpdate, { passive: true });
-    window.addEventListener("resize", requestWorkbenchUpdate);
-    reduceMotionQuery.addEventListener?.("change", handleWorkbenchStaticLayout);
-    staticLayoutQuery.addEventListener?.("change", handleWorkbenchStaticLayout);
+    window.addEventListener("resize", handleViewportChange);
+    reduceMotionQuery.addEventListener?.("change", handleViewportChange);
+    staticLayoutQuery.addEventListener?.("change", handleViewportChange);
 
     return () => {
       if (animationFrame !== null) window.cancelAnimationFrame(animationFrame);
       window.removeEventListener("scroll", requestWorkbenchUpdate);
-      window.removeEventListener("resize", requestWorkbenchUpdate);
-      reduceMotionQuery.removeEventListener?.("change", handleWorkbenchStaticLayout);
-      staticLayoutQuery.removeEventListener?.("change", handleWorkbenchStaticLayout);
+      window.removeEventListener("resize", handleViewportChange);
+      reduceMotionQuery.removeEventListener?.("change", handleViewportChange);
+      staticLayoutQuery.removeEventListener?.("change", handleViewportChange);
     };
   }, []);
 
@@ -1368,9 +1321,17 @@ export default function HomePage({ onOpenCrucibleTool, onOpenInspirations }) {
     setIsContactFormOpen(true);
   };
 
+  const workbenchCurrentHeight =
+    workbenchViewportMetrics.viewportHeight -
+    (workbenchViewportMetrics.viewportHeight - workbenchViewportMetrics.compactHeight) *
+      workbenchCollapseProgress;
   const workbenchFlowStyle = {
     "--workbench-progress": String(workbenchProgress),
     "--workbench-progress-percent": `${(workbenchProgress * 100).toFixed(3)}%`,
+    "--workbench-collapse-progress": String(workbenchCollapseProgress),
+    "--workbench-current-height": `${Math.round(workbenchCurrentHeight)}px`,
+    "--workbench-compact-height": `${Math.round(workbenchViewportMetrics.compactHeight)}px`,
+    "--workbench-track-scroll": `${WORKBENCH_TRACK_SCROLL_PX}px`,
   };
 
   return (
@@ -1443,6 +1404,7 @@ export default function HomePage({ onOpenCrucibleTool, onOpenInspirations }) {
           "cruor-home__statement--sticky",
           `is-step-${revealedWorkbenchStep}`,
           workbenchCompleted ? "is-completed" : "",
+          workbenchCompleted && !workbenchReleased ? "is-collapsing" : "",
           workbenchReleased ? "is-released" : "",
         ]
           .filter(Boolean)
@@ -1450,9 +1412,13 @@ export default function HomePage({ onOpenCrucibleTool, onOpenInspirations }) {
         aria-labelledby="workbenchStepsTitle"
         data-revealed-step={revealedWorkbenchStep}
         data-workbench-progress={workbenchProgress.toFixed(3)}
+        data-workbench-collapse-progress={workbenchCollapseProgress.toFixed(3)}
         data-workbench-released={workbenchReleased ? "true" : "false"}
         data-workbench-completed={workbenchCompleted ? "true" : "false"}
-        data-workbench-gating="false"
+        data-workbench-intro-state={
+          workbenchReleased ? "compact" : workbenchCompleted ? "collapsing" : "immersive"
+        }
+        data-workbench-gating={workbenchReleased ? "false" : "true"}
         style={workbenchFlowStyle}
       >
         <div className="cruor-home__statement-sticky">
@@ -1477,70 +1443,6 @@ export default function HomePage({ onOpenCrucibleTool, onOpenInspirations }) {
 
               <ol className="cruor-home__workbench-stages" aria-label="Cruor workbench process">
                 <li className="cruor-home__workbench-stage cruor-home__workbench-stage--input">
-                  <div className="cruor-home__workbench-stage-visual" aria-hidden="true">
-                    <div className="cruor-home__workbench-input-composition">
-                      <div className="cruor-home__workbench-inspiration-slot">
-                        <InspirationCardFront
-                          className="cruor-home__source-card"
-                          inspiration={WORKBENCH_INPUT_INSPIRATION.inspiration}
-                          meta={WORKBENCH_INPUT_INSPIRATION.meta}
-                          ariaHidden
-                        />
-                      </div>
-
-                      <div
-                        className="cruor-home__workbench-inspiration-back-slot"
-                        aria-hidden="true"
-                      >
-                        <article
-                          className="inspiration-card is-flipped cruor-home__workbench-back-card"
-                          data-domain={WORKBENCH_INPUT_INSPIRATION.meta.domainId}
-                          data-obscurity={WORKBENCH_INPUT_INSPIRATION.meta.obscurityId}
-                          data-flipped="true"
-                        >
-                          <div className="inspiration-card__scene">
-                            <section className="inspiration-card__face inspiration-card__back">
-                              <InspirationArtwork
-                                inspiration={WORKBENCH_INPUT_INSPIRATION.inspiration}
-                                className="inspiration-card__back-art"
-                              />
-
-                              <div className="inspiration-card__back-content">
-                                <header className="inspiration-card__back-head">
-                                  <div>
-                                    <h2>Decomposition</h2>
-                                    <span>
-                                      {WORKBENCH_INPUT_INSPIRATION.inspiration.sourceType ||
-                                        "Source"}
-                                    </span>
-                                  </div>
-                                  <span
-                                    className={`inspiration-card__obscurity is-${WORKBENCH_INPUT_INSPIRATION.meta.obscurityId}`}
-                                  >
-                                    {WORKBENCH_INPUT_INSPIRATION.meta.obscurity.symbol}
-                                  </span>
-                                </header>
-
-                                <div className="inspiration-card__description">
-                                  <p>{WORKBENCH_INPUT_BACK_DESCRIPTION}</p>
-                                </div>
-
-                                <footer className="inspiration-card__footer">
-                                  <span>{WORKBENCH_INPUT_INSPIRATION.meta.collectionLabel}</span>
-                                  <span>{WORKBENCH_INPUT_INSPIRATION.meta.numberLabel}</span>
-                                </footer>
-                              </div>
-                            </section>
-                          </div>
-                        </article>
-                      </div>
-
-                      <p className="cruor-home__workbench-input-prompt">
-                        “I need a zombie for tonight’s game…”
-                      </p>
-                    </div>
-                  </div>
-
                   <div className="cruor-home__workbench-marker" aria-hidden="true">
                     <i className="fa-solid fa-inbox" />
                   </div>
@@ -1550,132 +1452,13 @@ export default function HomePage({ onOpenCrucibleTool, onOpenInspirations }) {
                     <h3>Input</h3>
                     <span className="cruor-home__workbench-stage-subtitle">Define the Need</span>
                     <p>
-                      Choose a generator, select the sources, and establish tone, scope, and
-                      creative constraints.
+                      Choose what the session needs and set its source, context, and creative
+                      direction.
                     </p>
                   </div>
                 </li>
 
                 <li className="cruor-home__workbench-stage cruor-home__workbench-stage--engine">
-                  <div className="cruor-home__workbench-stage-visual" aria-hidden="true">
-                    <div className="cruor-home__workbench-flowchart">
-                      <svg
-                        className="cruor-home__workbench-flowchart-wires"
-                        viewBox="0 0 330 176"
-                        aria-hidden="true"
-                      >
-                        <path
-                          className="cruor-home__workbench-flowchart-wire"
-                          style={{ "--wire-delay": "0ms" }}
-                          d="M48 36 V52 H165"
-                        />
-                        <path
-                          className="cruor-home__workbench-flowchart-wire"
-                          style={{ "--wire-delay": "70ms" }}
-                          d="M165 36 V68"
-                        />
-                        <path
-                          className="cruor-home__workbench-flowchart-wire"
-                          style={{ "--wire-delay": "140ms" }}
-                          d="M282 36 V52 H165"
-                        />
-                        <path
-                          className="cruor-home__workbench-flowchart-wire"
-                          style={{ "--wire-delay": "220ms" }}
-                          d="M165 110 V126 H54 V140"
-                        />
-                        <path
-                          className="cruor-home__workbench-flowchart-wire"
-                          style={{ "--wire-delay": "300ms" }}
-                          d="M108 158 H222"
-                        />
-
-                        <circle className="cruor-home__workbench-flowchart-packet" r="1.8">
-                          <animateMotion
-                            dur="10s"
-                            repeatCount="indefinite"
-                            path="M48 36 V52 H165 V68"
-                          />
-                        </circle>
-                        <circle className="cruor-home__workbench-flowchart-packet" r="1.8">
-                          <animateMotion
-                            begin="2s"
-                            dur="10s"
-                            repeatCount="indefinite"
-                            path="M165 36 V68"
-                          />
-                        </circle>
-                        <circle className="cruor-home__workbench-flowchart-packet" r="1.8">
-                          <animateMotion
-                            begin="4s"
-                            dur="10s"
-                            repeatCount="indefinite"
-                            path="M282 36 V52 H165 V68"
-                          />
-                        </circle>
-                        <circle className="cruor-home__workbench-flowchart-packet" r="1.8">
-                          <animateMotion
-                            begin="6s"
-                            dur="10s"
-                            repeatCount="indefinite"
-                            path="M165 110 V126 H54 V140"
-                          />
-                        </circle>
-                        <circle className="cruor-home__workbench-flowchart-packet" r="1.8">
-                          <animateMotion
-                            begin="8s"
-                            dur="10s"
-                            repeatCount="indefinite"
-                            path="M108 158 H222"
-                          />
-                        </circle>
-                      </svg>
-
-                      <span
-                        className="cruor-home__workbench-flowchart-node cruor-home__workbench-flowchart-node--source"
-                        style={{ "--node-delay": "0ms" }}
-                      >
-                        <i className="fa-solid fa-book-open" aria-hidden="true" />
-                        Source
-                      </span>
-                      <span
-                        className="cruor-home__workbench-flowchart-node cruor-home__workbench-flowchart-node--conditions"
-                        style={{ "--node-delay": "85ms" }}
-                      >
-                        <i className="fa-solid fa-list-check" aria-hidden="true" />
-                        Conditions
-                      </span>
-                      <span
-                        className="cruor-home__workbench-flowchart-node cruor-home__workbench-flowchart-node--rules"
-                        style={{ "--node-delay": "170ms" }}
-                      >
-                        <i className="fa-solid fa-code-branch" aria-hidden="true" />
-                        Rules
-                      </span>
-                      <span
-                        className="cruor-home__workbench-flowchart-node cruor-home__workbench-flowchart-node--compiler"
-                        style={{ "--node-delay": "255ms" }}
-                      >
-                        <i className="fa-solid fa-microchip" aria-hidden="true" />
-                        Crucible
-                      </span>
-                      <span
-                        className="cruor-home__workbench-flowchart-node cruor-home__workbench-flowchart-node--validate"
-                        style={{ "--node-delay": "360ms" }}
-                      >
-                        <i className="fa-solid fa-check-double" aria-hidden="true" />
-                        Validate
-                      </span>
-                      <span
-                        className="cruor-home__workbench-flowchart-node cruor-home__workbench-flowchart-node--assemble"
-                        style={{ "--node-delay": "465ms" }}
-                      >
-                        <i className="fa-solid fa-file-code" aria-hidden="true" />
-                        Assemble
-                      </span>
-                    </div>
-                  </div>
-
                   <div className="cruor-home__workbench-marker" aria-hidden="true">
                     <i className="fa-solid fa-microchip" />
                   </div>
@@ -1683,23 +1466,15 @@ export default function HomePage({ onOpenCrucibleTool, onOpenInspirations }) {
                   <div className="cruor-home__workbench-stage-copy">
                     <span className="cruor-home__workbench-stage-index">02</span>
                     <h3>Engine</h3>
-                    <span className="cruor-home__workbench-stage-subtitle">Shape the Result</span>
+                    <span className="cruor-home__workbench-stage-subtitle">Shape It in the Crucible</span>
                     <p>
-                      The Crucible connects inspiration, 5E rules, tone, and playable behavior
-                      into one coherent result.
+                      Sources, conditions, and 5E rules are combined, validated, and assembled into
+                      one coherent result.
                     </p>
                   </div>
                 </li>
 
                 <li className="cruor-home__workbench-stage cruor-home__workbench-stage--output">
-                  <div className="cruor-home__workbench-stage-visual" aria-hidden="true">
-                    <div className="cruor-home__workbench-output-build">
-                      <div className="cruor-home__workbench-output-page">
-                        <WorkbenchMiniStatBlock />
-                      </div>
-                    </div>
-                  </div>
-
                   <div className="cruor-home__workbench-marker" aria-hidden="true">
                     <i className="fa-solid fa-file-export" />
                   </div>
@@ -1707,10 +1482,9 @@ export default function HomePage({ onOpenCrucibleTool, onOpenInspirations }) {
                   <div className="cruor-home__workbench-stage-copy">
                     <span className="cruor-home__workbench-stage-index">03</span>
                     <h3>Output</h3>
-                    <span className="cruor-home__workbench-stage-subtitle">Use It at the Table</span>
+                    <span className="cruor-home__workbench-stage-subtitle">Bring It to the Table</span>
                     <p>
-                      Review the generated material, refine details without starting over, then
-                      export or use it immediately.
+                      Receive structured, playable content that is ready to use, refine, or export.
                     </p>
                   </div>
                 </li>

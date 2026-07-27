@@ -23,6 +23,22 @@ import {
   MONSTER_TWIST_GRAFT_SCALED_IDS,
   getMonsterTwistGraftEditorialOverride,
 } from "./monster-twist-grafts.js";
+import {
+  MONSTER_WEAKNESS_GRAFT_EDITORIAL_VERSION,
+  MONSTER_WEAKNESS_GRAFT_SCALED_IDS,
+  getMonsterWeaknessGraftEditorialOverride,
+} from "./monster-weakness-grafts.js";
+import {
+  MONSTER_DEATH_GRAFT_EDITORIAL_VERSION,
+  MONSTER_DEATH_GRAFT_SCALED_IDS,
+  getMonsterDeathGraftEditorialOverride,
+} from "./monster-death-grafts.js";
+
+import {
+  MONSTER_LAIR_GRAFT_EDITORIAL_VERSION,
+  MONSTER_LAIR_GRAFT_SCALED_IDS,
+  getMonsterLairGraftEditorialOverride,
+} from "./monster-lair-grafts.js";
 
 
 export const MONSTER_SUPPORT_GRAFT_MIGRATION_VERSION =
@@ -654,12 +670,21 @@ function buildRules(graft) {
     graft.editorial?.phase === "phase6r-horror-editorial-review";
   const isTwistEditorialReview =
     graft.editorial?.phase === "phase6r-twist-editorial-review";
+  const isWeaknessEditorialReview =
+    graft.editorial?.phase === "phase6r-weakness-editorial-review";
+  const isDeathEditorialReview =
+    graft.editorial?.phase === "phase6r-death-editorial-review";
+  const isLairEditorialReview =
+    graft.editorial?.phase === "phase6r-lair-editorial-review";
   const isEditorialReview =
     isBodyEditorialReview ||
     isMindEditorialReview ||
     isMovementEditorialReview ||
     isHorrorEditorialReview ||
-    isTwistEditorialReview;
+    isTwistEditorialReview ||
+    isWeaknessEditorialReview ||
+    isDeathEditorialReview ||
+    isLairEditorialReview;
   const reviewSource = isBodyEditorialReview
     ? "phase6r-body-editorial-review"
     : isMindEditorialReview
@@ -670,7 +695,13 @@ function buildRules(graft) {
           ? "phase6r-horror-editorial-review"
           : isTwistEditorialReview
             ? "phase6r-twist-editorial-review"
-            : "phase6-support-graft-migration";
+            : isWeaknessEditorialReview
+              ? "phase6r-weakness-editorial-review"
+              : isDeathEditorialReview
+                ? "phase6r-death-editorial-review"
+                : isLairEditorialReview
+                  ? "phase6r-lair-editorial-review"
+                  : "phase6-support-graft-migration";
   const enhancedRules = isEditorialReview
     ? {
         ...baseRules,
@@ -700,7 +731,13 @@ function buildRules(graft) {
               ? "The structured rule was authorially reviewed against its sensory horror fantasy, encounter reveal, counterplay, and renderer output during the Phase 6R Horror catalog review."
               : isTwistEditorialReview
                 ? "The structured rule was authorially reviewed against its encounter reversal, state transition, counterplay, and renderer output during the Phase 6R Twist catalog review."
-                : "The legacy rule was reconciled with its structured representation and renderer output during the Phase 6 catalog audit.",
+                : isWeaknessEditorialReview
+                  ? "The structured rule was authorially reviewed against its exploit procedure, telegraph, break condition, counterplay, and renderer output during the Phase 6R Weakness catalog review."
+                  : isDeathEditorialReview
+                    ? "The structured rule was authorially reviewed against its death trigger, aftermath procedure, action-economy risk, counterplay, and renderer output during the Phase 6R Death catalog review."
+                    : isLairEditorialReview
+                      ? "The structured rule was authorially reviewed against its initiative-count timing, environmental anchor, spatial answer, cleanup procedure, and renderer output during the Phase 6R Lair catalog review."
+                      : "The legacy rule was reconciled with its structured representation and renderer output during the Phase 6 catalog audit.",
     },
     migration: {
       ...(enhancedRules.migration || {}),
@@ -1092,7 +1129,10 @@ export function buildMonsterSupportGraftMigration(graft = {}) {
     getMonsterMindGraftEditorialOverride(graft.id) ||
     getMonsterMovementGraftEditorialOverride(graft.id) ||
     getMonsterHorrorGraftEditorialOverride(graft.id) ||
-    getMonsterTwistGraftEditorialOverride(graft.id);
+    getMonsterTwistGraftEditorialOverride(graft.id) ||
+    getMonsterWeaknessGraftEditorialOverride(graft.id) ||
+    getMonsterDeathGraftEditorialOverride(graft.id) ||
+    getMonsterLairGraftEditorialOverride(graft.id);
   const authoredGraft = editorialOverride
     ? { ...graft, ...editorialOverride }
     : graft;
@@ -1167,12 +1207,21 @@ export function buildMonsterSupportGraftMigration(graft = {}) {
     authoredGraft.editorial?.phase === "phase6r-horror-editorial-review";
   const isTwistEditorialReview =
     authoredGraft.editorial?.phase === "phase6r-twist-editorial-review";
+  const isWeaknessEditorialReview =
+    authoredGraft.editorial?.phase === "phase6r-weakness-editorial-review";
+  const isDeathEditorialReview =
+    authoredGraft.editorial?.phase === "phase6r-death-editorial-review";
+  const isLairEditorialReview =
+    authoredGraft.editorial?.phase === "phase6r-lair-editorial-review";
   const isEditorialReview =
     isBodyEditorialReview ||
     isMindEditorialReview ||
     isMovementEditorialReview ||
     isHorrorEditorialReview ||
-    isTwistEditorialReview;
+    isTwistEditorialReview ||
+    isWeaknessEditorialReview ||
+    isDeathEditorialReview ||
+    isLairEditorialReview;
   const editorialVersion =
     authoredGraft.editorial?.version ||
     (isBodyEditorialReview
@@ -1185,7 +1234,13 @@ export function buildMonsterSupportGraftMigration(graft = {}) {
             ? MONSTER_HORROR_GRAFT_EDITORIAL_VERSION
             : isTwistEditorialReview
               ? MONSTER_TWIST_GRAFT_EDITORIAL_VERSION
-              : "");
+              : isWeaknessEditorialReview
+                ? MONSTER_WEAKNESS_GRAFT_EDITORIAL_VERSION
+                : isDeathEditorialReview
+                  ? MONSTER_DEATH_GRAFT_EDITORIAL_VERSION
+                  : isLairEditorialReview
+                    ? MONSTER_LAIR_GRAFT_EDITORIAL_VERSION
+                    : "");
 
   return {
     ...authoredGraft,
@@ -1230,7 +1285,13 @@ export function buildMonsterSupportGraftMigration(graft = {}) {
               ? "phase6r-horror-editorial-review"
               : isTwistEditorialReview
                 ? "phase6r-twist-editorial-review"
-                : "phase6-support-grafts",
+                : isWeaknessEditorialReview
+                  ? "phase6r-weakness-editorial-review"
+                  : isDeathEditorialReview
+                    ? "phase6r-death-editorial-review"
+                    : isLairEditorialReview
+                      ? "phase6r-lair-editorial-review"
+                      : "phase6-support-grafts",
       version: editorialVersion || MONSTER_SUPPORT_GRAFT_MIGRATION_VERSION,
     },
     authoring: {
@@ -1245,7 +1306,13 @@ export function buildMonsterSupportGraftMigration(graft = {}) {
               ? "phase6r-horror-editorial-review"
               : isTwistEditorialReview
                 ? "phase6r-twist-editorial-review"
-                : "phase6-support-graft-migration",
+                : isWeaknessEditorialReview
+                  ? "phase6r-weakness-editorial-review"
+                  : isDeathEditorialReview
+                    ? "phase6r-death-editorial-review"
+                    : isLairEditorialReview
+                      ? "phase6r-lair-editorial-review"
+                      : "phase6-support-graft-migration",
       migrationVersion:
         editorialVersion || MONSTER_SUPPORT_GRAFT_MIGRATION_VERSION,
       editorialStatus: authoredGraft.editorial?.status || "technical-migration",
@@ -1261,5 +1328,8 @@ export const MONSTER_SUPPORT_GRAFT_SCALED_IDS = Object.freeze(
     ...MONSTER_MOVEMENT_GRAFT_SCALED_IDS,
     ...MONSTER_HORROR_GRAFT_SCALED_IDS,
     ...MONSTER_TWIST_GRAFT_SCALED_IDS,
+    ...MONSTER_WEAKNESS_GRAFT_SCALED_IDS,
+    ...MONSTER_DEATH_GRAFT_SCALED_IDS,
+    ...MONSTER_LAIR_GRAFT_SCALED_IDS,
   ]),
 );

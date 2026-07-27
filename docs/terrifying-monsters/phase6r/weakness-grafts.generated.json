@@ -1,0 +1,1530 @@
+{
+  "version": "monster-weakness-graft-editorial-audit-v1.0",
+  "editorialVersion": "monster-weakness-graft-editorial-v1.0",
+  "expectedTotal": 13,
+  "total": 13,
+  "passing": 13,
+  "warning": 0,
+  "error": 0,
+  "abilityCount": 13,
+  "bundleCount": 0,
+  "scaledCount": 3,
+  "bySource": {
+    "decomposition": 3,
+    "jikininki": 4,
+    "wax-death-masks": 1,
+    "wolf-spiders": 5
+  },
+  "byDecision": {
+    "REWRITE_SETUP_PRECISION": 1,
+    "REWRITE_AND_SCALE": 3,
+    "REWRITE_SUPPRESSION_WINDOW": 1,
+    "RENAME_CANONICAL_AND_REWRITE": 1,
+    "REWRITE_RITUAL_CONTROL": 1,
+    "REWRITE_REACTION_ANSWER": 1,
+    "REWRITE_COMBO_WINDOW": 1,
+    "REPLACE_WITH_DESTROYABLE_WEAKNESS": 1,
+    "REWRITE_PRECISION_TRADEOFF": 1,
+    "REWRITE_CANONICAL": 1,
+    "REWRITE_POSITIONAL_ANSWER": 1
+  },
+  "reports": [
+    {
+      "version": "monster-weakness-graft-editorial-audit-v1.0",
+      "applicable": true,
+      "id": "head-weak-spot",
+      "title": "Exposed Skull",
+      "source": "decomposition",
+      "decision": "REWRITE_SETUP_PRECISION",
+      "status": "pass",
+      "pass": true,
+      "abilityCount": 1,
+      "counterplayChannels": [
+        "telegraph",
+        "positioning",
+        "breakCondition",
+        "nonDamage"
+      ],
+      "scaling": {
+        "expected": false,
+        "declared": false,
+        "bandCount": 0,
+        "sampledBandIds": [],
+        "sampledRuleVariants": 1,
+        "pass": true
+      },
+      "snapshots": [
+        {
+          "targetCr": 1,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "exposed-skull"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"The monster is Prone, Restrained, or Incapacitated.\",\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the monster\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[{\"id\":\"exposed-skull-critical\",\"type\":\"custom\",\"subject\":\"triggeringCreature\",\"trigger\":\"\",\"appliesTo\":\"the qualifying melee attack\",\"duration\":\"\",\"text\":\"On a hit, the attack becomes a Critical Hit.\",\"simulation\":{\"policy\":\"nonNumeric\",\"model\":\"player-facing weakness procedure\",\"axis\":\"fairness\",\"weight\":1,\"expectedRate\":null}},{\"id\":\"exposed-skull-reaction-lock\",\"type\":\"control\",\"subject\":\"self\",\"trigger\":\"\",\"appliesTo\":\"the monster\",\"duration\":\"until the start of its next turn\",\"text\":\"The monster can't take Reactions until the start of its next turn.\",\"simulation\":{\"policy\":\"nonNumeric\",\"model\":\"player-facing weakness procedure\",\"axis\":\"fairness\",\"weight\":1,\"expectedRate\":null}}],\"text\":{\"effect\":\"If the monster has the Prone, Restrained, or Incapacitated condition, a creature within 5 feet of it can take an action to make one melee attack against its head. On a hit, the attack becomes a Critical Hit, and the monster can't take Reactions until the start of its next turn.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "exposed-skull",
+              "renderedText": "If the monster has the Prone, Restrained, or Incapacitated condition, a creature within 5 feet of it can take an action to make one melee attack against its head. On a hit, the attack becomes a Critical Hit, and the monster can't take Reactions until the start of its next turn."
+            }
+          ]
+        },
+        {
+          "targetCr": 5,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "exposed-skull"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"The monster is Prone, Restrained, or Incapacitated.\",\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the monster\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[{\"id\":\"exposed-skull-critical\",\"type\":\"custom\",\"subject\":\"triggeringCreature\",\"trigger\":\"\",\"appliesTo\":\"the qualifying melee attack\",\"duration\":\"\",\"text\":\"On a hit, the attack becomes a Critical Hit.\",\"simulation\":{\"policy\":\"nonNumeric\",\"model\":\"player-facing weakness procedure\",\"axis\":\"fairness\",\"weight\":1,\"expectedRate\":null}},{\"id\":\"exposed-skull-reaction-lock\",\"type\":\"control\",\"subject\":\"self\",\"trigger\":\"\",\"appliesTo\":\"the monster\",\"duration\":\"until the start of its next turn\",\"text\":\"The monster can't take Reactions until the start of its next turn.\",\"simulation\":{\"policy\":\"nonNumeric\",\"model\":\"player-facing weakness procedure\",\"axis\":\"fairness\",\"weight\":1,\"expectedRate\":null}}],\"text\":{\"effect\":\"If the monster has the Prone, Restrained, or Incapacitated condition, a creature within 5 feet of it can take an action to make one melee attack against its head. On a hit, the attack becomes a Critical Hit, and the monster can't take Reactions until the start of its next turn.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "exposed-skull",
+              "renderedText": "If the monster has the Prone, Restrained, or Incapacitated condition, a creature within 5 feet of it can take an action to make one melee attack against its head. On a hit, the attack becomes a Critical Hit, and the monster can't take Reactions until the start of its next turn."
+            }
+          ]
+        },
+        {
+          "targetCr": 10,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "exposed-skull"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"The monster is Prone, Restrained, or Incapacitated.\",\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the monster\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[{\"id\":\"exposed-skull-critical\",\"type\":\"custom\",\"subject\":\"triggeringCreature\",\"trigger\":\"\",\"appliesTo\":\"the qualifying melee attack\",\"duration\":\"\",\"text\":\"On a hit, the attack becomes a Critical Hit.\",\"simulation\":{\"policy\":\"nonNumeric\",\"model\":\"player-facing weakness procedure\",\"axis\":\"fairness\",\"weight\":1,\"expectedRate\":null}},{\"id\":\"exposed-skull-reaction-lock\",\"type\":\"control\",\"subject\":\"self\",\"trigger\":\"\",\"appliesTo\":\"the monster\",\"duration\":\"until the start of its next turn\",\"text\":\"The monster can't take Reactions until the start of its next turn.\",\"simulation\":{\"policy\":\"nonNumeric\",\"model\":\"player-facing weakness procedure\",\"axis\":\"fairness\",\"weight\":1,\"expectedRate\":null}}],\"text\":{\"effect\":\"If the monster has the Prone, Restrained, or Incapacitated condition, a creature within 5 feet of it can take an action to make one melee attack against its head. On a hit, the attack becomes a Critical Hit, and the monster can't take Reactions until the start of its next turn.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "exposed-skull",
+              "renderedText": "If the monster has the Prone, Restrained, or Incapacitated condition, a creature within 5 feet of it can take an action to make one melee attack against its head. On a hit, the attack becomes a Critical Hit, and the monster can't take Reactions until the start of its next turn."
+            }
+          ]
+        },
+        {
+          "targetCr": 15,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "exposed-skull"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"The monster is Prone, Restrained, or Incapacitated.\",\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the monster\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[{\"id\":\"exposed-skull-critical\",\"type\":\"custom\",\"subject\":\"triggeringCreature\",\"trigger\":\"\",\"appliesTo\":\"the qualifying melee attack\",\"duration\":\"\",\"text\":\"On a hit, the attack becomes a Critical Hit.\",\"simulation\":{\"policy\":\"nonNumeric\",\"model\":\"player-facing weakness procedure\",\"axis\":\"fairness\",\"weight\":1,\"expectedRate\":null}},{\"id\":\"exposed-skull-reaction-lock\",\"type\":\"control\",\"subject\":\"self\",\"trigger\":\"\",\"appliesTo\":\"the monster\",\"duration\":\"until the start of its next turn\",\"text\":\"The monster can't take Reactions until the start of its next turn.\",\"simulation\":{\"policy\":\"nonNumeric\",\"model\":\"player-facing weakness procedure\",\"axis\":\"fairness\",\"weight\":1,\"expectedRate\":null}}],\"text\":{\"effect\":\"If the monster has the Prone, Restrained, or Incapacitated condition, a creature within 5 feet of it can take an action to make one melee attack against its head. On a hit, the attack becomes a Critical Hit, and the monster can't take Reactions until the start of its next turn.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "exposed-skull",
+              "renderedText": "If the monster has the Prone, Restrained, or Incapacitated condition, a creature within 5 feet of it can take an action to make one melee attack against its head. On a hit, the attack becomes a Critical Hit, and the monster can't take Reactions until the start of its next turn."
+            }
+          ]
+        }
+      ],
+      "issues": [],
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "version": "monster-weakness-graft-editorial-audit-v1.0",
+      "applicable": true,
+      "id": "mechanical-stress",
+      "title": "Dismemberment",
+      "source": "decomposition",
+      "decision": "REWRITE_AND_SCALE",
+      "status": "pass",
+      "pass": true,
+      "abilityCount": 1,
+      "counterplayChannels": [
+        "telegraph",
+        "positioning",
+        "breakCondition",
+        "nonDamage"
+      ],
+      "scaling": {
+        "expected": true,
+        "declared": true,
+        "bandCount": 3,
+        "sampledBandIds": [
+          "cr-0-4-fragile-joints",
+          "cr-5-12-softened-joints",
+          "cr-13-30-massive-joints"
+        ],
+        "sampledRuleVariants": 3,
+        "pass": true
+      },
+      "snapshots": [
+        {
+          "targetCr": 1,
+          "bandId": "cr-0-4-fragile-joints",
+          "abilityCount": 1,
+          "abilityIds": [
+            "dismemberment"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"At the end of a turn, the Bloodied monster took at least 8 Slashing damage during that turn.\",\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the monster\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[{\"id\":\"dismemberment-exhaustion\",\"type\":\"control\",\"subject\":\"self\",\"trigger\":\"\",\"appliesTo\":\"the monster\",\"duration\":\"until the monster regains Hit Points\",\"text\":\"One of its limbs is severed and it gains 1 Exhaustion level.\",\"simulation\":{\"policy\":\"nonNumeric\",\"model\":\"player-facing weakness procedure\",\"axis\":\"fairness\",\"weight\":1,\"expectedRate\":null}}],\"text\":{\"effect\":\"At the end of a turn, if the Bloodied monster took at least 8 Slashing damage during that turn, one of its limbs is severed and it gains 1 Exhaustion level. The monster can suffer this effect no more than once per round and regrows its missing limbs and removes all Exhaustion levels gained from this trait the next time it regains Hit Points.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "dismemberment",
+              "renderedText": "At the end of a turn, if the Bloodied monster took at least 8 Slashing damage during that turn, one of its limbs is severed and it gains 1 Exhaustion level. The monster can suffer this effect no more than once per round and regrows its missing limbs and removes all Exhaustion levels gained from this trait the next time it regains Hit Points."
+            }
+          ]
+        },
+        {
+          "targetCr": 5,
+          "bandId": "cr-5-12-softened-joints",
+          "abilityCount": 1,
+          "abilityIds": [
+            "dismemberment"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"At the end of a turn, the Bloodied monster took at least 15 Slashing damage during that turn.\",\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the monster\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[{\"id\":\"dismemberment-exhaustion\",\"type\":\"control\",\"subject\":\"self\",\"trigger\":\"\",\"appliesTo\":\"the monster\",\"duration\":\"until the monster regains Hit Points\",\"text\":\"One of its limbs is severed and it gains 1 Exhaustion level.\",\"simulation\":{\"policy\":\"nonNumeric\",\"model\":\"player-facing weakness procedure\",\"axis\":\"fairness\",\"weight\":1,\"expectedRate\":null}}],\"text\":{\"effect\":\"At the end of a turn, if the Bloodied monster took at least 15 Slashing damage during that turn, one of its limbs is severed and it gains 1 Exhaustion level. The monster can suffer this effect no more than once per round and regrows its missing limbs and removes all Exhaustion levels gained from this trait the next time it regains Hit Points.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "dismemberment",
+              "renderedText": "At the end of a turn, if the Bloodied monster took at least 15 Slashing damage during that turn, one of its limbs is severed and it gains 1 Exhaustion level. The monster can suffer this effect no more than once per round and regrows its missing limbs and removes all Exhaustion levels gained from this trait the next time it regains Hit Points."
+            }
+          ]
+        },
+        {
+          "targetCr": 10,
+          "bandId": "cr-5-12-softened-joints",
+          "abilityCount": 1,
+          "abilityIds": [
+            "dismemberment"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"At the end of a turn, the Bloodied monster took at least 15 Slashing damage during that turn.\",\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the monster\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[{\"id\":\"dismemberment-exhaustion\",\"type\":\"control\",\"subject\":\"self\",\"trigger\":\"\",\"appliesTo\":\"the monster\",\"duration\":\"until the monster regains Hit Points\",\"text\":\"One of its limbs is severed and it gains 1 Exhaustion level.\",\"simulation\":{\"policy\":\"nonNumeric\",\"model\":\"player-facing weakness procedure\",\"axis\":\"fairness\",\"weight\":1,\"expectedRate\":null}}],\"text\":{\"effect\":\"At the end of a turn, if the Bloodied monster took at least 15 Slashing damage during that turn, one of its limbs is severed and it gains 1 Exhaustion level. The monster can suffer this effect no more than once per round and regrows its missing limbs and removes all Exhaustion levels gained from this trait the next time it regains Hit Points.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "dismemberment",
+              "renderedText": "At the end of a turn, if the Bloodied monster took at least 15 Slashing damage during that turn, one of its limbs is severed and it gains 1 Exhaustion level. The monster can suffer this effect no more than once per round and regrows its missing limbs and removes all Exhaustion levels gained from this trait the next time it regains Hit Points."
+            }
+          ]
+        },
+        {
+          "targetCr": 15,
+          "bandId": "cr-13-30-massive-joints",
+          "abilityCount": 1,
+          "abilityIds": [
+            "dismemberment"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"At the end of a turn, the Bloodied monster took at least 25 Slashing damage during that turn.\",\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the monster\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[{\"id\":\"dismemberment-exhaustion\",\"type\":\"control\",\"subject\":\"self\",\"trigger\":\"\",\"appliesTo\":\"the monster\",\"duration\":\"until the monster regains Hit Points\",\"text\":\"One of its limbs is severed and it gains 1 Exhaustion level.\",\"simulation\":{\"policy\":\"nonNumeric\",\"model\":\"player-facing weakness procedure\",\"axis\":\"fairness\",\"weight\":1,\"expectedRate\":null}}],\"text\":{\"effect\":\"At the end of a turn, if the Bloodied monster took at least 25 Slashing damage during that turn, one of its limbs is severed and it gains 1 Exhaustion level. The monster can suffer this effect no more than once per round and regrows its missing limbs and removes all Exhaustion levels gained from this trait the next time it regains Hit Points.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "dismemberment",
+              "renderedText": "At the end of a turn, if the Bloodied monster took at least 25 Slashing damage during that turn, one of its limbs is severed and it gains 1 Exhaustion level. The monster can suffer this effect no more than once per round and regrows its missing limbs and removes all Exhaustion levels gained from this trait the next time it regains Hit Points."
+            }
+          ]
+        }
+      ],
+      "issues": [],
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "version": "monster-weakness-graft-editorial-audit-v1.0",
+      "applicable": true,
+      "id": "radiant-preservation-failure",
+      "title": "Radiant Disruption",
+      "source": "decomposition",
+      "decision": "REWRITE_SUPPRESSION_WINDOW",
+      "status": "pass",
+      "pass": true,
+      "abilityCount": 1,
+      "counterplayChannels": [
+        "telegraph",
+        "positioning",
+        "breakCondition",
+        "nonDamage"
+      ],
+      "scaling": {
+        "expected": false,
+        "declared": false,
+        "bandCount": 0,
+        "sampledBandIds": [],
+        "sampledRuleVariants": 1,
+        "pass": true
+      },
+      "snapshots": [
+        {
+          "targetCr": 1,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "radiant-disruption"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"The monster takes Radiant damage.\",\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the monster\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[{\"id\":\"radiant-reaction-lock\",\"type\":\"control\",\"subject\":\"self\",\"trigger\":\"\",\"appliesTo\":\"the monster\",\"duration\":\"until the start of its next turn\",\"text\":\"It can't take Reactions until the start of its next turn.\",\"simulation\":{\"policy\":\"nonNumeric\",\"model\":\"player-facing weakness procedure\",\"axis\":\"fairness\",\"weight\":1,\"expectedRate\":null}},{\"id\":\"radiant-death-suppression\",\"type\":\"defense\",\"subject\":\"self\",\"trigger\":\"\",\"appliesTo\":\"the monster\",\"duration\":\"until the start of its next turn\",\"text\":\"If it drops to 0 Hit Points during that time, its Death features don't activate.\",\"simulation\":{\"policy\":\"nonNumeric\",\"model\":\"player-facing weakness procedure\",\"axis\":\"fairness\",\"weight\":1,\"expectedRate\":null}}],\"text\":{\"effect\":\"After the monster takes Radiant damage, it can't take Reactions or benefit from a trait that would prevent it from dropping to 0 Hit Points until the start of its next turn. If it drops to 0 Hit Points during that time, its Death features don't activate.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "radiant-disruption",
+              "renderedText": "After the monster takes Radiant damage, it can't take Reactions or benefit from a trait that would prevent it from dropping to 0 Hit Points until the start of its next turn. If it drops to 0 Hit Points during that time, its Death features don't activate."
+            }
+          ]
+        },
+        {
+          "targetCr": 5,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "radiant-disruption"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"The monster takes Radiant damage.\",\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the monster\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[{\"id\":\"radiant-reaction-lock\",\"type\":\"control\",\"subject\":\"self\",\"trigger\":\"\",\"appliesTo\":\"the monster\",\"duration\":\"until the start of its next turn\",\"text\":\"It can't take Reactions until the start of its next turn.\",\"simulation\":{\"policy\":\"nonNumeric\",\"model\":\"player-facing weakness procedure\",\"axis\":\"fairness\",\"weight\":1,\"expectedRate\":null}},{\"id\":\"radiant-death-suppression\",\"type\":\"defense\",\"subject\":\"self\",\"trigger\":\"\",\"appliesTo\":\"the monster\",\"duration\":\"until the start of its next turn\",\"text\":\"If it drops to 0 Hit Points during that time, its Death features don't activate.\",\"simulation\":{\"policy\":\"nonNumeric\",\"model\":\"player-facing weakness procedure\",\"axis\":\"fairness\",\"weight\":1,\"expectedRate\":null}}],\"text\":{\"effect\":\"After the monster takes Radiant damage, it can't take Reactions or benefit from a trait that would prevent it from dropping to 0 Hit Points until the start of its next turn. If it drops to 0 Hit Points during that time, its Death features don't activate.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "radiant-disruption",
+              "renderedText": "After the monster takes Radiant damage, it can't take Reactions or benefit from a trait that would prevent it from dropping to 0 Hit Points until the start of its next turn. If it drops to 0 Hit Points during that time, its Death features don't activate."
+            }
+          ]
+        },
+        {
+          "targetCr": 10,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "radiant-disruption"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"The monster takes Radiant damage.\",\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the monster\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[{\"id\":\"radiant-reaction-lock\",\"type\":\"control\",\"subject\":\"self\",\"trigger\":\"\",\"appliesTo\":\"the monster\",\"duration\":\"until the start of its next turn\",\"text\":\"It can't take Reactions until the start of its next turn.\",\"simulation\":{\"policy\":\"nonNumeric\",\"model\":\"player-facing weakness procedure\",\"axis\":\"fairness\",\"weight\":1,\"expectedRate\":null}},{\"id\":\"radiant-death-suppression\",\"type\":\"defense\",\"subject\":\"self\",\"trigger\":\"\",\"appliesTo\":\"the monster\",\"duration\":\"until the start of its next turn\",\"text\":\"If it drops to 0 Hit Points during that time, its Death features don't activate.\",\"simulation\":{\"policy\":\"nonNumeric\",\"model\":\"player-facing weakness procedure\",\"axis\":\"fairness\",\"weight\":1,\"expectedRate\":null}}],\"text\":{\"effect\":\"After the monster takes Radiant damage, it can't take Reactions or benefit from a trait that would prevent it from dropping to 0 Hit Points until the start of its next turn. If it drops to 0 Hit Points during that time, its Death features don't activate.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "radiant-disruption",
+              "renderedText": "After the monster takes Radiant damage, it can't take Reactions or benefit from a trait that would prevent it from dropping to 0 Hit Points until the start of its next turn. If it drops to 0 Hit Points during that time, its Death features don't activate."
+            }
+          ]
+        },
+        {
+          "targetCr": 15,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "radiant-disruption"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"The monster takes Radiant damage.\",\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the monster\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[{\"id\":\"radiant-reaction-lock\",\"type\":\"control\",\"subject\":\"self\",\"trigger\":\"\",\"appliesTo\":\"the monster\",\"duration\":\"until the start of its next turn\",\"text\":\"It can't take Reactions until the start of its next turn.\",\"simulation\":{\"policy\":\"nonNumeric\",\"model\":\"player-facing weakness procedure\",\"axis\":\"fairness\",\"weight\":1,\"expectedRate\":null}},{\"id\":\"radiant-death-suppression\",\"type\":\"defense\",\"subject\":\"self\",\"trigger\":\"\",\"appliesTo\":\"the monster\",\"duration\":\"until the start of its next turn\",\"text\":\"If it drops to 0 Hit Points during that time, its Death features don't activate.\",\"simulation\":{\"policy\":\"nonNumeric\",\"model\":\"player-facing weakness procedure\",\"axis\":\"fairness\",\"weight\":1,\"expectedRate\":null}}],\"text\":{\"effect\":\"After the monster takes Radiant damage, it can't take Reactions or benefit from a trait that would prevent it from dropping to 0 Hit Points until the start of its next turn. If it drops to 0 Hit Points during that time, its Death features don't activate.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "radiant-disruption",
+              "renderedText": "After the monster takes Radiant damage, it can't take Reactions or benefit from a trait that would prevent it from dropping to 0 Hit Points until the start of its next turn. If it drops to 0 Hit Points during that time, its Death features don't activate."
+            }
+          ]
+        }
+      ],
+      "issues": [],
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "version": "monster-weakness-graft-editorial-audit-v1.0",
+      "applicable": true,
+      "id": "dangerous-hunger",
+      "title": "Consecrated Bait",
+      "source": "jikininki",
+      "decision": "REWRITE_AND_SCALE",
+      "status": "pass",
+      "pass": true,
+      "abilityCount": 1,
+      "counterplayChannels": [
+        "telegraph",
+        "positioning",
+        "breakCondition",
+        "nonDamage"
+      ],
+      "scaling": {
+        "expected": true,
+        "declared": true,
+        "bandCount": 3,
+        "sampledBandIds": [
+          "cr-0-4-consecrated-bait",
+          "cr-5-12-consecrated-bait",
+          "cr-13-30-consecrated-bait"
+        ],
+        "sampledRuleVariants": 3,
+        "pass": true
+      },
+      "snapshots": [
+        {
+          "targetCr": 1,
+          "bandId": "cr-0-4-consecrated-bait",
+          "abilityCount": 1,
+          "abilityIds": [
+            "consecrated-bait"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"The monster enters a space within 5 feet of a corpse prepared as Consecrated Bait or starts its turn there.\",\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the monster\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[\"restrained\"],\"severity\":\"major\",\"direction\":\"weakness\",\"duration\":\"until the end of its next turn\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[{\"id\":\"consecrated-bait-radiant\",\"type\":\"custom\",\"subject\":\"self\",\"trigger\":\"\",\"appliesTo\":\"the monster\",\"duration\":\"instantaneous\",\"text\":\"The first time the monster enters a space within 5 feet of that corpse or starts its turn there, it takes 2d6 Radiant damage.\",\"simulation\":{\"policy\":\"nonNumeric\",\"model\":\"player-facing weakness procedure\",\"axis\":\"fairness\",\"weight\":1,\"expectedRate\":null}},{\"id\":\"consecrated-bait-restraint\",\"type\":\"control\",\"subject\":\"self\",\"trigger\":\"\",\"appliesTo\":\"the monster\",\"duration\":\"until the end of its next turn\",\"text\":\"It has the Restrained condition until the end of its next turn.\",\"simulation\":{\"policy\":\"nonNumeric\",\"model\":\"player-facing weakness procedure\",\"axis\":\"fairness\",\"weight\":1,\"expectedRate\":null}}],\"text\":{\"effect\":\"A creature can spend 1 minute and expend a flask of Holy Water or 10 GP of ritual salt and incense to prepare a corpse as bait. The first time the monster enters a space within 5 feet of that corpse or starts its turn there, it takes 2d6 Radiant damage and has the Restrained condition until the end of its next turn.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "consecrated-bait",
+              "renderedText": "A creature can spend 1 minute and expend a flask of Holy Water or 10 GP of ritual salt and incense to prepare a corpse as bait. The first time the monster enters a space within 5 feet of that corpse or starts its turn there, it takes 2d6 Radiant damage and has the Restrained condition until the end of its next turn."
+            }
+          ]
+        },
+        {
+          "targetCr": 5,
+          "bandId": "cr-5-12-consecrated-bait",
+          "abilityCount": 1,
+          "abilityIds": [
+            "consecrated-bait"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"The monster enters a space within 5 feet of a corpse prepared as Consecrated Bait or starts its turn there.\",\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the monster\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[\"restrained\"],\"severity\":\"major\",\"direction\":\"weakness\",\"duration\":\"until the end of its next turn\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[{\"id\":\"consecrated-bait-radiant\",\"type\":\"custom\",\"subject\":\"self\",\"trigger\":\"\",\"appliesTo\":\"the monster\",\"duration\":\"instantaneous\",\"text\":\"The first time the monster enters a space within 5 feet of that corpse or starts its turn there, it takes 4d6 Radiant damage.\",\"simulation\":{\"policy\":\"nonNumeric\",\"model\":\"player-facing weakness procedure\",\"axis\":\"fairness\",\"weight\":1,\"expectedRate\":null}},{\"id\":\"consecrated-bait-restraint\",\"type\":\"control\",\"subject\":\"self\",\"trigger\":\"\",\"appliesTo\":\"the monster\",\"duration\":\"until the end of its next turn\",\"text\":\"It has the Restrained condition until the end of its next turn.\",\"simulation\":{\"policy\":\"nonNumeric\",\"model\":\"player-facing weakness procedure\",\"axis\":\"fairness\",\"weight\":1,\"expectedRate\":null}}],\"text\":{\"effect\":\"A creature can spend 1 minute and expend a flask of Holy Water or 10 GP of ritual salt and incense to prepare a corpse as bait. The first time the monster enters a space within 5 feet of that corpse or starts its turn there, it takes 4d6 Radiant damage and has the Restrained condition until the end of its next turn.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "consecrated-bait",
+              "renderedText": "A creature can spend 1 minute and expend a flask of Holy Water or 10 GP of ritual salt and incense to prepare a corpse as bait. The first time the monster enters a space within 5 feet of that corpse or starts its turn there, it takes 4d6 Radiant damage and has the Restrained condition until the end of its next turn."
+            }
+          ]
+        },
+        {
+          "targetCr": 10,
+          "bandId": "cr-5-12-consecrated-bait",
+          "abilityCount": 1,
+          "abilityIds": [
+            "consecrated-bait"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"The monster enters a space within 5 feet of a corpse prepared as Consecrated Bait or starts its turn there.\",\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the monster\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[\"restrained\"],\"severity\":\"major\",\"direction\":\"weakness\",\"duration\":\"until the end of its next turn\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[{\"id\":\"consecrated-bait-radiant\",\"type\":\"custom\",\"subject\":\"self\",\"trigger\":\"\",\"appliesTo\":\"the monster\",\"duration\":\"instantaneous\",\"text\":\"The first time the monster enters a space within 5 feet of that corpse or starts its turn there, it takes 4d6 Radiant damage.\",\"simulation\":{\"policy\":\"nonNumeric\",\"model\":\"player-facing weakness procedure\",\"axis\":\"fairness\",\"weight\":1,\"expectedRate\":null}},{\"id\":\"consecrated-bait-restraint\",\"type\":\"control\",\"subject\":\"self\",\"trigger\":\"\",\"appliesTo\":\"the monster\",\"duration\":\"until the end of its next turn\",\"text\":\"It has the Restrained condition until the end of its next turn.\",\"simulation\":{\"policy\":\"nonNumeric\",\"model\":\"player-facing weakness procedure\",\"axis\":\"fairness\",\"weight\":1,\"expectedRate\":null}}],\"text\":{\"effect\":\"A creature can spend 1 minute and expend a flask of Holy Water or 10 GP of ritual salt and incense to prepare a corpse as bait. The first time the monster enters a space within 5 feet of that corpse or starts its turn there, it takes 4d6 Radiant damage and has the Restrained condition until the end of its next turn.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "consecrated-bait",
+              "renderedText": "A creature can spend 1 minute and expend a flask of Holy Water or 10 GP of ritual salt and incense to prepare a corpse as bait. The first time the monster enters a space within 5 feet of that corpse or starts its turn there, it takes 4d6 Radiant damage and has the Restrained condition until the end of its next turn."
+            }
+          ]
+        },
+        {
+          "targetCr": 15,
+          "bandId": "cr-13-30-consecrated-bait",
+          "abilityCount": 1,
+          "abilityIds": [
+            "consecrated-bait"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"The monster enters a space within 5 feet of a corpse prepared as Consecrated Bait or starts its turn there.\",\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the monster\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[\"restrained\"],\"severity\":\"major\",\"direction\":\"weakness\",\"duration\":\"until the end of its next turn\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[{\"id\":\"consecrated-bait-radiant\",\"type\":\"custom\",\"subject\":\"self\",\"trigger\":\"\",\"appliesTo\":\"the monster\",\"duration\":\"instantaneous\",\"text\":\"The first time the monster enters a space within 5 feet of that corpse or starts its turn there, it takes 6d6 Radiant damage.\",\"simulation\":{\"policy\":\"nonNumeric\",\"model\":\"player-facing weakness procedure\",\"axis\":\"fairness\",\"weight\":1,\"expectedRate\":null}},{\"id\":\"consecrated-bait-restraint\",\"type\":\"control\",\"subject\":\"self\",\"trigger\":\"\",\"appliesTo\":\"the monster\",\"duration\":\"until the end of its next turn\",\"text\":\"It has the Restrained condition until the end of its next turn.\",\"simulation\":{\"policy\":\"nonNumeric\",\"model\":\"player-facing weakness procedure\",\"axis\":\"fairness\",\"weight\":1,\"expectedRate\":null}}],\"text\":{\"effect\":\"A creature can spend 1 minute and expend a flask of Holy Water or 10 GP of ritual salt and incense to prepare a corpse as bait. The first time the monster enters a space within 5 feet of that corpse or starts its turn there, it takes 6d6 Radiant damage and has the Restrained condition until the end of its next turn.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "consecrated-bait",
+              "renderedText": "A creature can spend 1 minute and expend a flask of Holy Water or 10 GP of ritual salt and incense to prepare a corpse as bait. The first time the monster enters a space within 5 feet of that corpse or starts its turn there, it takes 6d6 Radiant damage and has the Restrained condition until the end of its next turn."
+            }
+          ]
+        }
+      ],
+      "issues": [],
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "version": "monster-weakness-graft-editorial-audit-v1.0",
+      "applicable": true,
+      "id": "daytime-weakness",
+      "title": "Sunlight Weakness",
+      "source": "jikininki",
+      "decision": "RENAME_CANONICAL_AND_REWRITE",
+      "status": "pass",
+      "pass": true,
+      "abilityCount": 1,
+      "counterplayChannels": [
+        "telegraph",
+        "positioning",
+        "breakCondition",
+        "nonDamage"
+      ],
+      "scaling": {
+        "expected": false,
+        "declared": false,
+        "bandCount": 0,
+        "sampledBandIds": [],
+        "sampledRuleVariants": 1,
+        "pass": true
+      },
+      "snapshots": [
+        {
+          "targetCr": 1,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "sunlight-weakness"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"The monster is in sunlight.\",\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the monster\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[{\"id\":\"sunlight-disadvantage\",\"type\":\"disadvantage\",\"subject\":\"self\",\"trigger\":\"\",\"appliesTo\":\"the monster\",\"duration\":\"while in sunlight\",\"text\":\"While in sunlight, the monster has Disadvantage on D20 Tests.\",\"simulation\":{\"policy\":\"nonNumeric\",\"model\":\"player-facing weakness procedure\",\"axis\":\"fairness\",\"weight\":1,\"expectedRate\":null}},{\"id\":\"sunlight-slow\",\"type\":\"movement\",\"subject\":\"self\",\"trigger\":\"\",\"appliesTo\":\"the monster\",\"duration\":\"while in sunlight\",\"text\":\"Its Speed is halved.\",\"simulation\":{\"policy\":\"nonNumeric\",\"model\":\"player-facing weakness procedure\",\"axis\":\"fairness\",\"weight\":1,\"expectedRate\":null}}],\"text\":{\"effect\":\"While in sunlight, the monster has Disadvantage on D20 Tests, and its Speed is halved. Magical light counts as sunlight only if the effect creating it says that it is sunlight.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "sunlight-weakness",
+              "renderedText": "While in sunlight, the monster has Disadvantage on D20 Tests, and its Speed is halved. Magical light counts as sunlight only if the effect creating it says that it is sunlight."
+            }
+          ]
+        },
+        {
+          "targetCr": 5,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "sunlight-weakness"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"The monster is in sunlight.\",\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the monster\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[{\"id\":\"sunlight-disadvantage\",\"type\":\"disadvantage\",\"subject\":\"self\",\"trigger\":\"\",\"appliesTo\":\"the monster\",\"duration\":\"while in sunlight\",\"text\":\"While in sunlight, the monster has Disadvantage on D20 Tests.\",\"simulation\":{\"policy\":\"nonNumeric\",\"model\":\"player-facing weakness procedure\",\"axis\":\"fairness\",\"weight\":1,\"expectedRate\":null}},{\"id\":\"sunlight-slow\",\"type\":\"movement\",\"subject\":\"self\",\"trigger\":\"\",\"appliesTo\":\"the monster\",\"duration\":\"while in sunlight\",\"text\":\"Its Speed is halved.\",\"simulation\":{\"policy\":\"nonNumeric\",\"model\":\"player-facing weakness procedure\",\"axis\":\"fairness\",\"weight\":1,\"expectedRate\":null}}],\"text\":{\"effect\":\"While in sunlight, the monster has Disadvantage on D20 Tests, and its Speed is halved. Magical light counts as sunlight only if the effect creating it says that it is sunlight.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "sunlight-weakness",
+              "renderedText": "While in sunlight, the monster has Disadvantage on D20 Tests, and its Speed is halved. Magical light counts as sunlight only if the effect creating it says that it is sunlight."
+            }
+          ]
+        },
+        {
+          "targetCr": 10,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "sunlight-weakness"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"The monster is in sunlight.\",\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the monster\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[{\"id\":\"sunlight-disadvantage\",\"type\":\"disadvantage\",\"subject\":\"self\",\"trigger\":\"\",\"appliesTo\":\"the monster\",\"duration\":\"while in sunlight\",\"text\":\"While in sunlight, the monster has Disadvantage on D20 Tests.\",\"simulation\":{\"policy\":\"nonNumeric\",\"model\":\"player-facing weakness procedure\",\"axis\":\"fairness\",\"weight\":1,\"expectedRate\":null}},{\"id\":\"sunlight-slow\",\"type\":\"movement\",\"subject\":\"self\",\"trigger\":\"\",\"appliesTo\":\"the monster\",\"duration\":\"while in sunlight\",\"text\":\"Its Speed is halved.\",\"simulation\":{\"policy\":\"nonNumeric\",\"model\":\"player-facing weakness procedure\",\"axis\":\"fairness\",\"weight\":1,\"expectedRate\":null}}],\"text\":{\"effect\":\"While in sunlight, the monster has Disadvantage on D20 Tests, and its Speed is halved. Magical light counts as sunlight only if the effect creating it says that it is sunlight.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "sunlight-weakness",
+              "renderedText": "While in sunlight, the monster has Disadvantage on D20 Tests, and its Speed is halved. Magical light counts as sunlight only if the effect creating it says that it is sunlight."
+            }
+          ]
+        },
+        {
+          "targetCr": 15,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "sunlight-weakness"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"The monster is in sunlight.\",\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the monster\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[{\"id\":\"sunlight-disadvantage\",\"type\":\"disadvantage\",\"subject\":\"self\",\"trigger\":\"\",\"appliesTo\":\"the monster\",\"duration\":\"while in sunlight\",\"text\":\"While in sunlight, the monster has Disadvantage on D20 Tests.\",\"simulation\":{\"policy\":\"nonNumeric\",\"model\":\"player-facing weakness procedure\",\"axis\":\"fairness\",\"weight\":1,\"expectedRate\":null}},{\"id\":\"sunlight-slow\",\"type\":\"movement\",\"subject\":\"self\",\"trigger\":\"\",\"appliesTo\":\"the monster\",\"duration\":\"while in sunlight\",\"text\":\"Its Speed is halved.\",\"simulation\":{\"policy\":\"nonNumeric\",\"model\":\"player-facing weakness procedure\",\"axis\":\"fairness\",\"weight\":1,\"expectedRate\":null}}],\"text\":{\"effect\":\"While in sunlight, the monster has Disadvantage on D20 Tests, and its Speed is halved. Magical light counts as sunlight only if the effect creating it says that it is sunlight.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "sunlight-weakness",
+              "renderedText": "While in sunlight, the monster has Disadvantage on D20 Tests, and its Speed is halved. Magical light counts as sunlight only if the effect creating it says that it is sunlight."
+            }
+          ]
+        }
+      ],
+      "issues": [],
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "version": "monster-weakness-graft-editorial-audit-v1.0",
+      "applicable": true,
+      "id": "salt-and-names",
+      "title": "Salt and True Names",
+      "source": "jikininki",
+      "decision": "REWRITE_RITUAL_CONTROL",
+      "status": "pass",
+      "pass": true,
+      "abilityCount": 1,
+      "counterplayChannels": [
+        "telegraph",
+        "positioning",
+        "breakCondition",
+        "nonDamage"
+      ],
+      "scaling": {
+        "expected": false,
+        "declared": false,
+        "bandCount": 0,
+        "sampledBandIds": [],
+        "sampledRuleVariants": 1,
+        "pass": true
+      },
+      "snapshots": [
+        {
+          "targetCr": 1,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "salt-and-true-names"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"A creature within 30 feet of the monster can take a Magic action to present burial salt, perform a funeral invocation, or speak the monster's true name.\",\"resolution\":{\"type\":\"savingThrow\",\"ability\":\"wisdom\",\"dc\":\"monster\"},\"targeting\":{\"type\":\"single\",\"targets\":\"\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[{\"id\":\"salt-boundary\",\"type\":\"movement\",\"subject\":\"self\",\"trigger\":\"\",\"appliesTo\":\"the monster\",\"duration\":\"until the end of its next turn\",\"text\":\"Until the end of its next turn, the monster can't willingly move closer to that creature, enter that creature's space, or move through creatures or objects.\",\"simulation\":{\"policy\":\"nonNumeric\",\"model\":\"player-facing weakness procedure\",\"axis\":\"fairness\",\"weight\":1,\"expectedRate\":null}}],\"text\":{\"failure\":\"Until the end of its next turn, the monster can't willingly move closer to that creature, enter that creature's space, or move through creatures or objects.\",\"success\":\"The monster is immune to that creature's Salt and True Names for 24 hours.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "salt-and-true-names",
+              "renderedText": "A creature within 30 feet of the monster can take a Magic action to present burial salt, perform a funeral invocation, or speak the monster's true name. Wisdom Saving Throw: DC 15. Failure: Until the end of its next turn, the monster can't willingly move closer to that creature, enter that creature's space, or move through creatures or objects. Success: The monster is immune to that creature's Salt and True Names for 24 hours."
+            }
+          ]
+        },
+        {
+          "targetCr": 5,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "salt-and-true-names"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"A creature within 30 feet of the monster can take a Magic action to present burial salt, perform a funeral invocation, or speak the monster's true name.\",\"resolution\":{\"type\":\"savingThrow\",\"ability\":\"wisdom\",\"dc\":\"monster\"},\"targeting\":{\"type\":\"single\",\"targets\":\"\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[{\"id\":\"salt-boundary\",\"type\":\"movement\",\"subject\":\"self\",\"trigger\":\"\",\"appliesTo\":\"the monster\",\"duration\":\"until the end of its next turn\",\"text\":\"Until the end of its next turn, the monster can't willingly move closer to that creature, enter that creature's space, or move through creatures or objects.\",\"simulation\":{\"policy\":\"nonNumeric\",\"model\":\"player-facing weakness procedure\",\"axis\":\"fairness\",\"weight\":1,\"expectedRate\":null}}],\"text\":{\"failure\":\"Until the end of its next turn, the monster can't willingly move closer to that creature, enter that creature's space, or move through creatures or objects.\",\"success\":\"The monster is immune to that creature's Salt and True Names for 24 hours.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "salt-and-true-names",
+              "renderedText": "A creature within 30 feet of the monster can take a Magic action to present burial salt, perform a funeral invocation, or speak the monster's true name. Wisdom Saving Throw: DC 15. Failure: Until the end of its next turn, the monster can't willingly move closer to that creature, enter that creature's space, or move through creatures or objects. Success: The monster is immune to that creature's Salt and True Names for 24 hours."
+            }
+          ]
+        },
+        {
+          "targetCr": 10,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "salt-and-true-names"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"A creature within 30 feet of the monster can take a Magic action to present burial salt, perform a funeral invocation, or speak the monster's true name.\",\"resolution\":{\"type\":\"savingThrow\",\"ability\":\"wisdom\",\"dc\":\"monster\"},\"targeting\":{\"type\":\"single\",\"targets\":\"\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[{\"id\":\"salt-boundary\",\"type\":\"movement\",\"subject\":\"self\",\"trigger\":\"\",\"appliesTo\":\"the monster\",\"duration\":\"until the end of its next turn\",\"text\":\"Until the end of its next turn, the monster can't willingly move closer to that creature, enter that creature's space, or move through creatures or objects.\",\"simulation\":{\"policy\":\"nonNumeric\",\"model\":\"player-facing weakness procedure\",\"axis\":\"fairness\",\"weight\":1,\"expectedRate\":null}}],\"text\":{\"failure\":\"Until the end of its next turn, the monster can't willingly move closer to that creature, enter that creature's space, or move through creatures or objects.\",\"success\":\"The monster is immune to that creature's Salt and True Names for 24 hours.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "salt-and-true-names",
+              "renderedText": "A creature within 30 feet of the monster can take a Magic action to present burial salt, perform a funeral invocation, or speak the monster's true name. Wisdom Saving Throw: DC 15. Failure: Until the end of its next turn, the monster can't willingly move closer to that creature, enter that creature's space, or move through creatures or objects. Success: The monster is immune to that creature's Salt and True Names for 24 hours."
+            }
+          ]
+        },
+        {
+          "targetCr": 15,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "salt-and-true-names"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"A creature within 30 feet of the monster can take a Magic action to present burial salt, perform a funeral invocation, or speak the monster's true name.\",\"resolution\":{\"type\":\"savingThrow\",\"ability\":\"wisdom\",\"dc\":\"monster\"},\"targeting\":{\"type\":\"single\",\"targets\":\"\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[{\"id\":\"salt-boundary\",\"type\":\"movement\",\"subject\":\"self\",\"trigger\":\"\",\"appliesTo\":\"the monster\",\"duration\":\"until the end of its next turn\",\"text\":\"Until the end of its next turn, the monster can't willingly move closer to that creature, enter that creature's space, or move through creatures or objects.\",\"simulation\":{\"policy\":\"nonNumeric\",\"model\":\"player-facing weakness procedure\",\"axis\":\"fairness\",\"weight\":1,\"expectedRate\":null}}],\"text\":{\"failure\":\"Until the end of its next turn, the monster can't willingly move closer to that creature, enter that creature's space, or move through creatures or objects.\",\"success\":\"The monster is immune to that creature's Salt and True Names for 24 hours.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "salt-and-true-names",
+              "renderedText": "A creature within 30 feet of the monster can take a Magic action to present burial salt, perform a funeral invocation, or speak the monster's true name. Wisdom Saving Throw: DC 15. Failure: Until the end of its next turn, the monster can't willingly move closer to that creature, enter that creature's space, or move through creatures or objects. Success: The monster is immune to that creature's Salt and True Names for 24 hours."
+            }
+          ]
+        }
+      ],
+      "issues": [],
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "version": "monster-weakness-graft-editorial-audit-v1.0",
+      "applicable": true,
+      "id": "shameful-feeding",
+      "title": "Shame",
+      "source": "jikininki",
+      "decision": "REWRITE_REACTION_ANSWER",
+      "status": "pass",
+      "pass": true,
+      "abilityCount": 1,
+      "counterplayChannels": [
+        "telegraph",
+        "positioning",
+        "breakCondition",
+        "nonDamage"
+      ],
+      "scaling": {
+        "expected": false,
+        "declared": false,
+        "bandCount": 0,
+        "sampledBandIds": [],
+        "sampledRuleVariants": 1,
+        "pass": true
+      },
+      "snapshots": [
+        {
+          "targetCr": 1,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "shame"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"When the monster starts its turn within 5 feet of a corpse while a creature within 30 feet can see it, one witness can use its Reaction to denounce its hunger or speak the monster's mortal name.\",\"resolution\":{\"type\":\"savingThrow\",\"ability\":\"wisdom\",\"dc\":\"monster\",\"attackType\":\"melee\"},\"targeting\":{\"type\":\"single\",\"targets\":\"\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[{\"id\":\"shame-interruption\",\"type\":\"control\",\"subject\":\"self\",\"trigger\":\"\",\"appliesTo\":\"the monster\",\"duration\":\"until the end of its next turn\",\"text\":\"The monster can't take Reactions, its Speed is halved, and it has Disadvantage on attack rolls until the end of its next turn.\",\"simulation\":{\"policy\":\"nonNumeric\",\"model\":\"player-facing weakness procedure\",\"axis\":\"fairness\",\"weight\":1,\"expectedRate\":null}}],\"text\":{\"failure\":\"The monster can't take Reactions, its Speed is halved, and it has Disadvantage on attack rolls until the end of its next turn.\",\"success\":\"The monster is immune to this witness's Shame for 24 hours.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "shame",
+              "renderedText": "When the monster starts its turn within 5 feet of a corpse while a creature within 30 feet can see it, one witness can use its Reaction to denounce its hunger or speak the monster's mortal name. Wisdom Saving Throw: DC 15. Failure: The monster can't take Reactions, its Speed is halved, and it has Disadvantage on attack rolls until the end of its next turn. Success: The monster is immune to this witness's Shame for 24 hours."
+            }
+          ]
+        },
+        {
+          "targetCr": 5,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "shame"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"When the monster starts its turn within 5 feet of a corpse while a creature within 30 feet can see it, one witness can use its Reaction to denounce its hunger or speak the monster's mortal name.\",\"resolution\":{\"type\":\"savingThrow\",\"ability\":\"wisdom\",\"dc\":\"monster\",\"attackType\":\"melee\"},\"targeting\":{\"type\":\"single\",\"targets\":\"\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[{\"id\":\"shame-interruption\",\"type\":\"control\",\"subject\":\"self\",\"trigger\":\"\",\"appliesTo\":\"the monster\",\"duration\":\"until the end of its next turn\",\"text\":\"The monster can't take Reactions, its Speed is halved, and it has Disadvantage on attack rolls until the end of its next turn.\",\"simulation\":{\"policy\":\"nonNumeric\",\"model\":\"player-facing weakness procedure\",\"axis\":\"fairness\",\"weight\":1,\"expectedRate\":null}}],\"text\":{\"failure\":\"The monster can't take Reactions, its Speed is halved, and it has Disadvantage on attack rolls until the end of its next turn.\",\"success\":\"The monster is immune to this witness's Shame for 24 hours.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "shame",
+              "renderedText": "When the monster starts its turn within 5 feet of a corpse while a creature within 30 feet can see it, one witness can use its Reaction to denounce its hunger or speak the monster's mortal name. Wisdom Saving Throw: DC 15. Failure: The monster can't take Reactions, its Speed is halved, and it has Disadvantage on attack rolls until the end of its next turn. Success: The monster is immune to this witness's Shame for 24 hours."
+            }
+          ]
+        },
+        {
+          "targetCr": 10,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "shame"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"When the monster starts its turn within 5 feet of a corpse while a creature within 30 feet can see it, one witness can use its Reaction to denounce its hunger or speak the monster's mortal name.\",\"resolution\":{\"type\":\"savingThrow\",\"ability\":\"wisdom\",\"dc\":\"monster\",\"attackType\":\"melee\"},\"targeting\":{\"type\":\"single\",\"targets\":\"\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[{\"id\":\"shame-interruption\",\"type\":\"control\",\"subject\":\"self\",\"trigger\":\"\",\"appliesTo\":\"the monster\",\"duration\":\"until the end of its next turn\",\"text\":\"The monster can't take Reactions, its Speed is halved, and it has Disadvantage on attack rolls until the end of its next turn.\",\"simulation\":{\"policy\":\"nonNumeric\",\"model\":\"player-facing weakness procedure\",\"axis\":\"fairness\",\"weight\":1,\"expectedRate\":null}}],\"text\":{\"failure\":\"The monster can't take Reactions, its Speed is halved, and it has Disadvantage on attack rolls until the end of its next turn.\",\"success\":\"The monster is immune to this witness's Shame for 24 hours.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "shame",
+              "renderedText": "When the monster starts its turn within 5 feet of a corpse while a creature within 30 feet can see it, one witness can use its Reaction to denounce its hunger or speak the monster's mortal name. Wisdom Saving Throw: DC 15. Failure: The monster can't take Reactions, its Speed is halved, and it has Disadvantage on attack rolls until the end of its next turn. Success: The monster is immune to this witness's Shame for 24 hours."
+            }
+          ]
+        },
+        {
+          "targetCr": 15,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "shame"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"When the monster starts its turn within 5 feet of a corpse while a creature within 30 feet can see it, one witness can use its Reaction to denounce its hunger or speak the monster's mortal name.\",\"resolution\":{\"type\":\"savingThrow\",\"ability\":\"wisdom\",\"dc\":\"monster\",\"attackType\":\"melee\"},\"targeting\":{\"type\":\"single\",\"targets\":\"\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[{\"id\":\"shame-interruption\",\"type\":\"control\",\"subject\":\"self\",\"trigger\":\"\",\"appliesTo\":\"the monster\",\"duration\":\"until the end of its next turn\",\"text\":\"The monster can't take Reactions, its Speed is halved, and it has Disadvantage on attack rolls until the end of its next turn.\",\"simulation\":{\"policy\":\"nonNumeric\",\"model\":\"player-facing weakness procedure\",\"axis\":\"fairness\",\"weight\":1,\"expectedRate\":null}}],\"text\":{\"failure\":\"The monster can't take Reactions, its Speed is halved, and it has Disadvantage on attack rolls until the end of its next turn.\",\"success\":\"The monster is immune to this witness's Shame for 24 hours.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "shame",
+              "renderedText": "When the monster starts its turn within 5 feet of a corpse while a creature within 30 feet can see it, one witness can use its Reaction to denounce its hunger or speak the monster's mortal name. Wisdom Saving Throw: DC 15. Failure: The monster can't take Reactions, its Speed is halved, and it has Disadvantage on attack rolls until the end of its next turn. Success: The monster is immune to this witness's Shame for 24 hours."
+            }
+          ]
+        }
+      ],
+      "issues": [],
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "version": "monster-weakness-graft-editorial-audit-v1.0",
+      "applicable": true,
+      "id": "fire-softens-it",
+      "title": "Softened Wax",
+      "source": "wax-death-masks",
+      "decision": "REWRITE_COMBO_WINDOW",
+      "status": "pass",
+      "pass": true,
+      "abilityCount": 1,
+      "counterplayChannels": [
+        "telegraph",
+        "positioning",
+        "breakCondition",
+        "nonDamage"
+      ],
+      "scaling": {
+        "expected": false,
+        "declared": false,
+        "bandCount": 0,
+        "sampledBandIds": [],
+        "sampledRuleVariants": 1,
+        "pass": true
+      },
+      "snapshots": [
+        {
+          "targetCr": 1,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "softened-wax"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"The monster takes Fire damage.\",\"resolution\":{\"type\":\"none\",\"attackType\":\"melee\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the monster\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[{\"id\":\"softened-wax-advantage\",\"type\":\"advantage\",\"subject\":\"triggeringCreature\",\"trigger\":\"\",\"appliesTo\":\"attack rolls against the monster\",\"duration\":\"until the start of the monster's next turn\",\"text\":\"Attack rolls against it have Advantage during that time.\",\"simulation\":{\"policy\":\"nonNumeric\",\"model\":\"player-facing weakness procedure\",\"axis\":\"fairness\",\"weight\":1,\"expectedRate\":null}},{\"id\":\"softened-wax-mask-tear\",\"type\":\"control\",\"subject\":\"self\",\"trigger\":\"\",\"appliesTo\":\"the monster\",\"duration\":\"until the end of its next turn\",\"text\":\"The first hit during the window tears the mask, and the monster can't take Reactions until the end of its next turn.\",\"simulation\":{\"policy\":\"nonNumeric\",\"model\":\"player-facing weakness procedure\",\"axis\":\"fairness\",\"weight\":1,\"expectedRate\":null}}],\"text\":{\"effect\":\"After the monster takes Fire damage, the wax remains softened until the start of the monster's next turn. Attack rolls against it have Advantage during that time. The first hit during the window tears the mask, and the monster can't take Reactions until the end of its next turn.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "softened-wax",
+              "renderedText": "After the monster takes Fire damage, the wax remains softened until the start of the monster's next turn. Attack rolls against it have Advantage during that time. The first hit during the window tears the mask, and the monster can't take Reactions until the end of its next turn."
+            }
+          ]
+        },
+        {
+          "targetCr": 5,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "softened-wax"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"The monster takes Fire damage.\",\"resolution\":{\"type\":\"none\",\"attackType\":\"melee\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the monster\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[{\"id\":\"softened-wax-advantage\",\"type\":\"advantage\",\"subject\":\"triggeringCreature\",\"trigger\":\"\",\"appliesTo\":\"attack rolls against the monster\",\"duration\":\"until the start of the monster's next turn\",\"text\":\"Attack rolls against it have Advantage during that time.\",\"simulation\":{\"policy\":\"nonNumeric\",\"model\":\"player-facing weakness procedure\",\"axis\":\"fairness\",\"weight\":1,\"expectedRate\":null}},{\"id\":\"softened-wax-mask-tear\",\"type\":\"control\",\"subject\":\"self\",\"trigger\":\"\",\"appliesTo\":\"the monster\",\"duration\":\"until the end of its next turn\",\"text\":\"The first hit during the window tears the mask, and the monster can't take Reactions until the end of its next turn.\",\"simulation\":{\"policy\":\"nonNumeric\",\"model\":\"player-facing weakness procedure\",\"axis\":\"fairness\",\"weight\":1,\"expectedRate\":null}}],\"text\":{\"effect\":\"After the monster takes Fire damage, the wax remains softened until the start of the monster's next turn. Attack rolls against it have Advantage during that time. The first hit during the window tears the mask, and the monster can't take Reactions until the end of its next turn.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "softened-wax",
+              "renderedText": "After the monster takes Fire damage, the wax remains softened until the start of the monster's next turn. Attack rolls against it have Advantage during that time. The first hit during the window tears the mask, and the monster can't take Reactions until the end of its next turn."
+            }
+          ]
+        },
+        {
+          "targetCr": 10,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "softened-wax"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"The monster takes Fire damage.\",\"resolution\":{\"type\":\"none\",\"attackType\":\"melee\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the monster\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[{\"id\":\"softened-wax-advantage\",\"type\":\"advantage\",\"subject\":\"triggeringCreature\",\"trigger\":\"\",\"appliesTo\":\"attack rolls against the monster\",\"duration\":\"until the start of the monster's next turn\",\"text\":\"Attack rolls against it have Advantage during that time.\",\"simulation\":{\"policy\":\"nonNumeric\",\"model\":\"player-facing weakness procedure\",\"axis\":\"fairness\",\"weight\":1,\"expectedRate\":null}},{\"id\":\"softened-wax-mask-tear\",\"type\":\"control\",\"subject\":\"self\",\"trigger\":\"\",\"appliesTo\":\"the monster\",\"duration\":\"until the end of its next turn\",\"text\":\"The first hit during the window tears the mask, and the monster can't take Reactions until the end of its next turn.\",\"simulation\":{\"policy\":\"nonNumeric\",\"model\":\"player-facing weakness procedure\",\"axis\":\"fairness\",\"weight\":1,\"expectedRate\":null}}],\"text\":{\"effect\":\"After the monster takes Fire damage, the wax remains softened until the start of the monster's next turn. Attack rolls against it have Advantage during that time. The first hit during the window tears the mask, and the monster can't take Reactions until the end of its next turn.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "softened-wax",
+              "renderedText": "After the monster takes Fire damage, the wax remains softened until the start of the monster's next turn. Attack rolls against it have Advantage during that time. The first hit during the window tears the mask, and the monster can't take Reactions until the end of its next turn."
+            }
+          ]
+        },
+        {
+          "targetCr": 15,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "softened-wax"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"The monster takes Fire damage.\",\"resolution\":{\"type\":\"none\",\"attackType\":\"melee\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the monster\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[{\"id\":\"softened-wax-advantage\",\"type\":\"advantage\",\"subject\":\"triggeringCreature\",\"trigger\":\"\",\"appliesTo\":\"attack rolls against the monster\",\"duration\":\"until the start of the monster's next turn\",\"text\":\"Attack rolls against it have Advantage during that time.\",\"simulation\":{\"policy\":\"nonNumeric\",\"model\":\"player-facing weakness procedure\",\"axis\":\"fairness\",\"weight\":1,\"expectedRate\":null}},{\"id\":\"softened-wax-mask-tear\",\"type\":\"control\",\"subject\":\"self\",\"trigger\":\"\",\"appliesTo\":\"the monster\",\"duration\":\"until the end of its next turn\",\"text\":\"The first hit during the window tears the mask, and the monster can't take Reactions until the end of its next turn.\",\"simulation\":{\"policy\":\"nonNumeric\",\"model\":\"player-facing weakness procedure\",\"axis\":\"fairness\",\"weight\":1,\"expectedRate\":null}}],\"text\":{\"effect\":\"After the monster takes Fire damage, the wax remains softened until the start of the monster's next turn. Attack rolls against it have Advantage during that time. The first hit during the window tears the mask, and the monster can't take Reactions until the end of its next turn.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "softened-wax",
+              "renderedText": "After the monster takes Fire damage, the wax remains softened until the start of the monster's next turn. Attack rolls against it have Advantage during that time. The first hit during the window tears the mask, and the monster can't take Reactions until the end of its next turn."
+            }
+          ]
+        }
+      ],
+      "issues": [],
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "version": "monster-weakness-graft-editorial-audit-v1.0",
+      "applicable": true,
+      "id": "brood-tell",
+      "title": "Brood Sac",
+      "source": "wolf-spiders",
+      "decision": "REPLACE_WITH_DESTROYABLE_WEAKNESS",
+      "status": "pass",
+      "pass": true,
+      "abilityCount": 1,
+      "counterplayChannels": [
+        "telegraph",
+        "positioning",
+        "breakCondition",
+        "nonDamage"
+      ],
+      "scaling": {
+        "expected": false,
+        "declared": false,
+        "bandCount": 0,
+        "sampledBandIds": [],
+        "sampledRuleVariants": 1,
+        "pass": true
+      },
+      "snapshots": [
+        {
+          "targetCr": 1,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "brood-sac"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"The monster's visible Brood Sac is destroyed.\",\"resolution\":{\"type\":\"none\",\"attackType\":\"melee\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the monster\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[{\"id\":\"brood-sac-disruption\",\"type\":\"control\",\"subject\":\"self\",\"trigger\":\"\",\"appliesTo\":\"the monster\",\"duration\":\"until the end of its next turn\",\"text\":\"When the sac is destroyed, the monster can't take Reactions and has Disadvantage on attack rolls until the end of its next turn.\",\"simulation\":{\"policy\":\"nonNumeric\",\"model\":\"player-facing weakness procedure\",\"axis\":\"fairness\",\"weight\":1,\"expectedRate\":null}}],\"text\":{\"effect\":\"The monster carries a visible Brood Sac. The sac has AC 12, Hit Points equal to 5 + twice the monster's Proficiency Bonus, and immunity to Poison and Psychic damage. A creature can target the sac as though it were an object carried by the monster. When the sac is destroyed, the monster can't take Reactions and has Disadvantage on attack rolls until the end of its next turn.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "brood-sac",
+              "renderedText": "The monster carries a visible Brood Sac. The sac has AC 12, Hit Points equal to 5 + twice the monster's Proficiency Bonus, and immunity to Poison and Psychic damage. A creature can target the sac as though it were an object carried by the monster. When the sac is destroyed, the monster can't take Reactions and has Disadvantage on attack rolls until the end of its next turn."
+            }
+          ]
+        },
+        {
+          "targetCr": 5,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "brood-sac"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"The monster's visible Brood Sac is destroyed.\",\"resolution\":{\"type\":\"none\",\"attackType\":\"melee\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the monster\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[{\"id\":\"brood-sac-disruption\",\"type\":\"control\",\"subject\":\"self\",\"trigger\":\"\",\"appliesTo\":\"the monster\",\"duration\":\"until the end of its next turn\",\"text\":\"When the sac is destroyed, the monster can't take Reactions and has Disadvantage on attack rolls until the end of its next turn.\",\"simulation\":{\"policy\":\"nonNumeric\",\"model\":\"player-facing weakness procedure\",\"axis\":\"fairness\",\"weight\":1,\"expectedRate\":null}}],\"text\":{\"effect\":\"The monster carries a visible Brood Sac. The sac has AC 12, Hit Points equal to 5 + twice the monster's Proficiency Bonus, and immunity to Poison and Psychic damage. A creature can target the sac as though it were an object carried by the monster. When the sac is destroyed, the monster can't take Reactions and has Disadvantage on attack rolls until the end of its next turn.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "brood-sac",
+              "renderedText": "The monster carries a visible Brood Sac. The sac has AC 12, Hit Points equal to 5 + twice the monster's Proficiency Bonus, and immunity to Poison and Psychic damage. A creature can target the sac as though it were an object carried by the monster. When the sac is destroyed, the monster can't take Reactions and has Disadvantage on attack rolls until the end of its next turn."
+            }
+          ]
+        },
+        {
+          "targetCr": 10,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "brood-sac"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"The monster's visible Brood Sac is destroyed.\",\"resolution\":{\"type\":\"none\",\"attackType\":\"melee\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the monster\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[{\"id\":\"brood-sac-disruption\",\"type\":\"control\",\"subject\":\"self\",\"trigger\":\"\",\"appliesTo\":\"the monster\",\"duration\":\"until the end of its next turn\",\"text\":\"When the sac is destroyed, the monster can't take Reactions and has Disadvantage on attack rolls until the end of its next turn.\",\"simulation\":{\"policy\":\"nonNumeric\",\"model\":\"player-facing weakness procedure\",\"axis\":\"fairness\",\"weight\":1,\"expectedRate\":null}}],\"text\":{\"effect\":\"The monster carries a visible Brood Sac. The sac has AC 12, Hit Points equal to 5 + twice the monster's Proficiency Bonus, and immunity to Poison and Psychic damage. A creature can target the sac as though it were an object carried by the monster. When the sac is destroyed, the monster can't take Reactions and has Disadvantage on attack rolls until the end of its next turn.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "brood-sac",
+              "renderedText": "The monster carries a visible Brood Sac. The sac has AC 12, Hit Points equal to 5 + twice the monster's Proficiency Bonus, and immunity to Poison and Psychic damage. A creature can target the sac as though it were an object carried by the monster. When the sac is destroyed, the monster can't take Reactions and has Disadvantage on attack rolls until the end of its next turn."
+            }
+          ]
+        },
+        {
+          "targetCr": 15,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "brood-sac"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"The monster's visible Brood Sac is destroyed.\",\"resolution\":{\"type\":\"none\",\"attackType\":\"melee\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the monster\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[{\"id\":\"brood-sac-disruption\",\"type\":\"control\",\"subject\":\"self\",\"trigger\":\"\",\"appliesTo\":\"the monster\",\"duration\":\"until the end of its next turn\",\"text\":\"When the sac is destroyed, the monster can't take Reactions and has Disadvantage on attack rolls until the end of its next turn.\",\"simulation\":{\"policy\":\"nonNumeric\",\"model\":\"player-facing weakness procedure\",\"axis\":\"fairness\",\"weight\":1,\"expectedRate\":null}}],\"text\":{\"effect\":\"The monster carries a visible Brood Sac. The sac has AC 12, Hit Points equal to 5 + twice the monster's Proficiency Bonus, and immunity to Poison and Psychic damage. A creature can target the sac as though it were an object carried by the monster. When the sac is destroyed, the monster can't take Reactions and has Disadvantage on attack rolls until the end of its next turn.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "brood-sac",
+              "renderedText": "The monster carries a visible Brood Sac. The sac has AC 12, Hit Points equal to 5 + twice the monster's Proficiency Bonus, and immunity to Poison and Psychic damage. A creature can target the sac as though it were an object carried by the monster. When the sac is destroyed, the monster can't take Reactions and has Disadvantage on attack rolls until the end of its next turn."
+            }
+          ]
+        }
+      ],
+      "issues": [],
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "version": "monster-weakness-graft-editorial-audit-v1.0",
+      "applicable": true,
+      "id": "eyes-weak-spot",
+      "title": "Eye Cluster",
+      "source": "wolf-spiders",
+      "decision": "REWRITE_PRECISION_TRADEOFF",
+      "status": "pass",
+      "pass": true,
+      "abilityCount": 1,
+      "counterplayChannels": [
+        "telegraph",
+        "positioning",
+        "breakCondition",
+        "nonDamage"
+      ],
+      "scaling": {
+        "expected": false,
+        "declared": false,
+        "bandCount": 0,
+        "sampledBandIds": [],
+        "sampledRuleVariants": 1,
+        "pass": true
+      },
+      "snapshots": [
+        {
+          "targetCr": 1,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "eye-cluster"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"A creature hits the monster with a ranged weapon attack and forgoes all damage from that attack.\",\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the monster\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[\"blinded\"],\"severity\":\"major\",\"direction\":\"playerApplied\",\"duration\":\"until the end of its next turn\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[{\"id\":\"eye-cluster-blind\",\"type\":\"control\",\"subject\":\"self\",\"trigger\":\"\",\"appliesTo\":\"the monster\",\"duration\":\"until the end of its next turn\",\"text\":\"The monster has the Blinded condition until the end of its next turn.\",\"simulation\":{\"policy\":\"nonNumeric\",\"model\":\"player-facing weakness procedure\",\"axis\":\"fairness\",\"weight\":1,\"expectedRate\":null}}],\"text\":{\"effect\":\"When a creature hits the monster with a ranged weapon attack, it can forgo all damage from that attack to strike the eye cluster. The monster has the Blinded condition until the end of its next turn. After this blindness ends, the monster is immune to Eye Cluster until the start of its following turn.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "eye-cluster",
+              "renderedText": "When a creature hits the monster with a ranged weapon attack, it can forgo all damage from that attack to strike the eye cluster. The monster has the Blinded condition until the end of its next turn. After this blindness ends, the monster is immune to Eye Cluster until the start of its following turn."
+            }
+          ]
+        },
+        {
+          "targetCr": 5,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "eye-cluster"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"A creature hits the monster with a ranged weapon attack and forgoes all damage from that attack.\",\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the monster\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[\"blinded\"],\"severity\":\"major\",\"direction\":\"playerApplied\",\"duration\":\"until the end of its next turn\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[{\"id\":\"eye-cluster-blind\",\"type\":\"control\",\"subject\":\"self\",\"trigger\":\"\",\"appliesTo\":\"the monster\",\"duration\":\"until the end of its next turn\",\"text\":\"The monster has the Blinded condition until the end of its next turn.\",\"simulation\":{\"policy\":\"nonNumeric\",\"model\":\"player-facing weakness procedure\",\"axis\":\"fairness\",\"weight\":1,\"expectedRate\":null}}],\"text\":{\"effect\":\"When a creature hits the monster with a ranged weapon attack, it can forgo all damage from that attack to strike the eye cluster. The monster has the Blinded condition until the end of its next turn. After this blindness ends, the monster is immune to Eye Cluster until the start of its following turn.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "eye-cluster",
+              "renderedText": "When a creature hits the monster with a ranged weapon attack, it can forgo all damage from that attack to strike the eye cluster. The monster has the Blinded condition until the end of its next turn. After this blindness ends, the monster is immune to Eye Cluster until the start of its following turn."
+            }
+          ]
+        },
+        {
+          "targetCr": 10,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "eye-cluster"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"A creature hits the monster with a ranged weapon attack and forgoes all damage from that attack.\",\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the monster\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[\"blinded\"],\"severity\":\"major\",\"direction\":\"playerApplied\",\"duration\":\"until the end of its next turn\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[{\"id\":\"eye-cluster-blind\",\"type\":\"control\",\"subject\":\"self\",\"trigger\":\"\",\"appliesTo\":\"the monster\",\"duration\":\"until the end of its next turn\",\"text\":\"The monster has the Blinded condition until the end of its next turn.\",\"simulation\":{\"policy\":\"nonNumeric\",\"model\":\"player-facing weakness procedure\",\"axis\":\"fairness\",\"weight\":1,\"expectedRate\":null}}],\"text\":{\"effect\":\"When a creature hits the monster with a ranged weapon attack, it can forgo all damage from that attack to strike the eye cluster. The monster has the Blinded condition until the end of its next turn. After this blindness ends, the monster is immune to Eye Cluster until the start of its following turn.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "eye-cluster",
+              "renderedText": "When a creature hits the monster with a ranged weapon attack, it can forgo all damage from that attack to strike the eye cluster. The monster has the Blinded condition until the end of its next turn. After this blindness ends, the monster is immune to Eye Cluster until the start of its following turn."
+            }
+          ]
+        },
+        {
+          "targetCr": 15,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "eye-cluster"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"A creature hits the monster with a ranged weapon attack and forgoes all damage from that attack.\",\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the monster\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[\"blinded\"],\"severity\":\"major\",\"direction\":\"playerApplied\",\"duration\":\"until the end of its next turn\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[{\"id\":\"eye-cluster-blind\",\"type\":\"control\",\"subject\":\"self\",\"trigger\":\"\",\"appliesTo\":\"the monster\",\"duration\":\"until the end of its next turn\",\"text\":\"The monster has the Blinded condition until the end of its next turn.\",\"simulation\":{\"policy\":\"nonNumeric\",\"model\":\"player-facing weakness procedure\",\"axis\":\"fairness\",\"weight\":1,\"expectedRate\":null}}],\"text\":{\"effect\":\"When a creature hits the monster with a ranged weapon attack, it can forgo all damage from that attack to strike the eye cluster. The monster has the Blinded condition until the end of its next turn. After this blindness ends, the monster is immune to Eye Cluster until the start of its following turn.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "eye-cluster",
+              "renderedText": "When a creature hits the monster with a ranged weapon attack, it can forgo all damage from that attack to strike the eye cluster. The monster has the Blinded condition until the end of its next turn. After this blindness ends, the monster is immune to Eye Cluster until the start of its following turn."
+            }
+          ]
+        }
+      ],
+      "issues": [],
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "version": "monster-weakness-graft-editorial-audit-v1.0",
+      "applicable": true,
+      "id": "fear-of-fire",
+      "title": "Fear of Fire",
+      "source": "wolf-spiders",
+      "decision": "REWRITE_CANONICAL",
+      "status": "pass",
+      "pass": true,
+      "abilityCount": 1,
+      "counterplayChannels": [
+        "telegraph",
+        "positioning",
+        "breakCondition",
+        "nonDamage"
+      ],
+      "scaling": {
+        "expected": false,
+        "declared": false,
+        "bandCount": 0,
+        "sampledBandIds": [],
+        "sampledRuleVariants": 1,
+        "pass": true
+      },
+      "snapshots": [
+        {
+          "targetCr": 1,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "fear-of-fire"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"The monster takes Fire damage.\",\"resolution\":{\"type\":\"none\",\"attackType\":\"melee\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the monster\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[{\"id\":\"fire-aversion-disadvantage\",\"type\":\"disadvantage\",\"subject\":\"self\",\"trigger\":\"\",\"appliesTo\":\"the monster\",\"duration\":\"until the end of its next turn\",\"text\":\"It has Disadvantage on attack rolls and ability checks until the end of its next turn.\",\"simulation\":{\"policy\":\"nonNumeric\",\"model\":\"player-facing weakness procedure\",\"axis\":\"fairness\",\"weight\":1,\"expectedRate\":null}},{\"id\":\"fire-aversion-movement\",\"type\":\"movement\",\"subject\":\"self\",\"trigger\":\"\",\"appliesTo\":\"the monster\",\"duration\":\"until the end of its next turn\",\"text\":\"During that time, it can't willingly move closer to the source of the Fire damage.\",\"simulation\":{\"policy\":\"nonNumeric\",\"model\":\"player-facing weakness procedure\",\"axis\":\"fairness\",\"weight\":1,\"expectedRate\":null}}],\"text\":{\"effect\":\"After the monster takes Fire damage, it has Disadvantage on attack rolls and ability checks until the end of its next turn. During that time, it can't willingly move closer to the source of the Fire damage.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "fear-of-fire",
+              "renderedText": "After the monster takes Fire damage, it has Disadvantage on attack rolls and ability checks until the end of its next turn. During that time, it can't willingly move closer to the source of the Fire damage."
+            }
+          ]
+        },
+        {
+          "targetCr": 5,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "fear-of-fire"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"The monster takes Fire damage.\",\"resolution\":{\"type\":\"none\",\"attackType\":\"melee\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the monster\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[{\"id\":\"fire-aversion-disadvantage\",\"type\":\"disadvantage\",\"subject\":\"self\",\"trigger\":\"\",\"appliesTo\":\"the monster\",\"duration\":\"until the end of its next turn\",\"text\":\"It has Disadvantage on attack rolls and ability checks until the end of its next turn.\",\"simulation\":{\"policy\":\"nonNumeric\",\"model\":\"player-facing weakness procedure\",\"axis\":\"fairness\",\"weight\":1,\"expectedRate\":null}},{\"id\":\"fire-aversion-movement\",\"type\":\"movement\",\"subject\":\"self\",\"trigger\":\"\",\"appliesTo\":\"the monster\",\"duration\":\"until the end of its next turn\",\"text\":\"During that time, it can't willingly move closer to the source of the Fire damage.\",\"simulation\":{\"policy\":\"nonNumeric\",\"model\":\"player-facing weakness procedure\",\"axis\":\"fairness\",\"weight\":1,\"expectedRate\":null}}],\"text\":{\"effect\":\"After the monster takes Fire damage, it has Disadvantage on attack rolls and ability checks until the end of its next turn. During that time, it can't willingly move closer to the source of the Fire damage.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "fear-of-fire",
+              "renderedText": "After the monster takes Fire damage, it has Disadvantage on attack rolls and ability checks until the end of its next turn. During that time, it can't willingly move closer to the source of the Fire damage."
+            }
+          ]
+        },
+        {
+          "targetCr": 10,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "fear-of-fire"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"The monster takes Fire damage.\",\"resolution\":{\"type\":\"none\",\"attackType\":\"melee\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the monster\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[{\"id\":\"fire-aversion-disadvantage\",\"type\":\"disadvantage\",\"subject\":\"self\",\"trigger\":\"\",\"appliesTo\":\"the monster\",\"duration\":\"until the end of its next turn\",\"text\":\"It has Disadvantage on attack rolls and ability checks until the end of its next turn.\",\"simulation\":{\"policy\":\"nonNumeric\",\"model\":\"player-facing weakness procedure\",\"axis\":\"fairness\",\"weight\":1,\"expectedRate\":null}},{\"id\":\"fire-aversion-movement\",\"type\":\"movement\",\"subject\":\"self\",\"trigger\":\"\",\"appliesTo\":\"the monster\",\"duration\":\"until the end of its next turn\",\"text\":\"During that time, it can't willingly move closer to the source of the Fire damage.\",\"simulation\":{\"policy\":\"nonNumeric\",\"model\":\"player-facing weakness procedure\",\"axis\":\"fairness\",\"weight\":1,\"expectedRate\":null}}],\"text\":{\"effect\":\"After the monster takes Fire damage, it has Disadvantage on attack rolls and ability checks until the end of its next turn. During that time, it can't willingly move closer to the source of the Fire damage.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "fear-of-fire",
+              "renderedText": "After the monster takes Fire damage, it has Disadvantage on attack rolls and ability checks until the end of its next turn. During that time, it can't willingly move closer to the source of the Fire damage."
+            }
+          ]
+        },
+        {
+          "targetCr": 15,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "fear-of-fire"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"The monster takes Fire damage.\",\"resolution\":{\"type\":\"none\",\"attackType\":\"melee\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the monster\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[{\"id\":\"fire-aversion-disadvantage\",\"type\":\"disadvantage\",\"subject\":\"self\",\"trigger\":\"\",\"appliesTo\":\"the monster\",\"duration\":\"until the end of its next turn\",\"text\":\"It has Disadvantage on attack rolls and ability checks until the end of its next turn.\",\"simulation\":{\"policy\":\"nonNumeric\",\"model\":\"player-facing weakness procedure\",\"axis\":\"fairness\",\"weight\":1,\"expectedRate\":null}},{\"id\":\"fire-aversion-movement\",\"type\":\"movement\",\"subject\":\"self\",\"trigger\":\"\",\"appliesTo\":\"the monster\",\"duration\":\"until the end of its next turn\",\"text\":\"During that time, it can't willingly move closer to the source of the Fire damage.\",\"simulation\":{\"policy\":\"nonNumeric\",\"model\":\"player-facing weakness procedure\",\"axis\":\"fairness\",\"weight\":1,\"expectedRate\":null}}],\"text\":{\"effect\":\"After the monster takes Fire damage, it has Disadvantage on attack rolls and ability checks until the end of its next turn. During that time, it can't willingly move closer to the source of the Fire damage.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "fear-of-fire",
+              "renderedText": "After the monster takes Fire damage, it has Disadvantage on attack rolls and ability checks until the end of its next turn. During that time, it can't willingly move closer to the source of the Fire damage."
+            }
+          ]
+        }
+      ],
+      "issues": [],
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "version": "monster-weakness-graft-editorial-audit-v1.0",
+      "applicable": true,
+      "id": "thin-legs",
+      "title": "Unsteady Legs",
+      "source": "wolf-spiders",
+      "decision": "REWRITE_POSITIONAL_ANSWER",
+      "status": "pass",
+      "pass": true,
+      "abilityCount": 1,
+      "counterplayChannels": [
+        "telegraph",
+        "positioning",
+        "breakCondition",
+        "nonDamage"
+      ],
+      "scaling": {
+        "expected": false,
+        "declared": false,
+        "bandCount": 0,
+        "sampledBandIds": [],
+        "sampledRuleVariants": 1,
+        "pass": true
+      },
+      "snapshots": [
+        {
+          "targetCr": 1,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "unsteady-legs"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"The grounded monster is moved at least 5 feet against its will or enters an unstable surface.\",\"resolution\":{\"type\":\"savingThrow\",\"ability\":\"dexterity\",\"dc\":\"monster\"},\"targeting\":{\"type\":\"single\",\"targets\":\"\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[\"prone\"],\"severity\":\"moderate\",\"direction\":\"weakness\",\"duration\":\"until it stands\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[{\"id\":\"unsteady-legs-collapse\",\"type\":\"movement\",\"subject\":\"self\",\"trigger\":\"\",\"appliesTo\":\"the monster\",\"duration\":\"until the end of the current turn\",\"text\":\"The monster has the Prone condition, and its Speed becomes 0 until the end of the current turn.\",\"simulation\":{\"policy\":\"nonNumeric\",\"model\":\"player-facing weakness procedure\",\"axis\":\"fairness\",\"weight\":1,\"expectedRate\":null}}],\"text\":{\"failure\":\"The monster has the Prone condition, and its Speed becomes 0 until the end of the current turn.\",\"success\":\"No effect.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "unsteady-legs",
+              "renderedText": "The grounded monster is moved at least 5 feet against its will or enters an unstable surface. Dexterity Saving Throw: DC 15. Failure: The monster has the Prone condition, and its Speed becomes 0 until the end of the current turn. Success: No effect."
+            }
+          ]
+        },
+        {
+          "targetCr": 5,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "unsteady-legs"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"The grounded monster is moved at least 5 feet against its will or enters an unstable surface.\",\"resolution\":{\"type\":\"savingThrow\",\"ability\":\"dexterity\",\"dc\":\"monster\"},\"targeting\":{\"type\":\"single\",\"targets\":\"\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[\"prone\"],\"severity\":\"moderate\",\"direction\":\"weakness\",\"duration\":\"until it stands\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[{\"id\":\"unsteady-legs-collapse\",\"type\":\"movement\",\"subject\":\"self\",\"trigger\":\"\",\"appliesTo\":\"the monster\",\"duration\":\"until the end of the current turn\",\"text\":\"The monster has the Prone condition, and its Speed becomes 0 until the end of the current turn.\",\"simulation\":{\"policy\":\"nonNumeric\",\"model\":\"player-facing weakness procedure\",\"axis\":\"fairness\",\"weight\":1,\"expectedRate\":null}}],\"text\":{\"failure\":\"The monster has the Prone condition, and its Speed becomes 0 until the end of the current turn.\",\"success\":\"No effect.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "unsteady-legs",
+              "renderedText": "The grounded monster is moved at least 5 feet against its will or enters an unstable surface. Dexterity Saving Throw: DC 15. Failure: The monster has the Prone condition, and its Speed becomes 0 until the end of the current turn. Success: No effect."
+            }
+          ]
+        },
+        {
+          "targetCr": 10,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "unsteady-legs"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"The grounded monster is moved at least 5 feet against its will or enters an unstable surface.\",\"resolution\":{\"type\":\"savingThrow\",\"ability\":\"dexterity\",\"dc\":\"monster\"},\"targeting\":{\"type\":\"single\",\"targets\":\"\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[\"prone\"],\"severity\":\"moderate\",\"direction\":\"weakness\",\"duration\":\"until it stands\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[{\"id\":\"unsteady-legs-collapse\",\"type\":\"movement\",\"subject\":\"self\",\"trigger\":\"\",\"appliesTo\":\"the monster\",\"duration\":\"until the end of the current turn\",\"text\":\"The monster has the Prone condition, and its Speed becomes 0 until the end of the current turn.\",\"simulation\":{\"policy\":\"nonNumeric\",\"model\":\"player-facing weakness procedure\",\"axis\":\"fairness\",\"weight\":1,\"expectedRate\":null}}],\"text\":{\"failure\":\"The monster has the Prone condition, and its Speed becomes 0 until the end of the current turn.\",\"success\":\"No effect.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "unsteady-legs",
+              "renderedText": "The grounded monster is moved at least 5 feet against its will or enters an unstable surface. Dexterity Saving Throw: DC 15. Failure: The monster has the Prone condition, and its Speed becomes 0 until the end of the current turn. Success: No effect."
+            }
+          ]
+        },
+        {
+          "targetCr": 15,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "unsteady-legs"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"The grounded monster is moved at least 5 feet against its will or enters an unstable surface.\",\"resolution\":{\"type\":\"savingThrow\",\"ability\":\"dexterity\",\"dc\":\"monster\"},\"targeting\":{\"type\":\"single\",\"targets\":\"\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[\"prone\"],\"severity\":\"moderate\",\"direction\":\"weakness\",\"duration\":\"until it stands\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[{\"id\":\"unsteady-legs-collapse\",\"type\":\"movement\",\"subject\":\"self\",\"trigger\":\"\",\"appliesTo\":\"the monster\",\"duration\":\"until the end of the current turn\",\"text\":\"The monster has the Prone condition, and its Speed becomes 0 until the end of the current turn.\",\"simulation\":{\"policy\":\"nonNumeric\",\"model\":\"player-facing weakness procedure\",\"axis\":\"fairness\",\"weight\":1,\"expectedRate\":null}}],\"text\":{\"failure\":\"The monster has the Prone condition, and its Speed becomes 0 until the end of the current turn.\",\"success\":\"No effect.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "unsteady-legs",
+              "renderedText": "The grounded monster is moved at least 5 feet against its will or enters an unstable surface. Dexterity Saving Throw: DC 15. Failure: The monster has the Prone condition, and its Speed becomes 0 until the end of the current turn. Success: No effect."
+            }
+          ]
+        }
+      ],
+      "issues": [],
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "version": "monster-weakness-graft-editorial-audit-v1.0",
+      "applicable": true,
+      "id": "underbelly-weak-spot",
+      "title": "Exposed Underbelly",
+      "source": "wolf-spiders",
+      "decision": "REWRITE_AND_SCALE",
+      "status": "pass",
+      "pass": true,
+      "abilityCount": 1,
+      "counterplayChannels": [
+        "telegraph",
+        "positioning",
+        "breakCondition",
+        "nonDamage"
+      ],
+      "scaling": {
+        "expected": true,
+        "declared": true,
+        "bandCount": 3,
+        "sampledBandIds": [
+          "cr-0-4-soft-underbelly",
+          "cr-5-12-open-underbelly",
+          "cr-13-30-ruptured-underbelly"
+        ],
+        "sampledRuleVariants": 3,
+        "pass": true
+      },
+      "snapshots": [
+        {
+          "targetCr": 1,
+          "bandId": "cr-0-4-soft-underbelly",
+          "abilityCount": 1,
+          "abilityIds": [
+            "exposed-underbelly"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"The monster jumps, moves from a ceiling to a wall or floor, or gains the Prone condition.\",\"resolution\":{\"type\":\"none\",\"attackType\":\"melee\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the monster\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[{\"id\":\"underbelly-advantage\",\"type\":\"advantage\",\"subject\":\"triggeringCreature\",\"trigger\":\"\",\"appliesTo\":\"attack rolls against the monster\",\"duration\":\"until the start of its next turn\",\"text\":\"Attack rolls against it have Advantage during that time.\",\"simulation\":{\"policy\":\"nonNumeric\",\"model\":\"player-facing weakness procedure\",\"axis\":\"fairness\",\"weight\":1,\"expectedRate\":null}},{\"id\":\"underbelly-extra-damage\",\"type\":\"custom\",\"subject\":\"triggeringCreature\",\"trigger\":\"\",\"appliesTo\":\"the first qualifying hit\",\"duration\":\"the first hit during the exposure\",\"text\":\"The first hit deals an extra 1d6 damage of the attack's type.\",\"simulation\":{\"policy\":\"nonNumeric\",\"model\":\"player-facing weakness procedure\",\"axis\":\"fairness\",\"weight\":1,\"expectedRate\":null}}],\"text\":{\"effect\":\"When the monster jumps, changes between a wall, ceiling, and floor, or gains the Prone condition, its underbelly is exposed until the start of its next turn. Attack rolls against it have Advantage during that time, and the first hit deals an extra 1d6 damage of the attack's type.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "exposed-underbelly",
+              "renderedText": "When the monster jumps, changes between a wall, ceiling, and floor, or gains the Prone condition, its underbelly is exposed until the start of its next turn. Attack rolls against it have Advantage during that time, and the first hit deals an extra 1d6 damage of the attack's type."
+            }
+          ]
+        },
+        {
+          "targetCr": 5,
+          "bandId": "cr-5-12-open-underbelly",
+          "abilityCount": 1,
+          "abilityIds": [
+            "exposed-underbelly"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"The monster jumps, moves from a ceiling to a wall or floor, or gains the Prone condition.\",\"resolution\":{\"type\":\"none\",\"attackType\":\"melee\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the monster\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[{\"id\":\"underbelly-advantage\",\"type\":\"advantage\",\"subject\":\"triggeringCreature\",\"trigger\":\"\",\"appliesTo\":\"attack rolls against the monster\",\"duration\":\"until the start of its next turn\",\"text\":\"Attack rolls against it have Advantage during that time.\",\"simulation\":{\"policy\":\"nonNumeric\",\"model\":\"player-facing weakness procedure\",\"axis\":\"fairness\",\"weight\":1,\"expectedRate\":null}},{\"id\":\"underbelly-extra-damage\",\"type\":\"custom\",\"subject\":\"triggeringCreature\",\"trigger\":\"\",\"appliesTo\":\"the first qualifying hit\",\"duration\":\"the first hit during the exposure\",\"text\":\"The first hit deals an extra 2d6 damage of the attack's type.\",\"simulation\":{\"policy\":\"nonNumeric\",\"model\":\"player-facing weakness procedure\",\"axis\":\"fairness\",\"weight\":1,\"expectedRate\":null}}],\"text\":{\"effect\":\"When the monster jumps, changes between a wall, ceiling, and floor, or gains the Prone condition, its underbelly is exposed until the start of its next turn. Attack rolls against it have Advantage during that time, and the first hit deals an extra 2d6 damage of the attack's type.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "exposed-underbelly",
+              "renderedText": "When the monster jumps, changes between a wall, ceiling, and floor, or gains the Prone condition, its underbelly is exposed until the start of its next turn. Attack rolls against it have Advantage during that time, and the first hit deals an extra 2d6 damage of the attack's type."
+            }
+          ]
+        },
+        {
+          "targetCr": 10,
+          "bandId": "cr-5-12-open-underbelly",
+          "abilityCount": 1,
+          "abilityIds": [
+            "exposed-underbelly"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"The monster jumps, moves from a ceiling to a wall or floor, or gains the Prone condition.\",\"resolution\":{\"type\":\"none\",\"attackType\":\"melee\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the monster\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[{\"id\":\"underbelly-advantage\",\"type\":\"advantage\",\"subject\":\"triggeringCreature\",\"trigger\":\"\",\"appliesTo\":\"attack rolls against the monster\",\"duration\":\"until the start of its next turn\",\"text\":\"Attack rolls against it have Advantage during that time.\",\"simulation\":{\"policy\":\"nonNumeric\",\"model\":\"player-facing weakness procedure\",\"axis\":\"fairness\",\"weight\":1,\"expectedRate\":null}},{\"id\":\"underbelly-extra-damage\",\"type\":\"custom\",\"subject\":\"triggeringCreature\",\"trigger\":\"\",\"appliesTo\":\"the first qualifying hit\",\"duration\":\"the first hit during the exposure\",\"text\":\"The first hit deals an extra 2d6 damage of the attack's type.\",\"simulation\":{\"policy\":\"nonNumeric\",\"model\":\"player-facing weakness procedure\",\"axis\":\"fairness\",\"weight\":1,\"expectedRate\":null}}],\"text\":{\"effect\":\"When the monster jumps, changes between a wall, ceiling, and floor, or gains the Prone condition, its underbelly is exposed until the start of its next turn. Attack rolls against it have Advantage during that time, and the first hit deals an extra 2d6 damage of the attack's type.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "exposed-underbelly",
+              "renderedText": "When the monster jumps, changes between a wall, ceiling, and floor, or gains the Prone condition, its underbelly is exposed until the start of its next turn. Attack rolls against it have Advantage during that time, and the first hit deals an extra 2d6 damage of the attack's type."
+            }
+          ]
+        },
+        {
+          "targetCr": 15,
+          "bandId": "cr-13-30-ruptured-underbelly",
+          "abilityCount": 1,
+          "abilityIds": [
+            "exposed-underbelly"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"The monster jumps, moves from a ceiling to a wall or floor, or gains the Prone condition.\",\"resolution\":{\"type\":\"none\",\"attackType\":\"melee\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the monster\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[{\"id\":\"underbelly-advantage\",\"type\":\"advantage\",\"subject\":\"triggeringCreature\",\"trigger\":\"\",\"appliesTo\":\"attack rolls against the monster\",\"duration\":\"until the start of its next turn\",\"text\":\"Attack rolls against it have Advantage during that time.\",\"simulation\":{\"policy\":\"nonNumeric\",\"model\":\"player-facing weakness procedure\",\"axis\":\"fairness\",\"weight\":1,\"expectedRate\":null}},{\"id\":\"underbelly-extra-damage\",\"type\":\"custom\",\"subject\":\"triggeringCreature\",\"trigger\":\"\",\"appliesTo\":\"the first qualifying hit\",\"duration\":\"the first hit during the exposure\",\"text\":\"The first hit deals an extra 3d6 damage of the attack's type.\",\"simulation\":{\"policy\":\"nonNumeric\",\"model\":\"player-facing weakness procedure\",\"axis\":\"fairness\",\"weight\":1,\"expectedRate\":null}}],\"text\":{\"effect\":\"When the monster jumps, changes between a wall, ceiling, and floor, or gains the Prone condition, its underbelly is exposed until the start of its next turn. Attack rolls against it have Advantage during that time, and the first hit deals an extra 3d6 damage of the attack's type.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "exposed-underbelly",
+              "renderedText": "When the monster jumps, changes between a wall, ceiling, and floor, or gains the Prone condition, its underbelly is exposed until the start of its next turn. Attack rolls against it have Advantage during that time, and the first hit deals an extra 3d6 damage of the attack's type."
+            }
+          ]
+        }
+      ],
+      "issues": [],
+      "errors": [],
+      "warnings": []
+    }
+  ],
+  "issues": [],
+  "errors": [],
+  "pass": true
+}

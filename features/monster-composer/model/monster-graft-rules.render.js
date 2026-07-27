@@ -126,26 +126,39 @@ function formatSingleDamage(damage, computed, rules = {}, options = {}) {
   return damageRollText(getDamageBudgetAverage(damage, rules, computed), damage, computed, rules);
 }
 
+function getDamagePartComputed(part, damage, computed, rules = {}) {
+  const parts = getDamageParts(damage);
+  const totalShare = getDamageTotalBudgetShare(damage, rules);
+  const partShare = totalShare > 0
+    ? getDamageBudgetShare(part, rules) / totalShare
+    : 1 / Math.max(1, parts.length);
+
+  if (!computed?.attackRoutineAllocation) return computed;
+  return {
+    ...computed,
+    attackRoutineAllocation: {
+      ...computed.attackRoutineAllocation,
+      averagePerUse: Math.max(
+        1,
+        Number(computed.attackRoutineAllocation.averagePerUse || 1) * partShare,
+      ),
+    },
+  };
+}
+
+function formatDamagePart(part, damage, computed, rules = {}, options = {}) {
+  const partComputed = getDamagePartComputed(part, damage, computed, rules);
+  const amount = options.template
+    ? formatDamagePartToken(part)
+    : formatSingleDamage(part, partComputed, rules, options);
+  return `${amount} ${formatDamageType(part)}`.trim();
+}
+
 function formatDamageParts(damage, computed, rules = {}, options = {}) {
   const parts = getDamageParts(damage);
   if (!parts.length) return "";
-  const totalShare = getDamageTotalBudgetShare(damage, rules);
   return parts
-    .map((part, index) => {
-      const partShare = totalShare > 0 ? getDamageBudgetShare(part, rules) / totalShare : 1 / parts.length;
-      const partComputed = computed?.attackRoutineAllocation
-        ? {
-            ...computed,
-            attackRoutineAllocation: {
-              ...computed.attackRoutineAllocation,
-              averagePerUse: Math.max(1, Number(computed.attackRoutineAllocation.averagePerUse || 1) * partShare),
-            },
-          }
-        : computed;
-      const amount = options.template ? formatDamagePartToken(part) : formatSingleDamage(part, partComputed, rules, options);
-      const type = formatDamageType(part);
-      return `${index > 0 ? "plus " : ""}${amount} ${type}`.trim();
-    })
+    .map((part, index) => `${index > 0 ? "plus " : ""}${formatDamagePart(part, damage, computed, rules, options)}`.trim())
     .join(" ");
 }
 
@@ -181,9 +194,39 @@ function formatDamageType(damage) {
 }
 
 function formatDamageClause(damage, computed, rules = {}, options = {}) {
+  const parts = getDamageParts(damage);
+  if (damage?.mode === "parts" || parts.length) {
+    const unconditional = parts.filter(
+      (part) => !part.activation || part.activation.type === "always",
+    );
+    const conditional = parts.filter(
+      (part) => part.activation && part.activation.type !== "always",
+    );
+    const clauses = [];
+
+    if (unconditional.length) {
+      clauses.push(
+        `${unconditional
+          .map((part, index) => `${index > 0 ? "plus " : ""}${formatDamagePart(part, damage, computed, rules, options)}`.trim())
+          .join(" ")}.`,
+      );
+    }
+
+    conditional.forEach((part) => {
+      const trigger = cleanString(part.activation?.trigger).replace(/[,.]+$/, "");
+      const amount = formatDamagePart(part, damage, computed, rules, options);
+      if (trigger) {
+        clauses.push(`${trigger}, the target takes an extra ${amount}.`);
+      } else {
+        clauses.push(`The target takes an extra ${amount}.`);
+      }
+    });
+
+    return clauses.join(" ");
+  }
+
   const amount = formatDamage(damage, computed, rules, options);
   if (!amount) return "";
-  if (damage?.mode === "parts" || getDamageParts(damage).length) return `${amount}.`;
   return `${amount} ${formatDamageType(damage)}.`;
 }
 
