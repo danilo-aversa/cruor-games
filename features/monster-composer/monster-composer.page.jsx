@@ -59,7 +59,6 @@ import {
   buildComplexityProfile,
   buildCounterplayAudit,
   buildPressureProfile,
-  applyPressureValidationFloor,
   getFeatureComplexityWeight,
   getFeatureCounterplayProfile,
   getFeatureMechanicProfile,
@@ -92,7 +91,9 @@ import {
 import { evaluateMonsterFrameFit, isMonsterFrameFitAllowed } from "./model/monster-frame-fit.js";
 import { validateMonsterGraftRules } from "./model/monster-graft-rules.schema.js";
 import { buildMonsterAbilitiesFromFeatures } from "./model/monster-ability-model.js";
+import { ensureMonsterBasicAttackFeature } from "./model/monster-basic-attack.js";
 import { buildMonsterFramePowerProfile } from "./model/monster-frame-power.js";
+import { resolveMonsterGuidanceLimits } from "./model/monster-pressure-complexity.js";
 import { buildClosedLoopCrFit } from "./model/monster-cr-fitting.js";
 import { shouldSurfaceDiagnosticAsWarning } from "./model/monster-publish-gate.js";
 import {
@@ -297,66 +298,6 @@ function isScalableMainActionFeature(feature = {}) {
   });
 }
 
-function buildFallbackMainActionFeature({ category = "Monster", sourceId = "frame", targetCr = 0 } = {}) {
-  const noun = String(category || "Monster").trim() || "Monster";
-  return {
-    id: `frame-fallback-strike-cr-${targetCr}`,
-    title: `${noun} Strike`,
-    slot: "attack",
-    section: "action",
-    source: sourceId || "frame",
-    cost: 0,
-    complexity: 0,
-    stats: { dpr: 0 },
-    synthetic: true,
-    generatedBy: "scalable-main-action-gate-v1.31",
-    rules: {
-      schemaVersion: "monster-graft-rules-v1.15",
-      section: "action",
-      actionEconomy: "action",
-      usage: { type: "atWill" },
-      resolution: {
-        type: "attackRoll",
-        attackType: "melee",
-        abilityBasis: "str",
-        bonus: "monster",
-        reach: "5 ft.",
-      },
-      targeting: { type: "single", targets: "one target" },
-      damage: {
-        mode: "computed",
-        budgetRole: "mainAttack",
-        modifierPolicy: "sameAsAttack",
-        types: ["bludgeoning"],
-        scale: "standard",
-        expectedTargets: 1,
-        parts: [],
-      },
-      condition: null,
-      counterplay: {
-        positioningAnswer: true,
-      },
-      text: { hit: "{damage} {damage-type}." },
-      migration: {
-        source: "frame-generated-fallback",
-        isStructured: true,
-        convertedFrom: "scalable-main-action-gate",
-      },
-    },
-    summary: "Generated fallback main attack used when a high-CR frame lacks a scalable damaging action.",
-    mechanics: "Melee Attack Roll. Hit: {damage} {damage-type}.",
-    counterplay: "Standard melee positioning and armor class counterplay apply.",
-  };
-}
-
-function maybeAddScalableFallbackAction(features = [], { targetCr = 0, category, sourceId } = {}) {
-  if (Number(targetCr || 0) < 5) return features;
-  if (features.some(isScalableMainActionFeature)) return features;
-  const hasAction = features.some((feature) => String(feature.rules?.actionEconomy || feature.section || "").toLowerCase() === "action");
-  if (!hasAction) return features;
-  return [...features, buildFallbackMainActionFeature({ category, sourceId, targetCr })];
-}
-
 function featureMatchesSource(feature, sourceIdOrIds) {
   const sourceIds = Array.isArray(sourceIdOrIds) ? sourceIdOrIds : [sourceIdOrIds];
   return sourceIds.filter(Boolean).includes(feature.source);
@@ -442,11 +383,10 @@ function buildSmartSlotPicks(args) {
 function buildFeatureImpactPreview(args) {
   return buildFeatureImpactPreviewModel({
     ...args,
-    getFeatureMechanicProfile,
-    summarizeMechanicProfiles,
     buildPressureProfile,
     buildComplexityProfile,
     getFeatureCounterplayProfile,
+    buildMonsterAbilitiesFromFeatures,
   });
 }
 
@@ -927,10 +867,10 @@ function buildBalanceRecommendations({
     addRecommendation({
       id: "reduce-pressure",
       severity: pressure > budget * 1.25 ? "critical" : "major",
-      title: "Reduce Pressure",
+      title: "Pressure Above CR Guidance",
       detail: topPressureFeature
-        ? `${topPressureFeature.title} is the first graft to review.`
-        : "The pressure score is above the current budget.",
+        ? `${topPressureFeature.title} is the first player-facing load to review. You may keep the build when the extra tactical density is intentional.`
+        : "The party-facing tactical load is above the recommendation for this CR. This does not block the build.",
       actions: [
         ...buildOneClickFixes({
           issue: "pressure",
@@ -964,10 +904,10 @@ function buildBalanceRecommendations({
     addRecommendation({
       id: "reduce-complexity",
       severity: complexity > complexityCap * 1.25 ? "critical" : "major",
-      title: "Simplify Table Handling",
+      title: "DM Load Above Guidance",
       detail: topComplexityFeature
-        ? `${topComplexityFeature.title} is the first tracking-heavy graft to review.`
-        : "Complexity is above the current cap.",
+        ? `${topComplexityFeature.title} is the first handling-heavy graft to review. You may keep it when the added table load is deliberate.`
+        : "DM handling load is above the current recommendation. This does not block the build.",
       actions: [
         ...buildOneClickFixes({
           issue: "complexity",
@@ -1321,7 +1261,6 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
   const [sourceId, setSourceId] = useState("decomposition");
   const [navigatorSourceFilters, setNavigatorSourceFilters] = useState(["decomposition"]);
   const [partyLevel, setPartyLevel] = useState(5);
-  const [partySize, setPartySize] = useState(4);
   const [dangerId, setDangerId] = useState("hard");
   const [targetCr, setTargetCr] = useState(5);
   const [tacticalRoleId, setTacticalRoleId] = useState("brute");
@@ -1341,8 +1280,6 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
   const [viewMode, setViewMode] = useState("composer");
   const [advancedMode, setAdvancedMode] = useState(false);
   const [customMode, setCustomMode] = useState(false);
-  const [customPressureBudget, setCustomPressureBudget] = useState(15);
-  const [customComplexityCap, setCustomComplexityCap] = useState(10);
   const [slotCaps, setSlotCaps] = useState(DEFAULT_SLOT_CAPS);
   const [activePresetId, setActivePresetId] = useState("");
   const [navigatorSearch, setNavigatorSearch] = useState("");
@@ -1408,10 +1345,15 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
     targetCr,
   }), [role, tacticalRole, monsterTier, tempoProfile, danger, targetCr]);
 
-  const defaultPressureBudget = framePowerProfile.budget + Math.max(0, partySize - 4);
-  const defaultComplexityCap = framePowerProfile.complexityCap;
-  const effectivePressureBudget = advancedMode ? customPressureBudget : defaultPressureBudget;
-  const effectiveComplexityCap = advancedMode ? customComplexityCap : defaultComplexityCap;
+  const defaultBuildBudget = framePowerProfile.buildBudget ?? framePowerProfile.budget;
+  const effectiveBuildBudget = defaultBuildBudget;
+  const {
+    pressureLimit: effectivePressureLimit,
+    complexityCap: effectiveComplexityCap,
+  } = resolveMonsterGuidanceLimits({
+    framePowerProfile,
+    advancedMode,
+  });
   const composerMode = getComposerMode(advancedMode, customMode);
   const activePreset = getPresetById(activePresetId);
   const currentFrameContext = {
@@ -1435,10 +1377,20 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
     return [...packsById.values()].sort((a, b) => a.title.localeCompare(b.title));
   }, [FEATURES]);
 
-  const selectedFeatures = useMemo(() => {
-    const baseFeatures = getFeaturesFromSelection(selected);
-    return maybeAddScalableFallbackAction(baseFeatures, { targetCr, category, sourceId });
-  }, [selected, FEATURES, targetCr, category, sourceId]);
+  const selectedFeatures = useMemo(
+    () => getFeaturesFromSelection(selected),
+    [selected, FEATURES],
+  );
+  const basicAttackCompilation = useMemo(
+    () => ensureMonsterBasicAttackFeature(selectedFeatures, {
+      targetCr,
+      category,
+      typeId,
+      sourceId,
+    }),
+    [selectedFeatures, targetCr, category, typeId, sourceId],
+  );
+  const engineFeatures = basicAttackCompilation.features;
 
   const availableFeatures = useMemo(() => {
     const slotFilter = currentNavigatorSlot === "all" ? null : currentNavigatorSlot;
@@ -1550,28 +1502,13 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
       ...getFeatureMechanicProfile(feature),
     }));
     const mechanicsSummary = summarizeMechanicProfiles(featureMechanics);
-    const abilityModel = buildMonsterAbilitiesFromFeatures(selectedFeatures);
+    const abilityModel = buildMonsterAbilitiesFromFeatures(engineFeatures);
     const counterplayProfiles = selectedFeatures.map((feature) =>
       getFeatureCounterplayProfile(feature)
     );
     const cost = selectedFeatures.reduce((sum, feature) => sum + feature.cost, 0);
-    const rawComplexity = selectedFeatures.reduce((sum, feature) => sum + feature.complexity, 0);
-    const budget = effectivePressureBudget;
-    let pressureProfile = buildPressureProfile({
-      cost,
-      monsterTier,
-      tempoProfile,
-      statMods,
-      mechanicsSummary,
-      budget,
-    });
-    const complexityProfile = buildComplexityProfile({
-      complexity: rawComplexity,
-      mechanicsSummary,
-      featureMechanics,
-      limit: effectiveComplexityCap,
-    });
-    const complexity = complexityProfile.score;
+    const buildBudget = effectiveBuildBudget;
+    const budget = effectivePressureLimit;
     const targetHpValue = Math.max(1, Math.round(baseHp + (statMods.hp || 0)));
     const targetAcValue = clamp(baseAc + (statMods.ac || 0), 10, 28);
     const targetDprValue = Math.max(1, Math.round(baseDpr + (statMods.dpr || 0)));
@@ -1583,7 +1520,7 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
       typeId,
       category,
       roleId,
-      selectedFeatures,
+      selectedFeatures: engineFeatures,
       baseline,
       abilityModel,
       statMods,
@@ -1610,16 +1547,22 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
     const effectiveProfile = crFit.effectiveProfile;
     const crValidation = crFit.crValidation;
     const crFitProfile = crFit.fitProfile;
-    pressureProfile = applyPressureValidationFloor({
-      pressureProfile,
-      budget,
+    const pressureComplexityAbilityModel = buildMonsterAbilitiesFromFeatures(engineFeatures, { targetCr });
+    const pressureProfile = buildPressureProfile({
       targetCr,
-      baseline,
-      printedStats,
-      effectiveProfile,
-      crValidation,
+      limit: effectivePressureLimit,
+      abilityModel: pressureComplexityAbilityModel,
+      attackRoutine: dprProfile?.attackRoutine || null,
+      selectedFeatures,
+    });
+    const complexityProfile = buildComplexityProfile({
+      limit: effectiveComplexityCap,
+      abilityModel: pressureComplexityAbilityModel,
+      attackRoutine: dprProfile?.attackRoutine || null,
+      selectedFeatures,
     });
     const pressure = pressureProfile.score;
+    const complexity = complexityProfile.score;
     const counterplayAudit = buildCounterplayAudit({
       selected,
       roleId,
@@ -1670,11 +1613,11 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
       });
     if (pressure > budget)
       warnings.push(
-        "Threat budget is above target. Reduce one high-cost twist or treat this as a boss/setpiece."
+        `Player-facing Pressure exceeds the recommended CR ${targetCr} limit by ${pressure - budget}. You can continue, but the monster asks the party to process more tactical systems than this CR normally supports.`
       );
     if (complexity > effectiveComplexityCap)
       warnings.push(
-        "Table complexity is high. Remove one feature with a reaction, recharge, or delayed effect, or increase the custom Complexity limit in Advanced Mode."
+        `DM Complexity exceeds the recommended handling limit by ${complexity - effectiveComplexityCap}. You can continue, but the monster will require additional decisions, triggers, or state tracking at the table.`
       );
     if (!hasSelectedSlot(selected, "weakness"))
       warnings.push(
@@ -1832,15 +1775,18 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
       profileDeltas,
       bestiaryBaselineAudit,
       framePowerProfile,
+      basicAttackFallbackProfile: {
+        version: basicAttackCompilation.version,
+        targetCr,
+        ...basicAttackCompilation.profile,
+      },
       scalableMainActionGateProfile: {
-        version: "scalable-main-action-gate-v1.31",
+        version: "scalable-main-action-gate-v1.32-basic-fallback",
         targetCr,
         highCr: Number(targetCr || 0) >= 5,
-        scalableActionCount: selectedFeatures.filter(isScalableMainActionFeature).length,
-        status: selectedFeatures.some((feature) => feature.generatedBy === "scalable-main-action-gate-v1.31") ? "fallback-added" : "pass",
-        fallbackFeature: selectedFeatures.find((feature) => feature.generatedBy === "scalable-main-action-gate-v1.31")
-          ? { id: selectedFeatures.find((feature) => feature.generatedBy === "scalable-main-action-gate-v1.31").id, title: selectedFeatures.find((feature) => feature.generatedBy === "scalable-main-action-gate-v1.31").title }
-          : null,
+        scalableActionCount: engineFeatures.filter(isScalableMainActionFeature).length,
+        status: basicAttackCompilation.profile.status,
+        fallbackFeature: basicAttackCompilation.profile.fallbackFeature || null,
       },
       crFitProfile,
       dprProfile,
@@ -1853,6 +1799,7 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
       featureMechanics,
       mechanicsSummary,
       abilityModel,
+      pressureComplexityAbilityModel,
       baselinePower,
       effectivePower,
       prof,
@@ -1865,7 +1812,9 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
       dpr,
       dc,
       attack,
-      budget,
+      budget: buildBudget,
+      pressureLimit: effectivePressureLimit,
+      buildBudget,
       cost,
       pressure,
       complexity,
@@ -1884,6 +1833,8 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
     danger,
     creatureType,
     selectedFeatures,
+    engineFeatures,
+    basicAttackCompilation,
     customMonsterName,
     selected,
     typeId,
@@ -1892,7 +1843,8 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
     composerMode,
     customMode,
     framePowerProfile,
-    effectivePressureBudget,
+    effectiveBuildBudget,
+    effectivePressureLimit,
     effectiveComplexityCap,
     targetCr,
     tacticalRole,
@@ -2059,7 +2011,7 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
     setStartMode((current) => current || "scratch");
     setTemplatePickerOpen(false);
     const priority = getForgePriority(roleId);
-    const budget = effectivePressureBudget;
+    const budget = effectiveBuildBudget;
     const next = {};
     let runningCost = 0;
 
@@ -2149,8 +2101,6 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
       return;
     }
 
-    setCustomPressureBudget(defaultPressureBudget);
-    setCustomComplexityCap(defaultComplexityCap);
     setAdvancedMode(true);
   }
 
@@ -2169,7 +2119,7 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
     setCustomMode((current) => !current);
   }
 
-  const pressurePercent = clamp((computed.pressure / computed.budget) * 100, 0, 160);
+  const pressurePercent = clamp((computed.pressure / computed.pressureLimit) * 100, 0, 160);
   const complexityPercent = clamp((computed.complexity / computed.complexityCap) * 100, 0, 160);
   const abilityProfile = computed.abilityProfile || buildAbilityProfile(
     typeId,
@@ -2179,7 +2129,7 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
     computed.prof,
     computed.rulesProfile
   );
-  const sectionGroups = useMemo(() => groupFeaturesBySection(selectedFeatures), [selectedFeatures]);
+  const sectionGroups = useMemo(() => groupFeaturesBySection(engineFeatures), [engineFeatures]);
   const traits = sectionGroups.trait || [];
   const actions = sectionGroups.action || [];
   const bonusActions = sectionGroups.bonusAction || [];

@@ -12,15 +12,31 @@ function modText(value) {
 }
 
 function Meter({ label, value, max, percent }) {
+  const over = Number(value || 0) > Number(max || 0);
+  const excess = Math.max(0, Number(value || 0) - Number(max || 0));
   return (
-    <div className="meter" aria-label={`${label}: ${value} of ${max}`}>
-      <div className="meter__track">
-        <span style={{ width: `${percent}%` }} />
+    <div
+      className={`meter ${over ? "is-over" : ""}`.trim()}
+      aria-label={`${label}: ${value} of ${max}${over ? `, recommended limit exceeded by ${excess}` : ""}`}
+      data-meter-status={over ? "over" : "within"}
+    >
+      <div
+        className="meter__track"
+        role="progressbar"
+        aria-valuemin="0"
+        aria-valuemax={Math.max(Number(max || 0), Number(value || 0))}
+        aria-valuenow={value}
+        aria-valuetext={`${value} of recommended ${max}${over ? `; exceeded by ${excess}` : ""}`}
+      >
+        <span style={{ width: `${Math.min(Number(percent || 0), 100)}%` }} />
       </div>
       <div className="meter__meta">
         <span>{value}</span>
         <span>{max}</span>
       </div>
+      {over ? (
+        <p className="meter__advisory">Recommended limit exceeded by {excess}. The build remains available.</p>
+      ) : null}
     </div>
   );
 }
@@ -140,8 +156,8 @@ function WarningList({ warnings }) {
       <div className="monster-ready-note">
         <Shield aria-hidden="true" />
         <span>
-          The monster has a weakness/tell, stays inside the pressure budget, and should be playable
-          for the selected use.
+          The monster has a weakness/tell and a playable counterplay loop. Pressure and Complexity
+          remain guidance rather than hard locks.
         </span>
       </div>
     );
@@ -197,7 +213,7 @@ export function BalanceWorkbench({
           <Meter
             label="Pressure"
             value={computed.pressure}
-            max={computed.budget}
+            max={computed.pressureLimit}
             percent={pressurePercent}
           />
           <p className="balance-note">
@@ -295,7 +311,7 @@ export function BalanceWorkbench({
         </section>
         <section className="cruor-composer-rail-card">
           <div className="cruor-composer-fact-grid">
-            <span className="cruor-composer-fact-row"><small className="cruor-composer-fact-label">Pressure</small><strong className="cruor-composer-fact-value">{computed.pressure}/{computed.budget}</strong></span>
+            <span className="cruor-composer-fact-row"><small className="cruor-composer-fact-label">Pressure</small><strong className="cruor-composer-fact-value">{computed.pressure}/{computed.pressureLimit}</strong></span>
             <span className="cruor-composer-fact-row"><small className="cruor-composer-fact-label">Complexity</small><strong className="cruor-composer-fact-value">{computed.complexity}/{computed.complexityCap}</strong></span>
             <span className="cruor-composer-fact-row"><small className="cruor-composer-fact-label">Counterplay</small><strong className="cruor-composer-fact-value">{computed.counterplayAudit.rating}</strong></span>
           </div>

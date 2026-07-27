@@ -23154,3 +23154,245 @@ _Nessun file aggiunto._
 
 - `~app/HomePage.jsx`
 
+
+---
+
+## 27/07/2026, 19:10:23
+
+**Operazione:** Apply ZIP from ChatGPT Workbench
+
+**Versione script:** `workbench-0.3.4`
+
+**ZIP applicato:** `cruor-games-monster-pressure-complexity-v3.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Documenti\GitHub\_downloads\cruor-games-monster-pressure-complexity-v3.zip`
+
+**Repo:** `H:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\chatgpt-workbench-apply-NI4ohN`
+
+**Decisione struttura:** `Applied ZIP content from extracted root.`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 7
+
+- `+docs/terrifying-monsters/phase9/pressure-complexity-v3-contract.md`
+- `+docs/terrifying-monsters/phase9/pressure-complexity-v3-review.md`
+- `+docs/terrifying-monsters/phase9/pressure-complexity-v3.generated.json`
+- `+docs/terrifying-monsters/phase9/pressure-complexity-v3.generated.md`
+- `+features/monster-composer/model/monster-pressure-complexity.js`
+- `+features/monster-composer/model/monster-pressure-complexity.test.js`
+- `+scripts/monster/report-monster-pressure-complexity.mjs`
+
+**File sovrascritti:** 19
+
+- `~docs/terrifying-monsters/phase4/final-evaluation.generated.json`
+- `~docs/terrifying-monsters/phase4/final-evaluation.generated.md`
+- `~features/monster-composer/components/monster-composer.anatomy.jsx`
+- `~features/monster-composer/components/monster-composer.panels.jsx`
+- `~features/monster-composer/model/monster-composer.balance.js`
+- `~features/monster-composer/model/monster-composer.compatibility.js`
+- `~features/monster-composer/model/monster-composer.start-flow.js`
+- `~features/monster-composer/model/monster-composer.start-flow.test.js`
+- `~features/monster-composer/model/monster-final-evaluation.js`
+- `~features/monster-composer/model/monster-final-evaluation.test.js`
+- `~features/monster-composer/model/monster-frame-power.js`
+- `~features/monster-composer/model/monster-publish-gate.js`
+- `~features/monster-composer/monster-composer.page.jsx`
+- `~features/monster-composer/monster-composer.styles.css`
+- `~features/monster-composer/qa/monster-batch-qa.js`
+- `~features/monster-composer/qa/monster-frame-builders.js`
+- `~features/monster-composer/qa/monster-generation-qa.js`
+- `~package.json`
+- `~scripts/monster/report-monster-final-evaluation.mjs`
+
+
+---
+
+## 27/07/2026, 19:24:45
+
+**Operazione:** Apply ZIP from ChatGPT Workbench
+
+**Versione script:** `workbench-0.3.4`
+
+**ZIP applicato:** `cruor-games-monster-pressure-complexity-v3.1-hotfix.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Documenti\GitHub\_downloads\cruor-games-monster-pressure-complexity-v3.1-hotfix.zip`
+
+**Repo:** `H:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\chatgpt-workbench-apply-QDOyvB`
+
+**Decisione struttura:** `Applied ZIP content from extracted root.`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 1
+
+- `+docs/terrifying-monsters/phase9/pressure-complexity-v3.1-hotfix.md`
+
+**File sovrascritti:** 26
+
+- `~docs/terrifying-monsters/phase4/final-evaluation.generated.json`
+- `~docs/terrifying-monsters/phase4/final-evaluation.generated.md`
+- `~docs/terrifying-monsters/phase9/pressure-complexity-v3-contract.md`
+- `~docs/terrifying-monsters/phase9/pressure-complexity-v3-review.md`
+- `~docs/terrifying-monsters/phase9/pressure-complexity-v3.generated.json`
+- `~docs/terrifying-monsters/phase9/pressure-complexity-v3.generated.md`
+- `~features/monster-composer/components/monster-composer.anatomy.jsx`
+- `~features/monster-composer/components/monster-composer.panels.jsx`
+- `~features/monster-composer/model/monster-composer.balance.js`
+- `~features/monster-composer/model/monster-composer.compatibility.js`
+- `~features/monster-composer/model/monster-composer.start-flow.js`
+- `~features/monster-composer/model/monster-composer.start-flow.test.js`
+- `~features/monster-composer/model/monster-final-evaluation.js`
+- `~features/monster-composer/model/monster-final-evaluation.test.js`
+- `~features/monster-composer/model/monster-frame-power.js`
+- `~features/monster-composer/model/monster-pressure-complexity.js`
+- `~features/monster-composer/model/monster-pressure-complexity.test.js`
+- `~features/monster-composer/model/monster-publish-gate.js`
+- `~features/monster-composer/monster-composer.page.jsx`
+- `~features/monster-composer/monster-composer.styles.css`
+- `~features/monster-composer/qa/monster-batch-qa.js`
+- `~features/monster-composer/qa/monster-frame-builders.js`
+- `~features/monster-composer/qa/monster-generation-qa.js`
+- `~package.json`
+- `~scripts/monster/report-monster-final-evaluation.mjs`
+- `~scripts/monster/report-monster-pressure-complexity.mjs`
+
+
+---
+
+## 27/07/2026, 19:31:51
+
+**Operazione:** Apply ZIP from ChatGPT Workbench
+
+**Versione script:** `workbench-0.3.4`
+
+**ZIP applicato:** `cruor-games-monster-pressure-complexity-v3.2-complete.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Documenti\GitHub\_downloads\cruor-games-monster-pressure-complexity-v3.2-complete.zip`
+
+**Repo:** `H:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\chatgpt-workbench-apply-jAK3o7`
+
+**Decisione struttura:** `Applied ZIP content from extracted root.`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 2
+
+- `+docs/terrifying-monsters/phase9/pressure-complexity-v3.2-hotfix.md`
+- `+scripts/monster/verify-monster-pressure-runtime.mjs`
+
+**File sovrascritti:** 27
+
+- `~docs/terrifying-monsters/phase4/final-evaluation.generated.json`
+- `~docs/terrifying-monsters/phase4/final-evaluation.generated.md`
+- `~docs/terrifying-monsters/phase9/pressure-complexity-v3-contract.md`
+- `~docs/terrifying-monsters/phase9/pressure-complexity-v3-review.md`
+- `~docs/terrifying-monsters/phase9/pressure-complexity-v3.1-hotfix.md`
+- `~docs/terrifying-monsters/phase9/pressure-complexity-v3.generated.json`
+- `~docs/terrifying-monsters/phase9/pressure-complexity-v3.generated.md`
+- `~features/monster-composer/components/monster-composer.anatomy.jsx`
+- `~features/monster-composer/components/monster-composer.panels.jsx`
+- `~features/monster-composer/model/monster-composer.balance.js`
+- `~features/monster-composer/model/monster-composer.compatibility.js`
+- `~features/monster-composer/model/monster-composer.start-flow.js`
+- `~features/monster-composer/model/monster-composer.start-flow.test.js`
+- `~features/monster-composer/model/monster-final-evaluation.js`
+- `~features/monster-composer/model/monster-final-evaluation.test.js`
+- `~features/monster-composer/model/monster-frame-power.js`
+- `~features/monster-composer/model/monster-pressure-complexity.js`
+- `~features/monster-composer/model/monster-pressure-complexity.test.js`
+- `~features/monster-composer/model/monster-publish-gate.js`
+- `~features/monster-composer/monster-composer.page.jsx`
+- `~features/monster-composer/monster-composer.styles.css`
+- `~features/monster-composer/qa/monster-batch-qa.js`
+- `~features/monster-composer/qa/monster-frame-builders.js`
+- `~features/monster-composer/qa/monster-generation-qa.js`
+- `~package.json`
+- `~scripts/monster/report-monster-final-evaluation.mjs`
+- `~scripts/monster/report-monster-pressure-complexity.mjs`
+
+
+---
+
+## 27/07/2026, 19:48:23
+
+**Operazione:** Apply ZIP from ChatGPT Workbench
+
+**Versione script:** `workbench-0.3.4`
+
+**ZIP applicato:** `cruor-games-monster-pressure-complexity-v3.3-pulsing-meter.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Documenti\GitHub\_downloads\cruor-games-monster-pressure-complexity-v3.3-pulsing-meter.zip`
+
+**Repo:** `H:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\chatgpt-workbench-apply-A6tX7e`
+
+**Decisione struttura:** `Preserved top-level repo folder: features`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 1
+
+- `~features/monster-composer/monster-composer.styles.css`
+
+
+---
+
+## 27/07/2026, 20:28:46
+
+**Operazione:** Apply ZIP from ChatGPT Workbench
+
+**Versione script:** `workbench-0.3.4`
+
+**ZIP applicato:** `cruor-games-monster-basic-attack-graft-weight-v3.4.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Documenti\GitHub\_downloads\cruor-games-monster-basic-attack-graft-weight-v3.4.zip`
+
+**Repo:** `H:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\chatgpt-workbench-apply-V5lgsP`
+
+**Decisione struttura:** `Applied ZIP content from extracted root.`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 8
+
+- `+docs/terrifying-monsters/phase10/basic-attack-and-graft-weight-contract.md`
+- `+docs/terrifying-monsters/phase10/bestiary-methodology.md`
+- `+docs/terrifying-monsters/phase10/graft-weight-audit.generated.json`
+- `+docs/terrifying-monsters/phase10/graft-weight-audit.generated.md`
+- `+docs/terrifying-monsters/phase10/implementation-summary.md`
+- `+features/monster-composer/model/monster-basic-attack.js`
+- `+features/monster-composer/model/monster-basic-attack.test.js`
+- `+scripts/monster/report-monster-graft-weight-audit.mjs`
+
+**File sovrascritti:** 15
+
+- `~docs/terrifying-monsters/phase9/pressure-complexity-v3.generated.json`
+- `~docs/terrifying-monsters/phase9/pressure-complexity-v3.generated.md`
+- `~features/monster-composer/model/monster-ability-model.js`
+- `~features/monster-composer/model/monster-composer.balance.js`
+- `~features/monster-composer/model/monster-composer.export.js`
+- `~features/monster-composer/model/monster-composer.start-flow.js`
+- `~features/monster-composer/model/monster-composer.start-flow.test.js`
+- `~features/monster-composer/model/monster-pressure-complexity.js`
+- `~features/monster-composer/model/monster-pressure-complexity.test.js`
+- `~features/monster-composer/model/monster-publish-gate.js`
+- `~features/monster-composer/monster-composer.page.jsx`
+- `~features/monster-composer/qa/monster-batch-qa.js`
+- `~features/monster-composer/qa/monster-frame-builders.js`
+- `~package.json`
+- `~scripts/monster/report-monster-pressure-complexity.mjs`
+

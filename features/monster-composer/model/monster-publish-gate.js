@@ -1,4 +1,4 @@
-export const MONSTER_PUBLISH_GATE_VERSION = "publish-gate-v1.29-scalable-action";
+export const MONSTER_PUBLISH_GATE_VERSION = "publish-gate-v1.31-basic-attack";
 
 function asArray(value) {
   if (!value) return [];
@@ -152,14 +152,14 @@ export function buildMonsterPublishGate({
     else pushUniqueIssue(info, normalizedIssue);
   });
 
-  if (!hasSelectedSlotValue(selected, "body") || !hasSelectedSlotValue(selected, "attack") || !hasSelectedSlotValue(selected, "weakness")) {
+  if (!hasSelectedSlotValue(selected, "body") || !hasSelectedSlotValue(selected, "weakness")) {
     pushUniqueIssue(blockers, {
       severity: "error",
       area: "publish-gate",
       check: "core-anatomy",
       path: "selection",
-      message: "Generated monster must include Body, Attack, and Weakness / Tell before publish export.",
-      recommendation: "Add compatible required grafts before publishing.",
+      message: "Generated monster must include Body and Weakness / Tell before publish export.",
+      recommendation: "Add compatible required grafts before publishing. Attack Pattern is optional because the engine compiles a baseline attack when it is absent.",
     });
   }
 
@@ -170,7 +170,7 @@ export function buildMonsterPublishGate({
       check: "main-action",
       path: "statBlock.actions",
       message: "Generated monster must have at least one exported Action.",
-      recommendation: "Add or fix an attack/action graft.",
+      recommendation: "Inspect the compiled Basic Attack fallback or add an Attack Pattern graft.",
     });
   }
 
@@ -197,14 +197,14 @@ export function buildMonsterPublishGate({
     });
   }
 
-  if (Number(computed.pressure || 0) > Number(computed.budget || 0)) {
+  if (Number(computed.pressure || 0) > Number(computed.pressureLimit ?? 0)) {
     pushUniqueIssue(reviews, {
       severity: "warning",
       area: "publish-gate",
       check: "pressure-over-budget",
       path: "computed.pressure",
-      message: "Threat pressure is above the current frame budget.",
-      recommendation: "Review counterplay and pressure pacing before table use.",
+      message: "Player-facing Pressure is above the CR-scaled recommendation.",
+      recommendation: "Review how many tactical responses and simultaneous systems the party must process. This is advisory, not a publication blocker.",
     });
   }
 
@@ -214,8 +214,8 @@ export function buildMonsterPublishGate({
       area: "publish-gate",
       check: "complexity-over-cap",
       path: "computed.complexity",
-      message: "Table complexity is above the current frame cap.",
-      recommendation: "Remove or simplify one reaction, recharge, delayed effect, or triggered feature.",
+      message: "DM Complexity is above the current handling recommendation.",
+      recommendation: "Review decisions, triggers, state tracking, and board elements. This is advisory, not a publication blocker.",
     });
   }
 

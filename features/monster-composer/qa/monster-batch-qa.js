@@ -14,6 +14,7 @@ import {
 import {
   MONSTER_FAMILY_PRESETS,
   MONSTER_SOURCES,
+  DEFAULT_FORGE_SLOTS,
   REQUIRED_PLAYABLE_SLOTS,
   buildExportArtifacts,
   buildForgeCoverage,
@@ -21,7 +22,7 @@ import {
   forgeMonsterSelectionDetailed,
 } from "./monster-frame-builders.js";
 
-export const MONSTER_BATCH_QA_VERSION = "monster-batch-qa-v1.2-payload-audit-high-cr-routine";
+export const MONSTER_BATCH_QA_VERSION = "monster-batch-qa-v1.3-basic-attack";
 
 const DEFAULT_BATCH_COUNT = 100;
 const DEFAULT_SEED = "cruor-batch-qa";
@@ -266,9 +267,9 @@ function buildRandomFrame({ index, normalized, rng, presets, sources }) {
 }
 
 function scoreRealisticFrame(frame) {
-  const coverage = buildForgeCoverage(frame, { slots: REQUIRED_PLAYABLE_SLOTS });
+  const coverage = buildForgeCoverage(frame, { slots: DEFAULT_FORGE_SLOTS });
   const missingPenalty = coverage.missingRequiredSlots.length * -100;
-  const coverageScore = REQUIRED_PLAYABLE_SLOTS.reduce((sum, slotId) => sum + Math.min(coverage.countsBySlot[slotId] || 0, 6), 0);
+  const coverageScore = DEFAULT_FORGE_SLOTS.reduce((sum, slotId) => sum + Math.min(coverage.countsBySlot[slotId] || 0, 6), 0);
   return { coverage, score: missingPenalty + coverageScore + coverage.totalCandidates * 0.05 };
 }
 
@@ -309,7 +310,7 @@ export function buildMonsterBatchQaFrames(options = {}) {
       : buildRealisticFrame({ index, normalized, rng, presets, sources });
 
     if (normalized.qaMode === "stress") {
-      const coverage = buildForgeCoverage(frame, { slots: REQUIRED_PLAYABLE_SLOTS });
+      const coverage = buildForgeCoverage(frame, { slots: DEFAULT_FORGE_SLOTS });
       return {
         ...frame,
         qaFrameMode: "stress",
@@ -345,7 +346,6 @@ function addBalanceIssues({ frame, context, issues }) {
   const baseline = computed.baseline || {};
   const crValidation = computed.crValidation || {};
   const effectiveProfile = computed.effectiveProfile || {};
-  const pressureProfile = computed.pressureProfile || {};
   const targetCr = Number(computed.targetCr ?? frame.targetCr ?? 0);
   const estimatedCr = Number(computed.estimatedCr ?? crValidation.estimatedCr ?? targetCr);
   const crDelta = estimatedCr - targetCr;
@@ -431,12 +431,12 @@ function addBalanceIssues({ frame, context, issues }) {
     issues.push(makeQaIssue({
       severity: "info",
       area: "action-gate",
-      check: "scalable-main-action-fallback-added",
+      check: "basic-attack-fallback-added",
       id: frame.id,
       title: computed.name || frame.id,
       path: "computed.scalableMainActionGateProfile",
-      message: "High-CR frame lacked a scalable damaging main action, so Forge generated a fallback Strike.",
-      recommendation: "Informational: this keeps math and rendered stat block aligned. Replace with a thematic scalable attack graft when available.",
+      message: "No Attack Pattern graft was selected, so the engine compiled a baseline attack.",
+      recommendation: "Informational: keep the baseline attack or replace it with a thematic Attack Pattern.",
       details: { scalableMainActionGateProfile },
     }));
   } else if (scalableMainActionGateProfile.needsFallback) {
@@ -447,8 +447,8 @@ function addBalanceIssues({ frame, context, issues }) {
       id: frame.id,
       title: computed.name || frame.id,
       path: "computed.scalableMainActionGateProfile",
-      message: "High-CR frame has no scalable damaging main action.",
-      recommendation: "Add a scalable attack graft, multiattack-equivalent action, or generated fallback Strike.",
+      message: "The frame has neither an Attack Pattern nor a compiled Basic Attack.",
+      recommendation: "Restore the Basic Attack compiler or add an Attack Pattern graft.",
       details: { scalableMainActionGateProfile, crValidation, crDelta },
     }));
   }
@@ -525,19 +525,6 @@ function addBalanceIssues({ frame, context, issues }) {
     }));
   }
 
-  if (crDelta >= 2 && pressureProfile.label === "Low") {
-    issues.push(makeQaIssue({
-      severity: "error",
-      area: "balance-ui",
-      check: "pressure-label-floor",
-      id: frame.id,
-      title: computed.name || frame.id,
-      path: "computed.pressureProfile.label",
-      message: "Pressure label is Low even though CR validation puts the monster at least +2 CR above target.",
-      recommendation: "Raise the pressure floor or inspect pressure sources for overpowered negative offsets.",
-      details: { pressureProfile, targetCr, estimatedCr, crDelta },
-    }));
-  }
 }
 
 function addForgeIssues({ frame, context, issues }) {
@@ -801,8 +788,10 @@ function summarizeGeneratedMonster({ frame, context, artifacts, issueCount, info
     defensiveCr: computed.crValidation?.defensive?.cr,
     pressure: computed.pressureProfile?.score ?? computed.pressure,
     pressureLabel: computed.pressureProfile?.label,
+    pressureLimit: computed.pressureProfile?.limit ?? computed.pressureLimit,
     complexity: computed.complexityProfile?.score ?? computed.complexity,
     complexityLabel: computed.complexityProfile?.label,
+    complexityLimit: computed.complexityProfile?.limit ?? computed.complexityCap,
     dpr: computed.effectiveProfile?.effectiveDpr3Round ?? computed.dpr,
     baselineDpr: computed.baseline?.dpr,
     burstDpr: computed.effectiveProfile?.burstDpr,
@@ -816,7 +805,8 @@ function summarizeGeneratedMonster({ frame, context, artifacts, issueCount, info
     saveDc: computed.printedStats?.saveDc,
     framePowerHpMult: computed.framePowerProfile?.hpMult,
     framePowerDprMult: computed.framePowerProfile?.dprMult,
-    framePowerBudget: computed.framePowerProfile?.budget,
+    framePowerBuildBudget: computed.framePowerProfile?.buildBudget ?? computed.framePowerProfile?.budget,
+    framePowerPressureLimit: computed.framePowerProfile?.pressureLimit,
     framePowerDiagnostics: asArray(computed.framePowerProfile?.diagnostics).map((diagnostic) => diagnostic.code),
     crFitApplied: Boolean(computed.crFitProfile?.applied),
     crFitPasses: asArray(computed.crFitProfile?.passes).length,
@@ -921,7 +911,8 @@ function buildBatchAnalytics(generated = [], issues = []) {
   const publishBlocked = generated.filter((item) => item.publishStatus === "blocked").length;
   const publishReview = generated.filter((item) => item.publishStatus === "review").length;
   const publishUnknown = generated.filter((item) => !item.publishStatus || item.publishStatus === "unknown").length;
-  const lowPressureMismatch = balanceAnalyzed.filter((item) => Number(item.crDelta || 0) >= 2 && item.pressureLabel === "Low").length;
+  const pressureOverGuidance = balanceAnalyzed.filter((item) => Number(item.pressure || 0) > Number(item.pressureLimit || 0)).length;
+  const complexityOverGuidance = balanceAnalyzed.filter((item) => Number(item.complexity || 0) > Number(item.complexityLimit || 0)).length;
   const statBlockParserPassed = generated.filter((item) => item.statBlockParserStatus === "pass").length;
   const statBlockParserReview = generated.filter((item) => item.statBlockParserStatus === "warning").length;
   const statBlockParserFailed = generated.filter((item) => item.statBlockParserStatus === "error").length;
@@ -971,7 +962,8 @@ function buildBatchAnalytics(generated = [], issues = []) {
     publishBlocked,
     publishReview,
     publishUnknown,
-    lowPressureMismatch,
+    pressureOverGuidance,
+    complexityOverGuidance,
     statBlockParserPassed,
     statBlockParserReview,
     statBlockParserFailed,
@@ -1006,7 +998,7 @@ export function runMonsterBatchQa(options = {}) {
 
     try {
       const forgeResult = forgeMonsterSelectionDetailed(frame, {
-        slots: normalized.includeOptionalSlots ? buildBatchSlots(frame) : REQUIRED_PLAYABLE_SLOTS,
+        slots: normalized.includeOptionalSlots ? buildBatchSlots(frame) : DEFAULT_FORGE_SLOTS,
         allowRelaxedCoreFallback: true,
       });
       const selection = forgeResult.selected;
@@ -1127,7 +1119,8 @@ export function buildMonsterBatchQaMarkdown(report = {}) {
   lines.push(`- Scalable Main Action Fallback Added: ${analytics.scalableMainActionFallbackAdded ?? 0}`);
   lines.push(`- Missing Scalable Main Action: ${analytics.missingScalableMainAction ?? 0}`);
   lines.push(`- Low-CR DPR Spike Warnings: ${analytics.lowCrDprSpikeWarnings ?? 0}`);
-  lines.push(`- Low Pressure Mismatch: ${analytics.lowPressureMismatch ?? 0}`);
+  lines.push(`- Pressure Above Guidance: ${analytics.pressureOverGuidance ?? 0}`);
+  lines.push(`- Complexity Above Guidance: ${analytics.complexityOverGuidance ?? 0}`);
   lines.push(`- Public Payloads Valid: ${analytics.publicPayloads ?? 0}`);
   lines.push(`- Debug Payloads Valid: ${analytics.debugPayloads ?? 0}`);
   lines.push(`- Public Payloads With Debug Fields: ${analytics.publicPayloadsWithDebugFields ?? 0}`);
@@ -1151,7 +1144,7 @@ export function buildMonsterBatchQaMarkdown(report = {}) {
     .forEach((item) => {
       lines.push(`- ${item.id} · ${item.name || "Unnamed"} · Target CR ${item.targetCr}, Est. CR ${item.estimatedCr}, Δ ${item.crDelta}, Issues ${item.issueCount}, Publish ${item.publishStatus || "unknown"}`);
       lines.push(`  - Frame: ${item.frame?.roleId || "?"} / ${item.frame?.monsterTierId || "?"} / ${item.frame?.tempoProfileId || "?"} / ${item.frame?.dangerId || "?"}`);
-      lines.push(`  - Frame Power: HP ×${item.framePowerHpMult ?? "?"}, DPR ×${item.framePowerDprMult ?? "?"}, Budget ${item.framePowerBudget ?? "?"}`);
+      lines.push(`  - Frame Power: HP ×${item.framePowerHpMult ?? "?"}, DPR ×${item.framePowerDprMult ?? "?"}, Build ${item.framePowerBuildBudget ?? "?"}, Pressure Limit ${item.framePowerPressureLimit ?? "?"}`);
       if (item.crFitApplied) {
         lines.push(`  - CR Fit: Est. CR ${item.crFitInitialEstimatedCr ?? "?"} → ${item.crFitFinalEstimatedCr ?? item.estimatedCr}; HP target ${item.crFitInitialHpTarget ?? "?"} → ${item.crFitFinalHpTarget ?? "?"}; DPR target ${item.crFitInitialDprTarget ?? "?"} → ${item.crFitFinalDprTarget ?? "?"}`);
       }

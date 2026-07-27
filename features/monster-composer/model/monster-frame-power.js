@@ -1,4 +1,5 @@
-export const MONSTER_FRAME_POWER_VERSION = "frame-power-normalization-v1.24";
+import { getComplexityLimitForFrame, getPressureLimitForFrame } from "./monster-pressure-complexity.js";
+export const MONSTER_FRAME_POWER_VERSION = "frame-power-normalization-v1.25-pressure-complexity-v3";
 
 function clamp(value, min, max) {
   return Math.max(min, Math.min(max, Number(value || 0)));
@@ -55,16 +56,6 @@ function tierBudgetBonus(tierId) {
   }
 }
 
-function tierComplexityBonus(tierId) {
-  switch (idOf(tierId)) {
-    case "elite": return 1;
-    case "boss": return 2;
-    case "legendary": return 3;
-    case "setpiece": return 3;
-    default: return 0;
-  }
-}
-
 function roleHpBase(roleId, targetCr = 0) {
   switch (idOf(roleId, "standard")) {
     case "minion": {
@@ -96,14 +87,6 @@ function roleBudgetBase(roleId) {
     case "minion": return 7;
     case "boss": return 16;
     default: return 12;
-  }
-}
-
-function roleComplexityBase(roleId) {
-  switch (idOf(roleId, "standard")) {
-    case "minion": return 5;
-    case "boss": return 10;
-    default: return 8;
   }
 }
 
@@ -229,8 +212,16 @@ export function buildMonsterFramePowerProfile({
   const budgetCap = getBudgetCap(targetCr, roleId, monsterTierId);
   const budget = Math.round(capWithDiagnostic(rawBudget, budgetCap, diagnostics, "frame-power-stack/capped-budget", "Frame graft budget was capped to avoid overfilling high-power builds.", "", "info"));
 
-  const rawComplexityCap = roleComplexityBase(roleId) + Math.max(0, Math.min(2, Number(tacticalRole?.complexityMod || 0))) + tierComplexityBonus(monsterTierId) * (bossRole ? 0.5 : 1) + Math.max(-1, Math.min(2, Number(tempoProfile?.complexityMod || 0)));
-  const complexityCap = Math.round(clamp(rawComplexityCap, isMinionRole(roleId) ? 4 : 6, bossRole || highTier ? 13 : 10));
+  const pressureLimit = getPressureLimitForFrame({
+    targetCr,
+    roleId,
+    monsterTierId,
+  });
+  const complexityCap = getComplexityLimitForFrame({
+    roleId,
+    monsterTierId,
+    tempoProfileId,
+  });
 
   const acMod = Math.round(clamp(Number(monsterTier?.acMod || 0) + Number(tacticalRole?.acMod || 0), -1, Number(targetCr || 0) <= 4 ? 1 : 2));
   const attackMod = Math.round(clamp(Number(tacticalRole?.attackMod || 0) + Number(tempoProfile?.attackMod || 0), 0, Number(targetCr || 0) <= 4 ? 1 : 2));
@@ -251,15 +242,19 @@ export function buildMonsterFramePowerProfile({
     acMod,
     attackMod,
     dcMod,
+    buildBudget: Math.max(1, budget),
     budget: Math.max(1, budget),
+    pressureLimit: Math.max(1, pressureLimit),
     complexityCap: Math.max(1, complexityCap),
     pressureMod,
     diagnostics,
     raw: {
       hpMult: round(roleHpBase(roleId, targetCr) + tierHpBonus(monsterTierId) * tierStackFactor + tacticalHpDelta),
       dprMult: round(roleDprBase(roleId, targetCr) + tierDprBonus(monsterTierId) * tierStackFactor + tacticalDprDelta + dangerDprBonus(dangerId) + tempoDprBonus(tempoProfileId)),
+      buildBudget: round(rawBudget),
       budget: round(rawBudget),
-      complexityCap: round(rawComplexityCap),
+      pressureLimit,
+      complexityCap,
       tierStackFactor,
     },
   };

@@ -11684,3 +11684,108 @@
 .monster-shell .monster-balance-details-rail.cruor-composer-rail--with-footer {
   overflow: hidden;
 }
+
+/* Pressure / Complexity v3 — advisory overflow state. */
+@keyframes cruor-monster-meter-over-pulse {
+  0%,
+  100% {
+    filter: brightness(1);
+    box-shadow: 0 0 0 rgba(240, 185, 194, 0), 0 0 10px rgba(143, 36, 60, 0.22);
+  }
+  50% {
+    filter: brightness(1.28);
+    box-shadow: 0 0 8px rgba(240, 185, 194, 0.42), 0 0 18px rgba(143, 36, 60, 0.48);
+  }
+}
+
+@keyframes cruor-monster-meter-over-ring-pulse {
+  0%,
+  100% {
+    border-color: var(--cruor-color-blood-glow-a620, rgba(240, 185, 194, 0.46));
+    box-shadow:
+      0 0 0 1px var(--cruor-color-blood-bright-a180, rgba(143, 36, 60, 0.18)),
+      0 0 8px rgba(143, 36, 60, 0.24),
+      0 0 16px rgba(143, 36, 60, 0.08);
+  }
+  50% {
+    border-color: var(--cruor-color-blood-glow-a950, rgba(240, 185, 194, 0.82));
+    box-shadow:
+      0 0 0 2px rgba(143, 36, 60, 0.52),
+      0 0 14px rgba(176, 42, 68, 0.68),
+      0 0 28px rgba(143, 36, 60, 0.38);
+  }
+}
+
+.monster-shell .cruor-composer-meter.is-over,
+.monster-shell .meter.is-over {
+  position: relative;
+}
+
+.monster-shell .cruor-composer-meter.is-over .cruor-composer-meter__track,
+.monster-shell .meter.is-over .meter__track {
+  animation: cruor-monster-meter-over-ring-pulse 1.55s ease-in-out infinite;
+  border-color: var(--cruor-color-blood-glow-a780, rgba(240, 185, 194, 0.58));
+  box-shadow:
+    0 0 0 1px var(--cruor-color-blood-bright-a180, rgba(143, 36, 60, 0.18)),
+    0 0 10px rgba(143, 36, 60, 0.28);
+  will-change: border-color, box-shadow;
+}
+
+.monster-shell .cruor-composer-meter__fill.is-over,
+.monster-shell .meter.is-over .meter__track > span {
+  animation: cruor-monster-meter-over-pulse 1.8s ease-in-out infinite;
+  background: var(--cruor-gradient-linear-108-092c83a2, linear-gradient(90deg, #5f101f, #b7475f));
+}
+
+.monster-shell .cruor-composer-meter.is-over .cruor-composer-meter__value strong,
+.monster-shell .meter.is-over .meter__meta {
+  color: var(--cruor-color-hex-f0b9c2, #f0b9c2);
+}
+
+.monster-shell .monster-meter__advisory,
+.monster-shell .meter__advisory {
+  display: block;
+  margin: 6px 0 0;
+  color: var(--cruor-color-text-a780, rgba(240, 232, 234, 0.78));
+  font-size: var(--text-size-s, 0.72rem);
+  font-style: normal;
+  line-height: 1.35;
+}
+
+.monster-shell .monster-meter__advisory::before,
+.monster-shell .meter__advisory::before {
+  content: "!";
+  display: inline-grid;
+  place-items: center;
+  width: 14px;
+  height: 14px;
+  margin-right: 5px;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  font-size: 9px;
+  font-weight: 900;
+  vertical-align: 1px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .monster-shell .cruor-composer-meter.is-over .cruor-composer-meter__track,
+  .monster-shell .meter.is-over .meter__track,
+  .monster-shell .cruor-composer-meter__fill.is-over,
+  .monster-shell .meter.is-over .meter__track > span {
+    animation: none;
+  }
+
+  .monster-shell .cruor-composer-meter.is-over .cruor-composer-meter__track,
+  .monster-shell .meter.is-over .meter__track {
+    border-color: var(--cruor-color-blood-glow-a950, rgba(240, 185, 194, 0.82));
+    box-shadow:
+      0 0 0 2px rgba(143, 36, 60, 0.46),
+      0 0 16px rgba(143, 36, 60, 0.48);
+  }
+
+  .monster-shell .cruor-composer-meter__fill.is-over,
+  .monster-shell .meter.is-over .meter__track > span {
+    filter: brightness(1.18);
+    box-shadow: 0 0 10px rgba(143, 36, 60, 0.34);
+  }
+}

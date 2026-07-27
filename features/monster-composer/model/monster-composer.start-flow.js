@@ -1,8 +1,8 @@
 import { SLOTS } from "../monster-composer.workflow.js";
 import { hasSelectedSlot } from "./monster-composer.selection.js";
 
-const CORE_SLOT_IDS = ["body", "attack", "weakness"];
-const OPTIONAL_SLOT_PRIORITY = ["movement", "mind", "horror", "twist", "death", "lair"];
+const CORE_SLOT_IDS = ["body", "weakness"];
+const OPTIONAL_SLOT_PRIORITY = ["attack", "movement", "mind", "horror", "twist", "death", "lair"];
 
 const SLOT_COPY = {
   body: {
@@ -14,7 +14,7 @@ const SLOT_COPY = {
   attack: {
     title: "Attack Pattern",
     actionTitle: "Add Attack Pattern",
-    detail: "Give the monster a main offensive loop the DM can run every round.",
+    detail: "Optional. Replace the compiled Basic Attack with a distinctive offensive loop.",
     cta: "Add Attack",
   },
   weakness: {
@@ -80,30 +80,51 @@ function createSlotTask(slotId, selected, { required = false, current = false } 
 }
 
 function buildReviewChecks(computed) {
-  const pressureReady = Number(computed.pressure || 0) <= Number(computed.budget || 0);
+  const pressureReady = Number(computed.pressure || 0) <= Number(computed.pressureLimit ?? 0);
   const complexityReady = Number(computed.complexity || 0) <= Number(computed.complexityCap || 0);
   const counterplayReady = ["Strong", "Playable"].includes(computed.counterplayAudit?.rating);
+  const advisories = [
+    !pressureReady
+      ? {
+          id: "pressure-over-limit",
+          title: "Pressure is above the CR guidance",
+          detail: `${computed.pressure || 0} of ${computed.pressureLimit ?? 0}. The build remains usable.`,
+        }
+      : null,
+    !complexityReady
+      ? {
+          id: "complexity-over-limit",
+          title: "Complexity is above the DM guidance",
+          detail: `${computed.complexity || 0} of ${computed.complexityCap || 0}. The build remains usable.`,
+        }
+      : null,
+  ].filter(Boolean);
 
   return {
     pressureReady,
     complexityReady,
     counterplayReady,
-    balanceReady: pressureReady && complexityReady && counterplayReady,
+    guidanceReady: pressureReady && complexityReady && counterplayReady,
+    balanceReady: counterplayReady,
+    handoffReady: counterplayReady,
+    advisories,
     tasks: [
       {
         id: "pressure",
         title: "Pressure",
-        detail: `${computed.pressure || 0} of ${computed.budget || 0} target pressure`,
-        required: true,
-        status: pressureReady ? "complete" : "current",
+        detail: `${computed.pressure || 0} of ${computed.pressureLimit ?? 0} CR-scaled guidance`,
+        required: false,
+        advisory: !pressureReady,
+        status: pressureReady ? "complete" : "open",
         action: pressureReady ? null : { kind: "review" },
       },
       {
         id: "complexity",
         title: "Complexity",
-        detail: `${computed.complexity || 0} of ${computed.complexityCap || 0} complexity`,
-        required: true,
-        status: complexityReady ? "complete" : "current",
+        detail: `${computed.complexity || 0} of ${computed.complexityCap || 0} DM handling guidance`,
+        required: false,
+        advisory: !complexityReady,
+        status: complexityReady ? "complete" : "open",
         action: complexityReady ? null : { kind: "review" },
       },
       {
@@ -123,28 +144,11 @@ function getStructuredBlocker({ coreReady, missingCoreSlotId, review }) {
     return {
       id: `missing-${missingCoreSlotId}`,
       title: `${slotLabel(missingCoreSlotId)} is still missing`,
-      detail: "The monster needs Body, Attack, and Weakness / Tell for a readable combat loop.",
+      detail: "The monster needs Body and Weakness / Tell. A baseline attack is compiled automatically when no Attack Pattern is selected.",
       action: { kind: "slot", slotId: missingCoreSlotId, label: SLOT_COPY[missingCoreSlotId]?.cta || "Add Graft" },
     };
   }
 
-  if (!review.pressureReady) {
-    return {
-      id: "pressure-over-budget",
-      title: "Pressure exceeds the target",
-      detail: `Current pressure is ${computedNumber(review, "pressure")} and needs review before a clean handoff.`,
-      action: { kind: "review", label: "Review Pressure" },
-    };
-  }
-
-  if (!review.complexityReady) {
-    return {
-      id: "complexity-over-cap",
-      title: "Complexity exceeds the current cap",
-      detail: "Reduce overlapping mechanics or increase the advanced complexity cap.",
-      action: { kind: "review", label: "Review Complexity" },
-    };
-  }
 
   if (!review.counterplayReady) {
     return {
@@ -158,9 +162,6 @@ function getStructuredBlocker({ coreReady, missingCoreSlotId, review }) {
   return null;
 }
 
-function computedNumber(review, key) {
-  return review?.values?.[key] ?? "above budget";
-}
 
 export function buildGuidedFlow({
   activePreset,
@@ -176,7 +177,7 @@ export function buildGuidedFlow({
   const safeComputed = computed || {};
   const review = buildReviewChecks(safeComputed);
   review.values = {
-    pressure: `${safeComputed.pressure || 0}/${safeComputed.budget || 0}`,
+    pressure: `${safeComputed.pressure || 0}/${safeComputed.pressureLimit || 0}`,
     complexity: `${safeComputed.complexity || 0}/${safeComputed.complexityCap || 0}`,
   };
 
@@ -186,7 +187,7 @@ export function buildGuidedFlow({
   const coreReady = !missingCoreSlotId;
   const completedSlots = SLOTS.filter((slot) => hasSelectedSlot(safeSelected, slot.id)).length;
   const hasSetpieceSlot = ["twist", "death", "lair"].some((slotId) => hasSelectedSlot(safeSelected, slotId));
-  const exportReady = Boolean(composerStarted && coreReady && review.balanceReady && !(safeComputed.warnings || []).length);
+  const exportReady = Boolean(composerStarted && coreReady && review.handoffReady);
   const activeStageId = !composerStarted
     ? "chassis"
     : viewMode === "balance"
@@ -260,8 +261,8 @@ export function buildGuidedFlow({
     {
       id: "review",
       label: "Review",
-      detail: "Check pressure, complexity, and counterplay.",
-      status: review.balanceReady ? "complete" : coreReady ? "open" : "blocked",
+      detail: "Check player Pressure, DM Complexity, and counterplay. Load limits are advisory.",
+      status: review.handoffReady ? "complete" : coreReady ? "open" : "blocked",
       disabled: !composerStarted,
       action: { kind: "review" },
     },
@@ -376,13 +377,19 @@ export function buildGuidedFlow({
     };
   } else if (activeStageId === "review") {
     objective = {
-      title: review.balanceReady ? "Confirm the playable profile" : "Resolve the build checks",
-      detail: review.balanceReady
-        ? "Pressure, complexity, and counterplay are within the selected frame."
-        : "Use the review recommendations to resolve the remaining blocking checks.",
+      title: review.handoffReady
+        ? review.advisories.length
+          ? "Review the load advisory"
+          : "Confirm the playable profile"
+        : "Resolve the counterplay check",
+      detail: review.handoffReady
+        ? review.advisories.length
+          ? "Pressure or Complexity is above its recommendation. This is guidance, not a lock; continue when the additional load is intentional."
+          : "Pressure, Complexity, and counterplay are within the selected guidance."
+        : "Counterplay still needs a visible tell, break condition, or repeatable player response.",
     };
     tasks = review.tasks;
-    primaryAction = review.balanceReady
+    primaryAction = review.handoffReady
       ? {
           kind: "export",
           label: "Open Stat Block",
@@ -416,7 +423,7 @@ export function buildGuidedFlow({
       {
         id: "core-anatomy",
         title: "Core Anatomy",
-        detail: coreReady ? "Body, Attack, and Weakness / Tell are present." : "A core graft is missing.",
+        detail: coreReady ? "Body and Weakness / Tell are present; the engine guarantees a damaging Action." : "A core graft is missing.",
         required: true,
         status: coreReady ? "complete" : "current",
         action: coreReady ? null : { kind: "grafts" },

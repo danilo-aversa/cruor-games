@@ -3,7 +3,7 @@ import {
   FEATURE_ANATOMY_GRANT_OVERRIDES,
   FEATURE_COMPATIBILITY_OVERRIDES,
 } from "../data/monster-grafts.js";
-import { getFeatureBalanceStat, sumFeatureBalanceStats } from "./monster-graft-balance-profile.js";
+import { getFeatureBalanceStat } from "./monster-graft-balance-profile.js";
 import {
   evaluateMonsterAnatomyConstraints,
   formatAnatomyTerm,
@@ -604,11 +604,10 @@ export function buildFeatureImpactPreview({
   category,
   activePreset = null,
   computed,
-  getFeatureMechanicProfile,
-  summarizeMechanicProfiles,
   buildPressureProfile,
   buildComplexityProfile,
   getFeatureCounterplayProfile,
+  buildMonsterAbilitiesFromFeatures,
 }) {
   const alreadySelected = getSelectedIdsForSlot(selected, feature.slot).includes(feature.id);
   if (alreadySelected) {
@@ -625,35 +624,27 @@ export function buildFeatureImpactPreview({
   }
 
   const nextFeatures = [...selectedFeatures, feature];
-  const statMods = sumFeatureBalanceStats(nextFeatures);
-  const featureMechanics = nextFeatures.map((item) => ({
-    id: item.id,
-    title: item.title,
-    ...getFeatureMechanicProfile(item),
-  }));
-  const mechanicsSummary = summarizeMechanicProfiles(featureMechanics);
-  const cost = nextFeatures.reduce((sum, item) => sum + item.cost, 0);
-  const rawComplexity = nextFeatures.reduce((sum, item) => sum + item.complexity, 0);
+  const nextAbilityModel = buildMonsterAbilitiesFromFeatures(nextFeatures, {
+    targetCr: computed.targetCr,
+  });
   const nextPressureProfile = buildPressureProfile({
-    cost,
-    monsterTier: computed.monsterTier,
-    tempoProfile: computed.tempoProfile,
-    statMods,
-    mechanicsSummary,
-    budget: computed.budget,
+    targetCr: computed.targetCr,
+    limit: computed.pressureLimit,
+    abilityModel: nextAbilityModel,
+    selectedFeatures: nextFeatures,
   });
   const nextComplexityProfile = buildComplexityProfile({
-    complexity: rawComplexity,
-    mechanicsSummary,
-    featureMechanics,
     limit: computed.complexityCap,
+    abilityModel: nextAbilityModel,
+    selectedFeatures: nextFeatures,
   });
   const compatibility = getCompatibilityStatus(feature, selectedFeatures, typeId, category, { activePreset });
   const counterplayProfile = getFeatureCounterplayProfile(feature);
   const currentHasWeakness = hasSelectedSlot(selected, "weakness");
   const clearsWeaknessWarning = feature.slot === "weakness" && !currentHasWeakness ? 1 : 0;
   const pressureCrossesLimit =
-    computed.pressure <= computed.budget && nextPressureProfile.score > computed.budget ? 1 : 0;
+    computed.pressure <= (computed.pressureLimit) &&
+    nextPressureProfile.score > (computed.pressureLimit) ? 1 : 0;
   const complexityCrossesLimit =
     computed.complexity <= computed.complexityCap &&
     nextComplexityProfile.score > computed.complexityCap
@@ -663,7 +654,11 @@ export function buildFeatureImpactPreview({
   const highPressureNeedsTell =
     !currentHasWeakness &&
     feature.slot !== "weakness" &&
-    (feature.cost >= 5 || counterplayProfile.hardControl || counterplayProfile.burst)
+    (
+      nextPressureProfile.score - computed.pressure >= 2 ||
+      counterplayProfile.hardControl ||
+      counterplayProfile.burst
+    )
       ? 1
       : 0;
 

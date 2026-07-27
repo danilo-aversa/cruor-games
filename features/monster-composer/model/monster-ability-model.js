@@ -20,7 +20,7 @@ import {
   projectMonsterGraftForCr,
 } from "./monster-attack-pattern-progression.js";
 
-export const MONSTER_ABILITY_MODEL_VERSION = "monster-ability-model-v0.8-cr-scaled-grafts";
+export const MONSTER_ABILITY_MODEL_VERSION = "monster-ability-model-v0.9-basic-attack-fallback";
 export const MONSTER_ABILITY_BUNDLE_VERSION = "monster-ability-bundle-v1.0";
 
 function asArray(value) {
@@ -297,6 +297,8 @@ function buildAbilityRecord(
     rulesValidation,
     tags,
     synthetic: Boolean(synthetic),
+    baselineAbility: Boolean(feature.baselineAbility),
+    generatedBy: cleanString(feature.generatedBy) || null,
     provenance: {
       sourceGraftId: resolvedGraftId || null,
       sourceComponentId,
@@ -326,14 +328,15 @@ function buildAbilityRecord(
 
 function buildLegacyAbility(feature = {}, { index = 0 } = {}) {
   const featureId = cleanString(feature.id) || `ability-${index + 1}`;
+  const synthetic = Boolean(feature.synthetic);
   return buildAbilityRecord(feature, {
     runtimeId: featureId,
     sourceGraftId: featureId,
     localAbilityId: featureId,
     index,
     compilation: "legacy-adapter",
-    authorship: "legacy-authored",
-    synthetic: false,
+    authorship: synthetic ? "compiler-generated" : "legacy-authored",
+    synthetic,
     graftSchemaVersion: null,
   });
 }

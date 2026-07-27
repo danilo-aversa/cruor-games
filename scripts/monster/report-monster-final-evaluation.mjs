@@ -21,7 +21,7 @@ function action(id, overrides = {}) {
     section: "action",
     actionEconomy: "action",
     usage: { type: "atWill" },
-    damage: { hasDamage: true, entries: [{ id: `${id}-damage`, expectedTargets: 1 }] },
+    damage: { hasDamage: true, entries: [{ id: `${id}-damage`, expectedTargets: 1, average: 5 }] },
     conditions: [],
     effects: [],
     counterplay: {},
@@ -33,7 +33,6 @@ function baseInput(overrides = {}) {
   return {
     targetCr: 2,
     baseline: { dpr: 15, hp: 45, ac: 13 },
-    printedStats: { dpr: 15, hp: 45, ac: 13 },
     dprProfile: {
       effectiveDpr3Round: 15,
       averageDpr: 15,
@@ -51,21 +50,14 @@ function baseInput(overrides = {}) {
       effectiveHp: 45,
       conditionProfile: {},
     },
-    crValidation: {
-      estimatedCr: 2,
-      offensive: { cr: 2 },
-      defensive: { cr: 2 },
-    },
     abilityModel: { abilities: [action("strike")] },
     attackRoutine: { enabled: false, count: 1, attacks: [], replacements: [], additions: [] },
-    mechanicsSummary: { complexityTags: {} },
-    tempoProfile: { pressureMod: 0 },
-    monsterTier: { pressureMod: 0 },
     counterplayAudit: { score: 50, rating: "Playable", issues: [] },
     selectedFeatures: [],
     buildBudget: 14,
     buildCost: 4,
-    complexityCap: 10,
+    pressureLimit: 6,
+    complexityCap: 6,
     ...overrides,
   };
 }
@@ -73,7 +65,6 @@ function baseInput(overrides = {}) {
 function buildScenarios() {
   const baseline = buildFinalMonsterEvaluation(baseInput());
   const burst = buildFinalMonsterEvaluation(baseInput({
-    printedStats: { dpr: 17, hp: 45, ac: 13 },
     dprProfile: {
       effectiveDpr3Round: 17,
       averageDpr: 17,
@@ -91,25 +82,17 @@ function buildScenarios() {
       effectiveHp: 45,
       conditionProfile: {},
     },
-    crValidation: {
-      estimatedCr: 3,
-      offensive: { cr: 4 },
-      defensive: { cr: 2 },
-    },
+    abilityModel: { abilities: [action("strike", { damage: { hasDamage: true, entries: [{ average: 30 }] } })] },
   }));
   const hardControl = buildFinalMonsterEvaluation(baseInput({
-    effectiveProfile: {
-      effectiveDpr3Round: 15,
-      burstDpr: 15,
-      sustainedDpr: 15,
-      effectiveHp: 45,
-      conditionProfile: {
-        majorCount: 1,
-        severeCount: 1,
-        repeatedHardControlCount: 1,
-        crAdjustment: 1,
-        controlPressure: 3,
-      },
+    abilityModel: {
+      abilities: [
+        action("strike"),
+        action("pin", {
+          conditions: [{ name: "restrained", severity: "major", repeatSave: { enabled: true }, escape: { enabled: true } }],
+          counterplay: { breakCondition: "Escape the pin." },
+        }),
+      ],
     },
   }));
   const unsafeCounterplay = buildFinalMonsterEvaluation(baseInput({
@@ -126,7 +109,7 @@ function buildScenarios() {
     action("spore-cloud", {
       usage: { type: "recharge" },
       targeting: { type: "area" },
-      areaEffect: { enabled: true },
+      areaEffect: { enabled: true, timing: "startsTurnInArea" },
       ongoing: { enabled: true },
     }),
     action("retaliation", { actionEconomy: "reaction", section: "reaction" }),
@@ -143,13 +126,10 @@ function buildScenarios() {
       replacements: [{ abilityId: "engulf" }],
       additions: [{ abilityId: "spore-cloud" }],
     },
-    dprProfile: {
-      ...baseInput().dprProfile,
-      actionEconomy: { mainActionOptionCount: 4 },
-    },
   }));
   const lowBudget = buildFinalMonsterEvaluation(baseInput({ buildBudget: 8, buildCost: 7 }));
   const highBudget = buildFinalMonsterEvaluation(baseInput({ buildBudget: 24, buildCost: 7 }));
+  const highCrSameRepertoire = buildFinalMonsterEvaluation(baseInput({ targetCr: 20, pressureLimit: 14 }));
   return {
     baseline,
     burst,
@@ -159,13 +139,17 @@ function buildScenarios() {
     complex,
     lowBudget,
     highBudget,
+    highCrSameRepertoire,
   };
 }
 
 function summarizeEvaluation(evaluation) {
   return {
     pressure: evaluation.pressure.score,
+    pressureLimit: evaluation.pressure.limit,
+    pressureUtilization: evaluation.pressure.utilization,
     complexity: evaluation.complexity.score,
+    complexityLimit: evaluation.complexity.limit,
     counterplay: evaluation.counterplay.score,
     spikeRisk: evaluation.spikeRisk.score,
     buildBudget: evaluation.buildBudget.limit,
@@ -176,53 +160,27 @@ function summarizeEvaluation(evaluation) {
 function buildChecks(scenarios) {
   const checks = [];
   const add = (id, pass, detail) => checks.push({ id, pass: Boolean(pass), detail });
-  const scaleKeys = ["pressure", "complexity", "counterplay", "spikeRisk"];
   for (const [scenarioId, evaluation] of Object.entries(scenarios)) {
-    for (const key of scaleKeys) {
+    for (const key of ["pressure", "complexity"]) {
+      add(`${scenarioId}-${key}-nonnegative`, Number(evaluation[key].score) >= 0, `${evaluation[key].score} is nonnegative`);
+      add(`${scenarioId}-${key}-limit`, Number(evaluation[key].limit) > 0, `${evaluation[key].limit} is a positive guidance limit`);
+    }
+    for (const key of ["counterplay", "spikeRisk"]) {
       const score = Number(evaluation[key].score);
       add(`${scenarioId}-${key}-scale`, score >= 0 && score <= 10, `${score} is within 0-10`);
     }
   }
-  add(
-    "burst-increases-pressure",
-    scenarios.burst.pressure.score > scenarios.baseline.pressure.score,
-    `${scenarios.baseline.pressure.score} -> ${scenarios.burst.pressure.score}`,
-  );
-  add(
-    "burst-increases-spike-risk",
-    scenarios.burst.spikeRisk.score > scenarios.baseline.spikeRisk.score,
-    `${scenarios.baseline.spikeRisk.score} -> ${scenarios.burst.spikeRisk.score}`,
-  );
-  add(
-    "hard-control-increases-pressure",
-    scenarios.hardControl.pressure.score > scenarios.baseline.pressure.score,
-    `${scenarios.baseline.pressure.score} -> ${scenarios.hardControl.pressure.score}`,
-  );
-  add(
-    "counterplay-independent-from-pressure",
-    scenarios.unsafeCounterplay.pressure.score === scenarios.strongCounterplay.pressure.score,
-    `${scenarios.unsafeCounterplay.pressure.score} == ${scenarios.strongCounterplay.pressure.score}`,
-  );
-  add(
-    "counterplay-score-remains-independent",
-    scenarios.strongCounterplay.counterplay.score > scenarios.unsafeCounterplay.counterplay.score,
-    `${scenarios.unsafeCounterplay.counterplay.score} -> ${scenarios.strongCounterplay.counterplay.score}`,
-  );
-  add(
-    "flattened-repertoire-increases-complexity",
-    scenarios.complex.complexity.score > scenarios.baseline.complexity.score,
-    `${scenarios.baseline.complexity.score} -> ${scenarios.complex.complexity.score}`,
-  );
-  add(
-    "build-budget-independent-from-pressure",
-    scenarios.lowBudget.pressure.score === scenarios.highBudget.pressure.score,
-    `${scenarios.lowBudget.pressure.score} == ${scenarios.highBudget.pressure.score}`,
-  );
-  add(
-    "build-budget-independent-from-complexity",
-    scenarios.lowBudget.complexity.score === scenarios.highBudget.complexity.score,
-    `${scenarios.lowBudget.complexity.score} == ${scenarios.highBudget.complexity.score}`,
-  );
+  add("burst-does-not-change-pressure", scenarios.burst.pressure.score === scenarios.baseline.pressure.score, `${scenarios.baseline.pressure.score} == ${scenarios.burst.pressure.score}`);
+  add("burst-increases-spike-risk", scenarios.burst.spikeRisk.score > scenarios.baseline.spikeRisk.score, `${scenarios.baseline.spikeRisk.score} -> ${scenarios.burst.spikeRisk.score}`);
+  add("hard-control-increases-pressure", scenarios.hardControl.pressure.score > scenarios.baseline.pressure.score, `${scenarios.baseline.pressure.score} -> ${scenarios.hardControl.pressure.score}`);
+  add("counterplay-independent-from-pressure", scenarios.unsafeCounterplay.pressure.score === scenarios.strongCounterplay.pressure.score, `${scenarios.unsafeCounterplay.pressure.score} == ${scenarios.strongCounterplay.pressure.score}`);
+  add("counterplay-score-remains-independent", scenarios.strongCounterplay.counterplay.score > scenarios.unsafeCounterplay.counterplay.score, `${scenarios.unsafeCounterplay.counterplay.score} -> ${scenarios.strongCounterplay.counterplay.score}`);
+  add("multi-system-repertoire-increases-pressure", scenarios.complex.pressure.score > scenarios.baseline.pressure.score, `${scenarios.baseline.pressure.score} -> ${scenarios.complex.pressure.score}`);
+  add("multi-system-repertoire-increases-complexity", scenarios.complex.complexity.score > scenarios.baseline.complexity.score, `${scenarios.baseline.complexity.score} -> ${scenarios.complex.complexity.score}`);
+  add("build-budget-independent-from-pressure", scenarios.lowBudget.pressure.score === scenarios.highBudget.pressure.score, `${scenarios.lowBudget.pressure.score} == ${scenarios.highBudget.pressure.score}`);
+  add("build-budget-independent-from-complexity", scenarios.lowBudget.complexity.score === scenarios.highBudget.complexity.score, `${scenarios.lowBudget.complexity.score} == ${scenarios.highBudget.complexity.score}`);
+  add("same-repertoire-same-pressure-weight", scenarios.highCrSameRepertoire.pressure.score === scenarios.baseline.pressure.score, `${scenarios.baseline.pressure.score} == ${scenarios.highCrSameRepertoire.pressure.score}`);
+  add("higher-cr-higher-pressure-capacity", scenarios.highCrSameRepertoire.pressure.limit > scenarios.baseline.pressure.limit, `${scenarios.baseline.pressure.limit} -> ${scenarios.highCrSameRepertoire.pressure.limit}`);
   return checks;
 }
 
@@ -230,7 +188,7 @@ function buildReport() {
   const scenarios = buildScenarios();
   const checks = buildChecks(scenarios);
   return {
-    schemaVersion: "monster-final-evaluation-audit-v1.0",
+    schemaVersion: "monster-final-evaluation-audit-v3.0",
     evaluationVersion: MONSTER_FINAL_EVALUATION_VERSION,
     generatedBy: "scripts/monster/report-monster-final-evaluation.mjs",
     summary: {
@@ -239,21 +197,19 @@ function buildReport() {
       passed: checks.filter((check) => check.pass).length,
       failed: checks.filter((check) => !check.pass).length,
     },
-    scenarios: Object.fromEntries(
-      Object.entries(scenarios).map(([id, evaluation]) => [id, summarizeEvaluation(evaluation)]),
-    ),
+    scenarios: Object.fromEntries(Object.entries(scenarios).map(([id, evaluation]) => [id, summarizeEvaluation(evaluation)])),
     checks,
   };
 }
 
 function renderMarkdown(report) {
   const scenarioRows = Object.entries(report.scenarios)
-    .map(([id, row]) => `| ${id} | ${row.pressure} | ${row.complexity} | ${row.counterplay} | ${row.spikeRisk} | ${row.buildBudget ?? "-"} |`)
+    .map(([id, row]) => `| ${id} | ${row.pressure}/${row.pressureLimit} | ${row.complexity}/${row.complexityLimit} | ${row.counterplay} | ${row.spikeRisk} | ${row.buildBudget ?? "-"} |`)
     .join("\n");
   const checkRows = report.checks
     .map((check) => `| ${check.pass ? "PASS" : "FAIL"} | ${check.id} | ${check.detail} |`)
     .join("\n");
-  return `# Terrifying Monsters — Final Evaluation v2 Audit\n\n` +
+  return `# Terrifying Monsters — Final Evaluation v3 Audit\n\n` +
     `**Evaluation:** \`${report.evaluationVersion}\`  \n` +
     `**Scenarios:** ${report.summary.scenarioCount}  \n` +
     `**Checks:** ${report.summary.passed}/${report.summary.checkCount} passed\n\n` +
@@ -263,11 +219,12 @@ function renderMarkdown(report) {
     `## Invariant checks\n\n` +
     `| Status | Check | Evidence |\n|---|---|---|\n${checkRows}\n\n` +
     `## Contract confirmed\n\n` +
-    `- Pressure is calculated from finalized DPR, burst, effective defense, conditions, tempo and reach.\n` +
-    `- Complexity is calculated from the flattened ability repertoire and DM-facing handling requirements.\n` +
-    `- Counterplay is measured independently and never subtracted from Pressure.\n` +
-    `- Spike Risk is separate from average Pressure.\n` +
-    `- Build Budget remains a build-points envelope and does not define the 0–10 Pressure scale.\n`;
+    `- Pressure measures the tactical load presented to players, not DPR, HP, AC, or estimated CR.\n` +
+    `- Target CR changes the Pressure limit, not the weight of identical content.\n` +
+    `- Complexity measures DM decisions, triggers, state, board objects, branching, and special systems.\n` +
+    `- Counterplay remains independent and never subtracts from Pressure.\n` +
+    `- Spike Risk remains a separate 0–10 damage-volatility measure.\n` +
+    `- Build Budget remains an internal build-points envelope and is not a Pressure limit.\n`;
 }
 
 function normalizedText(value) {
@@ -291,7 +248,7 @@ const jsonFresh = compareOrWrite(JSON_PATH, json);
 const markdownFresh = compareOrWrite(MARKDOWN_PATH, markdown);
 const failedChecks = report.checks.filter((check) => !check.pass);
 
-console.log(`Final Evaluation v2: ${report.summary.passed}/${report.summary.checkCount} checks passed.`);
+console.log(`Final Evaluation v3: ${report.summary.passed}/${report.summary.checkCount} checks passed.`);
 console.log(`Generated outputs: ${path.relative(ROOT, JSON_PATH)}, ${path.relative(ROOT, MARKDOWN_PATH)}`);
 if (CHECK && (!jsonFresh || !markdownFresh)) {
   console.error("Generated Final Evaluation audit files are stale. Run npm run monster:audit:final-evaluation.");

@@ -14,7 +14,6 @@ import {
   TEMPO_PROFILES,
 } from "../monster-composer.taxonomies.js";
 import {
-  applyPressureValidationFloor,
   buildComplexityProfile,
   buildCounterplayAudit,
   buildPressureProfile,
@@ -43,6 +42,11 @@ import {
 } from "../model/monster-bestiary-baselines.js";
 import { validateMonsterGraftRules } from "../model/monster-graft-rules.schema.js";
 import { buildMonsterAbilitiesFromFeatures } from "../model/monster-ability-model.js";
+import {
+  ensureMonsterBasicAttackFeature,
+  hasAuthoredAttackPattern,
+  isMonsterBasicAttackFeature,
+} from "../model/monster-basic-attack.js";
 import { buildMonsterFramePowerProfile } from "../model/monster-frame-power.js";
 import { buildClosedLoopCrFit } from "../model/monster-cr-fitting.js";
 import {
@@ -52,7 +56,8 @@ import {
 } from "../rulesets/index.js";
 import { asArray, uniqueArray } from "./monster-qa-report.js";
 
-export const REQUIRED_PLAYABLE_SLOTS = Object.freeze(["body", "attack", "weakness"]);
+export const REQUIRED_PLAYABLE_SLOTS = Object.freeze(["body", "weakness"]);
+export const DEFAULT_FORGE_SLOTS = Object.freeze(["body", "attack", "weakness"]);
 
 function clamp(value, min, max) {
   return Math.max(min, Math.min(max, value));
@@ -260,6 +265,7 @@ export function buildMonsterFrameContext({
     qaMode,
     category,
     sourceId,
+    typeId,
   });
   selectedFeatures = scalableMainActionGate.selectedFeatures;
   const highCrActionRoutine = ensureHighCrActionRoutine({
@@ -301,12 +307,9 @@ export function buildMonsterFrameContext({
   const mechanicsSummary = summarizeMechanicProfiles(featureMechanics);
   const counterplayProfiles = selectedFeatures.map((feature) => getFeatureCounterplayProfile(feature));
   const cost = selectedFeatures.reduce((sum, feature) => sum + feature.cost, 0);
-  const rawComplexity = selectedFeatures.reduce((sum, feature) => sum + feature.complexity, 0);
-  const budget = Math.max(1, framePowerProfile.budget);
+  const buildBudget = Math.max(1, framePowerProfile.buildBudget ?? framePowerProfile.budget);
+  const pressureLimit = Math.max(1, framePowerProfile.pressureLimit);
   const complexityCap = Math.max(1, framePowerProfile.complexityCap);
-  let pressureProfile = buildPressureProfile({ cost, monsterTier, tempoProfile, statMods, mechanicsSummary, budget });
-  const complexityProfile = buildComplexityProfile({ complexity: rawComplexity, mechanicsSummary, featureMechanics, limit: complexityCap });
-  const complexity = complexityProfile.score;
   const targetHpValue = Math.max(1, Math.round(baseHp + (statMods.hp || 0)));
   const targetAcValue = clamp(baseAc + (statMods.ac || 0), 10, 28);
   const targetDprValue = Math.max(1, Math.round(baseDpr + (statMods.dpr || 0)));
@@ -353,16 +356,22 @@ export function buildMonsterFrameContext({
   const effectiveProfile = crFit.effectiveProfile;
   const crValidation = crFit.crValidation;
   const crFitProfile = crFit.fitProfile;
-  pressureProfile = applyPressureValidationFloor({
-    pressureProfile,
-    budget,
+  const pressureComplexityAbilityModel = buildMonsterAbilitiesFromFeatures(selectedFeatures, { targetCr });
+  const pressureProfile = buildPressureProfile({
     targetCr,
-    baseline,
-    printedStats,
-    effectiveProfile,
-    crValidation,
+    limit: pressureLimit,
+    abilityModel: pressureComplexityAbilityModel,
+    attackRoutine: dprProfile?.attackRoutine || null,
+    selectedFeatures,
+  });
+  const complexityProfile = buildComplexityProfile({
+    limit: complexityCap,
+    abilityModel: pressureComplexityAbilityModel,
+    attackRoutine: dprProfile?.attackRoutine || null,
+    selectedFeatures,
   });
   const pressure = pressureProfile.score;
+  const complexity = complexityProfile.score;
   const counterplayAudit = buildCounterplayAudit({ selected, roleId, monsterTier, pressureProfile, complexityProfile, mechanicsSummary, counterplayProfiles });
   const profileDeltas = buildMonsterComposerProfileDeltas(printedStats, effectiveProfile, baseline);
   const estimatedCr = crValidation.estimatedCr;
@@ -382,13 +391,13 @@ export function buildMonsterFrameContext({
     warnings.push(`Low-CR Hard Control: ${lowCrHardControlProfile.hardControlCount} reliable hard-control features selected at CR ${targetCr}.`);
   }
   if (scalableMainActionGate.profile?.needsFallback || scalableMainActionGate.fallbackFeature) {
-    warnings.push("Scalable Main Action Gate: generated fallback Strike because this high-CR frame lacked a scalable damaging main action.");
+    warnings.push("Basic Attack Fallback: generated a baseline attack because no Attack Pattern graft was selected.");
   }
   if (highCrActionRoutine.profile?.routineAdded) {
     warnings.push("High-CR Action Routine: generated Multiattack because this high-CR frame relied on a single scalable attack.");
   }
-  if (pressure > budget) warnings.push("Threat budget is above target.");
-  if (complexity > complexityCap) warnings.push("Table complexity is high.");
+  if (pressure > pressureLimit) warnings.push(`Player-facing Pressure exceeds the CR ${targetCr} guidance by ${pressure - pressureLimit}.`);
+  if (complexity > complexityCap) warnings.push(`DM Complexity exceeds the handling guidance by ${complexity - complexityCap}.`);
   if (!hasSelectedSlot(selected, "weakness")) warnings.push("No Weakness / Tell selected.");
   counterplayAudit.issues.forEach((issue) => warnings.push(`Counterplay Audit: ${issue.label}. ${issue.detail}`));
 
@@ -443,6 +452,7 @@ export function buildMonsterFrameContext({
     featureMechanics,
     mechanicsSummary,
     abilityModel,
+    pressureComplexityAbilityModel,
     baselinePower,
     effectivePower: effectiveProfile.combatPowerEstimate,
     prof,
@@ -455,7 +465,9 @@ export function buildMonsterFrameContext({
     dpr,
     dc,
     attack,
-    budget,
+    budget: buildBudget,
+    pressureLimit,
+    buildBudget,
     cost,
     pressure,
     complexity,
@@ -606,8 +618,11 @@ export function isScalableMainActionFeature(feature = {}) {
 
 export function buildScalableMainActionGateProfile({ targetCr = 0, selectedFeatures = [], qaMode = "realistic" } = {}) {
   const highCr = Number(targetCr || 0) >= 5;
-  const actionFeatures = asArray(selectedFeatures)
-    .filter((feature) => normalizeLower(feature.rules?.actionEconomy || feature.section || "") === "action")
+  const authoredFeatures = asArray(selectedFeatures).filter(
+    (feature) => !isMonsterBasicAttackFeature(feature),
+  );
+  const attackPatterns = authoredFeatures
+    .filter((feature) => feature.slot === "attack")
     .map((feature) => ({
       id: feature.id,
       title: feature.title,
@@ -618,93 +633,38 @@ export function buildScalableMainActionGateProfile({ targetCr = 0, selectedFeatu
       damageScales: getDamageEntriesFromRules(feature.rules || {}).map((damage) => damage.scale || "standard"),
       budgetRoles: getDamageEntriesFromRules(feature.rules || {}).map((damage) => damage.budgetRole || "none"),
     }));
-  const scalableFeatures = actionFeatures.filter((feature) => feature.scalable);
-  const needsFallback = highCr && qaMode !== "stress" && scalableFeatures.length === 0;
+  const scalableFeatures = attackPatterns.filter((feature) => feature.scalable);
+  const needsFallback = !hasAuthoredAttackPattern(authoredFeatures);
   return {
-    version: "scalable-main-action-gate-v1.30",
+    version: "scalable-main-action-gate-v1.32-basic-fallback",
     targetCr: Number(targetCr || 0),
     qaMode,
     highCr,
-    actionCount: actionFeatures.length,
+    actionCount: attackPatterns.length,
+    attackPatternCount: attackPatterns.length,
     scalableActionCount: scalableFeatures.length,
-    actionFeatures,
+    actionFeatures: attackPatterns,
     needsFallback,
     status: needsFallback ? "fallback-required" : "pass",
   };
 }
 
-function buildFallbackMainActionFeature({ category = "Monster", sourceId = "frame", targetCr = 0 } = {}) {
-  const noun = String(category || "Monster").trim() || "Monster";
-  return {
-    id: `frame-fallback-strike-cr-${targetCr}`,
-    title: `${noun} Strike`,
-    slot: "attack",
-    section: "action",
-    source: sourceId || "frame",
-    typeBias: [],
-    roleBias: [],
-    cost: 0,
-    complexity: 0,
-    stats: { dpr: 0 },
-    synthetic: true,
-    generatedBy: "scalable-main-action-gate-v1.30",
-    rules: {
-      schemaVersion: "monster-graft-rules-v1.12",
-      section: "action",
-      actionEconomy: "action",
-      usage: { type: "atWill" },
-      resolution: {
-        type: "attackRoll",
-        attackType: "melee",
-        abilityBasis: "str",
-        bonus: "monster",
-        reach: "5 ft.",
-      },
-      targeting: { type: "single", targets: "one target" },
-      damage: {
-        mode: "computed",
-        budgetRole: "mainAttack",
-        modifierPolicy: "sameAsAttack",
-        types: ["bludgeoning"],
-        scale: "standard",
-        budgetShare: null,
-        expectedTargets: 1,
-        parts: [],
-      },
-      condition: null,
-      counterplay: {
-        telegraph: false,
-        breakCondition: false,
-        positioningAnswer: true,
-        nonDamageAnswer: false,
-      },
-      text: {
-        hit: "{damage} {damage-type}.",
-      },
-      migration: {
-        source: "frame-generated-fallback",
-        isStructured: true,
-        convertedFrom: "scalable-main-action-gate",
-      },
-    },
-    summary: "Generated fallback main attack used when a high-CR frame lacks a scalable damaging action.",
-    mechanics: "Melee Attack Roll. Hit: {damage} {damage-type}.",
-    counterplay: "Standard melee positioning and armor class counterplay apply.",
-  };
-}
-
-function ensureScalableMainActionForHighCr({ selectedFeatures = [], targetCr = 0, qaMode = "realistic", category, sourceId } = {}) {
+function ensureScalableMainActionForHighCr({ selectedFeatures = [], targetCr = 0, qaMode = "realistic", category, sourceId, typeId } = {}) {
   const profile = buildScalableMainActionGateProfile({ targetCr, selectedFeatures, qaMode });
-  if (!profile.needsFallback) return { selectedFeatures, profile, fallbackFeature: null };
-  const fallbackFeature = buildFallbackMainActionFeature({ category, sourceId, targetCr });
+  const compilation = ensureMonsterBasicAttackFeature(selectedFeatures, {
+    category,
+    sourceId,
+    typeId,
+    targetCr,
+  });
   return {
-    selectedFeatures: [...selectedFeatures, fallbackFeature],
+    selectedFeatures: compilation.features,
     profile: {
       ...profile,
-      status: "fallback-added",
-      fallbackFeature: { id: fallbackFeature.id, title: fallbackFeature.title },
+      status: compilation.profile.status,
+      fallbackFeature: compilation.profile.fallbackFeature || null,
     },
-    fallbackFeature,
+    fallbackFeature: compilation.fallbackFeature,
   };
 }
 
@@ -879,11 +839,11 @@ export function getForgeCandidatesForFrame(frame = {}, { slotId = null, selected
   return applyLowCrHardControlGate(candidates, selectedFeatures, frame);
 }
 
-function orderForgeSlots(slots = REQUIRED_PLAYABLE_SLOTS) {
+function orderForgeSlots(slots = DEFAULT_FORGE_SLOTS) {
   const requested = asArray(slots);
   return uniqueArray([
-    ...REQUIRED_PLAYABLE_SLOTS.filter((slotId) => requested.includes(slotId)),
-    ...requested.filter((slotId) => !REQUIRED_PLAYABLE_SLOTS.includes(slotId)),
+    ...DEFAULT_FORGE_SLOTS.filter((slotId) => requested.includes(slotId)),
+    ...requested.filter((slotId) => !DEFAULT_FORGE_SLOTS.includes(slotId)),
   ]);
 }
 
@@ -896,12 +856,20 @@ function getCompatibleForgeCandidates(frame, slotId, selectedFeatures = []) {
   return applyLowCrHardControlGate(candidates, selectedFeatures, frame);
 }
 
-export function forgeMonsterSelectionDetailed(frame, { slots = REQUIRED_PLAYABLE_SLOTS, allowRelaxedCoreFallback = true } = {}) {
+export function forgeMonsterSelectionDetailed(frame, { slots = DEFAULT_FORGE_SLOTS, allowRelaxedCoreFallback = true } = {}) {
   const selected = {};
   const relaxedSlots = [];
   const skippedSlots = [];
   let selectedFeatures = [];
-  let remainingBudget = (getFrameValue(ROLES, frame.roleId, 1)?.budget || 12) + (getFrameValue(DANGERS, frame.dangerId, 1)?.budgetOffset || 0);
+  const framePowerProfile = buildMonsterFramePowerProfile({
+    role: getFrameValue(ROLES, frame.roleId, 1),
+    tacticalRole: getFrameValue(TACTICAL_ROLES, frame.tacticalRoleId),
+    monsterTier: getFrameValue(MONSTER_TIERS, frame.monsterTierId),
+    tempoProfile: getFrameValue(TEMPO_PROFILES, frame.tempoProfileId, 1),
+    danger: getFrameValue(DANGERS, frame.dangerId, 1),
+    targetCr: Number(frame.targetCr || 0),
+  });
+  let remainingBudget = Math.max(1, Number((framePowerProfile.buildBudget ?? framePowerProfile.budget) || 1));
 
   orderForgeSlots(slots).forEach((slotId) => {
     const strictCandidates = getCompatibleForgeCandidates(frame, slotId, selectedFeatures);
@@ -935,7 +903,7 @@ export function forgeMonsterSelectionDetailed(frame, { slots = REQUIRED_PLAYABLE
   };
 }
 
-export function buildForgeCoverage(frame = {}, { slots = REQUIRED_PLAYABLE_SLOTS } = {}) {
+export function buildForgeCoverage(frame = {}, { slots = DEFAULT_FORGE_SLOTS } = {}) {
   const countsBySlot = {};
   const eligibleCountsBySlot = {};
   const candidateIdsBySlot = {};
@@ -965,7 +933,7 @@ export function buildForgeCoverage(frame = {}, { slots = REQUIRED_PLAYABLE_SLOTS
   };
 }
 
-export function forgeMonsterSelection(frame, { slots = REQUIRED_PLAYABLE_SLOTS, allowRelaxedCoreFallback = true } = {}) {
+export function forgeMonsterSelection(frame, { slots = DEFAULT_FORGE_SLOTS, allowRelaxedCoreFallback = true } = {}) {
   return forgeMonsterSelectionDetailed(frame, { slots, allowRelaxedCoreFallback }).selected;
 }
 

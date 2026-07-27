@@ -548,7 +548,7 @@ export function buildExportRunSheet({
     },
     {
       label: "Default Turn",
-      value: authoredDefault || (mainAction ? mainAction.title : "Use the fallback Strike action"),
+      value: authoredDefault || (mainAction ? mainAction.title : "Use the compiled Basic Attack"),
     },
     {
       label: "Watch Closely",

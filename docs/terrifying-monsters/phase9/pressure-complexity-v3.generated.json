@@ -1,0 +1,825 @@
+{
+  "schemaVersion": "monster-pressure-complexity-audit-v3.0",
+  "modelVersion": "monster-pressure-complexity-v3.4-graft-weight",
+  "generatedBy": "scripts/monster/report-monster-pressure-complexity.mjs",
+  "summary": {
+    "grafts": 93,
+    "attackPatterns": 15,
+    "checks": 11,
+    "passed": 11,
+    "failed": 0,
+    "cr2AttackPatternsSaturatingPressure": 1,
+    "cr2AttackPatternsExceedingPressure": 1
+  },
+  "pressureCurve": [
+    {
+      "minCr": 0,
+      "maxCr": 1,
+      "limit": 4
+    },
+    {
+      "minCr": 2,
+      "maxCr": 4,
+      "limit": 6
+    },
+    {
+      "minCr": 5,
+      "maxCr": 8,
+      "limit": 8
+    },
+    {
+      "minCr": 9,
+      "maxCr": 12,
+      "limit": 10
+    },
+    {
+      "minCr": 13,
+      "maxCr": 16,
+      "limit": 12
+    },
+    {
+      "minCr": 17,
+      "maxCr": 20,
+      "limit": 14
+    },
+    {
+      "minCr": 21,
+      "maxCr": 30,
+      "limit": 16
+    }
+  ],
+  "frameExamples": {
+    "standardCr2": {
+      "pressureLimit": 6,
+      "complexityLimit": 6
+    },
+    "legendaryBossCr2": {
+      "pressureLimit": 8,
+      "complexityLimit": 10
+    },
+    "standardCr20": {
+      "pressureLimit": 14,
+      "complexityLimit": 6
+    }
+  },
+  "syntheticComplexAttackPattern": {
+    "pressure": 11,
+    "limit": 6,
+    "label": "Critical",
+    "breakdown": {
+      "coreRoutine": 4.4,
+      "playerResponses": 2.1,
+      "control": 1.2,
+      "spatial": 1.05,
+      "tempo": 0.28,
+      "persistence": 0.95,
+      "interactions": 0.68,
+      "graftWeight": 0
+    }
+  },
+  "fullCatalogCr2": {
+    "grafts": 93,
+    "abilities": 131,
+    "pressure": 116,
+    "pressureLimit": 6,
+    "complexity": 170,
+    "complexityLimit": 10
+  },
+  "damageIndependence": {
+    "lowDamage": {
+      "pressure": 1,
+      "complexity": 1
+    },
+    "highDamage": {
+      "pressure": 1,
+      "complexity": 1
+    }
+  },
+  "attackPatternsByCr": {
+    "2": [
+      {
+        "id": "web-recharge",
+        "title": "Web Hunter",
+        "abilityCount": 3,
+        "pressure": 7,
+        "pressureLimit": 6,
+        "pressureStatus": "Over Target",
+        "complexity": 3,
+        "saturatesPressure": true,
+        "exceedsPressure": true
+      },
+      {
+        "id": "venomous-spit",
+        "title": "Venom Spitter",
+        "abilityCount": 3,
+        "pressure": 5,
+        "pressureLimit": 6,
+        "pressureStatus": "High",
+        "complexity": 2,
+        "saturatesPressure": false,
+        "exceedsPressure": false
+      },
+      {
+        "id": "slam-decomposition",
+        "title": "Crusher",
+        "abilityCount": 3,
+        "pressure": 4,
+        "pressureLimit": 6,
+        "pressureStatus": "Moderate",
+        "complexity": 3,
+        "saturatesPressure": false,
+        "exceedsPressure": false
+      },
+      {
+        "id": "brood-injection",
+        "title": "Broodmaker",
+        "abilityCount": 3,
+        "pressure": 4,
+        "pressureLimit": 6,
+        "pressureStatus": "Moderate",
+        "complexity": 2,
+        "saturatesPressure": false,
+        "exceedsPressure": false
+      },
+      {
+        "id": "shadow-web",
+        "title": "Shadow Weaver",
+        "abilityCount": 3,
+        "pressure": 4,
+        "pressureLimit": 6,
+        "pressureStatus": "Moderate",
+        "complexity": 2,
+        "saturatesPressure": false,
+        "exceedsPressure": false
+      },
+      {
+        "id": "venomous-bite",
+        "title": "Venom Hunter",
+        "abilityCount": 3,
+        "pressure": 4,
+        "pressureLimit": 6,
+        "pressureStatus": "Moderate",
+        "complexity": 2,
+        "saturatesPressure": false,
+        "exceedsPressure": false
+      },
+      {
+        "id": "corpse-tendrils",
+        "title": "Corpse Binder",
+        "abilityCount": 2,
+        "pressure": 3,
+        "pressureLimit": 6,
+        "pressureStatus": "Moderate",
+        "complexity": 2,
+        "saturatesPressure": false,
+        "exceedsPressure": false
+      },
+      {
+        "id": "grave-bite",
+        "title": "Grave Eater",
+        "abilityCount": 3,
+        "pressure": 3,
+        "pressureLimit": 6,
+        "pressureStatus": "Moderate",
+        "complexity": 2,
+        "saturatesPressure": false,
+        "exceedsPressure": false
+      },
+      {
+        "id": "perforate",
+        "title": "Impaler",
+        "abilityCount": 3,
+        "pressure": 3,
+        "pressureLimit": 6,
+        "pressureStatus": "Moderate",
+        "complexity": 1,
+        "saturatesPressure": false,
+        "exceedsPressure": false
+      },
+      {
+        "id": "acid-vomit",
+        "title": "Acid Brute",
+        "abilityCount": 1,
+        "pressure": 1,
+        "pressureLimit": 6,
+        "pressureStatus": "Low",
+        "complexity": 1,
+        "saturatesPressure": false,
+        "exceedsPressure": false
+      },
+      {
+        "id": "cold-funeral-touch",
+        "title": "Cold Touch",
+        "abilityCount": 1,
+        "pressure": 1,
+        "pressureLimit": 6,
+        "pressureStatus": "Low",
+        "complexity": 1,
+        "saturatesPressure": false,
+        "exceedsPressure": false
+      },
+      {
+        "id": "corpse-grab",
+        "title": "Grappler",
+        "abilityCount": 1,
+        "pressure": 1,
+        "pressureLimit": 6,
+        "pressureStatus": "Low",
+        "complexity": 1,
+        "saturatesPressure": false,
+        "exceedsPressure": false
+      },
+      {
+        "id": "empowered-slam",
+        "title": "Juggernaut",
+        "abilityCount": 1,
+        "pressure": 1,
+        "pressureLimit": 6,
+        "pressureStatus": "Low",
+        "complexity": 1,
+        "saturatesPressure": false,
+        "exceedsPressure": false
+      },
+      {
+        "id": "infected-bite",
+        "title": "Plague Eater",
+        "abilityCount": 3,
+        "pressure": 1,
+        "pressureLimit": 6,
+        "pressureStatus": "Low",
+        "complexity": 1,
+        "saturatesPressure": false,
+        "exceedsPressure": false
+      },
+      {
+        "id": "purulent-bite",
+        "title": "Rot Eater",
+        "abilityCount": 3,
+        "pressure": 1,
+        "pressureLimit": 6,
+        "pressureStatus": "Low",
+        "complexity": 1,
+        "saturatesPressure": false,
+        "exceedsPressure": false
+      }
+    ],
+    "5": [
+      {
+        "id": "shadow-web",
+        "title": "Shadow Weaver",
+        "abilityCount": 4,
+        "pressure": 8,
+        "pressureLimit": 8,
+        "pressureStatus": "High",
+        "complexity": 5,
+        "saturatesPressure": true,
+        "exceedsPressure": false
+      },
+      {
+        "id": "web-recharge",
+        "title": "Web Hunter",
+        "abilityCount": 3,
+        "pressure": 7,
+        "pressureLimit": 8,
+        "pressureStatus": "High",
+        "complexity": 3,
+        "saturatesPressure": false,
+        "exceedsPressure": false
+      },
+      {
+        "id": "corpse-grab",
+        "title": "Grappler",
+        "abilityCount": 3,
+        "pressure": 5,
+        "pressureLimit": 8,
+        "pressureStatus": "Moderate",
+        "complexity": 2,
+        "saturatesPressure": false,
+        "exceedsPressure": false
+      },
+      {
+        "id": "venomous-spit",
+        "title": "Venom Spitter",
+        "abilityCount": 3,
+        "pressure": 5,
+        "pressureLimit": 8,
+        "pressureStatus": "Moderate",
+        "complexity": 2,
+        "saturatesPressure": false,
+        "exceedsPressure": false
+      },
+      {
+        "id": "slam-decomposition",
+        "title": "Crusher",
+        "abilityCount": 3,
+        "pressure": 4,
+        "pressureLimit": 8,
+        "pressureStatus": "Moderate",
+        "complexity": 3,
+        "saturatesPressure": false,
+        "exceedsPressure": false
+      },
+      {
+        "id": "brood-injection",
+        "title": "Broodmaker",
+        "abilityCount": 3,
+        "pressure": 4,
+        "pressureLimit": 8,
+        "pressureStatus": "Moderate",
+        "complexity": 2,
+        "saturatesPressure": false,
+        "exceedsPressure": false
+      },
+      {
+        "id": "corpse-tendrils",
+        "title": "Corpse Binder",
+        "abilityCount": 3,
+        "pressure": 4,
+        "pressureLimit": 8,
+        "pressureStatus": "Moderate",
+        "complexity": 2,
+        "saturatesPressure": false,
+        "exceedsPressure": false
+      },
+      {
+        "id": "empowered-slam",
+        "title": "Juggernaut",
+        "abilityCount": 3,
+        "pressure": 4,
+        "pressureLimit": 8,
+        "pressureStatus": "Moderate",
+        "complexity": 2,
+        "saturatesPressure": false,
+        "exceedsPressure": false
+      },
+      {
+        "id": "venomous-bite",
+        "title": "Venom Hunter",
+        "abilityCount": 3,
+        "pressure": 4,
+        "pressureLimit": 8,
+        "pressureStatus": "Moderate",
+        "complexity": 2,
+        "saturatesPressure": false,
+        "exceedsPressure": false
+      },
+      {
+        "id": "acid-vomit",
+        "title": "Acid Brute",
+        "abilityCount": 3,
+        "pressure": 3,
+        "pressureLimit": 8,
+        "pressureStatus": "Low",
+        "complexity": 2,
+        "saturatesPressure": false,
+        "exceedsPressure": false
+      },
+      {
+        "id": "grave-bite",
+        "title": "Grave Eater",
+        "abilityCount": 3,
+        "pressure": 3,
+        "pressureLimit": 8,
+        "pressureStatus": "Low",
+        "complexity": 2,
+        "saturatesPressure": false,
+        "exceedsPressure": false
+      },
+      {
+        "id": "perforate",
+        "title": "Impaler",
+        "abilityCount": 3,
+        "pressure": 3,
+        "pressureLimit": 8,
+        "pressureStatus": "Low",
+        "complexity": 1,
+        "saturatesPressure": false,
+        "exceedsPressure": false
+      },
+      {
+        "id": "cold-funeral-touch",
+        "title": "Cold Touch",
+        "abilityCount": 1,
+        "pressure": 1,
+        "pressureLimit": 8,
+        "pressureStatus": "Low",
+        "complexity": 1,
+        "saturatesPressure": false,
+        "exceedsPressure": false
+      },
+      {
+        "id": "infected-bite",
+        "title": "Plague Eater",
+        "abilityCount": 3,
+        "pressure": 1,
+        "pressureLimit": 8,
+        "pressureStatus": "Low",
+        "complexity": 1,
+        "saturatesPressure": false,
+        "exceedsPressure": false
+      },
+      {
+        "id": "purulent-bite",
+        "title": "Rot Eater",
+        "abilityCount": 3,
+        "pressure": 1,
+        "pressureLimit": 8,
+        "pressureStatus": "Low",
+        "complexity": 1,
+        "saturatesPressure": false,
+        "exceedsPressure": false
+      }
+    ],
+    "10": [
+      {
+        "id": "shadow-web",
+        "title": "Shadow Weaver",
+        "abilityCount": 4,
+        "pressure": 9,
+        "pressureLimit": 10,
+        "pressureStatus": "High",
+        "complexity": 5,
+        "saturatesPressure": false,
+        "exceedsPressure": false
+      },
+      {
+        "id": "venomous-bite",
+        "title": "Venom Hunter",
+        "abilityCount": 4,
+        "pressure": 9,
+        "pressureLimit": 10,
+        "pressureStatus": "High",
+        "complexity": 5,
+        "saturatesPressure": false,
+        "exceedsPressure": false
+      },
+      {
+        "id": "perforate",
+        "title": "Impaler",
+        "abilityCount": 4,
+        "pressure": 8,
+        "pressureLimit": 10,
+        "pressureStatus": "High",
+        "complexity": 3,
+        "saturatesPressure": false,
+        "exceedsPressure": false
+      },
+      {
+        "id": "web-recharge",
+        "title": "Web Hunter",
+        "abilityCount": 3,
+        "pressure": 7,
+        "pressureLimit": 10,
+        "pressureStatus": "Moderate",
+        "complexity": 3,
+        "saturatesPressure": false,
+        "exceedsPressure": false
+      },
+      {
+        "id": "venomous-spit",
+        "title": "Venom Spitter",
+        "abilityCount": 3,
+        "pressure": 6,
+        "pressureLimit": 10,
+        "pressureStatus": "Moderate",
+        "complexity": 2,
+        "saturatesPressure": false,
+        "exceedsPressure": false
+      },
+      {
+        "id": "infected-bite",
+        "title": "Plague Eater",
+        "abilityCount": 4,
+        "pressure": 5,
+        "pressureLimit": 10,
+        "pressureStatus": "Moderate",
+        "complexity": 3,
+        "saturatesPressure": false,
+        "exceedsPressure": false
+      },
+      {
+        "id": "corpse-grab",
+        "title": "Grappler",
+        "abilityCount": 3,
+        "pressure": 5,
+        "pressureLimit": 10,
+        "pressureStatus": "Moderate",
+        "complexity": 2,
+        "saturatesPressure": false,
+        "exceedsPressure": false
+      },
+      {
+        "id": "slam-decomposition",
+        "title": "Crusher",
+        "abilityCount": 3,
+        "pressure": 4,
+        "pressureLimit": 10,
+        "pressureStatus": "Low",
+        "complexity": 3,
+        "saturatesPressure": false,
+        "exceedsPressure": false
+      },
+      {
+        "id": "brood-injection",
+        "title": "Broodmaker",
+        "abilityCount": 3,
+        "pressure": 4,
+        "pressureLimit": 10,
+        "pressureStatus": "Low",
+        "complexity": 2,
+        "saturatesPressure": false,
+        "exceedsPressure": false
+      },
+      {
+        "id": "corpse-tendrils",
+        "title": "Corpse Binder",
+        "abilityCount": 3,
+        "pressure": 4,
+        "pressureLimit": 10,
+        "pressureStatus": "Low",
+        "complexity": 2,
+        "saturatesPressure": false,
+        "exceedsPressure": false
+      },
+      {
+        "id": "grave-bite",
+        "title": "Grave Eater",
+        "abilityCount": 3,
+        "pressure": 4,
+        "pressureLimit": 10,
+        "pressureStatus": "Low",
+        "complexity": 2,
+        "saturatesPressure": false,
+        "exceedsPressure": false
+      },
+      {
+        "id": "empowered-slam",
+        "title": "Juggernaut",
+        "abilityCount": 3,
+        "pressure": 4,
+        "pressureLimit": 10,
+        "pressureStatus": "Low",
+        "complexity": 2,
+        "saturatesPressure": false,
+        "exceedsPressure": false
+      },
+      {
+        "id": "acid-vomit",
+        "title": "Acid Brute",
+        "abilityCount": 3,
+        "pressure": 3,
+        "pressureLimit": 10,
+        "pressureStatus": "Low",
+        "complexity": 2,
+        "saturatesPressure": false,
+        "exceedsPressure": false
+      },
+      {
+        "id": "cold-funeral-touch",
+        "title": "Cold Touch",
+        "abilityCount": 2,
+        "pressure": 1,
+        "pressureLimit": 10,
+        "pressureStatus": "Low",
+        "complexity": 1,
+        "saturatesPressure": false,
+        "exceedsPressure": false
+      },
+      {
+        "id": "purulent-bite",
+        "title": "Rot Eater",
+        "abilityCount": 3,
+        "pressure": 1,
+        "pressureLimit": 10,
+        "pressureStatus": "Low",
+        "complexity": 1,
+        "saturatesPressure": false,
+        "exceedsPressure": false
+      }
+    ],
+    "15": [
+      {
+        "id": "shadow-web",
+        "title": "Shadow Weaver",
+        "abilityCount": 4,
+        "pressure": 9,
+        "pressureLimit": 12,
+        "pressureStatus": "Moderate",
+        "complexity": 5,
+        "saturatesPressure": false,
+        "exceedsPressure": false
+      },
+      {
+        "id": "venomous-bite",
+        "title": "Venom Hunter",
+        "abilityCount": 4,
+        "pressure": 9,
+        "pressureLimit": 12,
+        "pressureStatus": "Moderate",
+        "complexity": 5,
+        "saturatesPressure": false,
+        "exceedsPressure": false
+      },
+      {
+        "id": "brood-injection",
+        "title": "Broodmaker",
+        "abilityCount": 4,
+        "pressure": 8,
+        "pressureLimit": 12,
+        "pressureStatus": "Moderate",
+        "complexity": 4,
+        "saturatesPressure": false,
+        "exceedsPressure": false
+      },
+      {
+        "id": "empowered-slam",
+        "title": "Juggernaut",
+        "abilityCount": 4,
+        "pressure": 8,
+        "pressureLimit": 12,
+        "pressureStatus": "Moderate",
+        "complexity": 4,
+        "saturatesPressure": false,
+        "exceedsPressure": false
+      },
+      {
+        "id": "perforate",
+        "title": "Impaler",
+        "abilityCount": 4,
+        "pressure": 8,
+        "pressureLimit": 12,
+        "pressureStatus": "Moderate",
+        "complexity": 3,
+        "saturatesPressure": false,
+        "exceedsPressure": false
+      },
+      {
+        "id": "web-recharge",
+        "title": "Web Hunter",
+        "abilityCount": 3,
+        "pressure": 7,
+        "pressureLimit": 12,
+        "pressureStatus": "Moderate",
+        "complexity": 3,
+        "saturatesPressure": false,
+        "exceedsPressure": false
+      },
+      {
+        "id": "venomous-spit",
+        "title": "Venom Spitter",
+        "abilityCount": 3,
+        "pressure": 6,
+        "pressureLimit": 12,
+        "pressureStatus": "Moderate",
+        "complexity": 2,
+        "saturatesPressure": false,
+        "exceedsPressure": false
+      },
+      {
+        "id": "infected-bite",
+        "title": "Plague Eater",
+        "abilityCount": 4,
+        "pressure": 5,
+        "pressureLimit": 12,
+        "pressureStatus": "Low",
+        "complexity": 3,
+        "saturatesPressure": false,
+        "exceedsPressure": false
+      },
+      {
+        "id": "purulent-bite",
+        "title": "Rot Eater",
+        "abilityCount": 4,
+        "pressure": 5,
+        "pressureLimit": 12,
+        "pressureStatus": "Low",
+        "complexity": 3,
+        "saturatesPressure": false,
+        "exceedsPressure": false
+      },
+      {
+        "id": "corpse-tendrils",
+        "title": "Corpse Binder",
+        "abilityCount": 3,
+        "pressure": 5,
+        "pressureLimit": 12,
+        "pressureStatus": "Low",
+        "complexity": 2,
+        "saturatesPressure": false,
+        "exceedsPressure": false
+      },
+      {
+        "id": "corpse-grab",
+        "title": "Grappler",
+        "abilityCount": 3,
+        "pressure": 5,
+        "pressureLimit": 12,
+        "pressureStatus": "Low",
+        "complexity": 2,
+        "saturatesPressure": false,
+        "exceedsPressure": false
+      },
+      {
+        "id": "slam-decomposition",
+        "title": "Crusher",
+        "abilityCount": 3,
+        "pressure": 4,
+        "pressureLimit": 12,
+        "pressureStatus": "Low",
+        "complexity": 3,
+        "saturatesPressure": false,
+        "exceedsPressure": false
+      },
+      {
+        "id": "acid-vomit",
+        "title": "Acid Brute",
+        "abilityCount": 3,
+        "pressure": 4,
+        "pressureLimit": 12,
+        "pressureStatus": "Low",
+        "complexity": 2,
+        "saturatesPressure": false,
+        "exceedsPressure": false
+      },
+      {
+        "id": "grave-bite",
+        "title": "Grave Eater",
+        "abilityCount": 3,
+        "pressure": 4,
+        "pressureLimit": 12,
+        "pressureStatus": "Low",
+        "complexity": 2,
+        "saturatesPressure": false,
+        "exceedsPressure": false
+      },
+      {
+        "id": "cold-funeral-touch",
+        "title": "Cold Touch",
+        "abilityCount": 2,
+        "pressure": 1,
+        "pressureLimit": 12,
+        "pressureStatus": "Low",
+        "complexity": 1,
+        "saturatesPressure": false,
+        "exceedsPressure": false
+      }
+    ]
+  },
+  "checks": [
+    {
+      "id": "catalog-has-93-grafts",
+      "pass": true,
+      "detail": "93 grafts"
+    },
+    {
+      "id": "catalog-has-15-attack-patterns",
+      "pass": true,
+      "detail": "15 Attack Patterns"
+    },
+    {
+      "id": "pressure-curve-seven-bands",
+      "pass": true,
+      "detail": "7 bands"
+    },
+    {
+      "id": "cr2-pressure-limit-six",
+      "pass": true,
+      "detail": "limit 6"
+    },
+    {
+      "id": "cr20-pressure-limit-fourteen",
+      "pass": true,
+      "detail": "limit 14"
+    },
+    {
+      "id": "low-cr-tier-inflation-capped",
+      "pass": true,
+      "detail": "limit 8"
+    },
+    {
+      "id": "complexity-cr-independent",
+      "pass": true,
+      "detail": "same frame gives same Complexity limit"
+    },
+    {
+      "id": "complex-attack-pattern-can-saturate-cr2",
+      "pass": true,
+      "detail": "1/15 Attack Patterns use at least 6 Pressure"
+    },
+    {
+      "id": "full-catalog-overloads-cr2",
+      "pass": true,
+      "detail": "116/6"
+    },
+    {
+      "id": "damage-magnitude-does-not-change-pressure",
+      "pass": true,
+      "detail": "1 == 1"
+    },
+    {
+      "id": "damage-magnitude-does-not-change-complexity",
+      "pass": true,
+      "detail": "1 == 1"
+    }
+  ]
+}

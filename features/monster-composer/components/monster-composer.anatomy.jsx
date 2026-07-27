@@ -623,19 +623,23 @@ function SilhouetteChassisMenu({
 
 
 function AnatomyMeter({ label, value, max, percent }) {
-  const over = value > max;
+  const over = Number(value || 0) > Number(max || 0);
+  const excess = Math.max(0, Number(value || 0) - Number(max || 0));
   const tooltip =
     label === "Pressure"
-      ? "Pressure measures how hard the monster pushes the party through damage, control, action load, and encounter danger."
+      ? "Pressure measures the tactical load placed on the players: action options, control, positioning demands, persistent threats, and interacting systems. Its recommended limit scales with target CR and only modestly with Footprint and Tier. Exceeding it is advisory and never blocks the build."
       : label === "Complexity"
-        ? "Complexity measures how much the DM must track at the table: reactions, recharge effects, delayed triggers, and conditional rules."
+        ? "Complexity measures the operational load placed on the DM: decisions, triggers, state tracking, board elements, branches, and special procedures. Exceeding it is advisory and never blocks the build."
         : "This meter summarizes the current monster build.";
   return (
-    <div className="cruor-composer-meter monster-meter">
+    <div
+      className={`cruor-composer-meter monster-meter ${over ? "is-over" : ""}`.trim()}
+      data-meter-status={over ? "over" : "within"}
+    >
       <div className="cruor-composer-meter__head monster-meter__head">
         <span className="cruor-composer-meter__label">{label}</span>
         <span className="cruor-composer-meter__value monster-meter__value">
-          <strong className={over ? "is-over" : ""}>
+          <strong className={over ? "is-over" : ""} aria-live="polite">
             {value} / {max}
           </strong>
           <button
@@ -650,9 +654,25 @@ function AnatomyMeter({ label, value, max, percent }) {
           </button>
         </span>
       </div>
-      <div className="cruor-composer-meter__track monster-meter__track">
-        <div className={`cruor-composer-meter__fill ${over ? "is-over" : ""}`.trim()} style={{ width: `${Math.min(percent, 100)}%` }} />
+      <div
+        className="cruor-composer-meter__track monster-meter__track"
+        role="progressbar"
+        aria-label={`${label}: ${value} of ${max}`}
+        aria-valuemin="0"
+        aria-valuemax={Math.max(Number(max || 0), Number(value || 0))}
+        aria-valuenow={value}
+        aria-valuetext={`${value} of recommended ${max}${over ? `; exceeded by ${excess}` : ""}`}
+      >
+        <div
+          className={`cruor-composer-meter__fill ${over ? "is-over" : ""}`.trim()}
+          style={{ width: `${Math.min(Number(percent || 0), 100)}%` }}
+        />
       </div>
+      {over ? (
+        <span className="monster-meter__advisory" role="status">
+          Recommended limit exceeded by {excess}. You can still continue.
+        </span>
+      ) : null}
     </div>
   );
 }
@@ -1886,7 +1906,7 @@ function FrameInfoPanel({
         </div>
       </section>
       <section className="cruor-composer-rail-card monster-frame-info-card">
-        <FrameMeter label="Pressure" value={computed.pressure} max={computed.budget} />
+        <FrameMeter label="Pressure" value={computed.pressure} max={computed.pressureLimit} />
         <FrameMeter label="Complexity" value={computed.complexity} max={computed.complexityCap} />
       </section>
     </ComposerRail>
@@ -1961,7 +1981,7 @@ function GraftInfoPanel({
       </section>
 
       <section className="cruor-composer-rail-card monster-frame-info-card">
-        <FrameMeter label="Pressure" value={computed.pressure} max={computed.budget} />
+        <FrameMeter label="Pressure" value={computed.pressure} max={computed.pressureLimit} />
         <FrameMeter label="Complexity" value={computed.complexity} max={computed.complexityCap} />
       </section>
       <GraftActionPanel

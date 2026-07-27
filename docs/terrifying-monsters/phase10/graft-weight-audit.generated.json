@@ -1,0 +1,3342 @@
+{
+  "schemaVersion": "monster-graft-weight-audit-v1.0",
+  "pressureComplexityVersion": "monster-pressure-complexity-v3.4-graft-weight",
+  "basicAttackVersion": "monster-basic-attack-v1.0",
+  "source": {
+    "file": "Bestiary.csv",
+    "corpus": "Monster Manual 2025",
+    "creatures": 503,
+    "methodology": "Regex-assisted classification of authored stat-block entries, followed by manual slot-purpose calibration. Prevalence informs but does not directly determine weight.",
+    "observedPrevalence": {
+      "basicAttack": 0.996,
+      "attackPattern": 0.714,
+      "specialMovement": 0.306,
+      "body": 0.338,
+      "mind": 0.258,
+      "twist": 0.121,
+      "horror": 0.121,
+      "weakness": 0.091,
+      "death": 0.02,
+      "lairOrRegional": 0.07
+    },
+    "lowCrComparison": {
+      "cr2To4AttackPattern": 0.82,
+      "cr2To4SpecialMovement": 0.23
+    }
+  },
+  "targetCr": 5,
+  "summary": {
+    "grafts": 93,
+    "slots": 9,
+    "checks": 16,
+    "passed": 16,
+    "failed": 0,
+    "cr2AttackPatternsSaturating": 1
+  },
+  "baselineAttack": {
+    "title": "Zombie Strike",
+    "abilities": 1,
+    "pressure": 0,
+    "complexity": 0
+  },
+  "slots": [
+    {
+      "slot": "attack",
+      "grafts": 15,
+      "bestiaryPrevalence": 0.714,
+      "pressureAverage": 3.8,
+      "pressureMin": 1,
+      "pressureMax": 8,
+      "complexityAverage": 2.07,
+      "complexityMin": 1,
+      "complexityMax": 5,
+      "rawPressureAverage": 5.67,
+      "rawComplexityAverage": 2.6,
+      "rationale": "Attack routines are the normal language of a stat block and should not be charged like exceptional subsystems."
+    },
+    {
+      "slot": "body",
+      "grafts": 12,
+      "bestiaryPrevalence": 0.338,
+      "pressureAverage": 1.5,
+      "pressureMin": 1,
+      "pressureMax": 3,
+      "complexityAverage": 1.25,
+      "complexityMin": 1,
+      "complexityMax": 3,
+      "rawPressureAverage": 1.5,
+      "rawComplexityAverage": 1.25,
+      "rationale": "Most Body grafts are passive, visible, and resolved without additional turn choices."
+    },
+    {
+      "slot": "death",
+      "grafts": 8,
+      "bestiaryPrevalence": 0.02,
+      "pressureAverage": 4,
+      "pressureMin": 3,
+      "pressureMax": 5,
+      "complexityAverage": 3.5,
+      "complexityMin": 2,
+      "complexityMax": 5,
+      "rawPressureAverage": 3.5,
+      "rawComplexityAverage": 2.38,
+      "rationale": "Death Effects are rare but have a narrow activation window, so their surcharge stays below an always-active subsystem."
+    },
+    {
+      "slot": "horror",
+      "grafts": 4,
+      "bestiaryPrevalence": 0.121,
+      "pressureAverage": 5.25,
+      "pressureMin": 4,
+      "pressureMax": 6,
+      "complexityAverage": 2.25,
+      "complexityMin": 2,
+      "complexityMax": 3,
+      "rawPressureAverage": 4.75,
+      "rawComplexityAverage": 1.75,
+      "rationale": "Horror grafts usually impose a distinct player response even when they trigger only once."
+    },
+    {
+      "slot": "lair",
+      "grafts": 7,
+      "bestiaryPrevalence": 0.07,
+      "pressureAverage": 5.43,
+      "pressureMin": 5,
+      "pressureMax": 7,
+      "complexityAverage": 4.86,
+      "complexityMin": 4,
+      "complexityMax": 5,
+      "rawPressureAverage": 4,
+      "rawComplexityAverage": 3.14,
+      "rationale": "Lair rules add off-turn timing, environmental state, and board-wide consequences."
+    },
+    {
+      "slot": "mind",
+      "grafts": 11,
+      "bestiaryPrevalence": 0.258,
+      "pressureAverage": 2.82,
+      "pressureMin": 2,
+      "pressureMax": 4,
+      "complexityAverage": 2.55,
+      "complexityMin": 1,
+      "complexityMax": 4,
+      "rawPressureAverage": 2.18,
+      "rawComplexityAverage": 1.73,
+      "rationale": "Mind grafts often add targeting priorities, control, or conditional behavior."
+    },
+    {
+      "slot": "movement",
+      "grafts": 11,
+      "bestiaryPrevalence": 0.306,
+      "pressureAverage": 4.64,
+      "pressureMin": 4,
+      "pressureMax": 5,
+      "complexityAverage": 3.09,
+      "complexityMin": 1,
+      "complexityMax": 4,
+      "rawPressureAverage": 2,
+      "rawComplexityAverage": 1.91,
+      "rationale": "Special movement changes threat geometry, safe positions, and the DM's turn-by-turn route choices."
+    },
+    {
+      "slot": "twist",
+      "grafts": 12,
+      "bestiaryPrevalence": 0.121,
+      "pressureAverage": 3.92,
+      "pressureMin": 3,
+      "pressureMax": 5,
+      "complexityAverage": 3.5,
+      "complexityMin": 2,
+      "complexityMax": 5,
+      "rawPressureAverage": 2.92,
+      "rawComplexityAverage": 2.17,
+      "rationale": "Twists add phase changes, exception timing, or a second operating rule."
+    },
+    {
+      "slot": "weakness",
+      "grafts": 13,
+      "bestiaryPrevalence": 0.091,
+      "pressureAverage": 1.54,
+      "pressureMin": 1,
+      "pressureMax": 3,
+      "complexityAverage": 1,
+      "complexityMin": 1,
+      "complexityMax": 1,
+      "rawPressureAverage": 2.38,
+      "rawComplexityAverage": 1,
+      "rationale": "Weaknesses add information but primarily reduce pressure by giving the party a readable answer."
+    }
+  ],
+  "tierComparison": [
+    {
+      "targetCr": 2,
+      "attack": {
+        "pressureAverage": 2.87,
+        "complexityAverage": 1.67
+      },
+      "movement": {
+        "pressureAverage": 4.64,
+        "complexityAverage": 3.09
+      }
+    },
+    {
+      "targetCr": 5,
+      "attack": {
+        "pressureAverage": 3.8,
+        "complexityAverage": 2.07
+      },
+      "movement": {
+        "pressureAverage": 4.64,
+        "complexityAverage": 3.09
+      }
+    },
+    {
+      "targetCr": 15,
+      "attack": {
+        "pressureAverage": 5.87,
+        "complexityAverage": 2.93
+      },
+      "movement": {
+        "pressureAverage": 4.64,
+        "complexityAverage": 3
+      }
+    }
+  ],
+  "grafts": [
+    {
+      "id": "shadow-web",
+      "title": "Shadow Weaver",
+      "slot": "attack",
+      "declaredComplexity": 3,
+      "abilityCount": 4,
+      "rawPressure": 10,
+      "pressure": 8,
+      "pressureDelta": -2,
+      "rawComplexity": 5,
+      "complexity": 5,
+      "complexityDelta": 0,
+      "pressureBreakdown": {
+        "coreRoutine": 4.4,
+        "playerResponses": 2.12,
+        "control": 2.25,
+        "spatial": 0.7,
+        "tempo": 0.28,
+        "persistence": 0,
+        "interactions": 0.4,
+        "graftWeight": -2
+      },
+      "complexityBreakdown": {
+        "decisions": 2.9,
+        "triggers": 0.42,
+        "state": 0.9,
+        "board": 0.35,
+        "branching": 1.11,
+        "systems": 0,
+        "graftWeight": -1
+      }
+    },
+    {
+      "id": "web-recharge",
+      "title": "Web Hunter",
+      "slot": "attack",
+      "declaredComplexity": 2,
+      "abilityCount": 3,
+      "rawPressure": 9,
+      "pressure": 7,
+      "pressureDelta": -2,
+      "rawComplexity": 3,
+      "complexity": 3,
+      "complexityDelta": 0,
+      "pressureBreakdown": {
+        "coreRoutine": 2.75,
+        "playerResponses": 2.12,
+        "control": 2.25,
+        "spatial": 0.7,
+        "tempo": 0.28,
+        "persistence": 0,
+        "interactions": 0.4,
+        "graftWeight": -2
+      },
+      "complexityBreakdown": {
+        "decisions": 1.6,
+        "triggers": 0.42,
+        "state": 0.84,
+        "board": 0.35,
+        "branching": 0.59,
+        "systems": 0,
+        "graftWeight": -1
+      }
+    },
+    {
+      "id": "corpse-grab",
+      "title": "Grappler",
+      "slot": "attack",
+      "declaredComplexity": 2,
+      "abilityCount": 3,
+      "rawPressure": 7,
+      "pressure": 5,
+      "pressureDelta": -2,
+      "rawComplexity": 3,
+      "complexity": 2,
+      "complexityDelta": -1,
+      "pressureBreakdown": {
+        "coreRoutine": 2.75,
+        "playerResponses": 1.06,
+        "control": 2.15,
+        "spatial": 0.6,
+        "tempo": 0,
+        "persistence": 0,
+        "interactions": 0,
+        "graftWeight": -2
+      },
+      "complexityBreakdown": {
+        "decisions": 1.6,
+        "triggers": 0,
+        "state": 0.84,
+        "board": 0,
+        "branching": 0.54,
+        "systems": 0,
+        "graftWeight": -1
+      }
+    },
+    {
+      "id": "venomous-spit",
+      "title": "Venom Spitter",
+      "slot": "attack",
+      "declaredComplexity": 2,
+      "abilityCount": 3,
+      "rawPressure": 7,
+      "pressure": 5,
+      "pressureDelta": -2,
+      "rawComplexity": 3,
+      "complexity": 2,
+      "complexityDelta": -1,
+      "pressureBreakdown": {
+        "coreRoutine": 3,
+        "playerResponses": 1.48,
+        "control": 2.15,
+        "spatial": 0.6,
+        "tempo": 0,
+        "persistence": 0,
+        "interactions": 0,
+        "graftWeight": -2
+      },
+      "complexityBreakdown": {
+        "decisions": 1.85,
+        "triggers": 0,
+        "state": 0.84,
+        "board": 0,
+        "branching": 0.64,
+        "systems": 0,
+        "graftWeight": -1
+      }
+    },
+    {
+      "id": "slam-decomposition",
+      "title": "Crusher",
+      "slot": "attack",
+      "declaredComplexity": 2,
+      "abilityCount": 3,
+      "rawPressure": 6,
+      "pressure": 4,
+      "pressureDelta": -2,
+      "rawComplexity": 4,
+      "complexity": 3,
+      "complexityDelta": -1,
+      "pressureBreakdown": {
+        "coreRoutine": 2.75,
+        "playerResponses": 1.06,
+        "control": 1.5,
+        "spatial": 0.25,
+        "tempo": 0,
+        "persistence": 0.4,
+        "interactions": 0,
+        "graftWeight": -2
+      },
+      "complexityBreakdown": {
+        "decisions": 1.6,
+        "triggers": 0,
+        "state": 0.54,
+        "board": 0.48,
+        "branching": 0.68,
+        "systems": 0.58,
+        "graftWeight": -1
+      }
+    },
+    {
+      "id": "brood-injection",
+      "title": "Broodmaker",
+      "slot": "attack",
+      "declaredComplexity": 3,
+      "abilityCount": 3,
+      "rawPressure": 6,
+      "pressure": 4,
+      "pressureDelta": -2,
+      "rawComplexity": 2,
+      "complexity": 2,
+      "complexityDelta": 0,
+      "pressureBreakdown": {
+        "coreRoutine": 2.75,
+        "playerResponses": 1.48,
+        "control": 1.5,
+        "spatial": 0.25,
+        "tempo": 0,
+        "persistence": 0,
+        "interactions": 0,
+        "graftWeight": -2
+      },
+      "complexityBreakdown": {
+        "decisions": 1.65,
+        "triggers": 0,
+        "state": 0.66,
+        "board": 0,
+        "branching": 0.66,
+        "systems": 0,
+        "graftWeight": -1
+      }
+    },
+    {
+      "id": "corpse-tendrils",
+      "title": "Corpse Binder",
+      "slot": "attack",
+      "declaredComplexity": 3,
+      "abilityCount": 3,
+      "rawPressure": 6,
+      "pressure": 4,
+      "pressureDelta": -2,
+      "rawComplexity": 3,
+      "complexity": 2,
+      "complexityDelta": -1,
+      "pressureBreakdown": {
+        "coreRoutine": 2.75,
+        "playerResponses": 1.68,
+        "control": 0.95,
+        "spatial": 0.45,
+        "tempo": 0,
+        "persistence": 0,
+        "interactions": 0.4,
+        "graftWeight": -2
+      },
+      "complexityBreakdown": {
+        "decisions": 1.65,
+        "triggers": 0,
+        "state": 0.88,
+        "board": 0.35,
+        "branching": 0.59,
+        "systems": 0,
+        "graftWeight": -1
+      }
+    },
+    {
+      "id": "empowered-slam",
+      "title": "Juggernaut",
+      "slot": "attack",
+      "declaredComplexity": 3,
+      "abilityCount": 3,
+      "rawPressure": 6,
+      "pressure": 4,
+      "pressureDelta": -2,
+      "rawComplexity": 2,
+      "complexity": 2,
+      "complexityDelta": 0,
+      "pressureBreakdown": {
+        "coreRoutine": 2.75,
+        "playerResponses": 1.06,
+        "control": 1.5,
+        "spatial": 0.25,
+        "tempo": 0,
+        "persistence": 0,
+        "interactions": 0,
+        "graftWeight": -2
+      },
+      "complexityBreakdown": {
+        "decisions": 1.65,
+        "triggers": 0,
+        "state": 0.6,
+        "board": 0,
+        "branching": 0.66,
+        "systems": 0,
+        "graftWeight": -1
+      }
+    },
+    {
+      "id": "venomous-bite",
+      "title": "Venom Hunter",
+      "slot": "attack",
+      "declaredComplexity": 2,
+      "abilityCount": 3,
+      "rawPressure": 6,
+      "pressure": 4,
+      "pressureDelta": -2,
+      "rawComplexity": 3,
+      "complexity": 2,
+      "complexityDelta": -1,
+      "pressureBreakdown": {
+        "coreRoutine": 3,
+        "playerResponses": 1.48,
+        "control": 1.5,
+        "spatial": 0.25,
+        "tempo": 0,
+        "persistence": 0,
+        "interactions": 0,
+        "graftWeight": -2
+      },
+      "complexityBreakdown": {
+        "decisions": 1.85,
+        "triggers": 0,
+        "state": 0.6,
+        "board": 0,
+        "branching": 0.69,
+        "systems": 0,
+        "graftWeight": -1
+      }
+    },
+    {
+      "id": "acid-vomit",
+      "title": "Acid Brute",
+      "slot": "attack",
+      "declaredComplexity": 3,
+      "abilityCount": 3,
+      "rawPressure": 5,
+      "pressure": 3,
+      "pressureDelta": -2,
+      "rawComplexity": 3,
+      "complexity": 2,
+      "complexityDelta": -1,
+      "pressureBreakdown": {
+        "coreRoutine": 2.75,
+        "playerResponses": 1.68,
+        "control": 0,
+        "spatial": 0.7,
+        "tempo": 0.28,
+        "persistence": 0,
+        "interactions": 0,
+        "graftWeight": -2
+      },
+      "complexityBreakdown": {
+        "decisions": 1.6,
+        "triggers": 0.42,
+        "state": 0.12,
+        "board": 0.35,
+        "branching": 0.73,
+        "systems": 0,
+        "graftWeight": -1
+      }
+    },
+    {
+      "id": "grave-bite",
+      "title": "Grave Eater",
+      "slot": "attack",
+      "declaredComplexity": 2,
+      "abilityCount": 3,
+      "rawPressure": 5,
+      "pressure": 3,
+      "pressureDelta": -2,
+      "rawComplexity": 3,
+      "complexity": 2,
+      "complexityDelta": -1,
+      "pressureBreakdown": {
+        "coreRoutine": 2.75,
+        "playerResponses": 0.84,
+        "control": 1.4,
+        "spatial": 0.35,
+        "tempo": 0,
+        "persistence": 0,
+        "interactions": 0,
+        "graftWeight": -2
+      },
+      "complexityBreakdown": {
+        "decisions": 1.65,
+        "triggers": 0,
+        "state": 0.6,
+        "board": 0,
+        "branching": 0.54,
+        "systems": 0,
+        "graftWeight": -1
+      }
+    },
+    {
+      "id": "perforate",
+      "title": "Impaler",
+      "slot": "attack",
+      "declaredComplexity": 2,
+      "abilityCount": 3,
+      "rawPressure": 5,
+      "pressure": 3,
+      "pressureDelta": -2,
+      "rawComplexity": 2,
+      "complexity": 1,
+      "complexityDelta": -1,
+      "pressureBreakdown": {
+        "coreRoutine": 2.25,
+        "playerResponses": 1.48,
+        "control": 1.5,
+        "spatial": 0.25,
+        "tempo": 0,
+        "persistence": 0,
+        "interactions": 0,
+        "graftWeight": -2
+      },
+      "complexityBreakdown": {
+        "decisions": 1.15,
+        "triggers": 0,
+        "state": 0.6,
+        "board": 0,
+        "branching": 0.17,
+        "systems": 0,
+        "graftWeight": -1
+      }
+    },
+    {
+      "id": "cold-funeral-touch",
+      "title": "Cold Touch",
+      "slot": "attack",
+      "declaredComplexity": 1,
+      "abilityCount": 1,
+      "rawPressure": 1,
+      "pressure": 1,
+      "pressureDelta": 0,
+      "rawComplexity": 1,
+      "complexity": 1,
+      "complexityDelta": 0,
+      "pressureBreakdown": {
+        "coreRoutine": 1,
+        "playerResponses": 0.42,
+        "control": 0,
+        "spatial": 0,
+        "tempo": 0,
+        "persistence": 0,
+        "interactions": 0,
+        "graftWeight": -2
+      },
+      "complexityBreakdown": {
+        "decisions": 0.55,
+        "triggers": 0,
+        "state": 0.06,
+        "board": 0,
+        "branching": 0.12,
+        "systems": 0,
+        "graftWeight": -1
+      }
+    },
+    {
+      "id": "infected-bite",
+      "title": "Plague Eater",
+      "slot": "attack",
+      "declaredComplexity": 2,
+      "abilityCount": 3,
+      "rawPressure": 3,
+      "pressure": 1,
+      "pressureDelta": -2,
+      "rawComplexity": 1,
+      "complexity": 1,
+      "complexityDelta": 0,
+      "pressureBreakdown": {
+        "coreRoutine": 2.25,
+        "playerResponses": 0.42,
+        "control": 0,
+        "spatial": 0,
+        "tempo": 0,
+        "persistence": 0,
+        "interactions": 0,
+        "graftWeight": -2
+      },
+      "complexityBreakdown": {
+        "decisions": 1.15,
+        "triggers": 0,
+        "state": 0.12,
+        "board": 0,
+        "branching": 0.17,
+        "systems": 0,
+        "graftWeight": -1
+      }
+    },
+    {
+      "id": "purulent-bite",
+      "title": "Rot Eater",
+      "slot": "attack",
+      "declaredComplexity": 3,
+      "abilityCount": 3,
+      "rawPressure": 3,
+      "pressure": 1,
+      "pressureDelta": -2,
+      "rawComplexity": 1,
+      "complexity": 1,
+      "complexityDelta": 0,
+      "pressureBreakdown": {
+        "coreRoutine": 2.25,
+        "playerResponses": 0.84,
+        "control": 0,
+        "spatial": 0,
+        "tempo": 0,
+        "persistence": 0,
+        "interactions": 0,
+        "graftWeight": -2
+      },
+      "complexityBreakdown": {
+        "decisions": 1.15,
+        "triggers": 0,
+        "state": 0.18,
+        "board": 0,
+        "branching": 0.17,
+        "systems": 0,
+        "graftWeight": -1
+      }
+    },
+    {
+      "id": "swollen-corpse",
+      "title": "Swollen Corpse",
+      "slot": "body",
+      "declaredComplexity": 1,
+      "abilityCount": 1,
+      "rawPressure": 3,
+      "pressure": 3,
+      "pressureDelta": 0,
+      "rawComplexity": 1,
+      "complexity": 1,
+      "complexityDelta": 0,
+      "pressureBreakdown": {
+        "coreRoutine": 0,
+        "playerResponses": 1.26,
+        "control": 0.25,
+        "spatial": 0.7,
+        "tempo": 0,
+        "persistence": 0,
+        "interactions": 0.75,
+        "graftWeight": -0.25
+      },
+      "complexityBreakdown": {
+        "decisions": 0.55,
+        "triggers": 0.32,
+        "state": 0.3,
+        "board": 0.35,
+        "branching": 0.07,
+        "systems": 0,
+        "graftWeight": -0.25
+      }
+    },
+    {
+      "id": "egg-carrier",
+      "title": "Egg Carrier",
+      "slot": "body",
+      "declaredComplexity": 3,
+      "abilityCount": 2,
+      "rawPressure": 2,
+      "pressure": 2,
+      "pressureDelta": 0,
+      "rawComplexity": 3,
+      "complexity": 3,
+      "complexityDelta": 0,
+      "pressureBreakdown": {
+        "coreRoutine": 0,
+        "playerResponses": 0.84,
+        "control": 0,
+        "spatial": 0.25,
+        "tempo": 0.55,
+        "persistence": 0.65,
+        "interactions": 0.2,
+        "graftWeight": -0.25
+      },
+      "complexityBreakdown": {
+        "decisions": 0.6,
+        "triggers": 0.32,
+        "state": 0.18,
+        "board": 0.9,
+        "branching": 0.19,
+        "systems": 0.85,
+        "graftWeight": -0.25
+      }
+    },
+    {
+      "id": "ethereal-sight",
+      "title": "Anchored Spirit",
+      "slot": "body",
+      "declaredComplexity": 2,
+      "abilityCount": 2,
+      "rawPressure": 2,
+      "pressure": 2,
+      "pressureDelta": 0,
+      "rawComplexity": 2,
+      "complexity": 2,
+      "complexityDelta": 0,
+      "pressureBreakdown": {
+        "coreRoutine": 0,
+        "playerResponses": 1.26,
+        "control": 0,
+        "spatial": 0.25,
+        "tempo": 0.3,
+        "persistence": 0.4,
+        "interactions": 0,
+        "graftWeight": -0.25
+      },
+      "complexityBreakdown": {
+        "decisions": 0.78,
+        "triggers": 0,
+        "state": 0.06,
+        "board": 0.48,
+        "branching": 0.19,
+        "systems": 0.58,
+        "graftWeight": -0.25
+      }
+    },
+    {
+      "id": "fresh-bloat-hide",
+      "title": "Bloat Hide",
+      "slot": "body",
+      "declaredComplexity": 1,
+      "abilityCount": 1,
+      "rawPressure": 2,
+      "pressure": 2,
+      "pressureDelta": 0,
+      "rawComplexity": 1,
+      "complexity": 1,
+      "complexityDelta": 0,
+      "pressureBreakdown": {
+        "coreRoutine": 0,
+        "playerResponses": 0.84,
+        "control": 0,
+        "spatial": 0.25,
+        "tempo": 0,
+        "persistence": 0,
+        "interactions": 0.75,
+        "graftWeight": -0.25
+      },
+      "complexityBreakdown": {
+        "decisions": 0.55,
+        "triggers": 0.32,
+        "state": 0.06,
+        "board": 0,
+        "branching": 0.07,
+        "systems": 0,
+        "graftWeight": -0.25
+      }
+    },
+    {
+      "id": "malformed-broodling",
+      "title": "Broodling",
+      "slot": "body",
+      "declaredComplexity": 1,
+      "abilityCount": 1,
+      "rawPressure": 2,
+      "pressure": 2,
+      "pressureDelta": 0,
+      "rawComplexity": 1,
+      "complexity": 1,
+      "complexityDelta": 0,
+      "pressureBreakdown": {
+        "coreRoutine": 0,
+        "playerResponses": 1.26,
+        "control": 0,
+        "spatial": 0.7,
+        "tempo": 0,
+        "persistence": 0,
+        "interactions": 0,
+        "graftWeight": -0.25
+      },
+      "complexityBreakdown": {
+        "decisions": 0.55,
+        "triggers": 0,
+        "state": 0,
+        "board": 0.35,
+        "branching": 0.07,
+        "systems": 0,
+        "graftWeight": -0.25
+      }
+    },
+    {
+      "id": "barbed-chitin",
+      "title": "Barbed Chitin",
+      "slot": "body",
+      "declaredComplexity": 1,
+      "abilityCount": 1,
+      "rawPressure": 1,
+      "pressure": 1,
+      "pressureDelta": 0,
+      "rawComplexity": 1,
+      "complexity": 1,
+      "complexityDelta": 0,
+      "pressureBreakdown": {
+        "coreRoutine": 0,
+        "playerResponses": 0.84,
+        "control": 0,
+        "spatial": 0.25,
+        "tempo": 0,
+        "persistence": 0,
+        "interactions": 0.2,
+        "graftWeight": -0.25
+      },
+      "complexityBreakdown": {
+        "decisions": 0.55,
+        "triggers": 0.32,
+        "state": 0,
+        "board": 0,
+        "branching": 0.07,
+        "systems": 0,
+        "graftWeight": -0.25
+      }
+    },
+    {
+      "id": "spider-climb",
+      "title": "Clinging Body",
+      "slot": "body",
+      "declaredComplexity": 1,
+      "abilityCount": 1,
+      "rawPressure": 1,
+      "pressure": 1,
+      "pressureDelta": 0,
+      "rawComplexity": 1,
+      "complexity": 1,
+      "complexityDelta": 0,
+      "pressureBreakdown": {
+        "coreRoutine": 0,
+        "playerResponses": 0.84,
+        "control": 0,
+        "spatial": 0.25,
+        "tempo": 0,
+        "persistence": 0,
+        "interactions": 0,
+        "graftWeight": -0.25
+      },
+      "complexityBreakdown": {
+        "decisions": 0.55,
+        "triggers": 0,
+        "state": 0,
+        "board": 0,
+        "branching": 0.07,
+        "systems": 0,
+        "graftWeight": -0.25
+      }
+    },
+    {
+      "id": "volatile-immobile-mass",
+      "title": "Corpse Mass",
+      "slot": "body",
+      "declaredComplexity": 1,
+      "abilityCount": 1,
+      "rawPressure": 1,
+      "pressure": 1,
+      "pressureDelta": 0,
+      "rawComplexity": 1,
+      "complexity": 1,
+      "complexityDelta": 0,
+      "pressureBreakdown": {
+        "coreRoutine": 0,
+        "playerResponses": 0.84,
+        "control": 0,
+        "spatial": 0.25,
+        "tempo": 0,
+        "persistence": 0,
+        "interactions": 0,
+        "graftWeight": -0.25
+      },
+      "complexityBreakdown": {
+        "decisions": 0.55,
+        "triggers": 0,
+        "state": 0,
+        "board": 0,
+        "branching": 0,
+        "systems": 0,
+        "graftWeight": -0.25
+      }
+    },
+    {
+      "id": "umbral-skin",
+      "title": "Shadow Skin",
+      "slot": "body",
+      "declaredComplexity": 2,
+      "abilityCount": 1,
+      "rawPressure": 1,
+      "pressure": 1,
+      "pressureDelta": 0,
+      "rawComplexity": 1,
+      "complexity": 1,
+      "complexityDelta": 0,
+      "pressureBreakdown": {
+        "coreRoutine": 0,
+        "playerResponses": 0.84,
+        "control": 0.25,
+        "spatial": 0.25,
+        "tempo": 0,
+        "persistence": 0,
+        "interactions": 0,
+        "graftWeight": -0.25
+      },
+      "complexityBreakdown": {
+        "decisions": 0.6,
+        "triggers": 0,
+        "state": 0.3,
+        "board": 0,
+        "branching": 0.14,
+        "systems": 0,
+        "graftWeight": -0.25
+      }
+    },
+    {
+      "id": "skin-slippage",
+      "title": "Shedding Skin",
+      "slot": "body",
+      "declaredComplexity": 1,
+      "abilityCount": 1,
+      "rawPressure": 1,
+      "pressure": 1,
+      "pressureDelta": 0,
+      "rawComplexity": 1,
+      "complexity": 1,
+      "complexityDelta": 0,
+      "pressureBreakdown": {
+        "coreRoutine": 0,
+        "playerResponses": 0.84,
+        "control": 0,
+        "spatial": 0.25,
+        "tempo": 0,
+        "persistence": 0,
+        "interactions": 0.2,
+        "graftWeight": -0.25
+      },
+      "complexityBreakdown": {
+        "decisions": 0.55,
+        "triggers": 0.32,
+        "state": 0,
+        "board": 0,
+        "branching": 0.07,
+        "systems": 0,
+        "graftWeight": -0.25
+      }
+    },
+    {
+      "id": "waxen-mask-body",
+      "title": "Waxen Flesh",
+      "slot": "body",
+      "declaredComplexity": 1,
+      "abilityCount": 1,
+      "rawPressure": 1,
+      "pressure": 1,
+      "pressureDelta": 0,
+      "rawComplexity": 1,
+      "complexity": 1,
+      "complexityDelta": 0,
+      "pressureBreakdown": {
+        "coreRoutine": 0,
+        "playerResponses": 0.84,
+        "control": 0,
+        "spatial": 0.25,
+        "tempo": 0,
+        "persistence": 0,
+        "interactions": 0,
+        "graftWeight": -0.25
+      },
+      "complexityBreakdown": {
+        "decisions": 0.55,
+        "triggers": 0,
+        "state": 0.06,
+        "board": 0,
+        "branching": 0.07,
+        "systems": 0,
+        "graftWeight": -0.25
+      }
+    },
+    {
+      "id": "web-walker",
+      "title": "Web Sense",
+      "slot": "body",
+      "declaredComplexity": 1,
+      "abilityCount": 1,
+      "rawPressure": 1,
+      "pressure": 1,
+      "pressureDelta": 0,
+      "rawComplexity": 1,
+      "complexity": 1,
+      "complexityDelta": 0,
+      "pressureBreakdown": {
+        "coreRoutine": 0,
+        "playerResponses": 0.84,
+        "control": 0,
+        "spatial": 0.25,
+        "tempo": 0,
+        "persistence": 0,
+        "interactions": 0,
+        "graftWeight": -0.25
+      },
+      "complexityBreakdown": {
+        "decisions": 0.55,
+        "triggers": 0,
+        "state": 0.06,
+        "board": 0,
+        "branching": 0.07,
+        "systems": 0,
+        "graftWeight": -0.25
+      }
+    },
+    {
+      "id": "silk-cocoon-remains",
+      "title": "Death Cocoon",
+      "slot": "death",
+      "declaredComplexity": 2,
+      "abilityCount": 2,
+      "rawPressure": 4,
+      "pressure": 5,
+      "pressureDelta": 1,
+      "rawComplexity": 3,
+      "complexity": 5,
+      "complexityDelta": 2,
+      "pressureBreakdown": {
+        "coreRoutine": 0,
+        "playerResponses": 1.68,
+        "control": 1,
+        "spatial": 0.25,
+        "tempo": 0,
+        "persistence": 0.96,
+        "interactions": 0.4,
+        "graftWeight": 0.75
+      },
+      "complexityBreakdown": {
+        "decisions": 0.6,
+        "triggers": 1.24,
+        "state": 0.78,
+        "board": 0.48,
+        "branching": 0.14,
+        "systems": 0.58,
+        "graftWeight": 0.75
+      }
+    },
+    {
+      "id": "corpse-bloom-death",
+      "title": "Corpse Bloom",
+      "slot": "death",
+      "declaredComplexity": 2,
+      "abilityCount": 1,
+      "rawPressure": 4,
+      "pressure": 5,
+      "pressureDelta": 1,
+      "rawComplexity": 3,
+      "complexity": 4,
+      "complexityDelta": 1,
+      "pressureBreakdown": {
+        "coreRoutine": 0,
+        "playerResponses": 1.68,
+        "control": 0,
+        "spatial": 1.05,
+        "tempo": 0,
+        "persistence": 1.08,
+        "interactions": 0.2,
+        "graftWeight": 0.75
+      },
+      "complexityBreakdown": {
+        "decisions": 0.6,
+        "triggers": 0.62,
+        "state": 0.12,
+        "board": 1.33,
+        "branching": 0.14,
+        "systems": 0.58,
+        "graftWeight": 0.75
+      }
+    },
+    {
+      "id": "egg-hatch-death",
+      "title": "Brood Burst",
+      "slot": "death",
+      "declaredComplexity": 2,
+      "abilityCount": 1,
+      "rawPressure": 3,
+      "pressure": 4,
+      "pressureDelta": 1,
+      "rawComplexity": 3,
+      "complexity": 4,
+      "complexityDelta": 1,
+      "pressureBreakdown": {
+        "coreRoutine": 0,
+        "playerResponses": 1.26,
+        "control": 0,
+        "spatial": 0.25,
+        "tempo": 0.55,
+        "persistence": 0.93,
+        "interactions": 0.2,
+        "graftWeight": 0.75
+      },
+      "complexityBreakdown": {
+        "decisions": 0.6,
+        "triggers": 0.62,
+        "state": 0.12,
+        "board": 0.9,
+        "branching": 0.14,
+        "systems": 0.85,
+        "graftWeight": 0.75
+      }
+    },
+    {
+      "id": "purge-fluid-flood",
+      "title": "Purge Flood",
+      "slot": "death",
+      "declaredComplexity": 2,
+      "abilityCount": 1,
+      "rawPressure": 4,
+      "pressure": 4,
+      "pressureDelta": 0,
+      "rawComplexity": 3,
+      "complexity": 4,
+      "complexityDelta": 1,
+      "pressureBreakdown": {
+        "coreRoutine": 0,
+        "playerResponses": 1.68,
+        "control": 0.25,
+        "spatial": 0.7,
+        "tempo": 0,
+        "persistence": 0.68,
+        "interactions": 0.2,
+        "graftWeight": 0.75
+      },
+      "complexityBreakdown": {
+        "decisions": 0.6,
+        "triggers": 0.62,
+        "state": 0.36,
+        "board": 0.83,
+        "branching": 0.14,
+        "systems": 0.58,
+        "graftWeight": 0.75
+      }
+    },
+    {
+      "id": "spectral-dust-death",
+      "title": "Spectral Dust",
+      "slot": "death",
+      "declaredComplexity": 2,
+      "abilityCount": 2,
+      "rawPressure": 4,
+      "pressure": 4,
+      "pressureDelta": 0,
+      "rawComplexity": 3,
+      "complexity": 4,
+      "complexityDelta": 1,
+      "pressureBreakdown": {
+        "coreRoutine": 0,
+        "playerResponses": 1.68,
+        "control": 0,
+        "spatial": 0.7,
+        "tempo": 0,
+        "persistence": 0.96,
+        "interactions": 0.4,
+        "graftWeight": 0.75
+      },
+      "complexityBreakdown": {
+        "decisions": 0.6,
+        "triggers": 1.24,
+        "state": 0.12,
+        "board": 0.83,
+        "branching": 0.14,
+        "systems": 0.58,
+        "graftWeight": 0.75
+      }
+    },
+    {
+      "id": "toxic-detonation",
+      "title": "Toxic Detonation",
+      "slot": "death",
+      "declaredComplexity": 2,
+      "abilityCount": 1,
+      "rawPressure": 3,
+      "pressure": 4,
+      "pressureDelta": 1,
+      "rawComplexity": 2,
+      "complexity": 3,
+      "complexityDelta": 1,
+      "pressureBreakdown": {
+        "coreRoutine": 0,
+        "playerResponses": 1.68,
+        "control": 0.25,
+        "spatial": 0.7,
+        "tempo": 0,
+        "persistence": 0.28,
+        "interactions": 0.2,
+        "graftWeight": 0.75
+      },
+      "complexityBreakdown": {
+        "decisions": 0.6,
+        "triggers": 0.62,
+        "state": 0.3,
+        "board": 0.35,
+        "branching": 0.07,
+        "systems": 0,
+        "graftWeight": 0.75
+      }
+    },
+    {
+      "id": "face-curse",
+      "title": "Last Face Curse",
+      "slot": "death",
+      "declaredComplexity": 3,
+      "abilityCount": 1,
+      "rawPressure": 3,
+      "pressure": 3,
+      "pressureDelta": 0,
+      "rawComplexity": 1,
+      "complexity": 2,
+      "complexityDelta": 1,
+      "pressureBreakdown": {
+        "coreRoutine": 0,
+        "playerResponses": 1.26,
+        "control": 0.75,
+        "spatial": 0.25,
+        "tempo": 0,
+        "persistence": 0.28,
+        "interactions": 0.2,
+        "graftWeight": 0.75
+      },
+      "complexityBreakdown": {
+        "decisions": 0.65,
+        "triggers": 0.62,
+        "state": 0.3,
+        "board": 0,
+        "branching": 0.14,
+        "systems": 0,
+        "graftWeight": 0.75
+      }
+    },
+    {
+      "id": "last-meal-memory",
+      "title": "Last Meal Memory",
+      "slot": "death",
+      "declaredComplexity": 3,
+      "abilityCount": 1,
+      "rawPressure": 3,
+      "pressure": 3,
+      "pressureDelta": 0,
+      "rawComplexity": 1,
+      "complexity": 2,
+      "complexityDelta": 1,
+      "pressureBreakdown": {
+        "coreRoutine": 0,
+        "playerResponses": 1.26,
+        "control": 0.75,
+        "spatial": 0.25,
+        "tempo": 0,
+        "persistence": 0.28,
+        "interactions": 0.2,
+        "graftWeight": 0.75
+      },
+      "complexityBreakdown": {
+        "decisions": 0.65,
+        "triggers": 0.62,
+        "state": 0.3,
+        "board": 0,
+        "branching": 0.14,
+        "systems": 0,
+        "graftWeight": 0.75
+      }
+    },
+    {
+      "id": "horrific-apparition",
+      "title": "Horrific Apparition",
+      "slot": "horror",
+      "declaredComplexity": 2,
+      "abilityCount": 1,
+      "rawPressure": 5,
+      "pressure": 6,
+      "pressureDelta": 1,
+      "rawComplexity": 2,
+      "complexity": 2,
+      "complexityDelta": 0,
+      "pressureBreakdown": {
+        "coreRoutine": 1,
+        "playerResponses": 1.68,
+        "control": 0.75,
+        "spatial": 0.7,
+        "tempo": 0.28,
+        "persistence": 0,
+        "interactions": 0.4,
+        "graftWeight": 0.75
+      },
+      "complexityBreakdown": {
+        "decisions": 0.6,
+        "triggers": 0.42,
+        "state": 0.3,
+        "board": 0.35,
+        "branching": 0.19,
+        "systems": 0,
+        "graftWeight": 0.5
+      }
+    },
+    {
+      "id": "wail",
+      "title": "Wail",
+      "slot": "horror",
+      "declaredComplexity": 2,
+      "abilityCount": 1,
+      "rawPressure": 5,
+      "pressure": 6,
+      "pressureDelta": 1,
+      "rawComplexity": 2,
+      "complexity": 2,
+      "complexityDelta": 0,
+      "pressureBreakdown": {
+        "coreRoutine": 1,
+        "playerResponses": 1.68,
+        "control": 0.75,
+        "spatial": 0.7,
+        "tempo": 0.28,
+        "persistence": 0,
+        "interactions": 0.4,
+        "graftWeight": 0.75
+      },
+      "complexityBreakdown": {
+        "decisions": 0.6,
+        "triggers": 0.42,
+        "state": 0.3,
+        "board": 0.35,
+        "branching": 0.19,
+        "systems": 0,
+        "graftWeight": 0.5
+      }
+    },
+    {
+      "id": "crawling-dread",
+      "title": "Crawling Dread",
+      "slot": "horror",
+      "declaredComplexity": 2,
+      "abilityCount": 1,
+      "rawPressure": 5,
+      "pressure": 5,
+      "pressureDelta": 0,
+      "rawComplexity": 1,
+      "complexity": 2,
+      "complexityDelta": 1,
+      "pressureBreakdown": {
+        "coreRoutine": 0,
+        "playerResponses": 1.68,
+        "control": 0.75,
+        "spatial": 0.7,
+        "tempo": 0,
+        "persistence": 0,
+        "interactions": 1.43,
+        "graftWeight": 0.75
+      },
+      "complexityBreakdown": {
+        "decisions": 0.6,
+        "triggers": 0.32,
+        "state": 0.3,
+        "board": 0.35,
+        "branching": 0.19,
+        "systems": 0,
+        "graftWeight": 0.5
+      }
+    },
+    {
+      "id": "stench",
+      "title": "Stench",
+      "slot": "horror",
+      "declaredComplexity": 1,
+      "abilityCount": 1,
+      "rawPressure": 4,
+      "pressure": 4,
+      "pressureDelta": 0,
+      "rawComplexity": 2,
+      "complexity": 3,
+      "complexityDelta": 1,
+      "pressureBreakdown": {
+        "coreRoutine": 0,
+        "playerResponses": 1.68,
+        "control": 0.25,
+        "spatial": 1.05,
+        "tempo": 0,
+        "persistence": 0.4,
+        "interactions": 0.2,
+        "graftWeight": 0.75
+      },
+      "complexityBreakdown": {
+        "decisions": 0.55,
+        "triggers": 0.32,
+        "state": 0.3,
+        "board": 0.85,
+        "branching": 0.12,
+        "systems": 0,
+        "graftWeight": 0.5
+      }
+    },
+    {
+      "id": "broodmother-web-lair",
+      "title": "Broodmother Web",
+      "slot": "lair",
+      "declaredComplexity": 3,
+      "abilityCount": 1,
+      "rawPressure": 6,
+      "pressure": 7,
+      "pressureDelta": 1,
+      "rawComplexity": 4,
+      "complexity": 5,
+      "complexityDelta": 1,
+      "pressureBreakdown": {
+        "coreRoutine": 0,
+        "playerResponses": 2.1,
+        "control": 1,
+        "spatial": 0.7,
+        "tempo": 0.5,
+        "persistence": 0.4,
+        "interactions": 0.88,
+        "graftWeight": 1.5
+      },
+      "complexityBreakdown": {
+        "decisions": 0.83,
+        "triggers": 0.77,
+        "state": 0.78,
+        "board": 0.83,
+        "branching": 0.26,
+        "systems": 0.58,
+        "graftWeight": 1.25
+      }
+    },
+    {
+      "id": "sticky-surroundings",
+      "title": "Snapping Webs",
+      "slot": "lair",
+      "declaredComplexity": 3,
+      "abilityCount": 1,
+      "rawPressure": 5,
+      "pressure": 6,
+      "pressureDelta": 1,
+      "rawComplexity": 3,
+      "complexity": 5,
+      "complexityDelta": 2,
+      "pressureBreakdown": {
+        "coreRoutine": 0,
+        "playerResponses": 1.68,
+        "control": 0.75,
+        "spatial": 0.7,
+        "tempo": 0.5,
+        "persistence": 0.4,
+        "interactions": 0.88,
+        "graftWeight": 1.5
+      },
+      "complexityBreakdown": {
+        "decisions": 0.83,
+        "triggers": 0.77,
+        "state": 0.36,
+        "board": 0.83,
+        "branching": 0.19,
+        "systems": 0.58,
+        "graftWeight": 1.25
+      }
+    },
+    {
+      "id": "dense-web-region",
+      "title": "Dense Webs",
+      "slot": "lair",
+      "declaredComplexity": 3,
+      "abilityCount": 1,
+      "rawPressure": 3,
+      "pressure": 5,
+      "pressureDelta": 2,
+      "rawComplexity": 3,
+      "complexity": 5,
+      "complexityDelta": 2,
+      "pressureBreakdown": {
+        "coreRoutine": 0,
+        "playerResponses": 1.68,
+        "control": 0,
+        "spatial": 0.7,
+        "tempo": 0.5,
+        "persistence": 0.4,
+        "interactions": 0.2,
+        "graftWeight": 1.5
+      },
+      "complexityBreakdown": {
+        "decisions": 0.83,
+        "triggers": 0.77,
+        "state": 0.12,
+        "board": 0.83,
+        "branching": 0.19,
+        "systems": 0.58,
+        "graftWeight": 1.25
+      }
+    },
+    {
+      "id": "funeral-silence-lair",
+      "title": "Funeral Silence",
+      "slot": "lair",
+      "declaredComplexity": 2,
+      "abilityCount": 1,
+      "rawPressure": 4,
+      "pressure": 5,
+      "pressureDelta": 1,
+      "rawComplexity": 3,
+      "complexity": 5,
+      "complexityDelta": 2,
+      "pressureBreakdown": {
+        "coreRoutine": 0,
+        "playerResponses": 1.68,
+        "control": 0.25,
+        "spatial": 0.7,
+        "tempo": 0.5,
+        "persistence": 0.4,
+        "interactions": 0.2,
+        "graftWeight": 1.5
+      },
+      "complexityBreakdown": {
+        "decisions": 0.78,
+        "triggers": 0.77,
+        "state": 0.3,
+        "board": 0.83,
+        "branching": 0.19,
+        "systems": 0.58,
+        "graftWeight": 1.25
+      }
+    },
+    {
+      "id": "graveyard-offerings-lair",
+      "title": "Graveyard Offerings",
+      "slot": "lair",
+      "declaredComplexity": 3,
+      "abilityCount": 1,
+      "rawPressure": 3,
+      "pressure": 5,
+      "pressureDelta": 2,
+      "rawComplexity": 3,
+      "complexity": 5,
+      "complexityDelta": 2,
+      "pressureBreakdown": {
+        "coreRoutine": 0,
+        "playerResponses": 1.68,
+        "control": 0,
+        "spatial": 0.7,
+        "tempo": 0.5,
+        "persistence": 0.4,
+        "interactions": 0.2,
+        "graftWeight": 1.5
+      },
+      "complexityBreakdown": {
+        "decisions": 0.83,
+        "triggers": 0.77,
+        "state": 0.06,
+        "board": 0.83,
+        "branching": 0.19,
+        "systems": 0.58,
+        "graftWeight": 1.25
+      }
+    },
+    {
+      "id": "corpse-pressure-room",
+      "title": "Pressure Corpses",
+      "slot": "lair",
+      "declaredComplexity": 3,
+      "abilityCount": 1,
+      "rawPressure": 4,
+      "pressure": 5,
+      "pressureDelta": 1,
+      "rawComplexity": 3,
+      "complexity": 5,
+      "complexityDelta": 2,
+      "pressureBreakdown": {
+        "coreRoutine": 0,
+        "playerResponses": 1.68,
+        "control": 0.25,
+        "spatial": 0.7,
+        "tempo": 0.5,
+        "persistence": 0.4,
+        "interactions": 0.2,
+        "graftWeight": 1.5
+      },
+      "complexityBreakdown": {
+        "decisions": 0.83,
+        "triggers": 0.77,
+        "state": 0.36,
+        "board": 0.83,
+        "branching": 0.26,
+        "systems": 0.58,
+        "graftWeight": 1.25
+      }
+    },
+    {
+      "id": "choking-air",
+      "title": "Choking Air",
+      "slot": "lair",
+      "declaredComplexity": 2,
+      "abilityCount": 1,
+      "rawPressure": 3,
+      "pressure": 5,
+      "pressureDelta": 2,
+      "rawComplexity": 3,
+      "complexity": 4,
+      "complexityDelta": 1,
+      "pressureBreakdown": {
+        "coreRoutine": 0,
+        "playerResponses": 1.68,
+        "control": 0,
+        "spatial": 0.7,
+        "tempo": 0.5,
+        "persistence": 0.4,
+        "interactions": 0.2,
+        "graftWeight": 1.5
+      },
+      "complexityBreakdown": {
+        "decisions": 0.78,
+        "triggers": 0.77,
+        "state": 0.06,
+        "board": 0.83,
+        "branching": 0.19,
+        "systems": 0.58,
+        "graftWeight": 1.25
+      }
+    },
+    {
+      "id": "corpse-craving",
+      "title": "Corpse Hunger",
+      "slot": "mind",
+      "declaredComplexity": 2,
+      "abilityCount": 2,
+      "rawPressure": 3,
+      "pressure": 4,
+      "pressureDelta": 1,
+      "rawComplexity": 3,
+      "complexity": 4,
+      "complexityDelta": 1,
+      "pressureBreakdown": {
+        "coreRoutine": 0,
+        "playerResponses": 1.26,
+        "control": 0,
+        "spatial": 0.25,
+        "tempo": 0.3,
+        "persistence": 0.8,
+        "interactions": 0.4,
+        "graftWeight": 0.5
+      },
+      "complexityBreakdown": {
+        "decisions": 0.78,
+        "triggers": 0.64,
+        "state": 0.06,
+        "board": 0.96,
+        "branching": 0.19,
+        "systems": 1.16,
+        "graftWeight": 0.5
+      }
+    },
+    {
+      "id": "maternal-swarm-instinct",
+      "title": "Brood Guard",
+      "slot": "mind",
+      "declaredComplexity": 2,
+      "abilityCount": 2,
+      "rawPressure": 2,
+      "pressure": 3,
+      "pressureDelta": 1,
+      "rawComplexity": 2,
+      "complexity": 3,
+      "complexityDelta": 1,
+      "pressureBreakdown": {
+        "coreRoutine": 0,
+        "playerResponses": 1.26,
+        "control": 0,
+        "spatial": 0.25,
+        "tempo": 0.48,
+        "persistence": 0.4,
+        "interactions": 0,
+        "graftWeight": 0.5
+      },
+      "complexityBreakdown": {
+        "decisions": 0.78,
+        "triggers": 0.55,
+        "state": 0.06,
+        "board": 0.48,
+        "branching": 0.19,
+        "systems": 0.58,
+        "graftWeight": 0.5
+      }
+    },
+    {
+      "id": "hundred-eyed",
+      "title": "Many Eyes",
+      "slot": "mind",
+      "declaredComplexity": 2,
+      "abilityCount": 2,
+      "rawPressure": 2,
+      "pressure": 3,
+      "pressureDelta": 1,
+      "rawComplexity": 2,
+      "complexity": 3,
+      "complexityDelta": 1,
+      "pressureBreakdown": {
+        "coreRoutine": 0,
+        "playerResponses": 1.26,
+        "control": 0,
+        "spatial": 0.25,
+        "tempo": 0.3,
+        "persistence": 0.4,
+        "interactions": 0,
+        "graftWeight": 0.5
+      },
+      "complexityBreakdown": {
+        "decisions": 0.78,
+        "triggers": 0,
+        "state": 0.06,
+        "board": 0.48,
+        "branching": 0.12,
+        "systems": 0.58,
+        "graftWeight": 0.5
+      }
+    },
+    {
+      "id": "nocturnal-haunting",
+      "title": "Night Hunter",
+      "slot": "mind",
+      "declaredComplexity": 2,
+      "abilityCount": 2,
+      "rawPressure": 2,
+      "pressure": 3,
+      "pressureDelta": 1,
+      "rawComplexity": 2,
+      "complexity": 3,
+      "complexityDelta": 1,
+      "pressureBreakdown": {
+        "coreRoutine": 0,
+        "playerResponses": 1.26,
+        "control": 0,
+        "spatial": 0.25,
+        "tempo": 0.3,
+        "persistence": 0.4,
+        "interactions": 0.2,
+        "graftWeight": 0.5
+      },
+      "complexityBreakdown": {
+        "decisions": 0.78,
+        "triggers": 0.32,
+        "state": 0.06,
+        "board": 0.48,
+        "branching": 0.19,
+        "systems": 0.58,
+        "graftWeight": 0.5
+      }
+    },
+    {
+      "id": "pressure-agony",
+      "title": "Pain Fixation",
+      "slot": "mind",
+      "declaredComplexity": 2,
+      "abilityCount": 1,
+      "rawPressure": 3,
+      "pressure": 3,
+      "pressureDelta": 0,
+      "rawComplexity": 2,
+      "complexity": 3,
+      "complexityDelta": 1,
+      "pressureBreakdown": {
+        "coreRoutine": 0,
+        "playerResponses": 1.26,
+        "control": 0,
+        "spatial": 0.25,
+        "tempo": 0,
+        "persistence": 0.4,
+        "interactions": 0.75,
+        "graftWeight": 0.5
+      },
+      "complexityBreakdown": {
+        "decisions": 0.55,
+        "triggers": 0.32,
+        "state": 0.06,
+        "board": 0.48,
+        "branching": 0.19,
+        "systems": 0.58,
+        "graftWeight": 0.5
+      }
+    },
+    {
+      "id": "hunter-spider",
+      "title": "Patient Hunter",
+      "slot": "mind",
+      "declaredComplexity": 2,
+      "abilityCount": 2,
+      "rawPressure": 2,
+      "pressure": 3,
+      "pressureDelta": 1,
+      "rawComplexity": 2,
+      "complexity": 3,
+      "complexityDelta": 1,
+      "pressureBreakdown": {
+        "coreRoutine": 0,
+        "playerResponses": 1.26,
+        "control": 0,
+        "spatial": 0.25,
+        "tempo": 0.3,
+        "persistence": 0.4,
+        "interactions": 0.2,
+        "graftWeight": 0.5
+      },
+      "complexityBreakdown": {
+        "decisions": 0.78,
+        "triggers": 0.32,
+        "state": 0.06,
+        "board": 0.48,
+        "branching": 0.19,
+        "systems": 0.58,
+        "graftWeight": 0.5
+      }
+    },
+    {
+      "id": "mortal-afterlife",
+      "title": "Stolen Life",
+      "slot": "mind",
+      "declaredComplexity": 2,
+      "abilityCount": 1,
+      "rawPressure": 2,
+      "pressure": 3,
+      "pressureDelta": 1,
+      "rawComplexity": 2,
+      "complexity": 3,
+      "complexityDelta": 1,
+      "pressureBreakdown": {
+        "coreRoutine": 0,
+        "playerResponses": 1.26,
+        "control": 0,
+        "spatial": 0.25,
+        "tempo": 0,
+        "persistence": 0.4,
+        "interactions": 0.2,
+        "graftWeight": 0.5
+      },
+      "complexityBreakdown": {
+        "decisions": 0.6,
+        "triggers": 0.32,
+        "state": 0.06,
+        "board": 0.48,
+        "branching": 0.19,
+        "systems": 0.58,
+        "graftWeight": 0.5
+      }
+    },
+    {
+      "id": "shame-hunger",
+      "title": "Funeral Hunger",
+      "slot": "mind",
+      "declaredComplexity": 2,
+      "abilityCount": 2,
+      "rawPressure": 2,
+      "pressure": 3,
+      "pressureDelta": 1,
+      "rawComplexity": 1,
+      "complexity": 2,
+      "complexityDelta": 1,
+      "pressureBreakdown": {
+        "coreRoutine": 0,
+        "playerResponses": 1.61,
+        "control": 0,
+        "spatial": 0.25,
+        "tempo": 0,
+        "persistence": 0,
+        "interactions": 0.2,
+        "graftWeight": 0.5
+      },
+      "complexityBreakdown": {
+        "decisions": 0.6,
+        "triggers": 0.32,
+        "state": 0.12,
+        "board": 0,
+        "branching": 0.19,
+        "systems": 0,
+        "graftWeight": 0.5
+      }
+    },
+    {
+      "id": "borrowed-face",
+      "title": "Borrowed Face",
+      "slot": "mind",
+      "declaredComplexity": 2,
+      "abilityCount": 1,
+      "rawPressure": 2,
+      "pressure": 2,
+      "pressureDelta": 0,
+      "rawComplexity": 1,
+      "complexity": 2,
+      "complexityDelta": 1,
+      "pressureBreakdown": {
+        "coreRoutine": 0,
+        "playerResponses": 1.26,
+        "control": 0,
+        "spatial": 0.25,
+        "tempo": 0,
+        "persistence": 0,
+        "interactions": 0.2,
+        "graftWeight": 0.5
+      },
+      "complexityBreakdown": {
+        "decisions": 0.6,
+        "triggers": 0.32,
+        "state": 0.12,
+        "board": 0,
+        "branching": 0.19,
+        "systems": 0,
+        "graftWeight": 0.5
+      }
+    },
+    {
+      "id": "deceitful-apparition",
+      "title": "Dead Impostor",
+      "slot": "mind",
+      "declaredComplexity": 2,
+      "abilityCount": 1,
+      "rawPressure": 2,
+      "pressure": 2,
+      "pressureDelta": 0,
+      "rawComplexity": 1,
+      "complexity": 1,
+      "complexityDelta": 0,
+      "pressureBreakdown": {
+        "coreRoutine": 0,
+        "playerResponses": 1.26,
+        "control": 0,
+        "spatial": 0.25,
+        "tempo": 0,
+        "persistence": 0,
+        "interactions": 0,
+        "graftWeight": 0.5
+      },
+      "complexityBreakdown": {
+        "decisions": 0.6,
+        "triggers": 0,
+        "state": 0.06,
+        "board": 0,
+        "branching": 0.12,
+        "systems": 0,
+        "graftWeight": 0.5
+      }
+    },
+    {
+      "id": "mindless-command",
+      "title": "Single Command",
+      "slot": "mind",
+      "declaredComplexity": 1,
+      "abilityCount": 1,
+      "rawPressure": 2,
+      "pressure": 2,
+      "pressureDelta": 0,
+      "rawComplexity": 1,
+      "complexity": 1,
+      "complexityDelta": 0,
+      "pressureBreakdown": {
+        "coreRoutine": 0,
+        "playerResponses": 1.26,
+        "control": 0,
+        "spatial": 0.25,
+        "tempo": 0,
+        "persistence": 0,
+        "interactions": 0,
+        "graftWeight": 0.5
+      },
+      "complexityBreakdown": {
+        "decisions": 0.55,
+        "triggers": 0,
+        "state": 0.06,
+        "board": 0,
+        "branching": 0.12,
+        "systems": 0,
+        "graftWeight": 0.5
+      }
+    },
+    {
+      "id": "cunning-action-spirit",
+      "title": "Cunning Hunt",
+      "slot": "movement",
+      "declaredComplexity": 3,
+      "abilityCount": 1,
+      "rawPressure": 2,
+      "pressure": 5,
+      "pressureDelta": 3,
+      "rawComplexity": 2,
+      "complexity": 4,
+      "complexityDelta": 2,
+      "pressureBreakdown": {
+        "coreRoutine": 0,
+        "playerResponses": 1.26,
+        "control": 0,
+        "spatial": 0.25,
+        "tempo": 0.3,
+        "persistence": 0.4,
+        "interactions": 0,
+        "graftWeight": 3
+      },
+      "complexityBreakdown": {
+        "decisions": 0.83,
+        "triggers": 0,
+        "state": 0,
+        "board": 0.48,
+        "branching": 0.26,
+        "systems": 0.58,
+        "graftWeight": 1.75
+      }
+    },
+    {
+      "id": "shadow-jump",
+      "title": "Shadow Step",
+      "slot": "movement",
+      "declaredComplexity": 2,
+      "abilityCount": 1,
+      "rawPressure": 2,
+      "pressure": 5,
+      "pressureDelta": 3,
+      "rawComplexity": 2,
+      "complexity": 4,
+      "complexityDelta": 2,
+      "pressureBreakdown": {
+        "coreRoutine": 0,
+        "playerResponses": 1.26,
+        "control": 0,
+        "spatial": 0.25,
+        "tempo": 0.3,
+        "persistence": 0.4,
+        "interactions": 0,
+        "graftWeight": 2.5
+      },
+      "complexityBreakdown": {
+        "decisions": 0.78,
+        "triggers": 0.2,
+        "state": 0.06,
+        "board": 0.48,
+        "branching": 0.19,
+        "systems": 0.58,
+        "graftWeight": 1.25
+      }
+    },
+    {
+      "id": "shadow-stillness",
+      "title": "Unseen Advance",
+      "slot": "movement",
+      "declaredComplexity": 3,
+      "abilityCount": 1,
+      "rawPressure": 2,
+      "pressure": 5,
+      "pressureDelta": 3,
+      "rawComplexity": 2,
+      "complexity": 4,
+      "complexityDelta": 2,
+      "pressureBreakdown": {
+        "coreRoutine": 0,
+        "playerResponses": 1.26,
+        "control": 0,
+        "spatial": 0.25,
+        "tempo": 0.3,
+        "persistence": 0.4,
+        "interactions": 0.2,
+        "graftWeight": 3
+      },
+      "complexityBreakdown": {
+        "decisions": 0.83,
+        "triggers": 0.32,
+        "state": 0.06,
+        "board": 0.48,
+        "branching": 0.19,
+        "systems": 0.58,
+        "graftWeight": 1.75
+      }
+    },
+    {
+      "id": "vanish-spirit",
+      "title": "Vanish",
+      "slot": "movement",
+      "declaredComplexity": 2,
+      "abilityCount": 1,
+      "rawPressure": 2,
+      "pressure": 5,
+      "pressureDelta": 3,
+      "rawComplexity": 2,
+      "complexity": 4,
+      "complexityDelta": 2,
+      "pressureBreakdown": {
+        "coreRoutine": 0,
+        "playerResponses": 1.26,
+        "control": 0.25,
+        "spatial": 0.25,
+        "tempo": 0.3,
+        "persistence": 0.4,
+        "interactions": 0,
+        "graftWeight": 2.5
+      },
+      "complexityBreakdown": {
+        "decisions": 0.78,
+        "triggers": 0.2,
+        "state": 0.3,
+        "board": 0.48,
+        "branching": 0.19,
+        "systems": 0.58,
+        "graftWeight": 1.25
+      }
+    },
+    {
+      "id": "rupture-charge",
+      "title": "Rupture Charge",
+      "slot": "movement",
+      "declaredComplexity": 2,
+      "abilityCount": 1,
+      "rawPressure": 2,
+      "pressure": 5,
+      "pressureDelta": 3,
+      "rawComplexity": 2,
+      "complexity": 3,
+      "complexityDelta": 1,
+      "pressureBreakdown": {
+        "coreRoutine": 0,
+        "playerResponses": 1.26,
+        "control": 0,
+        "spatial": 0.25,
+        "tempo": 0.3,
+        "persistence": 0.4,
+        "interactions": 0,
+        "graftWeight": 2.5
+      },
+      "complexityBreakdown": {
+        "decisions": 0.78,
+        "triggers": 0,
+        "state": 0,
+        "board": 0.48,
+        "branching": 0.12,
+        "systems": 0.58,
+        "graftWeight": 1.25
+      }
+    },
+    {
+      "id": "wall-crawler",
+      "title": "Wall Stalker",
+      "slot": "movement",
+      "declaredComplexity": 2,
+      "abilityCount": 2,
+      "rawPressure": 2,
+      "pressure": 5,
+      "pressureDelta": 3,
+      "rawComplexity": 2,
+      "complexity": 3,
+      "complexityDelta": 1,
+      "pressureBreakdown": {
+        "coreRoutine": 0,
+        "playerResponses": 1.26,
+        "control": 0,
+        "spatial": 0.25,
+        "tempo": 0,
+        "persistence": 0.4,
+        "interactions": 0.2,
+        "graftWeight": 2.5
+      },
+      "complexityBreakdown": {
+        "decisions": 0.6,
+        "triggers": 0.32,
+        "state": 0,
+        "board": 0.48,
+        "branching": 0.17,
+        "systems": 0.58,
+        "graftWeight": 1.25
+      }
+    },
+    {
+      "id": "web-dancer",
+      "title": "Web Swing",
+      "slot": "movement",
+      "declaredComplexity": 2,
+      "abilityCount": 2,
+      "rawPressure": 2,
+      "pressure": 5,
+      "pressureDelta": 3,
+      "rawComplexity": 2,
+      "complexity": 3,
+      "complexityDelta": 1,
+      "pressureBreakdown": {
+        "coreRoutine": 0,
+        "playerResponses": 1.26,
+        "control": 0,
+        "spatial": 0.25,
+        "tempo": 0.3,
+        "persistence": 0.4,
+        "interactions": 0,
+        "graftWeight": 2.5
+      },
+      "complexityBreakdown": {
+        "decisions": 0.78,
+        "triggers": 0,
+        "state": 0.12,
+        "board": 0.48,
+        "branching": 0.17,
+        "systems": 0.58,
+        "graftWeight": 1.25
+      }
+    },
+    {
+      "id": "incorporeal-movement",
+      "title": "Ghost Passage",
+      "slot": "movement",
+      "declaredComplexity": 2,
+      "abilityCount": 1,
+      "rawPressure": 2,
+      "pressure": 4,
+      "pressureDelta": 2,
+      "rawComplexity": 2,
+      "complexity": 3,
+      "complexityDelta": 1,
+      "pressureBreakdown": {
+        "coreRoutine": 0,
+        "playerResponses": 1.26,
+        "control": 0,
+        "spatial": 0.25,
+        "tempo": 0,
+        "persistence": 0.4,
+        "interactions": 0,
+        "graftWeight": 2.5
+      },
+      "complexityBreakdown": {
+        "decisions": 0.6,
+        "triggers": 0,
+        "state": 0.06,
+        "board": 0.48,
+        "branching": 0.12,
+        "systems": 0.58,
+        "graftWeight": 1.25
+      }
+    },
+    {
+      "id": "predatory-jump",
+      "title": "Predatory Leap",
+      "slot": "movement",
+      "declaredComplexity": 1,
+      "abilityCount": 1,
+      "rawPressure": 2,
+      "pressure": 4,
+      "pressureDelta": 2,
+      "rawComplexity": 2,
+      "complexity": 3,
+      "complexityDelta": 1,
+      "pressureBreakdown": {
+        "coreRoutine": 0,
+        "playerResponses": 1.26,
+        "control": 0,
+        "spatial": 0.25,
+        "tempo": 0.3,
+        "persistence": 0.4,
+        "interactions": 0,
+        "graftWeight": 2
+      },
+      "complexityBreakdown": {
+        "decisions": 0.73,
+        "triggers": 0,
+        "state": 0,
+        "board": 0.48,
+        "branching": 0.12,
+        "systems": 0.58,
+        "graftWeight": 0.75
+      }
+    },
+    {
+      "id": "stumbling-mass",
+      "title": "Dead March",
+      "slot": "movement",
+      "declaredComplexity": 1,
+      "abilityCount": 1,
+      "rawPressure": 2,
+      "pressure": 4,
+      "pressureDelta": 2,
+      "rawComplexity": 2,
+      "complexity": 2,
+      "complexityDelta": 0,
+      "pressureBreakdown": {
+        "coreRoutine": 0,
+        "playerResponses": 1.26,
+        "control": 0,
+        "spatial": 0.25,
+        "tempo": 0,
+        "persistence": 0.4,
+        "interactions": 0,
+        "graftWeight": 2
+      },
+      "complexityBreakdown": {
+        "decisions": 0.55,
+        "triggers": 0,
+        "state": 0,
+        "board": 0.48,
+        "branching": 0.12,
+        "systems": 0.58,
+        "graftWeight": 0.75
+      }
+    },
+    {
+      "id": "collapsed-crawler",
+      "title": "Crawling Ruin",
+      "slot": "movement",
+      "declaredComplexity": 1,
+      "abilityCount": 1,
+      "rawPressure": 2,
+      "pressure": 4,
+      "pressureDelta": 2,
+      "rawComplexity": 1,
+      "complexity": 1,
+      "complexityDelta": 0,
+      "pressureBreakdown": {
+        "coreRoutine": 0,
+        "playerResponses": 1.26,
+        "control": 0,
+        "spatial": 0.25,
+        "tempo": 0,
+        "persistence": 0,
+        "interactions": 0,
+        "graftWeight": 2
+      },
+      "complexityBreakdown": {
+        "decisions": 0.55,
+        "triggers": 0,
+        "state": 0,
+        "board": 0,
+        "branching": 0.12,
+        "systems": 0,
+        "graftWeight": 0.75
+      }
+    },
+    {
+      "id": "flesh-harvest",
+      "title": "Flesh Harvest",
+      "slot": "twist",
+      "declaredComplexity": 3,
+      "abilityCount": 2,
+      "rawPressure": 4,
+      "pressure": 5,
+      "pressureDelta": 1,
+      "rawComplexity": 3,
+      "complexity": 5,
+      "complexityDelta": 2,
+      "pressureBreakdown": {
+        "coreRoutine": 1,
+        "playerResponses": 1.26,
+        "control": 0,
+        "spatial": 0.25,
+        "tempo": 0,
+        "persistence": 0.8,
+        "interactions": 0.4,
+        "graftWeight": 1
+      },
+      "complexityBreakdown": {
+        "decisions": 0.6,
+        "triggers": 0.84,
+        "state": 0.12,
+        "board": 0.96,
+        "branching": 0.29,
+        "systems": 1.16,
+        "graftWeight": 0.75
+      }
+    },
+    {
+      "id": "web-architect",
+      "title": "Web Architect",
+      "slot": "twist",
+      "declaredComplexity": 3,
+      "abilityCount": 2,
+      "rawPressure": 4,
+      "pressure": 5,
+      "pressureDelta": 1,
+      "rawComplexity": 3,
+      "complexity": 4,
+      "complexityDelta": 1,
+      "pressureBreakdown": {
+        "coreRoutine": 0,
+        "playerResponses": 1.68,
+        "control": 0,
+        "spatial": 0.7,
+        "tempo": 0,
+        "persistence": 0.4,
+        "interactions": 0.95,
+        "graftWeight": 1
+      },
+      "complexityBreakdown": {
+        "decisions": 0.65,
+        "triggers": 0.84,
+        "state": 0.18,
+        "board": 0.83,
+        "branching": 0.29,
+        "systems": 0.58,
+        "graftWeight": 0.75
+      }
+    },
+    {
+      "id": "horrific-assault",
+      "title": "Horrific Assault",
+      "slot": "twist",
+      "declaredComplexity": 3,
+      "abilityCount": 2,
+      "rawPressure": 3,
+      "pressure": 4,
+      "pressureDelta": 1,
+      "rawComplexity": 3,
+      "complexity": 5,
+      "complexityDelta": 2,
+      "pressureBreakdown": {
+        "coreRoutine": 0,
+        "playerResponses": 1.26,
+        "control": 0,
+        "spatial": 0.25,
+        "tempo": 0,
+        "persistence": 0.8,
+        "interactions": 0.4,
+        "graftWeight": 1
+      },
+      "complexityBreakdown": {
+        "decisions": 0.6,
+        "triggers": 0.84,
+        "state": 0.06,
+        "board": 0.96,
+        "branching": 0.29,
+        "systems": 1.16,
+        "graftWeight": 0.75
+      }
+    },
+    {
+      "id": "mask-phase",
+      "title": "Changing Mask",
+      "slot": "twist",
+      "declaredComplexity": 3,
+      "abilityCount": 1,
+      "rawPressure": 3,
+      "pressure": 4,
+      "pressureDelta": 1,
+      "rawComplexity": 3,
+      "complexity": 4,
+      "complexityDelta": 1,
+      "pressureBreakdown": {
+        "coreRoutine": 0,
+        "playerResponses": 1.48,
+        "control": 0.5,
+        "spatial": 0.25,
+        "tempo": 0,
+        "persistence": 0.4,
+        "interactions": 0.75,
+        "graftWeight": 1
+      },
+      "complexityBreakdown": {
+        "decisions": 0.65,
+        "triggers": 0.52,
+        "state": 0.6,
+        "board": 0.48,
+        "branching": 0.31,
+        "systems": 0.58,
+        "graftWeight": 0.75
+      }
+    },
+    {
+      "id": "gas-buildup",
+      "title": "Gas Buildup",
+      "slot": "twist",
+      "declaredComplexity": 3,
+      "abilityCount": 2,
+      "rawPressure": 3,
+      "pressure": 4,
+      "pressureDelta": 1,
+      "rawComplexity": 3,
+      "complexity": 4,
+      "complexityDelta": 1,
+      "pressureBreakdown": {
+        "coreRoutine": 0,
+        "playerResponses": 1.68,
+        "control": 0,
+        "spatial": 0.7,
+        "tempo": 0,
+        "persistence": 0.4,
+        "interactions": 0.4,
+        "graftWeight": 1
+      },
+      "complexityBreakdown": {
+        "decisions": 0.6,
+        "triggers": 0.64,
+        "state": 0.18,
+        "board": 0.83,
+        "branching": 0.29,
+        "systems": 0.58,
+        "graftWeight": 0.75
+      }
+    },
+    {
+      "id": "dangerously-unstable",
+      "title": "Dangerously Unstable",
+      "slot": "twist",
+      "declaredComplexity": 3,
+      "abilityCount": 1,
+      "rawPressure": 3,
+      "pressure": 4,
+      "pressureDelta": 1,
+      "rawComplexity": 2,
+      "complexity": 3,
+      "complexityDelta": 1,
+      "pressureBreakdown": {
+        "coreRoutine": 0,
+        "playerResponses": 1.68,
+        "control": 0.25,
+        "spatial": 0.7,
+        "tempo": 0,
+        "persistence": 0,
+        "interactions": 0.75,
+        "graftWeight": 1
+      },
+      "complexityBreakdown": {
+        "decisions": 0.65,
+        "triggers": 0.52,
+        "state": 0.36,
+        "board": 0.35,
+        "branching": 0.29,
+        "systems": 0,
+        "graftWeight": 0.75
+      }
+    },
+    {
+      "id": "unstable-rupture",
+      "title": "Unstable Rupture",
+      "slot": "twist",
+      "declaredComplexity": 2,
+      "abilityCount": 1,
+      "rawPressure": 3,
+      "pressure": 4,
+      "pressureDelta": 1,
+      "rawComplexity": 2,
+      "complexity": 3,
+      "complexityDelta": 1,
+      "pressureBreakdown": {
+        "coreRoutine": 0,
+        "playerResponses": 1.68,
+        "control": 0,
+        "spatial": 0.7,
+        "tempo": 0.48,
+        "persistence": 0,
+        "interactions": 0,
+        "graftWeight": 1
+      },
+      "complexityBreakdown": {
+        "decisions": 0.78,
+        "triggers": 0.55,
+        "state": 0.06,
+        "board": 0.35,
+        "branching": 0.12,
+        "systems": 0,
+        "graftWeight": 0.75
+      }
+    },
+    {
+      "id": "corrosive-web",
+      "title": "Corrosive Web",
+      "slot": "twist",
+      "declaredComplexity": 2,
+      "abilityCount": 1,
+      "rawPressure": 3,
+      "pressure": 4,
+      "pressureDelta": 1,
+      "rawComplexity": 1,
+      "complexity": 2,
+      "complexityDelta": 1,
+      "pressureBreakdown": {
+        "coreRoutine": 0,
+        "playerResponses": 1.68,
+        "control": 0,
+        "spatial": 0.7,
+        "tempo": 0,
+        "persistence": 0,
+        "interactions": 0.2,
+        "graftWeight": 1
+      },
+      "complexityBreakdown": {
+        "decisions": 0.55,
+        "triggers": 0.32,
+        "state": 0.12,
+        "board": 0.35,
+        "branching": 0.17,
+        "systems": 0,
+        "graftWeight": 0.75
+      }
+    },
+    {
+      "id": "siege-corpse",
+      "title": "Siege Monster",
+      "slot": "twist",
+      "declaredComplexity": 2,
+      "abilityCount": 2,
+      "rawPressure": 3,
+      "pressure": 4,
+      "pressureDelta": 1,
+      "rawComplexity": 1,
+      "complexity": 2,
+      "complexityDelta": 1,
+      "pressureBreakdown": {
+        "coreRoutine": 0,
+        "playerResponses": 1.68,
+        "control": 0,
+        "spatial": 0.7,
+        "tempo": 0,
+        "persistence": 0,
+        "interactions": 0.2,
+        "graftWeight": 1
+      },
+      "complexityBreakdown": {
+        "decisions": 0.6,
+        "triggers": 0.52,
+        "state": 0.06,
+        "board": 0.35,
+        "branching": 0.17,
+        "systems": 0,
+        "graftWeight": 0.75
+      }
+    },
+    {
+      "id": "enrage-broodmother",
+      "title": "Enrage",
+      "slot": "twist",
+      "declaredComplexity": 2,
+      "abilityCount": 1,
+      "rawPressure": 2,
+      "pressure": 3,
+      "pressureDelta": 1,
+      "rawComplexity": 2,
+      "complexity": 4,
+      "complexityDelta": 2,
+      "pressureBreakdown": {
+        "coreRoutine": 0,
+        "playerResponses": 1.26,
+        "control": 0,
+        "spatial": 0.25,
+        "tempo": 0.48,
+        "persistence": 0.4,
+        "interactions": 0,
+        "graftWeight": 1
+      },
+      "complexityBreakdown": {
+        "decisions": 0.73,
+        "triggers": 0.75,
+        "state": 0.06,
+        "board": 0.48,
+        "branching": 0.17,
+        "systems": 0.58,
+        "graftWeight": 0.75
+      }
+    },
+    {
+      "id": "no-witnesses-rage",
+      "title": "Witness Rage",
+      "slot": "twist",
+      "declaredComplexity": 2,
+      "abilityCount": 1,
+      "rawPressure": 2,
+      "pressure": 3,
+      "pressureDelta": 1,
+      "rawComplexity": 2,
+      "complexity": 4,
+      "complexityDelta": 2,
+      "pressureBreakdown": {
+        "coreRoutine": 0,
+        "playerResponses": 1.26,
+        "control": 0,
+        "spatial": 0.25,
+        "tempo": 0.48,
+        "persistence": 0.4,
+        "interactions": 0,
+        "graftWeight": 1
+      },
+      "complexityBreakdown": {
+        "decisions": 0.78,
+        "triggers": 0.75,
+        "state": 0.12,
+        "board": 0.48,
+        "branching": 0.24,
+        "systems": 0.58,
+        "graftWeight": 0.75
+      }
+    },
+    {
+      "id": "undead-fortitude",
+      "title": "Undead Fortitude",
+      "slot": "twist",
+      "declaredComplexity": 1,
+      "abilityCount": 1,
+      "rawPressure": 2,
+      "pressure": 3,
+      "pressureDelta": 1,
+      "rawComplexity": 1,
+      "complexity": 2,
+      "complexityDelta": 1,
+      "pressureBreakdown": {
+        "coreRoutine": 0,
+        "playerResponses": 1.26,
+        "control": 0,
+        "spatial": 0.25,
+        "tempo": 0,
+        "persistence": 0,
+        "interactions": 0.2,
+        "graftWeight": 1
+      },
+      "complexityBreakdown": {
+        "decisions": 0.55,
+        "triggers": 0.32,
+        "state": 0,
+        "board": 0,
+        "branching": 0.12,
+        "systems": 0,
+        "graftWeight": 0.75
+      }
+    },
+    {
+      "id": "dangerous-hunger",
+      "title": "Consecrated Bait",
+      "slot": "weakness",
+      "declaredComplexity": 2,
+      "abilityCount": 1,
+      "rawPressure": 3,
+      "pressure": 3,
+      "pressureDelta": 0,
+      "rawComplexity": 1,
+      "complexity": 1,
+      "complexityDelta": 0,
+      "pressureBreakdown": {
+        "coreRoutine": 0,
+        "playerResponses": 1.68,
+        "control": 1.4,
+        "spatial": 0.6,
+        "tempo": 0,
+        "persistence": 0,
+        "interactions": 0.2,
+        "graftWeight": -1.25
+      },
+      "complexityBreakdown": {
+        "decisions": 0.6,
+        "triggers": 0.32,
+        "state": 0.36,
+        "board": 0,
+        "branching": 0.14,
+        "systems": 0,
+        "graftWeight": -0.5
+      }
+    },
+    {
+      "id": "eyes-weak-spot",
+      "title": "Eye Cluster",
+      "slot": "weakness",
+      "declaredComplexity": 2,
+      "abilityCount": 1,
+      "rawPressure": 2,
+      "pressure": 2,
+      "pressureDelta": 0,
+      "rawComplexity": 1,
+      "complexity": 1,
+      "complexityDelta": 0,
+      "pressureBreakdown": {
+        "coreRoutine": 0,
+        "playerResponses": 1.68,
+        "control": 0.75,
+        "spatial": 0.25,
+        "tempo": 0,
+        "persistence": 0,
+        "interactions": 0.2,
+        "graftWeight": -1.25
+      },
+      "complexityBreakdown": {
+        "decisions": 0.6,
+        "triggers": 0.32,
+        "state": 0.3,
+        "board": 0,
+        "branching": 0.07,
+        "systems": 0,
+        "graftWeight": -0.5
+      }
+    },
+    {
+      "id": "fear-of-fire",
+      "title": "Fear of Fire",
+      "slot": "weakness",
+      "declaredComplexity": 1,
+      "abilityCount": 1,
+      "rawPressure": 3,
+      "pressure": 2,
+      "pressureDelta": -1,
+      "rawComplexity": 1,
+      "complexity": 1,
+      "complexityDelta": 0,
+      "pressureBreakdown": {
+        "coreRoutine": 0,
+        "playerResponses": 1.68,
+        "control": 0.65,
+        "spatial": 0.6,
+        "tempo": 0,
+        "persistence": 0,
+        "interactions": 0.2,
+        "graftWeight": -1.25
+      },
+      "complexityBreakdown": {
+        "decisions": 0.55,
+        "triggers": 0.32,
+        "state": 0.06,
+        "board": 0,
+        "branching": 0.07,
+        "systems": 0,
+        "graftWeight": -0.5
+      }
+    },
+    {
+      "id": "salt-and-names",
+      "title": "Salt and True Names",
+      "slot": "weakness",
+      "declaredComplexity": 2,
+      "abilityCount": 1,
+      "rawPressure": 3,
+      "pressure": 2,
+      "pressureDelta": -1,
+      "rawComplexity": 1,
+      "complexity": 1,
+      "complexityDelta": 0,
+      "pressureBreakdown": {
+        "coreRoutine": 0,
+        "playerResponses": 1.68,
+        "control": 0.65,
+        "spatial": 0.6,
+        "tempo": 0,
+        "persistence": 0,
+        "interactions": 0.2,
+        "graftWeight": -1.25
+      },
+      "complexityBreakdown": {
+        "decisions": 0.6,
+        "triggers": 0.32,
+        "state": 0.12,
+        "board": 0,
+        "branching": 0.14,
+        "systems": 0,
+        "graftWeight": -0.5
+      }
+    },
+    {
+      "id": "daytime-weakness",
+      "title": "Sunlight Weakness",
+      "slot": "weakness",
+      "declaredComplexity": 1,
+      "abilityCount": 1,
+      "rawPressure": 3,
+      "pressure": 2,
+      "pressureDelta": -1,
+      "rawComplexity": 1,
+      "complexity": 1,
+      "complexityDelta": 0,
+      "pressureBreakdown": {
+        "coreRoutine": 0,
+        "playerResponses": 1.68,
+        "control": 0.65,
+        "spatial": 0.6,
+        "tempo": 0,
+        "persistence": 0,
+        "interactions": 0.2,
+        "graftWeight": -1.25
+      },
+      "complexityBreakdown": {
+        "decisions": 0.55,
+        "triggers": 0.32,
+        "state": 0.06,
+        "board": 0,
+        "branching": 0.07,
+        "systems": 0,
+        "graftWeight": -0.5
+      }
+    },
+    {
+      "id": "thin-legs",
+      "title": "Unsteady Legs",
+      "slot": "weakness",
+      "declaredComplexity": 2,
+      "abilityCount": 1,
+      "rawPressure": 3,
+      "pressure": 2,
+      "pressureDelta": -1,
+      "rawComplexity": 1,
+      "complexity": 1,
+      "complexityDelta": 0,
+      "pressureBreakdown": {
+        "coreRoutine": 0,
+        "playerResponses": 1.68,
+        "control": 0.9,
+        "spatial": 0.6,
+        "tempo": 0,
+        "persistence": 0,
+        "interactions": 0.2,
+        "graftWeight": -1.25
+      },
+      "complexityBreakdown": {
+        "decisions": 0.55,
+        "triggers": 0.32,
+        "state": 0.3,
+        "board": 0,
+        "branching": 0.14,
+        "systems": 0,
+        "graftWeight": -0.5
+      }
+    },
+    {
+      "id": "brood-tell",
+      "title": "Brood Sac",
+      "slot": "weakness",
+      "declaredComplexity": 2,
+      "abilityCount": 1,
+      "rawPressure": 2,
+      "pressure": 1,
+      "pressureDelta": -1,
+      "rawComplexity": 1,
+      "complexity": 1,
+      "complexityDelta": 0,
+      "pressureBreakdown": {
+        "coreRoutine": 0,
+        "playerResponses": 1.68,
+        "control": 0,
+        "spatial": 0.25,
+        "tempo": 0,
+        "persistence": 0,
+        "interactions": 0.2,
+        "graftWeight": -1.25
+      },
+      "complexityBreakdown": {
+        "decisions": 0.6,
+        "triggers": 0.32,
+        "state": 0.12,
+        "board": 0,
+        "branching": 0.14,
+        "systems": 0,
+        "graftWeight": -0.5
+      }
+    },
+    {
+      "id": "mechanical-stress",
+      "title": "Dismemberment",
+      "slot": "weakness",
+      "declaredComplexity": 2,
+      "abilityCount": 1,
+      "rawPressure": 2,
+      "pressure": 1,
+      "pressureDelta": -1,
+      "rawComplexity": 1,
+      "complexity": 1,
+      "complexityDelta": 0,
+      "pressureBreakdown": {
+        "coreRoutine": 0,
+        "playerResponses": 1.68,
+        "control": 0,
+        "spatial": 0.25,
+        "tempo": 0,
+        "persistence": 0,
+        "interactions": 0.75,
+        "graftWeight": -1.25
+      },
+      "complexityBreakdown": {
+        "decisions": 0.6,
+        "triggers": 0.32,
+        "state": 0.12,
+        "board": 0,
+        "branching": 0.14,
+        "systems": 0,
+        "graftWeight": -0.5
+      }
+    },
+    {
+      "id": "head-weak-spot",
+      "title": "Exposed Skull",
+      "slot": "weakness",
+      "declaredComplexity": 2,
+      "abilityCount": 1,
+      "rawPressure": 2,
+      "pressure": 1,
+      "pressureDelta": -1,
+      "rawComplexity": 1,
+      "complexity": 1,
+      "complexityDelta": 0,
+      "pressureBreakdown": {
+        "coreRoutine": 0,
+        "playerResponses": 1.68,
+        "control": 0,
+        "spatial": 0.25,
+        "tempo": 0,
+        "persistence": 0,
+        "interactions": 0.2,
+        "graftWeight": -1.25
+      },
+      "complexityBreakdown": {
+        "decisions": 0.6,
+        "triggers": 0.32,
+        "state": 0.06,
+        "board": 0,
+        "branching": 0.14,
+        "systems": 0,
+        "graftWeight": -0.5
+      }
+    },
+    {
+      "id": "underbelly-weak-spot",
+      "title": "Exposed Underbelly",
+      "slot": "weakness",
+      "declaredComplexity": 2,
+      "abilityCount": 1,
+      "rawPressure": 2,
+      "pressure": 1,
+      "pressureDelta": -1,
+      "rawComplexity": 1,
+      "complexity": 1,
+      "complexityDelta": 0,
+      "pressureBreakdown": {
+        "coreRoutine": 0,
+        "playerResponses": 1.68,
+        "control": 0,
+        "spatial": 0.25,
+        "tempo": 0,
+        "persistence": 0,
+        "interactions": 0.2,
+        "graftWeight": -1.25
+      },
+      "complexityBreakdown": {
+        "decisions": 0.55,
+        "triggers": 0.32,
+        "state": 0.06,
+        "board": 0,
+        "branching": 0.14,
+        "systems": 0,
+        "graftWeight": -0.5
+      }
+    },
+    {
+      "id": "radiant-preservation-failure",
+      "title": "Radiant Disruption",
+      "slot": "weakness",
+      "declaredComplexity": 2,
+      "abilityCount": 1,
+      "rawPressure": 2,
+      "pressure": 1,
+      "pressureDelta": -1,
+      "rawComplexity": 1,
+      "complexity": 1,
+      "complexityDelta": 0,
+      "pressureBreakdown": {
+        "coreRoutine": 0,
+        "playerResponses": 1.68,
+        "control": 0,
+        "spatial": 0.25,
+        "tempo": 0,
+        "persistence": 0,
+        "interactions": 0.2,
+        "graftWeight": -1.25
+      },
+      "complexityBreakdown": {
+        "decisions": 0.55,
+        "triggers": 0.32,
+        "state": 0.06,
+        "board": 0,
+        "branching": 0.14,
+        "systems": 0,
+        "graftWeight": -0.5
+      }
+    },
+    {
+      "id": "shameful-feeding",
+      "title": "Shame",
+      "slot": "weakness",
+      "declaredComplexity": 2,
+      "abilityCount": 1,
+      "rawPressure": 2,
+      "pressure": 1,
+      "pressureDelta": -1,
+      "rawComplexity": 1,
+      "complexity": 1,
+      "complexityDelta": 0,
+      "pressureBreakdown": {
+        "coreRoutine": 0,
+        "playerResponses": 1.68,
+        "control": 0,
+        "spatial": 0.25,
+        "tempo": 0,
+        "persistence": 0,
+        "interactions": 0.2,
+        "graftWeight": -1.25
+      },
+      "complexityBreakdown": {
+        "decisions": 0.6,
+        "triggers": 0.32,
+        "state": 0.12,
+        "board": 0,
+        "branching": 0.14,
+        "systems": 0,
+        "graftWeight": -0.5
+      }
+    },
+    {
+      "id": "fire-softens-it",
+      "title": "Softened Wax",
+      "slot": "weakness",
+      "declaredComplexity": 2,
+      "abilityCount": 1,
+      "rawPressure": 2,
+      "pressure": 1,
+      "pressureDelta": -1,
+      "rawComplexity": 1,
+      "complexity": 1,
+      "complexityDelta": 0,
+      "pressureBreakdown": {
+        "coreRoutine": 0,
+        "playerResponses": 1.68,
+        "control": 0,
+        "spatial": 0.25,
+        "tempo": 0,
+        "persistence": 0,
+        "interactions": 0.2,
+        "graftWeight": -1.25
+      },
+      "complexityBreakdown": {
+        "decisions": 0.6,
+        "triggers": 0.32,
+        "state": 0.06,
+        "board": 0,
+        "branching": 0.14,
+        "systems": 0,
+        "graftWeight": -0.5
+      }
+    }
+  ],
+  "cr2AttackPatterns": [
+    {
+      "id": "web-recharge",
+      "title": "Web Hunter",
+      "pressure": 7
+    },
+    {
+      "id": "venomous-spit",
+      "title": "Venom Spitter",
+      "pressure": 5
+    },
+    {
+      "id": "brood-injection",
+      "title": "Broodmaker",
+      "pressure": 4
+    },
+    {
+      "id": "slam-decomposition",
+      "title": "Crusher",
+      "pressure": 4
+    },
+    {
+      "id": "shadow-web",
+      "title": "Shadow Weaver",
+      "pressure": 4
+    },
+    {
+      "id": "venomous-bite",
+      "title": "Venom Hunter",
+      "pressure": 4
+    },
+    {
+      "id": "corpse-tendrils",
+      "title": "Corpse Binder",
+      "pressure": 3
+    },
+    {
+      "id": "grave-bite",
+      "title": "Grave Eater",
+      "pressure": 3
+    },
+    {
+      "id": "perforate",
+      "title": "Impaler",
+      "pressure": 3
+    },
+    {
+      "id": "acid-vomit",
+      "title": "Acid Brute",
+      "pressure": 1
+    },
+    {
+      "id": "cold-funeral-touch",
+      "title": "Cold Touch",
+      "pressure": 1
+    },
+    {
+      "id": "corpse-grab",
+      "title": "Grappler",
+      "pressure": 1
+    },
+    {
+      "id": "empowered-slam",
+      "title": "Juggernaut",
+      "pressure": 1
+    },
+    {
+      "id": "infected-bite",
+      "title": "Plague Eater",
+      "pressure": 1
+    },
+    {
+      "id": "purulent-bite",
+      "title": "Rot Eater",
+      "pressure": 1
+    }
+  ],
+  "checks": [
+    {
+      "id": "catalog-has-93-grafts",
+      "pass": true,
+      "detail": "93 grafts"
+    },
+    {
+      "id": "catalog-has-nine-slots",
+      "pass": true,
+      "detail": "9 slots"
+    },
+    {
+      "id": "baseline-attack-added",
+      "pass": true,
+      "detail": "fallback-added"
+    },
+    {
+      "id": "baseline-attack-is-an-action",
+      "pass": true,
+      "detail": "1 compiled ability"
+    },
+    {
+      "id": "baseline-attack-pressure-zero",
+      "pass": true,
+      "detail": "0 Pressure"
+    },
+    {
+      "id": "baseline-attack-complexity-zero",
+      "pass": true,
+      "detail": "0 Complexity"
+    },
+    {
+      "id": "authored-attack-suppresses-fallback",
+      "pass": true,
+      "detail": "authored-attack-pattern"
+    },
+    {
+      "id": "movement-pressure-heavier-than-attack",
+      "pass": true,
+      "detail": "4.64 > 3.8"
+    },
+    {
+      "id": "movement-complexity-heavier-than-attack",
+      "pass": true,
+      "detail": "3.09 > 2.07"
+    },
+    {
+      "id": "cr2-movement-pressure-heavier",
+      "pass": true,
+      "detail": "4.64 > 2.87"
+    },
+    {
+      "id": "cr2-movement-complexity-heavier",
+      "pass": true,
+      "detail": "3.09 > 1.67"
+    },
+    {
+      "id": "high-cr-attack-progression-visible",
+      "pass": true,
+      "detail": "5.87 > 3.8"
+    },
+    {
+      "id": "weakness-complexity-remains-light",
+      "pass": true,
+      "detail": "1"
+    },
+    {
+      "id": "complex-attack-can-saturate-cr2",
+      "pass": true,
+      "detail": "1 patterns"
+    },
+    {
+      "id": "all-graft-scores-finite",
+      "pass": true,
+      "detail": "all finite"
+    },
+    {
+      "id": "all-grafts-have-minimum-guidance",
+      "pass": true,
+      "detail": "all >= 1"
+    }
+  ]
+}

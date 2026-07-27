@@ -13,9 +13,9 @@ import { asArray, hasSelectedSlot, uniqueArray } from "./monster-composer.select
 import { formatToken } from "./monster-composer.compatibility.js";
 import { getFeatureBalanceStat } from "./monster-graft-balance-profile.js";
 import {
-  buildFinalMonsterEvaluation,
-  projectFinalEvaluationToLegacyProfiles,
-} from "./monster-final-evaluation.js";
+  buildDmComplexityProfile,
+  buildPlayerPressureProfile,
+} from "./monster-pressure-complexity.js";
 
 function clamp(value, min, max) {
   return Math.max(min, Math.min(max, value));
@@ -277,269 +277,64 @@ export function topMechanicTags(counts, limit = 6) {
     .map(([tag, count]) => `${formatToken(tag)} ×${count}`);
 }
 
-function tagCount(counts, tag) {
-  return Number(counts?.[tag] || 0);
-}
-
-function roundBreakdown(breakdown) {
-  return Object.fromEntries(
-    Object.entries(breakdown).map(([key, value]) => [key, Math.round(value)])
-  );
-}
-
-function sumBreakdown(breakdown) {
-  return Object.values(breakdown).reduce((sum, value) => sum + value, 0);
-}
-
-function buildProfileSources(breakdown, labelMap, limit = 4) {
-  return Object.entries(breakdown)
-    .filter(([, value]) => Math.abs(value) > 0)
-    .sort((a, b) => Math.abs(b[1]) - Math.abs(a[1]))
-    .slice(0, limit)
-    .map(([key, value]) => `${labelMap[key] || titleCase(key)} ${value > 0 ? "+" : ""}${value}`);
-}
-
-function profileBand(score, limit) {
-  if (score <= limit * 0.55) return "Low";
-  if (score <= limit * 0.85) return "Moderate";
-  if (score <= limit) return "High";
-  if (score <= limit * 1.25) return "Over Target";
-  return "Critical";
-}
-
 export const PRESSURE_LABELS = {
-  base: "Base Grafts",
-  offense: "Offense",
-  area: "Area",
+  coreRoutine: "Core Routine",
+  playerResponses: "Player Responses",
   control: "Control",
+  spatial: "Spatial Demands",
   tempo: "Tempo",
-  defense: "Defense",
-  sustain: "Sustain",
-  validation: "Validation",
-  other: "Other",
+  persistence: "Persistence",
+  interactions: "Interactions",
+  graftWeight: "Graft Weight",
 };
 
 export const COMPLEXITY_LABELS = {
-  base: "Base Grafts",
-  actions: "Actions",
-  timing: "Timing",
-  conditions: "Conditions",
-  environment: "Environment",
-  other: "Other",
+  decisions: "Decision Load",
+  triggers: "Trigger Load",
+  state: "State Tracking",
+  board: "Board Tracking",
+  branching: "Branching",
+  systems: "Special Systems",
+  graftWeight: "Graft Weight",
 };
 
 export function buildPressureProfile({
-  cost,
-  monsterTier,
-  tempoProfile,
-  statMods,
-  mechanicsSummary,
-  budget,
-}) {
-  const pressureTags = mechanicsSummary.pressureTags || {};
-  const positiveCost = Math.max(0, cost);
-  const fairnessRelief = Math.max(0, statMods.fairness || 0);
-  const offensePressure =
-    Math.max(0, statMods.dpr || 0) * 0.2 +
-    tagCount(pressureTags, "single_target") * 0.5 +
-    tagCount(pressureTags, "reaction_burst") * 1.1 +
-    tagCount(pressureTags, "burst") * 1.4;
-  const areaPressure = tagCount(pressureTags, "area") * 1 + tagCount(pressureTags, "death_burst") * 0.6;
-  const controlPressure =
-    Math.max(0, statMods.control || 0) * 0.45 +
-    tagCount(pressureTags, "control") * 0.9 +
-    tagCount(pressureTags, "ranged_lockdown") * 1 +
-    tagCount(pressureTags, "single_target_lockdown") * 1 +
-    tagCount(pressureTags, "control_synergy") * 0.4;
-  const tempoPressure =
-    monsterTier.pressureMod * 0.55 +
-    tempoProfile.pressureMod * 0.7 +
-    tagCount(pressureTags, "tempo") * 1 +
-    tagCount(pressureTags, "action_economy") * 1.1 +
-    tagCount(pressureTags, "retaliation") * 0.8;
-  const defensePressure =
-    Math.max(0, statMods.hp || 0) / 28 +
-    Math.max(0, statMods.ac || 0) * 0.85 +
-    tagCount(pressureTags, "defense_stack") * 0.8 +
-    tagCount(pressureTags, "save_defense") * 1.1 +
-    tagCount(pressureTags, "anti_spell_defense") * 0.7 +
-    tagCount(pressureTags, "defensive_reaction") * 0.8;
-  const sustainPressure =
-    tagCount(pressureTags, "sustain") * 0.8 +
-    tagCount(pressureTags, "regeneration") * 1.2 +
-    tagCount(pressureTags, "escalation") * 1 +
-    tagCount(pressureTags, "campaign_pressure") * 0.5;
-  const positiveSubtotal =
-    positiveCost * 0.35 + offensePressure + areaPressure + controlPressure + tempoPressure + defensePressure + sustainPressure;
-  const fairnessCredit = Math.min(fairnessRelief * 0.85, 3, positiveSubtotal * 0.35);
-  const breakdown = roundBreakdown({
-    base: positiveCost * 0.35,
-    offense: offensePressure,
-    area: areaPressure,
-    control: controlPressure,
-    tempo: tempoPressure,
-    defense: defensePressure,
-    sustain: sustainPressure,
-    other: Math.max(0, statMods.mobility || 0) * 0.35 - fairnessCredit,
-  });
-  const score = Math.max(0, Math.round(sumBreakdown(breakdown)));
-  return {
-    score,
-    label: profileBand(score, budget),
-    breakdown,
-    sources: buildProfileSources(breakdown, PRESSURE_LABELS),
-    version: "monster-pressure-legacy-selection-v1",
-    stage: "provisional-selected-grafts",
-  };
-}
-
-function pressureFloorScore({
-  pressureProfile,
-  budget,
-  targetCr,
-  baseline,
-  printedStats,
-  effectiveProfile,
-  crValidation,
-}) {
-  const limit = Math.max(1, Number(budget || 1));
-  const target = Math.max(0, Number(targetCr || 0));
-  const estimatedCr = Number(crValidation?.estimatedCr ?? target);
-  const offensiveCr = Number(crValidation?.offensive?.cr ?? target);
-  const defensiveCr = Number(crValidation?.defensive?.cr ?? target);
-  const crDelta = estimatedCr - target;
-  const offensiveDelta = offensiveCr - target;
-  const defensiveDelta = defensiveCr - target;
-  const baselineDpr = Math.max(1, Number(baseline?.dpr || 1));
-  const baselineHp = Math.max(1, Number(baseline?.hp || 1));
-  const printedDprRatio = Number(printedStats?.dpr || 0) / baselineDpr;
-  const effectiveDprRatio = Number(effectiveProfile?.effectiveDpr3Round || 0) / baselineDpr;
-  const burstRatio = Number(effectiveProfile?.burstDpr || 0) / baselineDpr;
-  const effectiveHpRatio = Number(effectiveProfile?.effectiveHp || 0) / baselineHp;
-  const conditionAdjustment = Number(effectiveProfile?.conditionProfile?.crAdjustment || 0);
-  let floor = 0;
-
-  if (crDelta >= 2) floor = Math.max(floor, Math.ceil(limit * 0.62));
-  if (crDelta >= 3 || offensiveDelta >= 4 || defensiveDelta >= 4) floor = Math.max(floor, Math.ceil(limit * 0.86));
-  if (crDelta >= 5 || offensiveDelta >= 6 || burstRatio >= 3) floor = Math.max(floor, limit + 1);
-  if (printedDprRatio >= 1.35 || effectiveDprRatio >= 1.35) floor = Math.max(floor, Math.ceil(limit * 0.62));
-  if (burstRatio >= 1.75) floor = Math.max(floor, Math.ceil(limit * 0.62));
-  if (effectiveHpRatio >= 1.35) floor = Math.max(floor, Math.ceil(limit * 0.62));
-  if (conditionAdjustment >= 1) floor = Math.max(floor, Math.ceil(limit * 0.62));
-
-  return Math.max(Number(pressureProfile?.score || 0), floor);
-}
-
-export function applyPressureValidationFloor({
-  pressureProfile,
-  budget,
-  targetCr,
-  baseline,
-  printedStats,
-  effectiveProfile,
-  crValidation,
-}) {
-  if (!pressureProfile) return pressureProfile;
-  const currentScore = Math.max(0, Number(pressureProfile.score || 0));
-  const flooredScore = pressureFloorScore({
-    pressureProfile,
-    budget,
+  targetCr = 0,
+  limit = null,
+  budget = null,
+  abilityModel = {},
+  attackRoutine = null,
+  selectedFeatures = [],
+} = {}) {
+  return buildPlayerPressureProfile({
     targetCr,
-    baseline,
-    printedStats,
-    effectiveProfile,
-    crValidation,
+    limit: limit ?? budget,
+    abilityModel,
+    attackRoutine,
+    selectedFeatures,
   });
-  let legacyProfile;
-  if (flooredScore <= currentScore) {
-    legacyProfile = {
-      ...pressureProfile,
-      label: profileBand(currentScore, budget),
-      sources: buildProfileSources(pressureProfile.breakdown || {}, PRESSURE_LABELS),
-    };
-  } else {
-    const validationDelta = Math.round(flooredScore - currentScore);
-    const breakdown = roundBreakdown({
-      ...(pressureProfile.breakdown || {}),
-      validation: Number(pressureProfile.breakdown?.validation || 0) + validationDelta,
-    });
-    const score = Math.max(0, Math.round(sumBreakdown(breakdown)));
-    legacyProfile = {
-      ...pressureProfile,
-      score,
-      label: profileBand(score, budget),
-      breakdown,
-      sources: buildProfileSources(breakdown, PRESSURE_LABELS),
-      floor: {
-        applied: true,
-        from: currentScore,
-        to: score,
-        reason: "CR/DPR/Burst validation floor",
-      },
-    };
-  }
-
-  const finalEvaluation = buildFinalMonsterEvaluation({
-    targetCr,
-    baseline,
-    printedStats,
-    effectiveProfile,
-    crValidation,
-    buildBudget: budget,
-  });
-  return projectFinalEvaluationToLegacyProfiles({
-    evaluation: finalEvaluation,
-    pressureProfile: legacyProfile,
-    pressureBudget: budget,
-    preserveVisibleScores: true,
-  }).pressureProfile;
 }
 
-export function buildComplexityProfile({ complexity, mechanicsSummary, featureMechanics, limit }) {
-  const complexityTags = mechanicsSummary.complexityTags || {};
-  const uniqueTagCount = Object.keys(complexityTags).length;
-  const breakdown = roundBreakdown({
-    base: Math.max(0, complexity) * 0.35,
-    actions:
-      mechanicsSummary.rechargeCount * 0.55 +
-      mechanicsSummary.reactionCount * 0.7 +
-      mechanicsSummary.deathEffectCount * 0.35 +
-      tagCount(complexityTags, "action_cost") * 0.6 +
-      tagCount(complexityTags, "summon_tracking") * 0.8,
-    timing:
-      tagCount(complexityTags, "recharge") * 0.45 +
-      tagCount(complexityTags, "reaction_trigger") * 0.65 +
-      tagCount(complexityTags, "defensive_reaction") * 0.55 +
-      tagCount(complexityTags, "regeneration_tracking") * 0.55 +
-      tagCount(complexityTags, "random_trigger") * 0.55 +
-      tagCount(complexityTags, "death_trigger") * 0.35 +
-      tagCount(complexityTags, "round_tracking") * 0.75 +
-      tagCount(complexityTags, "delayed_tracking") * 0.7,
-    conditions:
-      mechanicsSummary.conditionCount * 0.35 +
-      mechanicsSummary.majorConditionCount * 0.55 +
-      tagCount(complexityTags, "condition_tracking") * 0.5 +
-      tagCount(complexityTags, "repeat_save") * 0.65 +
-      tagCount(complexityTags, "ongoing_tracking") * 0.65 +
-      tagCount(complexityTags, "escape_check") * 0.55,
-    environment:
-      tagCount(complexityTags, "object_hp") * 0.65 +
-      tagCount(complexityTags, "object_tracking") * 0.65 +
-      tagCount(complexityTags, "corpse_anchor") * 0.55 +
-      tagCount(complexityTags, "corpse_tracking") * 0.55 +
-      tagCount(complexityTags, "terrain_anchor") * 0.45 +
-      tagCount(complexityTags, "cleanup_action") * 0.55,
-    other: Math.max(0, uniqueTagCount - featureMechanics.length) * 0.2,
+/**
+ * Retained as a compatibility boundary for older callers. Pressure v3 describes
+ * player-facing tactical load, so CR/DPR/HP validation must never raise it.
+ */
+export function applyPressureValidationFloor({ pressureProfile } = {}) {
+  return pressureProfile;
+}
+
+export function buildComplexityProfile({
+  limit = 6,
+  abilityModel = {},
+  attackRoutine = null,
+  selectedFeatures = [],
+} = {}) {
+  return buildDmComplexityProfile({
+    limit,
+    abilityModel,
+    attackRoutine,
+    selectedFeatures,
   });
-  const score = Math.max(0, Math.round(sumBreakdown(breakdown)));
-  return {
-    score,
-    label: profileBand(score, limit),
-    breakdown,
-    sources: buildProfileSources(breakdown, COMPLEXITY_LABELS),
-    version: "monster-complexity-legacy-selection-v1",
-    stage: "provisional-selected-grafts",
-  };
 }
 
 export function formatBreakdownCompact(profile, labelMap) {
@@ -839,25 +634,42 @@ export function formatCounterplayIssues(issues) {
 }
 
 export function getFeaturePressureWeight(feature) {
+  const mechanicProfile = getFeatureMechanicProfile(feature);
   const counterplayProfile = getFeatureCounterplayProfile(feature);
+  const authoredAbilities = asArray(feature.abilities);
+  const routine = feature.routine || {};
+  const multiattack = routine.multiattack || {};
+  const actionOptions = authoredAbilities.filter((ability) =>
+    ["action", "bonusAction", "reaction", "legendaryAction", "lairAction", "deathTrigger"].includes(
+      String(ability.rules?.actionEconomy || ability.section || ""),
+    )
+  ).length;
   return (
-    Math.max(0, feature.cost) * 2 +
-    feature.complexity +
-    Math.max(0, getFeatureBalanceStat(feature, "dpr")) +
-    Math.max(0, getFeatureBalanceStat(feature, "control")) * 1.5 +
-    (counterplayProfile.burst ? 3 : 0) +
-    (counterplayProfile.hardControl ? 3 : 0)
+    Math.max(1, actionOptions || authoredAbilities.length || 1) * 1.2 +
+    (multiattack.enabled ? 1 : 0) +
+    (multiattack.mode === "choice" ? 1 : 0) +
+    asArray(multiattack.replacements).length * 0.7 +
+    mechanicProfile.pressureTags.length * 0.35 +
+    (counterplayProfile.hardControl ? 1.5 : 0) +
+    (feature.slot === "lair" || feature.slot === "death" ? 0.6 : 0)
   );
 }
 
 export function getFeatureComplexityWeight(feature) {
   const mechanicProfile = getFeatureMechanicProfile(feature);
+  const profile = feature.complexityProfile || {};
+  const authoredLoad =
+    Number(profile.decisionLoad ?? profile.decision ?? 0) +
+    Number(profile.sequencing || 0) +
+    Number(profile.conditionalBranches ?? profile.branches ?? 0) +
+    Number(profile.tracking || 0);
   return (
-    feature.complexity * 2 +
-    mechanicProfile.complexityTags.length +
-    (mechanicProfile.usageProfile?.frequency === "reaction" ? 2 : 0) +
+    Math.max(0, authoredLoad) +
+    Math.max(0, Number(feature.complexity || 0)) +
+    mechanicProfile.complexityTags.length * 0.6 +
+    (mechanicProfile.usageProfile?.frequency === "reaction" ? 1.5 : 0) +
     (mechanicProfile.usageProfile?.frequency === "recharge" ? 1 : 0) +
-    (mechanicProfile.conditionProfile ? 1 : 0)
+    (mechanicProfile.conditionProfile ? 0.75 : 0)
   );
 }
 
