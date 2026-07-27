@@ -55,6 +55,18 @@ describe("Monster Composer Bestiary wording normalizer", () => {
     });
   });
 
+  it("moves single-value Recharge text into the feature title", () => {
+    expect(
+      normalizeBestiaryFeatureWording({
+        title: "Wail",
+        text: "Recharge 6. Wisdom Saving Throw: DC 15, each creature within 30 feet.",
+      }),
+    ).toEqual({
+      title: "Wail (Recharge 6)",
+      text: "Wisdom Saving Throw: DC 15, each creature within 30 feet.",
+    });
+  });
+
   it("normalizes bare area targets without inventing missing origins", () => {
     expect(
       normalizeBestiaryRulesText(

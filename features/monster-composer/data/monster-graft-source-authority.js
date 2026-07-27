@@ -114,6 +114,7 @@ function toComparableGraft(graft = {}) {
     identity: graft.identity || null,
     abilities: graft.abilities || null,
     routine: graft.routine || null,
+    progression: graft.progression || null,
     modifiers: graft.modifiers || null,
     compatibility: graft.compatibility || null,
     hooks: graft.hooks || null,

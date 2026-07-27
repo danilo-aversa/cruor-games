@@ -21914,3 +21914,786 @@ _Nessun file aggiunto._
 - `~features/monster-composer/model/monster-composer.export.js`
 - `~package.json`
 
+
+---
+
+## 26/07/2026, 09:47:01
+
+**Operazione:** Apply ZIP from ChatGPT Workbench
+
+**Versione script:** `workbench-0.3.4`
+
+**ZIP applicato:** `cruor-games-terrifying-monsters-phase5-output.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Documenti\GitHub\_downloads\cruor-games-terrifying-monsters-phase5-output.zip`
+
+**Repo:** `H:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\chatgpt-workbench-apply-ljH7K5`
+
+**Decisione struttura:** `Applied ZIP content from extracted root.`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 8
+
+- `+docs/terrifying-monsters/phase5/attack-pattern-contract.md`
+- `+docs/terrifying-monsters/phase5/attack-patterns.generated.json`
+- `+docs/terrifying-monsters/phase5/attack-patterns.generated.md`
+- `+docs/terrifying-monsters/phase5/phase5-change-summary.md`
+- `+features/monster-composer/data/monster-attack-patterns.js`
+- `+features/monster-composer/model/monster-attack-pattern.js`
+- `+features/monster-composer/model/monster-attack-pattern.test.js`
+- `+scripts/monster/report-monster-attack-patterns.mjs`
+
+**File sovrascritti:** 14
+
+- `~docs/terrifying-monsters/phase0/graft-inventory.generated.csv`
+- `~docs/terrifying-monsters/phase0/graft-inventory.generated.json`
+- `~docs/terrifying-monsters/phase0/graft-inventory.generated.md`
+- `~features/monster-composer/data/monster-grafts.js`
+- `~features/monster-composer/model/monster-ability-model.bundle.test.js`
+- `~features/monster-composer/model/monster-ability-model.js`
+- `~features/monster-composer/model/monster-attack-routine.js`
+- `~features/monster-composer/model/monster-composer.export.js`
+- `~features/monster-composer/model/monster-graft-v2.schema.js`
+- `~features/monster-composer/model/monster-graft-v2.schema.test.js`
+- `~features/monster-composer/qa/monster-content-qa.js`
+- `~package.json`
+- `~scripts/monster/report-monster-graft-phase0.mjs`
+- `~scripts/monster/report-monster-graft-v2-bridge.mjs`
+
+
+---
+
+## 26/07/2026, 09:59:25
+
+**Operazione:** Apply ZIP from ChatGPT Workbench
+
+**Versione script:** `workbench-0.3.4`
+
+**ZIP applicato:** `cruor-games-publishing-simulator-visual-refinement-20260725.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Documenti\GitHub\_downloads\cruor-games-publishing-simulator-visual-refinement-20260725.zip`
+
+**Repo:** `H:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\chatgpt-workbench-apply-TqQhOZ`
+
+**Decisione struttura:** `Preserved top-level repo folder: features`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 3
+
+- `~features/creator-studio/publishing/CreatorPublishingPage.test.jsx`
+- `~features/creator-studio/publishing/publishing.styles.css`
+- `~features/creator-studio/publishing/PublishingSimulatorView.jsx`
+
+
+---
+
+## 26/07/2026, 10:43:45
+
+**Operazione:** Apply ZIP from ChatGPT Workbench
+
+**Versione script:** `workbench-0.3.4`
+
+**ZIP applicato:** `cruor-games-terrifying-monsters-phase5.1-cr-scaled-cumulative.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Documenti\GitHub\_downloads\cruor-games-terrifying-monsters-phase5.1-cr-scaled-cumulative.zip`
+
+**Repo:** `H:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\chatgpt-workbench-apply-XcX7DE`
+
+**Decisione struttura:** `Applied ZIP content from extracted root.`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 4
+
+- `+docs/terrifying-monsters/phase5/bestiary-attack-action-distribution-audit.md`
+- `+features/monster-composer/model/monster-attack-pattern-progression.js`
+- `+features/monster-composer/model/monster-attack-pattern-progression.test.js`
+- `+features/monster-composer/rulesets/dnd-5e-2024/monster-dpr-simulator.cr-scaled.js`
+
+**File sovrascritti:** 27
+
+- `~docs/terrifying-monsters/phase0/graft-inventory.generated.csv`
+- `~docs/terrifying-monsters/phase0/graft-inventory.generated.json`
+- `~docs/terrifying-monsters/phase0/graft-inventory.generated.md`
+- `~docs/terrifying-monsters/phase4/final-evaluation.generated.json`
+- `~docs/terrifying-monsters/phase4/final-evaluation.generated.md`
+- `~docs/terrifying-monsters/phase5/attack-pattern-contract.md`
+- `~docs/terrifying-monsters/phase5/attack-patterns.generated.json`
+- `~docs/terrifying-monsters/phase5/attack-patterns.generated.md`
+- `~docs/terrifying-monsters/phase5/phase5-change-summary.md`
+- `~features/monster-composer/data/monster-attack-patterns.js`
+- `~features/monster-composer/data/monster-content-pack-feed.js`
+- `~features/monster-composer/data/monster-grafts.js`
+- `~features/monster-composer/model/monster-ability-model.bundle.test.js`
+- `~features/monster-composer/model/monster-ability-model.js`
+- `~features/monster-composer/model/monster-attack-pattern.js`
+- `~features/monster-composer/model/monster-attack-pattern.test.js`
+- `~features/monster-composer/model/monster-attack-routine.js`
+- `~features/monster-composer/model/monster-composer.export.js`
+- `~features/monster-composer/model/monster-final-evaluation.js`
+- `~features/monster-composer/model/monster-graft-v2.schema.js`
+- `~features/monster-composer/model/monster-graft-v2.schema.test.js`
+- `~features/monster-composer/qa/monster-content-qa.js`
+- `~features/monster-composer/rulesets/dnd-5e-2024/index.js`
+- `~scripts/monster/report-monster-attack-patterns.mjs`
+- `~scripts/monster/report-monster-graft-phase0.mjs`
+- `~scripts/monster/report-monster-graft-v2-bridge.mjs`
+- `~shared/content/monster-components.js`
+
+
+---
+
+## 26/07/2026, 11:21:13
+
+**Operazione:** Apply ZIP from ChatGPT Workbench
+
+**Versione script:** `workbench-0.3.4`
+
+**ZIP applicato:** `cruor-games-content-studio-graft-v2-repair.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Documenti\GitHub\_downloads\cruor-games-content-studio-graft-v2-repair.zip`
+
+**Repo:** `H:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\chatgpt-workbench-apply-BKdvoL`
+
+**Decisione struttura:** `Applied ZIP content from extracted root.`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 4
+
+- `+features/inspiration-studio/model/studio-monster-graft-v2.test.js`
+- `+features/monster-composer/model/monster-rules-parity.js`
+- `+features/monster-composer/model/monster-rules-parity.test.js`
+- `+scripts/monster/report-monster-rules-parity.mjs`
+
+**File sovrascritti:** 8
+
+- `~features/inspiration-studio/inspiration-studio.styles.css`
+- `~features/inspiration-studio/InspirationStudioPage.jsx`
+- `~features/inspiration-studio/model/studio-component-normalizers.js`
+- `~features/inspiration-studio/model/studio-draft.js`
+- `~features/inspiration-studio/model/studio-export.js`
+- `~features/inspiration-studio/model/studio-v2-io.js`
+- `~features/inspiration-studio/model/studio-validation.js`
+- `~features/monster-composer/model/monster-graft-rules.schema.js`
+
+
+---
+
+## 26/07/2026, 12:10:50
+
+**Operazione:** Apply ZIP from ChatGPT Workbench
+
+**Versione script:** `workbench-0.3.4`
+
+**ZIP applicato:** `cruor-games-terrifying-monsters-phase6-output.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Documenti\GitHub\_downloads\cruor-games-terrifying-monsters-phase6-output.zip`
+
+**Repo:** `H:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\chatgpt-workbench-apply-y0fwvg`
+
+**Decisione struttura:** `Applied ZIP content from extracted root.`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 11
+
+- `+docs/terrifying-monsters/phase3/rules-parity.generated.json`
+- `+docs/terrifying-monsters/phase3/rules-parity.generated.md`
+- `+docs/terrifying-monsters/phase6/phase6-change-summary.md`
+- `+docs/terrifying-monsters/phase6/support-graft-contract.md`
+- `+docs/terrifying-monsters/phase6/support-grafts.generated.json`
+- `+docs/terrifying-monsters/phase6/support-grafts.generated.md`
+- `+features/monster-composer/data/monster-support-grafts.js`
+- `+features/monster-composer/model/monster-graft-progression.test.js`
+- `+features/monster-composer/model/monster-support-graft.js`
+- `+features/monster-composer/model/monster-support-graft.test.js`
+- `+scripts/monster/report-monster-support-grafts.mjs`
+
+**File sovrascritti:** 16
+
+- `~docs/terrifying-monsters/phase0/graft-inventory.generated.csv`
+- `~docs/terrifying-monsters/phase0/graft-inventory.generated.json`
+- `~docs/terrifying-monsters/phase0/graft-inventory.generated.md`
+- `~features/monster-composer/data/monster-graft-source-authority.js`
+- `~features/monster-composer/data/monster-graft-source-authority.test.js`
+- `~features/monster-composer/data/monster-grafts.js`
+- `~features/monster-composer/model/monster-ability-model.js`
+- `~features/monster-composer/model/monster-attack-pattern-progression.js`
+- `~features/monster-composer/model/monster-graft-v2.schema.js`
+- `~features/monster-composer/model/monster-graft-v2.schema.test.js`
+- `~features/monster-composer/model/monster-rules-parity.js`
+- `~features/monster-composer/qa/monster-content-qa.js`
+- `~package.json`
+- `~scripts/monster/report-monster-graft-phase0.mjs`
+- `~scripts/monster/report-monster-graft-v2-bridge.mjs`
+- `~scripts/monster/report-monster-rules-parity.mjs`
+
+
+---
+
+## 26/07/2026, 12:54:45
+
+**Operazione:** Apply ZIP from ChatGPT Workbench
+
+**Versione script:** `workbench-0.3.4`
+
+**ZIP applicato:** `cruor-games-terrifying-monsters-phase7-output.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Documenti\GitHub\_downloads\cruor-games-terrifying-monsters-phase7-output.zip`
+
+**Repo:** `H:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\chatgpt-workbench-apply-ZgTP7W`
+
+**Decisione struttura:** `Applied ZIP content from extracted root.`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 5
+
+- `+docs/terrifying-monsters/phase7/phase7-change-summary.md`
+- `+docs/terrifying-monsters/phase7/public-hardening-contract.md`
+- `+docs/terrifying-monsters/phase7/public-hardening.generated.json`
+- `+docs/terrifying-monsters/phase7/public-hardening.generated.md`
+- `+scripts/monster/report-monster-public-hardening.mjs`
+
+**File sovrascritti:** 16
+
+- `~docs/terrifying-monsters/phase0/graft-inventory.generated.csv`
+- `~docs/terrifying-monsters/phase0/graft-inventory.generated.json`
+- `~docs/terrifying-monsters/phase0/graft-inventory.generated.md`
+- `~docs/terrifying-monsters/phase3/rules-parity.generated.json`
+- `~docs/terrifying-monsters/phase4/final-evaluation.generated.json`
+- `~docs/terrifying-monsters/phase4/final-evaluation.generated.md`
+- `~docs/terrifying-monsters/phase5/attack-patterns.generated.json`
+- `~docs/terrifying-monsters/phase6/support-grafts.generated.json`
+- `~features/monster-composer/data/monster-grafts.js`
+- `~features/monster-composer/data/monster-support-grafts.js`
+- `~features/monster-composer/model/monster-graft-rules.render.js`
+- `~features/monster-composer/model/monster-statblock-parser.js`
+- `~features/monster-composer/qa/monster-frame-builders.js`
+- `~features/monster-composer/qa/monster-per-graft-qa.js`
+- `~package.json`
+- `~shared/content/monster-components.js`
+
+
+---
+
+## 26/07/2026, 14:37:45
+
+**Operazione:** Apply ZIP from ChatGPT Workbench
+
+**Versione script:** `workbench-0.3.4`
+
+**ZIP applicato:** `cruor-games-content-studio-graft-authoring-output.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Documenti\GitHub\_downloads\cruor-games-content-studio-graft-authoring-output.zip`
+
+**Repo:** `H:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\chatgpt-workbench-apply-3roBDU`
+
+**Decisione struttura:** `Applied ZIP content from extracted root.`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 4
+
+- `+features/inspiration-studio/editors/StudioMonsterGraftEditor.jsx`
+- `+features/inspiration-studio/model/studio-monster-graft-authoring.js`
+- `+features/inspiration-studio/model/studio-monster-graft-authoring.test.js`
+- `+scripts/monster/report-studio-graft-authoring.mjs`
+
+**File sovrascritti:** 6
+
+- `~features/inspiration-studio/inspiration-studio.styles.css`
+- `~features/inspiration-studio/InspirationStudioPage.jsx`
+- `~features/inspiration-studio/model/studio-component-templates.js`
+- `~features/inspiration-studio/model/studio-export-v2.test.js`
+- `~features/inspiration-studio/model/studio-validation.js`
+- `~package.json`
+
+
+---
+
+## 26/07/2026, 15:10:21
+
+**Operazione:** Apply ZIP from ChatGPT Workbench
+
+**Versione script:** `workbench-0.3.4`
+
+**ZIP applicato:** `cruor-games-content-studio-graft-ui-clarity-fix.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Documenti\GitHub\_downloads\cruor-games-content-studio-graft-ui-clarity-fix.zip`
+
+**Repo:** `H:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\chatgpt-workbench-apply-TTIK6l`
+
+**Decisione struttura:** `Applied ZIP content from extracted root.`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 3
+
+- `~features/inspiration-studio/editors/StudioMonsterGraftEditor.jsx`
+- `~features/inspiration-studio/inspiration-studio.styles.css`
+- `~scripts/monster/report-studio-graft-authoring.mjs`
+
+
+---
+
+## 26/07/2026, 15:34:34
+
+**Operazione:** Apply ZIP from ChatGPT Workbench
+
+**Versione script:** `workbench-0.3.4`
+
+**ZIP applicato:** `cruor-games-content-studio-graft-layout-system-fix.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Documenti\GitHub\_downloads\cruor-games-content-studio-graft-layout-system-fix.zip`
+
+**Repo:** `H:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\chatgpt-workbench-apply-m16q3x`
+
+**Decisione struttura:** `Applied ZIP content from extracted root.`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 6
+
+- `~features/inspiration-studio/editors/StudioMonsterGraftEditor.jsx`
+- `~features/inspiration-studio/inspiration-studio.styles.css`
+- `~features/inspiration-studio/InspirationStudioPage.jsx`
+- `~features/inspiration-studio/ui/studio-primitives.css`
+- `~features/inspiration-studio/ui/StudioField.jsx`
+- `~scripts/monster/report-studio-graft-authoring.mjs`
+
+
+---
+
+## 26/07/2026, 16:44:08
+
+**Operazione:** Apply ZIP from ChatGPT Workbench
+
+**Versione script:** `workbench-0.3.4`
+
+**ZIP applicato:** `cruor-games-terrifying-monsters-phase6r-body-editorial.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Documenti\GitHub\_downloads\cruor-games-terrifying-monsters-phase6r-body-editorial.zip`
+
+**Repo:** `H:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\chatgpt-workbench-apply-nD8OGf`
+
+**Decisione struttura:** `Applied ZIP content from extracted root.`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 8
+
+- `+docs/terrifying-monsters/phase6r/body-editorial-contract.md`
+- `+docs/terrifying-monsters/phase6r/body-editorial-review.md`
+- `+docs/terrifying-monsters/phase6r/body-grafts.generated.json`
+- `+docs/terrifying-monsters/phase6r/body-grafts.generated.md`
+- `+features/monster-composer/data/monster-body-grafts.js`
+- `+features/monster-composer/model/monster-body-graft.js`
+- `+features/monster-composer/model/monster-body-graft.test.js`
+- `+scripts/monster/report-monster-body-editorial.mjs`
+
+**File sovrascritti:** 14
+
+- `~docs/terrifying-monsters/phase0/graft-inventory.generated.csv`
+- `~docs/terrifying-monsters/phase0/graft-inventory.generated.json`
+- `~docs/terrifying-monsters/phase0/graft-inventory.generated.md`
+- `~docs/terrifying-monsters/phase3/rules-parity.generated.json`
+- `~docs/terrifying-monsters/phase3/rules-parity.generated.md`
+- `~docs/terrifying-monsters/phase6/support-grafts.generated.json`
+- `~docs/terrifying-monsters/phase6/support-grafts.generated.md`
+- `~docs/terrifying-monsters/phase7/public-hardening.generated.json`
+- `~docs/terrifying-monsters/phase7/public-hardening.generated.md`
+- `~features/monster-composer/data/monster-grafts.js`
+- `~features/monster-composer/data/monster-support-grafts.js`
+- `~features/monster-composer/model/monster-support-graft.test.js`
+- `~package.json`
+- `~scripts/monster/report-monster-graft-v2-bridge.mjs`
+
+
+---
+
+## 26/07/2026, 17:24:17
+
+**Operazione:** Apply ZIP from ChatGPT Workbench
+
+**Versione script:** `workbench-0.3.4`
+
+**ZIP applicato:** `cruor-games-terrifying-monsters-phase6r-mind-editorial.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Documenti\GitHub\_downloads\cruor-games-terrifying-monsters-phase6r-mind-editorial.zip`
+
+**Repo:** `H:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\chatgpt-workbench-apply-gPPNGC`
+
+**Decisione struttura:** `Applied ZIP content from extracted root.`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 8
+
+- `+docs/terrifying-monsters/phase6r/mind-editorial-contract.md`
+- `+docs/terrifying-monsters/phase6r/mind-editorial-review.md`
+- `+docs/terrifying-monsters/phase6r/mind-grafts.generated.json`
+- `+docs/terrifying-monsters/phase6r/mind-grafts.generated.md`
+- `+features/monster-composer/data/monster-mind-grafts.js`
+- `+features/monster-composer/model/monster-mind-graft.js`
+- `+features/monster-composer/model/monster-mind-graft.test.js`
+- `+scripts/monster/report-monster-mind-editorial.mjs`
+
+**File sovrascritti:** 11
+
+- `~docs/terrifying-monsters/phase0/graft-inventory.generated.csv`
+- `~docs/terrifying-monsters/phase0/graft-inventory.generated.json`
+- `~docs/terrifying-monsters/phase0/graft-inventory.generated.md`
+- `~docs/terrifying-monsters/phase3/rules-parity.generated.json`
+- `~docs/terrifying-monsters/phase3/rules-parity.generated.md`
+- `~docs/terrifying-monsters/phase6/support-grafts.generated.json`
+- `~docs/terrifying-monsters/phase6/support-grafts.generated.md`
+- `~docs/terrifying-monsters/phase7/public-hardening.generated.json`
+- `~docs/terrifying-monsters/phase7/public-hardening.generated.md`
+- `~features/monster-composer/data/monster-support-grafts.js`
+- `~package.json`
+
+
+---
+
+## 26/07/2026, 17:38:25
+
+**Operazione:** Apply ZIP from ChatGPT Workbench
+
+**Versione script:** `workbench-0.3.4`
+
+**ZIP applicato:** `cruor-games-terrifying-monsters-graft-simple-names.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Documenti\GitHub\_downloads\cruor-games-terrifying-monsters-graft-simple-names.zip`
+
+**Repo:** `H:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\chatgpt-workbench-apply-Nyj9Si`
+
+**Decisione struttura:** `Applied ZIP content from extracted root.`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 7
+
+- `+docs/terrifying-monsters/phase6r/graft-naming-contract.md`
+- `+docs/terrifying-monsters/phase6r/graft-naming-review.md`
+- `+docs/terrifying-monsters/phase6r/graft-naming.generated.json`
+- `+docs/terrifying-monsters/phase6r/graft-naming.generated.md`
+- `+features/monster-composer/model/monster-graft-naming.js`
+- `+features/monster-composer/model/monster-graft-naming.test.js`
+- `+scripts/monster/report-monster-graft-naming.mjs`
+
+**File sovrascritti:** 17
+
+- `~docs/terrifying-monsters/phase0/graft-inventory.generated.csv`
+- `~docs/terrifying-monsters/phase0/graft-inventory.generated.json`
+- `~docs/terrifying-monsters/phase0/graft-inventory.generated.md`
+- `~docs/terrifying-monsters/phase5/attack-patterns.generated.json`
+- `~docs/terrifying-monsters/phase6/support-grafts.generated.json`
+- `~docs/terrifying-monsters/phase6r/body-editorial-contract.md`
+- `~docs/terrifying-monsters/phase6r/body-editorial-review.md`
+- `~docs/terrifying-monsters/phase6r/body-grafts.generated.json`
+- `~docs/terrifying-monsters/phase6r/body-grafts.generated.md`
+- `~docs/terrifying-monsters/phase6r/mind-editorial-review.md`
+- `~docs/terrifying-monsters/phase6r/mind-grafts.generated.json`
+- `~docs/terrifying-monsters/phase6r/mind-grafts.generated.md`
+- `~features/monster-composer/data/monster-attack-patterns.js`
+- `~features/monster-composer/data/monster-body-grafts.js`
+- `~features/monster-composer/data/monster-grafts.js`
+- `~features/monster-composer/data/monster-mind-grafts.js`
+- `~package.json`
+
+
+---
+
+## 26/07/2026, 23:16:09
+
+**Operazione:** Apply ZIP from ChatGPT Workbench
+
+**Versione script:** `workbench-0.3.4`
+
+**ZIP applicato:** `cruor-games-terrifying-monsters-phase6r-movement-editorial.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Documenti\GitHub\_downloads\cruor-games-terrifying-monsters-phase6r-movement-editorial.zip`
+
+**Repo:** `H:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\chatgpt-workbench-apply-TQ62wc`
+
+**Decisione struttura:** `Applied ZIP content from extracted root.`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 8
+
+- `+docs/terrifying-monsters/phase6r/movement-editorial-contract.md`
+- `+docs/terrifying-monsters/phase6r/movement-editorial-review.md`
+- `+docs/terrifying-monsters/phase6r/movement-grafts.generated.json`
+- `+docs/terrifying-monsters/phase6r/movement-grafts.generated.md`
+- `+features/monster-composer/data/monster-movement-grafts.js`
+- `+features/monster-composer/model/monster-movement-graft.js`
+- `+features/monster-composer/model/monster-movement-graft.test.js`
+- `+scripts/monster/report-monster-movement-editorial.mjs`
+
+**File sovrascritti:** 15
+
+- `~docs/terrifying-monsters/phase0/graft-inventory.generated.csv`
+- `~docs/terrifying-monsters/phase0/graft-inventory.generated.json`
+- `~docs/terrifying-monsters/phase0/graft-inventory.generated.md`
+- `~docs/terrifying-monsters/phase3/rules-parity.generated.json`
+- `~docs/terrifying-monsters/phase3/rules-parity.generated.md`
+- `~docs/terrifying-monsters/phase6/support-grafts.generated.json`
+- `~docs/terrifying-monsters/phase6/support-grafts.generated.md`
+- `~docs/terrifying-monsters/phase6r/graft-naming.generated.json`
+- `~docs/terrifying-monsters/phase6r/graft-naming.generated.md`
+- `~docs/terrifying-monsters/phase7/public-hardening.generated.json`
+- `~docs/terrifying-monsters/phase7/public-hardening.generated.md`
+- `~features/monster-composer/data/monster-support-grafts.js`
+- `~features/monster-composer/model/monster-graft-naming.js`
+- `~features/monster-composer/model/monster-graft-naming.test.js`
+- `~package.json`
+
+
+---
+
+## 26/07/2026, 23:21:02
+
+**Operazione:** Apply ZIP from ChatGPT Workbench
+
+**Versione script:** `workbench-0.3.4`
+
+**ZIP applicato:** `cruor-games-terrifying-monsters-phase6r-movement-editorial (1).zip`
+
+**Percorso ZIP:** `H:\Users\avers\Documenti\GitHub\_downloads\cruor-games-terrifying-monsters-phase6r-movement-editorial (1).zip`
+
+**Repo:** `H:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\chatgpt-workbench-apply-5g4ttc`
+
+**Decisione struttura:** `Applied ZIP content from extracted root.`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 23
+
+- `~docs/terrifying-monsters/phase0/graft-inventory.generated.csv`
+- `~docs/terrifying-monsters/phase0/graft-inventory.generated.json`
+- `~docs/terrifying-monsters/phase0/graft-inventory.generated.md`
+- `~docs/terrifying-monsters/phase3/rules-parity.generated.json`
+- `~docs/terrifying-monsters/phase3/rules-parity.generated.md`
+- `~docs/terrifying-monsters/phase6/support-grafts.generated.json`
+- `~docs/terrifying-monsters/phase6/support-grafts.generated.md`
+- `~docs/terrifying-monsters/phase6r/graft-naming.generated.json`
+- `~docs/terrifying-monsters/phase6r/graft-naming.generated.md`
+- `~docs/terrifying-monsters/phase6r/movement-editorial-contract.md`
+- `~docs/terrifying-monsters/phase6r/movement-editorial-review.md`
+- `~docs/terrifying-monsters/phase6r/movement-grafts.generated.json`
+- `~docs/terrifying-monsters/phase6r/movement-grafts.generated.md`
+- `~docs/terrifying-monsters/phase7/public-hardening.generated.json`
+- `~docs/terrifying-monsters/phase7/public-hardening.generated.md`
+- `~features/monster-composer/data/monster-movement-grafts.js`
+- `~features/monster-composer/data/monster-support-grafts.js`
+- `~features/monster-composer/model/monster-graft-naming.js`
+- `~features/monster-composer/model/monster-graft-naming.test.js`
+- `~features/monster-composer/model/monster-movement-graft.js`
+- `~features/monster-composer/model/monster-movement-graft.test.js`
+- `~package.json`
+- `~scripts/monster/report-monster-movement-editorial.mjs`
+
+
+---
+
+## 27/07/2026, 09:37:54
+
+**Operazione:** Apply ZIP from ChatGPT Workbench
+
+**Versione script:** `workbench-0.3.4`
+
+**ZIP applicato:** `cruor-games-terrifying-monsters-evocative-attack-names.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Documenti\GitHub\_downloads\cruor-games-terrifying-monsters-evocative-attack-names.zip`
+
+**Repo:** `H:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\chatgpt-workbench-apply-omnPR1`
+
+**Decisione struttura:** `Applied ZIP content from extracted root.`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 1
+
+- `+docs/terrifying-monsters/phase6r/graft-canonical-name-comparison.md`
+
+**File sovrascritti:** 13
+
+- `~docs/terrifying-monsters/phase0/graft-inventory.generated.csv`
+- `~docs/terrifying-monsters/phase0/graft-inventory.generated.json`
+- `~docs/terrifying-monsters/phase0/graft-inventory.generated.md`
+- `~docs/terrifying-monsters/phase5/attack-patterns.generated.json`
+- `~docs/terrifying-monsters/phase5/attack-patterns.generated.md`
+- `~docs/terrifying-monsters/phase6r/graft-naming-contract.md`
+- `~docs/terrifying-monsters/phase6r/graft-naming-review.md`
+- `~docs/terrifying-monsters/phase6r/graft-naming.generated.json`
+- `~docs/terrifying-monsters/phase6r/graft-naming.generated.md`
+- `~features/monster-composer/data/monster-attack-patterns.js`
+- `~features/monster-composer/model/monster-graft-naming.js`
+- `~features/monster-composer/model/monster-graft-naming.test.js`
+- `~scripts/monster/report-monster-graft-naming.mjs`
+
+
+---
+
+## 27/07/2026, 10:32:45
+
+**Operazione:** Apply ZIP from ChatGPT Workbench
+
+**Versione script:** `workbench-0.3.4`
+
+**ZIP applicato:** `cruor-games-terrifying-monsters-phase6r-horror-editorial.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Documenti\GitHub\_downloads\cruor-games-terrifying-monsters-phase6r-horror-editorial.zip`
+
+**Repo:** `H:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\chatgpt-workbench-apply-Tyy5OO`
+
+**Decisione struttura:** `Applied ZIP content from extracted root.`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 8
+
+- `+docs/terrifying-monsters/phase6r/horror-editorial-contract.md`
+- `+docs/terrifying-monsters/phase6r/horror-editorial-review.md`
+- `+docs/terrifying-monsters/phase6r/horror-grafts.generated.json`
+- `+docs/terrifying-monsters/phase6r/horror-grafts.generated.md`
+- `+features/monster-composer/data/monster-horror-grafts.js`
+- `+features/monster-composer/model/monster-horror-graft.js`
+- `+features/monster-composer/model/monster-horror-graft.test.js`
+- `+scripts/monster/report-monster-horror-editorial.mjs`
+
+**File sovrascritti:** 28
+
+- `~docs/terrifying-monsters/phase0/graft-inventory.generated.csv`
+- `~docs/terrifying-monsters/phase0/graft-inventory.generated.json`
+- `~docs/terrifying-monsters/phase0/graft-inventory.generated.md`
+- `~docs/terrifying-monsters/phase3/rules-parity.generated.json`
+- `~docs/terrifying-monsters/phase3/rules-parity.generated.md`
+- `~docs/terrifying-monsters/phase6/support-grafts.generated.json`
+- `~docs/terrifying-monsters/phase6/support-grafts.generated.md`
+- `~docs/terrifying-monsters/phase6r/graft-naming-contract.md`
+- `~docs/terrifying-monsters/phase6r/graft-naming-review.md`
+- `~docs/terrifying-monsters/phase6r/graft-naming.generated.json`
+- `~docs/terrifying-monsters/phase6r/graft-naming.generated.md`
+- `~docs/terrifying-monsters/phase7/public-hardening.generated.json`
+- `~docs/terrifying-monsters/phase7/public-hardening.generated.md`
+- `~features/monster-composer/data/monster-grafts.js`
+- `~features/monster-composer/data/monster-presets.js`
+- `~features/monster-composer/data/monster-support-grafts.js`
+- `~features/monster-composer/model/monster-bestiary-wording-smoke.test.js`
+- `~features/monster-composer/model/monster-bestiary-wording.js`
+- `~features/monster-composer/model/monster-graft-balance-profile-smoke.test.js`
+- `~features/monster-composer/model/monster-graft-naming.js`
+- `~features/monster-composer/model/monster-graft-naming.test.js`
+- `~features/monster-composer/model/monster-support-graft.js`
+- `~features/monster-composer/model/monster-support-graft.test.js`
+- `~features/monster-composer/qa/monster-per-graft-qa.js`
+- `~package.json`
+- `~scripts/monster/report-monster-graft-v2-bridge.mjs`
+- `~scripts/monster/report-monster-public-hardening.mjs`
+- `~scripts/monster/report-studio-graft-authoring.mjs`
+
+
+---
+
+## 27/07/2026, 11:39:42
+
+**Operazione:** Apply ZIP from ChatGPT Workbench
+
+**Versione script:** `workbench-0.3.4`
+
+**ZIP applicato:** `cruor-games-terrifying-monsters-phase6r-twist-editorial.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Documenti\GitHub\_downloads\cruor-games-terrifying-monsters-phase6r-twist-editorial.zip`
+
+**Repo:** `H:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\chatgpt-workbench-apply-LpxtRG`
+
+**Decisione struttura:** `Applied ZIP content from extracted root.`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 8
+
+- `+docs/terrifying-monsters/phase6r/twist-editorial-contract.md`
+- `+docs/terrifying-monsters/phase6r/twist-editorial-review.md`
+- `+docs/terrifying-monsters/phase6r/twist-grafts.generated.json`
+- `+docs/terrifying-monsters/phase6r/twist-grafts.generated.md`
+- `+features/monster-composer/data/monster-twist-grafts.js`
+- `+features/monster-composer/model/monster-twist-graft.js`
+- `+features/monster-composer/model/monster-twist-graft.test.js`
+- `+scripts/monster/report-monster-twist-editorial.mjs`
+
+**File sovrascritti:** 16
+
+- `~docs/terrifying-monsters/phase0/graft-inventory.generated.csv`
+- `~docs/terrifying-monsters/phase0/graft-inventory.generated.json`
+- `~docs/terrifying-monsters/phase0/graft-inventory.generated.md`
+- `~docs/terrifying-monsters/phase3/rules-parity.generated.json`
+- `~docs/terrifying-monsters/phase3/rules-parity.generated.md`
+- `~docs/terrifying-monsters/phase6/support-grafts.generated.json`
+- `~docs/terrifying-monsters/phase6/support-grafts.generated.md`
+- `~docs/terrifying-monsters/phase6r/graft-naming.generated.json`
+- `~docs/terrifying-monsters/phase6r/graft-naming.generated.md`
+- `~docs/terrifying-monsters/phase7/public-hardening.generated.json`
+- `~docs/terrifying-monsters/phase7/public-hardening.generated.md`
+- `~features/monster-composer/data/monster-support-grafts.js`
+- `~features/monster-composer/model/monster-graft-naming.js`
+- `~features/monster-composer/model/monster-graft-naming.test.js`
+- `~package.json`
+- `~scripts/monster/report-monster-public-hardening.mjs`
+

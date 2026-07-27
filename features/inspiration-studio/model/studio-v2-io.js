@@ -6,6 +6,7 @@ import {
   normalizeInspirationModuleV2,
   normalizeSemanticContent,
 } from "../../../shared/content/content.index.js";
+import { getStudioMonsterPayload } from "./studio-component-normalizers.js";
 
 function cloneJson(value, fallback = {}) {
   if (value === undefined) return fallback;
@@ -45,7 +46,7 @@ function findLegacyComponent(component, legacyComponents = []) {
 }
 
 function buildLegacyMonsterPayload(component = {}) {
-  const monster = cloneJson(component.monster, {});
+  const monster = cloneJson(getStudioMonsterPayload(component), {});
   const graftId = monster.graftId || component.id || component.legacyId || "";
   const slot =
     monster.slot || component.slot || asArray(component.slots)[0] || "";

@@ -1,3 +1,12 @@
+import {
+  MONSTER_ATTACK_PATTERN_MIGRATION_VERSION,
+  getMonsterAttackPatternMigration,
+} from "./monster-attack-patterns.js";
+import {
+  buildMonsterSupportGraftMigration,
+} from "./monster-support-grafts.js";
+import { MONSTER_HORROR_GRAFT_ADDITIONS } from "./monster-horror-grafts.js";
+
 const RAW_MONSTER_GRAFTS = [
   // Decomposition / Bloated
   {
@@ -5988,7 +5997,7 @@ const RAW_MONSTER_GRAFTS = [
   // Wax Death Masks support kept for source coverage
   {
     id: "waxen-mask-body",
-    title: "Waxen Funeral Flesh",
+    title: "Waxen Flesh",
     slot: "body",
     section: "trait",
     source: "wax-death-masks",
@@ -6470,6 +6479,8 @@ const RAW_MONSTER_GRAFTS = [
     counterplay: "Destroying the mask prevents the effect.",
   },
 ];
+
+RAW_MONSTER_GRAFTS.push(...MONSTER_HORROR_GRAFT_ADDITIONS);
 
 export const FEATURE_FRAME_FIT_OVERRIDES = {
   "swollen-corpse": {
@@ -10300,10 +10311,97 @@ const DAMAGE_NONE_RULE = Object.freeze({
 });
 
 const DAMAGE_RULES_CONTENT_CLEANUP_OVERRIDES = {
+  "skin-slippage": {
+    rules: {
+      schemaVersion: "monster-graft-rules-v1.16",
+      effects: [
+        {
+          id: "slippery-escape",
+          type: "advantage",
+          subject: "self",
+          trigger: "when escaping a grapple",
+          appliesTo: "ability checks and saving throws made to escape a grapple",
+          text: "The monster has Advantage on ability checks and saving throws it makes to escape a grapple.",
+          simulation: {
+            policy: "nonNumeric",
+            model: "situational-grapple-escape",
+            axis: "defense",
+          },
+        },
+        {
+          id: "grappler-disruption",
+          type: "disadvantage",
+          subject: "triggeringCreature",
+          trigger: "when a creature grapples the monster",
+          appliesTo: "the creature's next attack roll before the end of its turn",
+          text: "A creature that grapples the monster must succeed on a DC {dc} Constitution Saving Throw or have Disadvantage on the next attack roll it makes before the end of its turn.",
+          simulation: {
+            policy: "proxy",
+            model: "feature.stats.control",
+            axis: "control",
+            weight: 1,
+            expectedRate: 0.2,
+          },
+        },
+      ],
+      text: {
+        effect: "The monster has Advantage on ability checks and saving throws it makes to escape a grapple. A creature that grapples the monster must succeed on a DC {dc} Constitution Saving Throw or have Disadvantage on the next attack roll it makes before the end of its turn.",
+      },
+      parity: {
+        status: "verified",
+        reviewedBy: "phase3-parity-migration",
+        reviewedAt: "2026-07-25",
+        notes: "Both legacy clauses are structured and rendered; the situational control rider remains represented by the existing control proxy until Pressure v2.",
+      },
+    },
+  },
   "slam-decomposition": {
     rules: {
+      schemaVersion: "monster-graft-rules-v1.16",
+      damage: {
+        mode: "parts",
+        budgetRole: "mainAttack",
+        types: ["bludgeoning"],
+        parts: [
+          {
+            id: "impact",
+            label: "Impact",
+            mode: "budget",
+            scale: "standard",
+            budgetRole: "mainAttack",
+            budgetShare: 0.8,
+            expectedTargets: 1,
+            roundWeight: [1, 1, 1],
+            types: ["bludgeoning"],
+          },
+          {
+            id: "charge",
+            label: "Charge",
+            mode: "budget",
+            scale: "minor",
+            budgetRole: "minorAttack",
+            budgetShare: 0.2,
+            expectedTargets: 1,
+            roundWeight: [1, 1, 1],
+            types: ["bludgeoning"],
+            activation: {
+              type: "conditional",
+              trigger: "If the creature moved at least 10 feet straight toward the target this turn",
+              expectedRate: 0.35,
+              oncePerTurn: true,
+              text: "The target takes the charge damage only when the monster completed the straight-line approach.",
+            },
+          },
+        ],
+      },
       text: {
-        hit: "the target takes {damage} Bludgeoning damage. If the creature moved at least 10 feet straight toward the target this turn, add one extra damage die.",
+        hit: "the target takes {damage-part:impact} Bludgeoning damage. If the creature moved at least 10 feet straight toward the target this turn, the target takes an extra {damage-part:charge} Bludgeoning damage.",
+      },
+      parity: {
+        status: "verified",
+        reviewedBy: "phase3-parity-migration",
+        reviewedAt: "2026-07-25",
+        notes: "The conditional charge rider is now a separate damage part and its expected trigger rate is consumed by the three-round simulator.",
       },
     },
   },
@@ -10702,6 +10800,154 @@ function applyRulesContentCleanup(graft) {
   return cleanupRulesDamage(merged);
 }
 
+const RAW_MONSTER_GRAFT_BY_ID = new Map(
+  RAW_MONSTER_GRAFTS.map((graft) => [graft.id, graft]),
+);
+
+function getAttackPatternAbilityProgression(pattern = {}, abilityId = "") {
+  const matchingBands = (pattern.progression?.bands || []).filter((band) =>
+    Array.isArray(band.abilityIds) && band.abilityIds.includes(abilityId),
+  );
+  if (!matchingBands.length) return null;
+  return {
+    schemaVersion: pattern.progression.schemaVersion,
+    basis: pattern.progression.basis || "targetCr",
+    minCr: Math.min(...matchingBands.map((band) => Number(band.minCr || 0))),
+    maxCr: Math.max(...matchingBands.map((band) => Number(band.maxCr ?? 30))),
+    bandIds: matchingBands.map((band) => band.id),
+  };
+}
+
+function buildAttackPatternAbility(descriptor = {}, pattern = {}) {
+  const sourceGraft = RAW_MONSTER_GRAFT_BY_ID.get(descriptor.from);
+  if (!sourceGraft) {
+    throw new Error(
+      `Attack Pattern ability source not found: ${descriptor.from || "unknown"}`,
+    );
+  }
+
+  const cleanedSource = applyRulesContentCleanup(sourceGraft);
+  const participation = {
+    enabled: true,
+    role: descriptor.role || "primary",
+    maxUses: Math.max(1, Number(descriptor.maxUses || 1)),
+    replacementScope: descriptor.replacementScope || "oneAttack",
+    timing: descriptor.timing || "beforeAttacks",
+    availability: descriptor.availability || "always",
+    group: descriptor.group || "primary",
+  };
+  const rules = mergeCleanup(cleanedSource.rules || {}, {
+    multiattackParticipation: participation,
+  });
+
+  return {
+    id: descriptor.id,
+    title: descriptor.title || cleanedSource.title,
+    section: descriptor.section || rules.section || cleanedSource.section,
+    summary: descriptor.summary || cleanedSource.summary,
+    mechanics: descriptor.mechanics || cleanedSource.mechanics,
+    counterplay: descriptor.counterplay || cleanedSource.counterplay,
+    rules,
+    tags: [
+      ...(Array.isArray(cleanedSource.tags) ? cleanedSource.tags : []),
+      `pattern-role:${participation.role}`,
+      `legacy-graft:${cleanedSource.id}`,
+    ],
+    patternRole: participation.role,
+    progression: getAttackPatternAbilityProgression(pattern, descriptor.id),
+    sourceLegacyGraftId: cleanedSource.id,
+    authored: true,
+  };
+}
+
+function getAttackPatternCompatibilityRules(abilities = [], fallbackRules = null) {
+  const scalablePrimary = abilities.find((ability) => {
+    const rules = ability?.rules || {};
+    const damage = rules.damage || {};
+    const parts = Array.isArray(damage.parts) && damage.parts.length ? damage.parts : [damage];
+    return (
+      rules.actionEconomy === "action" &&
+      parts.some((part) => {
+        const mode = String(part?.mode || "").trim().toLowerCase();
+        const role = String(part?.budgetRole || "").trim().toLowerCase();
+        return (
+          ["computed", "budget", "parts"].includes(mode) &&
+          ["mainattack", "attack", "primary"].includes(role)
+        );
+      })
+    );
+  });
+
+  if (!scalablePrimary?.rules) return fallbackRules;
+  return {
+    ...scalablePrimary.rules,
+    migration: {
+      ...(scalablePrimary.rules.migration || {}),
+      compatibilityProjection: "graft-v2-primary-ability",
+      projectedAbilityId: scalablePrimary.id,
+    },
+  };
+}
+
+function applyAttackPatternMigration(graft) {
+  const pattern = getMonsterAttackPatternMigration(graft.id);
+  if (!pattern) return graft;
+
+  const abilities = pattern.abilities.map((ability) => buildAttackPatternAbility(ability, pattern));
+  const legacyGraftIds = [...new Set(pattern.abilities.map((ability) => ability.from))];
+  const legacyStats = isPlainObject(graft.stats) ? graft.stats : {};
+  const compatibilityRules = getAttackPatternCompatibilityRules(abilities, graft.rules || null);
+
+  return {
+    ...graft,
+    graftSchemaVersion: "monster-graft-v2.0",
+    kind: "attackPattern",
+    title: pattern.title || graft.title,
+    summary: pattern.summary,
+    mechanics: pattern.mechanics,
+    counterplay: pattern.counterplay,
+    identity: pattern.identity,
+    abilities,
+    rules: compatibilityRules,
+    routine: pattern.routine,
+    progression: pattern.progression,
+    compatibility: pattern.compatibility || null,
+    balanceProfile: {
+      schemaVersion: "monster-graft-balance-v2.0",
+      stats: { ...legacyStats },
+      authoredIntent: {
+        attrition: Math.max(0, Number(legacyStats.dpr || 0)),
+        spike: Math.max(0, Number(pattern.spikeRiskProfile?.openingBurst || 0)),
+        reliability: pattern.routine.multiattack?.enabled ? 2 : 1,
+        control: Math.max(0, Number(legacyStats.control || 0)),
+        area: pattern.abilities.some((ability) => {
+          const source = RAW_MONSTER_GRAFT_BY_ID.get(ability.from);
+          return source?.rules?.targeting?.type === "area";
+        })
+          ? 1
+          : 0,
+        tempo: pattern.routine.opener?.length ? 1 : 0,
+        offTurn: 0,
+        survival: Math.max(0, Number(legacyStats.hp || 0)),
+      },
+    },
+    complexityProfile: pattern.complexityProfile,
+    counterplayProfile: pattern.counterplayProfile,
+    spikeRiskProfile: pattern.spikeRiskProfile,
+    migration: {
+      legacyGraftIds,
+      status: "active-native-transition",
+      phase: "phase5.1-cr-scaled-attack-patterns",
+      version: MONSTER_ATTACK_PATTERN_MIGRATION_VERSION,
+    },
+    authoring: {
+      ...(graft.authoring || {}),
+      origin: "phase5.1-cr-scaled-attack-pattern-migration",
+      migrationVersion: MONSTER_ATTACK_PATTERN_MIGRATION_VERSION,
+    },
+  };
+}
+
 function normalizeArrayField(value) {
   return Array.isArray(value) ? value : [];
 }
@@ -10713,14 +10959,19 @@ function normalizeSourceAnchors(graft) {
 
 function normalizeMonsterGraft(graft) {
   const cleaned = applyRulesContentCleanup(graft);
-  const fit = cleaned.fit || FEATURE_FRAME_FIT_OVERRIDES[cleaned.id] || null;
+  const attackMigrated = applyAttackPatternMigration(cleaned);
+  const migrated =
+    attackMigrated.slot === "attack"
+      ? attackMigrated
+      : buildMonsterSupportGraftMigration(attackMigrated) || attackMigrated;
+  const fit = migrated.fit || FEATURE_FRAME_FIT_OVERRIDES[migrated.id] || null;
   return {
-    ...cleaned,
+    ...migrated,
     fit,
-    sourceAnchors: normalizeSourceAnchors(cleaned),
-    sourceTypes: normalizeArrayField(cleaned.sourceTypes),
-    themes: normalizeArrayField(cleaned.themes),
-    motifs: normalizeArrayField(cleaned.motifs),
+    sourceAnchors: normalizeSourceAnchors(migrated),
+    sourceTypes: normalizeArrayField(migrated.sourceTypes),
+    themes: normalizeArrayField(migrated.themes),
+    motifs: normalizeArrayField(migrated.motifs),
   };
 }
 
@@ -10752,7 +11003,9 @@ export const FEATURE_COMPATIBILITY_OVERRIDES = {
   "corpse-craving": { grants: ["corpse_feeding", "corpse_presence"] },
   "shame-hunger": { grants: ["corpse_feeding"] },
   "grave-bite": { grants: ["corpse_feeding"] },
-  "ethereal-sight": { grants: ["spirit_body"] },
+  "ethereal-sight": {
+    grants: ["spirit_body", "corpse_anchor", "corpse_presence"],
+  },
   "incorporeal-movement": {
     grants: ["spirit_body"],
     incompatibleWith: ["egg_carrier", "barbed_chitin", "physical_chitin"],
@@ -10864,9 +11117,9 @@ export const FEATURE_ANATOMY_CONSTRAINT_OVERRIDES = {
     requiresAnyAnatomy: ["jaw", "mouth", "fangs"],
   },
   "corpse-tendrils": {
-    allowedBodyPlans: ["amorphous", "humanoid"],
-    requiresAnyAnatomy: ["tendrils", "flesh", "corpse"],
-    forbiddenBodyPlans: ["arachnid", "incorporeal"],
+    requiresAnyAnatomy: ["jaw", "mouth", "fangs"],
+    forbiddenAnatomy: ["beak"],
+    note: "Attack Pattern compatibility follows its Grave Bite primary action; Corpse Tendrils remains an optional routine replacement.",
   },  "bone-reassembly": {
     exclusiveToFamilies: ["skeleton"],
     requiredAnatomy: ["bones"],
@@ -10993,6 +11246,12 @@ export const FEATURE_ANATOMY_CONSTRAINT_OVERRIDES = {
 };
 
 export const FEATURE_ANATOMY_GRANT_OVERRIDES = {
+  "ethereal-sight": {
+    grantsAnatomy: ["spectral_body"],
+    grantsTags: ["spirit_body", "corpse_anchor"],
+    grantsTokens: ["spirit_body", "corpse_anchor", "corpse_presence"],
+    note: "The spirit body can inhabit a visible corpse, creating a destructible environmental anchor.",
+  },
   "spider-climb": {
     grantsAnatomy: ["climbing_limbs"],
     grantsTags: ["climber"],
@@ -11241,10 +11500,15 @@ export const FEATURE_MECHANIC_OVERRIDES = {
     },
   },
   "egg-carrier": {
-    mechanicTags: ["summon", "random_table", "destroyable_anchor"],
-    pressureTags: ["action_economy", "escalation"],
-    complexityTags: ["round_tracking", "summon_tracking", "object_tracking"],
-    usageProfile: { frequency: "start_of_turn_random" },
+    mechanicTags: [
+      "summon",
+      "destroyable_anchor",
+      "resource_pool",
+      "movement_tradeoff",
+    ],
+    pressureTags: ["action_economy", "escalation", "target_priority"],
+    complexityTags: ["summon_tracking", "object_tracking"],
+    usageProfile: { frequency: "start_of_turn" },
   },
   "enrage-broodmother": {
     mechanicTags: ["reaction", "rage", "random_trigger", "egg_requirement"],

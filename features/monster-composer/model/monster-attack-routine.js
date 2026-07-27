@@ -1,4 +1,5 @@
-export const MONSTER_ATTACK_ROUTINE_VERSION = "monster-attack-routine-v1.0";
+import { projectMonsterAbilitiesForCr } from "./monster-attack-pattern-progression.js";
+export const MONSTER_ATTACK_ROUTINE_VERSION = "monster-attack-routine-v1.2-cr-scaled-patterns";
 
 const PREFERRED_SINGLE_HIT_CAPS = Object.freeze([
   { maxCr: 1, value: 7 },
@@ -185,7 +186,7 @@ function buildCandidate(ability = {}) {
   const participation = getAbilityParticipation(ability);
   return {
     abilityId: ability.id,
-    featureId: ability.id,
+    featureId: ability.sourceGraftId || ability.id,
     sourceGraftId: ability.sourceGraftId || ability.id,
     label: cleanString(ability.title) || "Attack",
     ref:
@@ -291,7 +292,7 @@ function buildAllocations(
       ),
     );
     attacks.forEach((attack) => {
-      allocations[attack.featureId] = {
+      allocations[attack.abilityId || attack.featureId] = {
         abilityId: attack.abilityId,
         featureId: attack.featureId,
         sourceGraftId: attack.sourceGraftId || attack.featureId,
@@ -316,7 +317,7 @@ function buildAllocations(
       1,
       Number((base * Number(attack.weight || 1)).toFixed(2)),
     );
-    allocations[attack.featureId] = {
+    allocations[attack.abilityId || attack.featureId] = {
       abilityId: attack.abilityId,
       featureId: attack.featureId,
       sourceGraftId: attack.sourceGraftId || attack.featureId,
@@ -331,15 +332,84 @@ function buildAllocations(
 }
 
 function findReferencedAbility(abilities = [], reference = {}) {
-  const keys = [reference.ref, reference.label]
-    .map((value) => slugify(value))
-    .filter(Boolean);
+  const rawRef = cleanString(reference.ref);
+  const rawLabel = cleanString(reference.label);
+  const localRef = rawRef.includes(":") ? rawRef.split(":").pop() : rawRef;
+
+  if (rawRef) {
+    const exactRuntimeId = abilities.find(
+      (ability) => cleanString(ability.id) === rawRef,
+    );
+    if (exactRuntimeId) return exactRuntimeId;
+
+    const exactLocalId = abilities.find((ability) => {
+      const localAbilityId = cleanString(ability.localAbilityId);
+      return localAbilityId && [rawRef, localRef].includes(localAbilityId);
+    });
+    if (exactLocalId) return exactLocalId;
+  }
+
+  if (rawLabel) {
+    const exactTitle = abilities.find(
+      (ability) => cleanString(ability.title).toLowerCase() === rawLabel.toLowerCase(),
+    );
+    if (exactTitle) return exactTitle;
+  }
+
+  const keys = [rawRef, localRef, rawLabel].map(slugify).filter(Boolean);
   return abilities.find((ability) => {
-    const abilityKeys = [ability.id, ability.sourceGraftId, ability.title]
-      .map((value) => slugify(value))
+    if (ability.synthetic) return false;
+    const abilityKeys = [ability.id, ability.localAbilityId, ability.title]
+      .map(slugify)
       .filter(Boolean);
     return keys.some((key) => abilityKeys.includes(key));
+  }) || abilities.find((ability) => {
+    if (ability.synthetic) return false;
+    return keys.includes(slugify(ability.sourceGraftId));
   });
+}
+
+function resolvePatternSequence(abilities = [], sequence = []) {
+  return (Array.isArray(sequence) ? sequence : [])
+    .map((localAbilityId) => {
+      const ability = findReferencedAbility(abilities, { ref: localAbilityId });
+      return ability
+        ? {
+            localAbilityId: cleanString(localAbilityId),
+            abilityId: ability.id,
+            title: ability.title,
+          }
+        : {
+            localAbilityId: cleanString(localAbilityId),
+            abilityId: null,
+            title: cleanString(localAbilityId),
+          };
+    })
+    .filter((entry) => entry.localAbilityId);
+}
+
+function buildAuthoredPatternPlan(abilities = [], multiattackAbility = {}) {
+  const routine = multiattackAbility.patternRoutine || null;
+  if (!routine) return null;
+  return {
+    defaultPlan: cleanString(routine.defaultPlan),
+    targetSelection: cleanString(routine.targetSelection),
+    defaultSequence: resolvePatternSequence(abilities, routine.defaultSequence),
+    opener: resolvePatternSequence(abilities, routine.opener),
+    alternatives: (Array.isArray(routine.alternatives) ? routine.alternatives : []).map(
+      (alternative) => ({
+        id: cleanString(alternative.id),
+        when: cleanString(alternative.when),
+        purpose: cleanString(alternative.purpose),
+        targetSelection: cleanString(alternative.targetSelection),
+        sequence: resolvePatternSequence(abilities, alternative.sequence),
+      }),
+    ),
+    intentionalRepetition: Boolean(routine.intentionalRepetition),
+    repetitionReason: cleanString(routine.repetitionReason),
+    identity: multiattackAbility.patternIdentity || null,
+    counterplay: multiattackAbility.patternCounterplay || null,
+  };
 }
 
 function buildManualRoutine({
@@ -391,6 +461,7 @@ function buildManualRoutine({
     version: MONSTER_ATTACK_ROUTINE_VERSION,
     enabled: referenced.length > 0,
     source: "manual",
+    authority: multiattackAbility.patternRoutine ? "authored-pattern" : "manual-rules",
     mode: multiattack.mode || "fixed",
     subject: getSubject(computed),
     count,
@@ -400,6 +471,7 @@ function buildManualRoutine({
     allocations,
     expectedDpr: Number(targetDpr || 0),
     manualFeatureId: multiattackAbility.sourceGraftId || multiattackAbility.id,
+    authoredPlan: buildAuthoredPatternPlan(abilities, multiattackAbility),
     diagnostics: referenced.length
       ? []
       : [
@@ -420,7 +492,10 @@ export function buildMonsterAttackRoutine({
   monsterTier = {},
   computed = {},
 } = {}) {
-  const abilityList = Array.isArray(abilities) ? abilities.filter(Boolean) : [];
+  const abilityList = projectMonsterAbilitiesForCr(
+    Array.isArray(abilities) ? abilities.filter(Boolean) : [],
+    targetCr,
+  );
   const manualMultiattack = abilityList.find(
     (ability) =>
       ability.multiattack?.enabled || ability.rules?.multiattack?.enabled,
@@ -432,6 +507,28 @@ export function buildMonsterAttackRoutine({
       targetDpr,
       computed,
     });
+  }
+
+  const projectedAttackPattern = abilityList.find(
+    (ability) => ability.patternProgression?.bands?.length,
+  );
+  if (projectedAttackPattern) {
+    return {
+      version: MONSTER_ATTACK_ROUTINE_VERSION,
+      enabled: false,
+      source: "authored-pattern",
+      authority: "cr-progression",
+      mode: "fixed",
+      subject: getSubject(computed),
+      count: 1,
+      attacks: [],
+      additions: [],
+      replacements: [],
+      allocations: {},
+      expectedDpr: Number(targetDpr || 0),
+      authoredPlan: null,
+      diagnostics: [],
+    };
   }
 
   const candidates = abilityList

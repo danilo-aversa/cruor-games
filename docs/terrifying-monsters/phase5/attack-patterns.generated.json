@@ -1,0 +1,5072 @@
+{
+  "version": "monster-attack-pattern-audit-v1.1-cr-scaled",
+  "total": 15,
+  "passing": 15,
+  "warning": 0,
+  "error": 0,
+  "bySource": {
+    "decomposition": 4,
+    "jikininki": 4,
+    "wolf-spiders": 6,
+    "wax-death-masks": 1
+  },
+  "checkpoints": [
+    1,
+    2,
+    5,
+    8,
+    10,
+    15
+  ],
+  "checkpointSummary": [
+    {
+      "targetCr": 1,
+      "patterns": 15,
+      "meanOptions": 1.267,
+      "multiattackRate": 0.133,
+      "medianAttacks": 2,
+      "threePlusOptionsRate": 0,
+      "bestiaryTarget": {
+        "meanOptions": 1.33,
+        "multiattackRate": 0.1371,
+        "medianAttacks": 2
+      },
+      "deltas": {
+        "meanOptions": -0.063,
+        "multiattackRate": -0.004,
+        "medianAttacks": 0
+      },
+      "calibrationPass": true
+    },
+    {
+      "targetCr": 2,
+      "patterns": 15,
+      "meanOptions": 1.733,
+      "multiattackRate": 0.667,
+      "medianAttacks": 2,
+      "threePlusOptionsRate": 0,
+      "bestiaryTarget": {
+        "meanOptions": 1.72,
+        "multiattackRate": 0.7008,
+        "medianAttacks": 2
+      },
+      "deltas": {
+        "meanOptions": 0.013,
+        "multiattackRate": -0.034,
+        "medianAttacks": 0
+      },
+      "calibrationPass": true
+    },
+    {
+      "targetCr": 5,
+      "patterns": 15,
+      "meanOptions": 1.933,
+      "multiattackRate": 0.933,
+      "medianAttacks": 2,
+      "threePlusOptionsRate": 0,
+      "bestiaryTarget": {
+        "meanOptions": 1.91,
+        "multiattackRate": 0.9388,
+        "medianAttacks": 2
+      },
+      "deltas": {
+        "meanOptions": 0.023,
+        "multiattackRate": -0.005,
+        "medianAttacks": 0
+      },
+      "calibrationPass": true
+    },
+    {
+      "targetCr": 8,
+      "patterns": 15,
+      "meanOptions": 2.133,
+      "multiattackRate": 1,
+      "medianAttacks": 3,
+      "threePlusOptionsRate": 0.2,
+      "bestiaryTarget": {
+        "meanOptions": 1.91,
+        "multiattackRate": 0.9388,
+        "medianAttacks": 2
+      },
+      "deltas": {
+        "meanOptions": 0.223,
+        "multiattackRate": 0.061,
+        "medianAttacks": 1
+      },
+      "calibrationPass": true
+    },
+    {
+      "targetCr": 10,
+      "patterns": 15,
+      "meanOptions": 2.133,
+      "multiattackRate": 1,
+      "medianAttacks": 3,
+      "threePlusOptionsRate": 0.2,
+      "bestiaryTarget": {
+        "meanOptions": 1.98,
+        "multiattackRate": 0.9787,
+        "medianAttacks": 3
+      },
+      "deltas": {
+        "meanOptions": 0.153,
+        "multiattackRate": 0.021,
+        "medianAttacks": 0
+      },
+      "calibrationPass": true
+    },
+    {
+      "targetCr": 15,
+      "patterns": 15,
+      "meanOptions": 2.4,
+      "multiattackRate": 1,
+      "medianAttacks": 3,
+      "threePlusOptionsRate": 0.467,
+      "bestiaryTarget": {
+        "meanOptions": 2.6,
+        "multiattackRate": 0.9615,
+        "medianAttacks": 3
+      },
+      "deltas": {
+        "meanOptions": -0.2,
+        "multiattackRate": 0.038,
+        "medianAttacks": 0
+      },
+      "calibrationPass": true
+    }
+  ],
+  "reports": [
+    {
+      "version": "monster-attack-pattern-audit-v1.1-cr-scaled",
+      "applicable": true,
+      "id": "slam-decomposition",
+      "title": "Crusher",
+      "source": "decomposition",
+      "status": "pass",
+      "pass": true,
+      "identity": {
+        "fantasy": "A gas-swollen corpse weaponizes its weight, first as a charge and then as a pinning mass.",
+        "tacticalRole": "lane-dependent bruiser with single-target lockdown",
+        "signature": "advance, impact, pin",
+        "recognitionTags": [
+          "swollen-corpse",
+          "charge-lane",
+          "body-weight",
+          "grapple"
+        ]
+      },
+      "recognition": {
+        "pass": true,
+        "tags": [
+          "swollen-corpse",
+          "charge-lane",
+          "body-weight",
+          "grapple"
+        ]
+      },
+      "progression": {
+        "pass": true,
+        "monotonicAbilities": true,
+        "monotonicCadence": true,
+        "lowCrAbilityCount": 1,
+        "apexAbilityCount": 2,
+        "authoredAbilityCount": 2,
+        "lowCrMultiattackCount": 0,
+        "apexMultiattackCount": 3
+      },
+      "progressionContract": {
+        "schemaVersion": "monster-attack-pattern-progression-v1.0",
+        "basis": "targetCr",
+        "calibration": "Bestiary.csv-503-monsters",
+        "calibrationTargets": {
+          "cr0To1": {
+            "meanOptions": 1.33,
+            "multiattackRate": 0.1371,
+            "medianAttacks": 2
+          },
+          "cr2To4": {
+            "meanOptions": 1.72,
+            "multiattackRate": 0.7008,
+            "medianAttacks": 2
+          },
+          "cr5To8": {
+            "meanOptions": 1.91,
+            "multiattackRate": 0.9388,
+            "medianAttacks": 2
+          },
+          "cr9To12": {
+            "meanOptions": 1.98,
+            "multiattackRate": 0.9787,
+            "medianAttacks": 3
+          },
+          "cr13Plus": {
+            "meanOptions": 2.6,
+            "multiattackRate": 0.9615,
+            "medianAttacks": 3
+          }
+        },
+        "bands": [
+          {
+            "id": "cr-0-1-nascent",
+            "minCr": 0,
+            "maxCr": 1,
+            "abilityIds": [
+              "heavy-slam"
+            ],
+            "multiattack": {
+              "enabled": false,
+              "mode": "fixed",
+              "count": 0
+            },
+            "defaultSequence": [],
+            "opener": [],
+            "abilityPatches": {},
+            "graftPatch": null
+          },
+          {
+            "id": "cr-2-4-developed",
+            "minCr": 2,
+            "maxCr": 4,
+            "abilityIds": [
+              "heavy-slam",
+              "corpse-grab"
+            ],
+            "multiattack": {
+              "enabled": true,
+              "mode": "fixed",
+              "count": 2
+            },
+            "defaultSequence": [],
+            "opener": [],
+            "abilityPatches": {},
+            "graftPatch": null
+          },
+          {
+            "id": "cr-5-7-veteran",
+            "minCr": 5,
+            "maxCr": 7,
+            "abilityIds": [
+              "heavy-slam",
+              "corpse-grab"
+            ],
+            "multiattack": {
+              "enabled": true,
+              "mode": "fixed",
+              "count": 2
+            },
+            "defaultSequence": [],
+            "opener": [],
+            "abilityPatches": {},
+            "graftPatch": null
+          },
+          {
+            "id": "cr-8-12-mature",
+            "minCr": 8,
+            "maxCr": 12,
+            "abilityIds": [
+              "heavy-slam",
+              "corpse-grab"
+            ],
+            "multiattack": {
+              "enabled": true,
+              "mode": "fixed",
+              "count": 2
+            },
+            "defaultSequence": [],
+            "opener": [],
+            "abilityPatches": {},
+            "graftPatch": null
+          },
+          {
+            "id": "cr-13-30-apex",
+            "minCr": 13,
+            "maxCr": 30,
+            "abilityIds": [
+              "heavy-slam",
+              "corpse-grab"
+            ],
+            "multiattack": {
+              "enabled": true,
+              "mode": "fixed",
+              "count": 3
+            },
+            "defaultSequence": [],
+            "opener": [],
+            "abilityPatches": {},
+            "graftPatch": null
+          }
+        ]
+      },
+      "counterplay": {
+        "pass": true,
+        "channels": [
+          "telegraph",
+          "positioning",
+          "breakCondition",
+          "nonDamage"
+        ]
+      },
+      "snapshots": [
+        {
+          "targetCr": 1,
+          "bandId": "cr-0-1-nascent",
+          "abilityIds": [
+            "heavy-slam"
+          ],
+          "abilityTitles": [
+            "Heavy Slam"
+          ],
+          "authoredAbilityCount": 1,
+          "compiledAbilityCount": 1,
+          "multiattackEnabled": false,
+          "multiattackCount": 0,
+          "routineEnabled": false,
+          "routineSource": "authored-pattern",
+          "allocationKeys": [],
+          "renderedMultiattack": "",
+          "validationStatus": "pass",
+          "validationErrors": []
+        },
+        {
+          "targetCr": 2,
+          "bandId": "cr-2-4-developed",
+          "abilityIds": [
+            "heavy-slam",
+            "corpse-grab"
+          ],
+          "abilityTitles": [
+            "Heavy Slam",
+            "Corpse Grab"
+          ],
+          "authoredAbilityCount": 2,
+          "compiledAbilityCount": 3,
+          "multiattackEnabled": true,
+          "multiattackCount": 2,
+          "routineEnabled": true,
+          "routineSource": "manual",
+          "allocationKeys": [
+            "slam-decomposition:heavy-slam"
+          ],
+          "renderedMultiattack": "The monster makes two Heavy Slam attacks. It can replace one attack with a use of Corpse Grab.",
+          "validationStatus": "pass",
+          "validationErrors": []
+        },
+        {
+          "targetCr": 5,
+          "bandId": "cr-5-7-veteran",
+          "abilityIds": [
+            "heavy-slam",
+            "corpse-grab"
+          ],
+          "abilityTitles": [
+            "Heavy Slam",
+            "Corpse Grab"
+          ],
+          "authoredAbilityCount": 2,
+          "compiledAbilityCount": 3,
+          "multiattackEnabled": true,
+          "multiattackCount": 2,
+          "routineEnabled": true,
+          "routineSource": "manual",
+          "allocationKeys": [
+            "slam-decomposition:heavy-slam"
+          ],
+          "renderedMultiattack": "The monster makes two Heavy Slam attacks. It can replace one attack with a use of Corpse Grab.",
+          "validationStatus": "pass",
+          "validationErrors": []
+        },
+        {
+          "targetCr": 8,
+          "bandId": "cr-8-12-mature",
+          "abilityIds": [
+            "heavy-slam",
+            "corpse-grab"
+          ],
+          "abilityTitles": [
+            "Heavy Slam",
+            "Corpse Grab"
+          ],
+          "authoredAbilityCount": 2,
+          "compiledAbilityCount": 3,
+          "multiattackEnabled": true,
+          "multiattackCount": 2,
+          "routineEnabled": true,
+          "routineSource": "manual",
+          "allocationKeys": [
+            "slam-decomposition:heavy-slam"
+          ],
+          "renderedMultiattack": "The monster makes two Heavy Slam attacks. It can replace one attack with a use of Corpse Grab.",
+          "validationStatus": "pass",
+          "validationErrors": []
+        },
+        {
+          "targetCr": 10,
+          "bandId": "cr-8-12-mature",
+          "abilityIds": [
+            "heavy-slam",
+            "corpse-grab"
+          ],
+          "abilityTitles": [
+            "Heavy Slam",
+            "Corpse Grab"
+          ],
+          "authoredAbilityCount": 2,
+          "compiledAbilityCount": 3,
+          "multiattackEnabled": true,
+          "multiattackCount": 2,
+          "routineEnabled": true,
+          "routineSource": "manual",
+          "allocationKeys": [
+            "slam-decomposition:heavy-slam"
+          ],
+          "renderedMultiattack": "The monster makes two Heavy Slam attacks. It can replace one attack with a use of Corpse Grab.",
+          "validationStatus": "pass",
+          "validationErrors": []
+        },
+        {
+          "targetCr": 15,
+          "bandId": "cr-13-30-apex",
+          "abilityIds": [
+            "heavy-slam",
+            "corpse-grab"
+          ],
+          "abilityTitles": [
+            "Heavy Slam",
+            "Corpse Grab"
+          ],
+          "authoredAbilityCount": 2,
+          "compiledAbilityCount": 3,
+          "multiattackEnabled": true,
+          "multiattackCount": 3,
+          "routineEnabled": true,
+          "routineSource": "manual",
+          "allocationKeys": [
+            "slam-decomposition:heavy-slam"
+          ],
+          "renderedMultiattack": "The monster makes three Heavy Slam attacks. It can replace one attack with a use of Corpse Grab.",
+          "validationStatus": "pass",
+          "validationErrors": []
+        }
+      ],
+      "migration": {
+        "legacyGraftIds": [
+          "slam-decomposition",
+          "corpse-grab"
+        ],
+        "status": "active-native-transition",
+        "phase": "phase5.1-cr-scaled-attack-patterns",
+        "version": "monster-attack-pattern-migration-v1.4-evocative-pattern-names"
+      },
+      "issues": [],
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "version": "monster-attack-pattern-audit-v1.1-cr-scaled",
+      "applicable": true,
+      "id": "empowered-slam",
+      "title": "Juggernaut",
+      "source": "decomposition",
+      "status": "pass",
+      "pass": true,
+      "identity": {
+        "fantasy": "A corpse at the edge of rupture turns internal pressure into impacts, holds, and corrosive release.",
+        "tacticalRole": "displacement brute with a telegraphed area-pressure deviation",
+        "signature": "wind up, collide, restrain, purge",
+        "recognitionTags": [
+          "swollen-corpse",
+          "collision",
+          "purge-fluid",
+          "pressure-release"
+        ]
+      },
+      "recognition": {
+        "pass": true,
+        "tags": [
+          "swollen-corpse",
+          "collision",
+          "purge-fluid",
+          "pressure-release"
+        ]
+      },
+      "progression": {
+        "pass": true,
+        "monotonicAbilities": true,
+        "monotonicCadence": true,
+        "lowCrAbilityCount": 1,
+        "apexAbilityCount": 3,
+        "authoredAbilityCount": 3,
+        "lowCrMultiattackCount": 0,
+        "apexMultiattackCount": 3
+      },
+      "progressionContract": {
+        "schemaVersion": "monster-attack-pattern-progression-v1.0",
+        "basis": "targetCr",
+        "calibration": "Bestiary.csv-503-monsters",
+        "calibrationTargets": {
+          "cr0To1": {
+            "meanOptions": 1.33,
+            "multiattackRate": 0.1371,
+            "medianAttacks": 2
+          },
+          "cr2To4": {
+            "meanOptions": 1.72,
+            "multiattackRate": 0.7008,
+            "medianAttacks": 2
+          },
+          "cr5To8": {
+            "meanOptions": 1.91,
+            "multiattackRate": 0.9388,
+            "medianAttacks": 2
+          },
+          "cr9To12": {
+            "meanOptions": 1.98,
+            "multiattackRate": 0.9787,
+            "medianAttacks": 3
+          },
+          "cr13Plus": {
+            "meanOptions": 2.6,
+            "multiattackRate": 0.9615,
+            "medianAttacks": 3
+          }
+        },
+        "bands": [
+          {
+            "id": "cr-0-1-nascent",
+            "minCr": 0,
+            "maxCr": 1,
+            "abilityIds": [
+              "empowered-slam"
+            ],
+            "multiattack": {
+              "enabled": false,
+              "mode": "fixed",
+              "count": 0
+            },
+            "defaultSequence": [],
+            "opener": [],
+            "abilityPatches": {},
+            "graftPatch": null
+          },
+          {
+            "id": "cr-2-4-developed",
+            "minCr": 2,
+            "maxCr": 4,
+            "abilityIds": [
+              "empowered-slam"
+            ],
+            "multiattack": {
+              "enabled": false,
+              "mode": "fixed",
+              "count": 0
+            },
+            "defaultSequence": [],
+            "opener": [],
+            "abilityPatches": {},
+            "graftPatch": null
+          },
+          {
+            "id": "cr-5-7-veteran",
+            "minCr": 5,
+            "maxCr": 7,
+            "abilityIds": [
+              "empowered-slam",
+              "corpse-grab"
+            ],
+            "multiattack": {
+              "enabled": true,
+              "mode": "fixed",
+              "count": 2
+            },
+            "defaultSequence": [],
+            "opener": [],
+            "abilityPatches": {},
+            "graftPatch": null
+          },
+          {
+            "id": "cr-8-12-mature",
+            "minCr": 8,
+            "maxCr": 12,
+            "abilityIds": [
+              "empowered-slam",
+              "corpse-grab"
+            ],
+            "multiattack": {
+              "enabled": true,
+              "mode": "fixed",
+              "count": 2
+            },
+            "defaultSequence": [],
+            "opener": [],
+            "abilityPatches": {},
+            "graftPatch": null
+          },
+          {
+            "id": "cr-13-30-apex",
+            "minCr": 13,
+            "maxCr": 30,
+            "abilityIds": [
+              "empowered-slam",
+              "corpse-grab",
+              "acid-vomit"
+            ],
+            "multiattack": {
+              "enabled": true,
+              "mode": "fixed",
+              "count": 3
+            },
+            "defaultSequence": [],
+            "opener": [],
+            "abilityPatches": {},
+            "graftPatch": null
+          }
+        ]
+      },
+      "counterplay": {
+        "pass": true,
+        "channels": [
+          "telegraph",
+          "positioning",
+          "breakCondition",
+          "nonDamage"
+        ]
+      },
+      "snapshots": [
+        {
+          "targetCr": 1,
+          "bandId": "cr-0-1-nascent",
+          "abilityIds": [
+            "empowered-slam"
+          ],
+          "abilityTitles": [
+            "Empowered Slam"
+          ],
+          "authoredAbilityCount": 1,
+          "compiledAbilityCount": 1,
+          "multiattackEnabled": false,
+          "multiattackCount": 0,
+          "routineEnabled": false,
+          "routineSource": "authored-pattern",
+          "allocationKeys": [],
+          "renderedMultiattack": "",
+          "validationStatus": "pass",
+          "validationErrors": []
+        },
+        {
+          "targetCr": 2,
+          "bandId": "cr-2-4-developed",
+          "abilityIds": [
+            "empowered-slam"
+          ],
+          "abilityTitles": [
+            "Empowered Slam"
+          ],
+          "authoredAbilityCount": 1,
+          "compiledAbilityCount": 1,
+          "multiattackEnabled": false,
+          "multiattackCount": 0,
+          "routineEnabled": false,
+          "routineSource": "authored-pattern",
+          "allocationKeys": [],
+          "renderedMultiattack": "",
+          "validationStatus": "pass",
+          "validationErrors": []
+        },
+        {
+          "targetCr": 5,
+          "bandId": "cr-5-7-veteran",
+          "abilityIds": [
+            "empowered-slam",
+            "corpse-grab"
+          ],
+          "abilityTitles": [
+            "Empowered Slam",
+            "Corpse Grab"
+          ],
+          "authoredAbilityCount": 2,
+          "compiledAbilityCount": 3,
+          "multiattackEnabled": true,
+          "multiattackCount": 2,
+          "routineEnabled": true,
+          "routineSource": "manual",
+          "allocationKeys": [
+            "empowered-slam:empowered-slam"
+          ],
+          "renderedMultiattack": "The monster makes two Empowered Slam attacks. It can replace one attack with a use of Corpse Grab.",
+          "validationStatus": "pass",
+          "validationErrors": []
+        },
+        {
+          "targetCr": 8,
+          "bandId": "cr-8-12-mature",
+          "abilityIds": [
+            "empowered-slam",
+            "corpse-grab"
+          ],
+          "abilityTitles": [
+            "Empowered Slam",
+            "Corpse Grab"
+          ],
+          "authoredAbilityCount": 2,
+          "compiledAbilityCount": 3,
+          "multiattackEnabled": true,
+          "multiattackCount": 2,
+          "routineEnabled": true,
+          "routineSource": "manual",
+          "allocationKeys": [
+            "empowered-slam:empowered-slam"
+          ],
+          "renderedMultiattack": "The monster makes two Empowered Slam attacks. It can replace one attack with a use of Corpse Grab.",
+          "validationStatus": "pass",
+          "validationErrors": []
+        },
+        {
+          "targetCr": 10,
+          "bandId": "cr-8-12-mature",
+          "abilityIds": [
+            "empowered-slam",
+            "corpse-grab"
+          ],
+          "abilityTitles": [
+            "Empowered Slam",
+            "Corpse Grab"
+          ],
+          "authoredAbilityCount": 2,
+          "compiledAbilityCount": 3,
+          "multiattackEnabled": true,
+          "multiattackCount": 2,
+          "routineEnabled": true,
+          "routineSource": "manual",
+          "allocationKeys": [
+            "empowered-slam:empowered-slam"
+          ],
+          "renderedMultiattack": "The monster makes two Empowered Slam attacks. It can replace one attack with a use of Corpse Grab.",
+          "validationStatus": "pass",
+          "validationErrors": []
+        },
+        {
+          "targetCr": 15,
+          "bandId": "cr-13-30-apex",
+          "abilityIds": [
+            "empowered-slam",
+            "corpse-grab",
+            "acid-vomit"
+          ],
+          "abilityTitles": [
+            "Empowered Slam",
+            "Corpse Grab",
+            "Acid Vomit"
+          ],
+          "authoredAbilityCount": 3,
+          "compiledAbilityCount": 4,
+          "multiattackEnabled": true,
+          "multiattackCount": 3,
+          "routineEnabled": true,
+          "routineSource": "manual",
+          "allocationKeys": [
+            "empowered-slam:empowered-slam"
+          ],
+          "renderedMultiattack": "The monster makes three Empowered Slam attacks. It can replace one attack with a use of Corpse Grab. It can replace one attack with a use of Acid Vomit if available.",
+          "validationStatus": "pass",
+          "validationErrors": []
+        }
+      ],
+      "migration": {
+        "legacyGraftIds": [
+          "empowered-slam",
+          "corpse-grab",
+          "acid-vomit"
+        ],
+        "status": "active-native-transition",
+        "phase": "phase5.1-cr-scaled-attack-patterns",
+        "version": "monster-attack-pattern-migration-v1.4-evocative-pattern-names"
+      },
+      "issues": [],
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "version": "monster-attack-pattern-audit-v1.1-cr-scaled",
+      "applicable": true,
+      "id": "acid-vomit",
+      "title": "Acid Brute",
+      "source": "decomposition",
+      "status": "pass",
+      "pass": true,
+      "identity": {
+        "fantasy": "A pressurized corpse empties itself across the battlefield and follows the purge with blunt-force pursuit.",
+        "tacticalRole": "telegraphed area opener into lane-dependent cleanup",
+        "signature": "distend, purge, advance, crush",
+        "recognitionTags": [
+          "purge-fluid",
+          "acid-cone",
+          "swollen-corpse",
+          "charge-lane"
+        ]
+      },
+      "recognition": {
+        "pass": true,
+        "tags": [
+          "purge-fluid",
+          "acid-cone",
+          "swollen-corpse",
+          "charge-lane"
+        ]
+      },
+      "progression": {
+        "pass": true,
+        "monotonicAbilities": true,
+        "monotonicCadence": true,
+        "lowCrAbilityCount": 1,
+        "apexAbilityCount": 2,
+        "authoredAbilityCount": 2,
+        "lowCrMultiattackCount": 0,
+        "apexMultiattackCount": 3
+      },
+      "progressionContract": {
+        "schemaVersion": "monster-attack-pattern-progression-v1.0",
+        "basis": "targetCr",
+        "calibration": "Bestiary.csv-503-monsters",
+        "calibrationTargets": {
+          "cr0To1": {
+            "meanOptions": 1.33,
+            "multiattackRate": 0.1371,
+            "medianAttacks": 2
+          },
+          "cr2To4": {
+            "meanOptions": 1.72,
+            "multiattackRate": 0.7008,
+            "medianAttacks": 2
+          },
+          "cr5To8": {
+            "meanOptions": 1.91,
+            "multiattackRate": 0.9388,
+            "medianAttacks": 2
+          },
+          "cr9To12": {
+            "meanOptions": 1.98,
+            "multiattackRate": 0.9787,
+            "medianAttacks": 3
+          },
+          "cr13Plus": {
+            "meanOptions": 2.6,
+            "multiattackRate": 0.9615,
+            "medianAttacks": 3
+          }
+        },
+        "bands": [
+          {
+            "id": "cr-0-1-nascent",
+            "minCr": 0,
+            "maxCr": 1,
+            "abilityIds": [
+              "heavy-slam"
+            ],
+            "multiattack": {
+              "enabled": false,
+              "mode": "fixed",
+              "count": 0
+            },
+            "defaultSequence": [],
+            "opener": [],
+            "abilityPatches": {},
+            "graftPatch": null
+          },
+          {
+            "id": "cr-2-4-developed",
+            "minCr": 2,
+            "maxCr": 4,
+            "abilityIds": [
+              "heavy-slam"
+            ],
+            "multiattack": {
+              "enabled": false,
+              "mode": "fixed",
+              "count": 0
+            },
+            "defaultSequence": [],
+            "opener": [],
+            "abilityPatches": {},
+            "graftPatch": null
+          },
+          {
+            "id": "cr-5-7-veteran",
+            "minCr": 5,
+            "maxCr": 7,
+            "abilityIds": [
+              "heavy-slam",
+              "acid-vomit"
+            ],
+            "multiattack": {
+              "enabled": true,
+              "mode": "fixed",
+              "count": 2
+            },
+            "defaultSequence": [],
+            "opener": [],
+            "abilityPatches": {},
+            "graftPatch": null
+          },
+          {
+            "id": "cr-8-12-mature",
+            "minCr": 8,
+            "maxCr": 12,
+            "abilityIds": [
+              "heavy-slam",
+              "acid-vomit"
+            ],
+            "multiattack": {
+              "enabled": true,
+              "mode": "fixed",
+              "count": 2
+            },
+            "defaultSequence": [],
+            "opener": [],
+            "abilityPatches": {},
+            "graftPatch": null
+          },
+          {
+            "id": "cr-13-30-apex",
+            "minCr": 13,
+            "maxCr": 30,
+            "abilityIds": [
+              "heavy-slam",
+              "acid-vomit"
+            ],
+            "multiattack": {
+              "enabled": true,
+              "mode": "fixed",
+              "count": 3
+            },
+            "defaultSequence": [],
+            "opener": [],
+            "abilityPatches": {},
+            "graftPatch": null
+          }
+        ]
+      },
+      "counterplay": {
+        "pass": true,
+        "channels": [
+          "telegraph",
+          "positioning",
+          "breakCondition",
+          "nonDamage"
+        ]
+      },
+      "snapshots": [
+        {
+          "targetCr": 1,
+          "bandId": "cr-0-1-nascent",
+          "abilityIds": [
+            "heavy-slam"
+          ],
+          "abilityTitles": [
+            "Heavy Slam"
+          ],
+          "authoredAbilityCount": 1,
+          "compiledAbilityCount": 1,
+          "multiattackEnabled": false,
+          "multiattackCount": 0,
+          "routineEnabled": false,
+          "routineSource": "authored-pattern",
+          "allocationKeys": [],
+          "renderedMultiattack": "",
+          "validationStatus": "pass",
+          "validationErrors": []
+        },
+        {
+          "targetCr": 2,
+          "bandId": "cr-2-4-developed",
+          "abilityIds": [
+            "heavy-slam"
+          ],
+          "abilityTitles": [
+            "Heavy Slam"
+          ],
+          "authoredAbilityCount": 1,
+          "compiledAbilityCount": 1,
+          "multiattackEnabled": false,
+          "multiattackCount": 0,
+          "routineEnabled": false,
+          "routineSource": "authored-pattern",
+          "allocationKeys": [],
+          "renderedMultiattack": "",
+          "validationStatus": "pass",
+          "validationErrors": []
+        },
+        {
+          "targetCr": 5,
+          "bandId": "cr-5-7-veteran",
+          "abilityIds": [
+            "heavy-slam",
+            "acid-vomit"
+          ],
+          "abilityTitles": [
+            "Heavy Slam",
+            "Acid Vomit"
+          ],
+          "authoredAbilityCount": 2,
+          "compiledAbilityCount": 3,
+          "multiattackEnabled": true,
+          "multiattackCount": 2,
+          "routineEnabled": true,
+          "routineSource": "manual",
+          "allocationKeys": [
+            "acid-vomit:heavy-slam"
+          ],
+          "renderedMultiattack": "The monster makes two Heavy Slam attacks. It can replace one attack with a use of Acid Vomit if available.",
+          "validationStatus": "pass",
+          "validationErrors": []
+        },
+        {
+          "targetCr": 8,
+          "bandId": "cr-8-12-mature",
+          "abilityIds": [
+            "heavy-slam",
+            "acid-vomit"
+          ],
+          "abilityTitles": [
+            "Heavy Slam",
+            "Acid Vomit"
+          ],
+          "authoredAbilityCount": 2,
+          "compiledAbilityCount": 3,
+          "multiattackEnabled": true,
+          "multiattackCount": 2,
+          "routineEnabled": true,
+          "routineSource": "manual",
+          "allocationKeys": [
+            "acid-vomit:heavy-slam"
+          ],
+          "renderedMultiattack": "The monster makes two Heavy Slam attacks. It can replace one attack with a use of Acid Vomit if available.",
+          "validationStatus": "pass",
+          "validationErrors": []
+        },
+        {
+          "targetCr": 10,
+          "bandId": "cr-8-12-mature",
+          "abilityIds": [
+            "heavy-slam",
+            "acid-vomit"
+          ],
+          "abilityTitles": [
+            "Heavy Slam",
+            "Acid Vomit"
+          ],
+          "authoredAbilityCount": 2,
+          "compiledAbilityCount": 3,
+          "multiattackEnabled": true,
+          "multiattackCount": 2,
+          "routineEnabled": true,
+          "routineSource": "manual",
+          "allocationKeys": [
+            "acid-vomit:heavy-slam"
+          ],
+          "renderedMultiattack": "The monster makes two Heavy Slam attacks. It can replace one attack with a use of Acid Vomit if available.",
+          "validationStatus": "pass",
+          "validationErrors": []
+        },
+        {
+          "targetCr": 15,
+          "bandId": "cr-13-30-apex",
+          "abilityIds": [
+            "heavy-slam",
+            "acid-vomit"
+          ],
+          "abilityTitles": [
+            "Heavy Slam",
+            "Acid Vomit"
+          ],
+          "authoredAbilityCount": 2,
+          "compiledAbilityCount": 3,
+          "multiattackEnabled": true,
+          "multiattackCount": 3,
+          "routineEnabled": true,
+          "routineSource": "manual",
+          "allocationKeys": [
+            "acid-vomit:heavy-slam"
+          ],
+          "renderedMultiattack": "The monster makes three Heavy Slam attacks. It can replace one attack with a use of Acid Vomit if available.",
+          "validationStatus": "pass",
+          "validationErrors": []
+        }
+      ],
+      "migration": {
+        "legacyGraftIds": [
+          "slam-decomposition",
+          "acid-vomit"
+        ],
+        "status": "active-native-transition",
+        "phase": "phase5.1-cr-scaled-attack-patterns",
+        "version": "monster-attack-pattern-migration-v1.4-evocative-pattern-names"
+      },
+      "issues": [],
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "version": "monster-attack-pattern-audit-v1.1-cr-scaled",
+      "applicable": true,
+      "id": "corpse-grab",
+      "title": "Grappler",
+      "source": "decomposition",
+      "status": "pass",
+      "pass": true,
+      "identity": {
+        "fantasy": "A bloated corpse uses impact not to kill immediately, but to place a victim where its body can engulf them.",
+        "tacticalRole": "single-target captor with readable setup",
+        "signature": "batter, isolate, engulf",
+        "recognitionTags": [
+          "swollen-corpse",
+          "body-pin",
+          "isolation",
+          "rescue-pressure"
+        ]
+      },
+      "recognition": {
+        "pass": true,
+        "tags": [
+          "swollen-corpse",
+          "body-pin",
+          "isolation",
+          "rescue-pressure"
+        ]
+      },
+      "progression": {
+        "pass": true,
+        "monotonicAbilities": true,
+        "monotonicCadence": true,
+        "lowCrAbilityCount": 1,
+        "apexAbilityCount": 2,
+        "authoredAbilityCount": 2,
+        "lowCrMultiattackCount": 0,
+        "apexMultiattackCount": 3
+      },
+      "progressionContract": {
+        "schemaVersion": "monster-attack-pattern-progression-v1.0",
+        "basis": "targetCr",
+        "calibration": "Bestiary.csv-503-monsters",
+        "calibrationTargets": {
+          "cr0To1": {
+            "meanOptions": 1.33,
+            "multiattackRate": 0.1371,
+            "medianAttacks": 2
+          },
+          "cr2To4": {
+            "meanOptions": 1.72,
+            "multiattackRate": 0.7008,
+            "medianAttacks": 2
+          },
+          "cr5To8": {
+            "meanOptions": 1.91,
+            "multiattackRate": 0.9388,
+            "medianAttacks": 2
+          },
+          "cr9To12": {
+            "meanOptions": 1.98,
+            "multiattackRate": 0.9787,
+            "medianAttacks": 3
+          },
+          "cr13Plus": {
+            "meanOptions": 2.6,
+            "multiattackRate": 0.9615,
+            "medianAttacks": 3
+          }
+        },
+        "bands": [
+          {
+            "id": "cr-0-1-nascent",
+            "minCr": 0,
+            "maxCr": 1,
+            "abilityIds": [
+              "heavy-slam"
+            ],
+            "multiattack": {
+              "enabled": false,
+              "mode": "fixed",
+              "count": 0
+            },
+            "defaultSequence": [],
+            "opener": [],
+            "abilityPatches": {},
+            "graftPatch": null
+          },
+          {
+            "id": "cr-2-4-developed",
+            "minCr": 2,
+            "maxCr": 4,
+            "abilityIds": [
+              "heavy-slam"
+            ],
+            "multiattack": {
+              "enabled": false,
+              "mode": "fixed",
+              "count": 0
+            },
+            "defaultSequence": [],
+            "opener": [],
+            "abilityPatches": {},
+            "graftPatch": null
+          },
+          {
+            "id": "cr-5-7-veteran",
+            "minCr": 5,
+            "maxCr": 7,
+            "abilityIds": [
+              "heavy-slam",
+              "corpse-grab"
+            ],
+            "multiattack": {
+              "enabled": true,
+              "mode": "fixed",
+              "count": 2
+            },
+            "defaultSequence": [],
+            "opener": [],
+            "abilityPatches": {},
+            "graftPatch": null
+          },
+          {
+            "id": "cr-8-12-mature",
+            "minCr": 8,
+            "maxCr": 12,
+            "abilityIds": [
+              "heavy-slam",
+              "corpse-grab"
+            ],
+            "multiattack": {
+              "enabled": true,
+              "mode": "fixed",
+              "count": 2
+            },
+            "defaultSequence": [],
+            "opener": [],
+            "abilityPatches": {},
+            "graftPatch": null
+          },
+          {
+            "id": "cr-13-30-apex",
+            "minCr": 13,
+            "maxCr": 30,
+            "abilityIds": [
+              "heavy-slam",
+              "corpse-grab"
+            ],
+            "multiattack": {
+              "enabled": true,
+              "mode": "fixed",
+              "count": 3
+            },
+            "defaultSequence": [],
+            "opener": [],
+            "abilityPatches": {},
+            "graftPatch": null
+          }
+        ]
+      },
+      "counterplay": {
+        "pass": true,
+        "channels": [
+          "telegraph",
+          "positioning",
+          "breakCondition",
+          "nonDamage"
+        ]
+      },
+      "snapshots": [
+        {
+          "targetCr": 1,
+          "bandId": "cr-0-1-nascent",
+          "abilityIds": [
+            "heavy-slam"
+          ],
+          "abilityTitles": [
+            "Heavy Slam"
+          ],
+          "authoredAbilityCount": 1,
+          "compiledAbilityCount": 1,
+          "multiattackEnabled": false,
+          "multiattackCount": 0,
+          "routineEnabled": false,
+          "routineSource": "authored-pattern",
+          "allocationKeys": [],
+          "renderedMultiattack": "",
+          "validationStatus": "pass",
+          "validationErrors": []
+        },
+        {
+          "targetCr": 2,
+          "bandId": "cr-2-4-developed",
+          "abilityIds": [
+            "heavy-slam"
+          ],
+          "abilityTitles": [
+            "Heavy Slam"
+          ],
+          "authoredAbilityCount": 1,
+          "compiledAbilityCount": 1,
+          "multiattackEnabled": false,
+          "multiattackCount": 0,
+          "routineEnabled": false,
+          "routineSource": "authored-pattern",
+          "allocationKeys": [],
+          "renderedMultiattack": "",
+          "validationStatus": "pass",
+          "validationErrors": []
+        },
+        {
+          "targetCr": 5,
+          "bandId": "cr-5-7-veteran",
+          "abilityIds": [
+            "heavy-slam",
+            "corpse-grab"
+          ],
+          "abilityTitles": [
+            "Heavy Slam",
+            "Corpse Grab"
+          ],
+          "authoredAbilityCount": 2,
+          "compiledAbilityCount": 3,
+          "multiattackEnabled": true,
+          "multiattackCount": 2,
+          "routineEnabled": true,
+          "routineSource": "manual",
+          "allocationKeys": [
+            "corpse-grab:heavy-slam"
+          ],
+          "renderedMultiattack": "The monster makes two Heavy Slam attacks. It can replace one attack with a use of Corpse Grab.",
+          "validationStatus": "pass",
+          "validationErrors": []
+        },
+        {
+          "targetCr": 8,
+          "bandId": "cr-8-12-mature",
+          "abilityIds": [
+            "heavy-slam",
+            "corpse-grab"
+          ],
+          "abilityTitles": [
+            "Heavy Slam",
+            "Corpse Grab"
+          ],
+          "authoredAbilityCount": 2,
+          "compiledAbilityCount": 3,
+          "multiattackEnabled": true,
+          "multiattackCount": 2,
+          "routineEnabled": true,
+          "routineSource": "manual",
+          "allocationKeys": [
+            "corpse-grab:heavy-slam"
+          ],
+          "renderedMultiattack": "The monster makes two Heavy Slam attacks. It can replace one attack with a use of Corpse Grab.",
+          "validationStatus": "pass",
+          "validationErrors": []
+        },
+        {
+          "targetCr": 10,
+          "bandId": "cr-8-12-mature",
+          "abilityIds": [
+            "heavy-slam",
+            "corpse-grab"
+          ],
+          "abilityTitles": [
+            "Heavy Slam",
+            "Corpse Grab"
+          ],
+          "authoredAbilityCount": 2,
+          "compiledAbilityCount": 3,
+          "multiattackEnabled": true,
+          "multiattackCount": 2,
+          "routineEnabled": true,
+          "routineSource": "manual",
+          "allocationKeys": [
+            "corpse-grab:heavy-slam"
+          ],
+          "renderedMultiattack": "The monster makes two Heavy Slam attacks. It can replace one attack with a use of Corpse Grab.",
+          "validationStatus": "pass",
+          "validationErrors": []
+        },
+        {
+          "targetCr": 15,
+          "bandId": "cr-13-30-apex",
+          "abilityIds": [
+            "heavy-slam",
+            "corpse-grab"
+          ],
+          "abilityTitles": [
+            "Heavy Slam",
+            "Corpse Grab"
+          ],
+          "authoredAbilityCount": 2,
+          "compiledAbilityCount": 3,
+          "multiattackEnabled": true,
+          "multiattackCount": 3,
+          "routineEnabled": true,
+          "routineSource": "manual",
+          "allocationKeys": [
+            "corpse-grab:heavy-slam"
+          ],
+          "renderedMultiattack": "The monster makes three Heavy Slam attacks. It can replace one attack with a use of Corpse Grab.",
+          "validationStatus": "pass",
+          "validationErrors": []
+        }
+      ],
+      "migration": {
+        "legacyGraftIds": [
+          "slam-decomposition",
+          "corpse-grab"
+        ],
+        "status": "active-native-transition",
+        "phase": "phase5.1-cr-scaled-attack-patterns",
+        "version": "monster-attack-pattern-migration-v1.4-evocative-pattern-names"
+      },
+      "issues": [],
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "version": "monster-attack-pattern-audit-v1.1-cr-scaled",
+      "applicable": true,
+      "id": "grave-bite",
+      "title": "Grave Eater",
+      "source": "jikininki",
+      "status": "pass",
+      "pass": true,
+      "identity": {
+        "fantasy": "A hungry spirit turns the dead into hunting ground and every bite into a feeding rite.",
+        "tacticalRole": "wounded-target predator with corpse-anchored control",
+        "signature": "anchor corpse, restrain, feed",
+        "recognitionTags": [
+          "corpse-hunger",
+          "grave-bite",
+          "corpse-anchor",
+          "feeding-rite"
+        ]
+      },
+      "recognition": {
+        "pass": true,
+        "tags": [
+          "corpse-hunger",
+          "grave-bite",
+          "corpse-anchor",
+          "feeding-rite"
+        ]
+      },
+      "progression": {
+        "pass": true,
+        "monotonicAbilities": true,
+        "monotonicCadence": true,
+        "lowCrAbilityCount": 2,
+        "apexAbilityCount": 2,
+        "authoredAbilityCount": 2,
+        "lowCrMultiattackCount": 0,
+        "apexMultiattackCount": 3
+      },
+      "progressionContract": {
+        "schemaVersion": "monster-attack-pattern-progression-v1.0",
+        "basis": "targetCr",
+        "calibration": "Bestiary.csv-503-monsters",
+        "calibrationTargets": {
+          "cr0To1": {
+            "meanOptions": 1.33,
+            "multiattackRate": 0.1371,
+            "medianAttacks": 2
+          },
+          "cr2To4": {
+            "meanOptions": 1.72,
+            "multiattackRate": 0.7008,
+            "medianAttacks": 2
+          },
+          "cr5To8": {
+            "meanOptions": 1.91,
+            "multiattackRate": 0.9388,
+            "medianAttacks": 2
+          },
+          "cr9To12": {
+            "meanOptions": 1.98,
+            "multiattackRate": 0.9787,
+            "medianAttacks": 3
+          },
+          "cr13Plus": {
+            "meanOptions": 2.6,
+            "multiattackRate": 0.9615,
+            "medianAttacks": 3
+          }
+        },
+        "bands": [
+          {
+            "id": "cr-0-1-nascent",
+            "minCr": 0,
+            "maxCr": 1,
+            "abilityIds": [
+              "grave-bite",
+              "corpse-tendrils"
+            ],
+            "multiattack": {
+              "enabled": false,
+              "mode": "fixed",
+              "count": 0
+            },
+            "defaultSequence": [],
+            "opener": [],
+            "abilityPatches": {},
+            "graftPatch": null
+          },
+          {
+            "id": "cr-2-4-developed",
+            "minCr": 2,
+            "maxCr": 4,
+            "abilityIds": [
+              "grave-bite",
+              "corpse-tendrils"
+            ],
+            "multiattack": {
+              "enabled": true,
+              "mode": "fixed",
+              "count": 2
+            },
+            "defaultSequence": [],
+            "opener": [],
+            "abilityPatches": {},
+            "graftPatch": null
+          },
+          {
+            "id": "cr-5-7-veteran",
+            "minCr": 5,
+            "maxCr": 7,
+            "abilityIds": [
+              "grave-bite",
+              "corpse-tendrils"
+            ],
+            "multiattack": {
+              "enabled": true,
+              "mode": "fixed",
+              "count": 2
+            },
+            "defaultSequence": [],
+            "opener": [],
+            "abilityPatches": {},
+            "graftPatch": null
+          },
+          {
+            "id": "cr-8-12-mature",
+            "minCr": 8,
+            "maxCr": 12,
+            "abilityIds": [
+              "grave-bite",
+              "corpse-tendrils"
+            ],
+            "multiattack": {
+              "enabled": true,
+              "mode": "fixed",
+              "count": 3
+            },
+            "defaultSequence": [],
+            "opener": [],
+            "abilityPatches": {},
+            "graftPatch": null
+          },
+          {
+            "id": "cr-13-30-apex",
+            "minCr": 13,
+            "maxCr": 30,
+            "abilityIds": [
+              "grave-bite",
+              "corpse-tendrils"
+            ],
+            "multiattack": {
+              "enabled": true,
+              "mode": "fixed",
+              "count": 3
+            },
+            "defaultSequence": [],
+            "opener": [],
+            "abilityPatches": {},
+            "graftPatch": null
+          }
+        ]
+      },
+      "counterplay": {
+        "pass": true,
+        "channels": [
+          "telegraph",
+          "positioning",
+          "breakCondition",
+          "nonDamage"
+        ]
+      },
+      "snapshots": [
+        {
+          "targetCr": 1,
+          "bandId": "cr-0-1-nascent",
+          "abilityIds": [
+            "grave-bite",
+            "corpse-tendrils"
+          ],
+          "abilityTitles": [
+            "Grave Bite",
+            "Corpse Tendrils"
+          ],
+          "authoredAbilityCount": 2,
+          "compiledAbilityCount": 2,
+          "multiattackEnabled": false,
+          "multiattackCount": 0,
+          "routineEnabled": false,
+          "routineSource": "authored-pattern",
+          "allocationKeys": [],
+          "renderedMultiattack": "",
+          "validationStatus": "pass",
+          "validationErrors": []
+        },
+        {
+          "targetCr": 2,
+          "bandId": "cr-2-4-developed",
+          "abilityIds": [
+            "grave-bite",
+            "corpse-tendrils"
+          ],
+          "abilityTitles": [
+            "Grave Bite",
+            "Corpse Tendrils"
+          ],
+          "authoredAbilityCount": 2,
+          "compiledAbilityCount": 3,
+          "multiattackEnabled": true,
+          "multiattackCount": 2,
+          "routineEnabled": true,
+          "routineSource": "manual",
+          "allocationKeys": [
+            "grave-bite:grave-bite"
+          ],
+          "renderedMultiattack": "The monster makes two Grave Bite attacks. It can replace one attack with a use of Corpse Tendrils if available.",
+          "validationStatus": "pass",
+          "validationErrors": []
+        },
+        {
+          "targetCr": 5,
+          "bandId": "cr-5-7-veteran",
+          "abilityIds": [
+            "grave-bite",
+            "corpse-tendrils"
+          ],
+          "abilityTitles": [
+            "Grave Bite",
+            "Corpse Tendrils"
+          ],
+          "authoredAbilityCount": 2,
+          "compiledAbilityCount": 3,
+          "multiattackEnabled": true,
+          "multiattackCount": 2,
+          "routineEnabled": true,
+          "routineSource": "manual",
+          "allocationKeys": [
+            "grave-bite:grave-bite"
+          ],
+          "renderedMultiattack": "The monster makes two Grave Bite attacks. It can replace one attack with a use of Corpse Tendrils if available.",
+          "validationStatus": "pass",
+          "validationErrors": []
+        },
+        {
+          "targetCr": 8,
+          "bandId": "cr-8-12-mature",
+          "abilityIds": [
+            "grave-bite",
+            "corpse-tendrils"
+          ],
+          "abilityTitles": [
+            "Grave Bite",
+            "Corpse Tendrils"
+          ],
+          "authoredAbilityCount": 2,
+          "compiledAbilityCount": 3,
+          "multiattackEnabled": true,
+          "multiattackCount": 3,
+          "routineEnabled": true,
+          "routineSource": "manual",
+          "allocationKeys": [
+            "grave-bite:grave-bite"
+          ],
+          "renderedMultiattack": "The monster makes three Grave Bite attacks. It can replace one attack with a use of Corpse Tendrils if available.",
+          "validationStatus": "pass",
+          "validationErrors": []
+        },
+        {
+          "targetCr": 10,
+          "bandId": "cr-8-12-mature",
+          "abilityIds": [
+            "grave-bite",
+            "corpse-tendrils"
+          ],
+          "abilityTitles": [
+            "Grave Bite",
+            "Corpse Tendrils"
+          ],
+          "authoredAbilityCount": 2,
+          "compiledAbilityCount": 3,
+          "multiattackEnabled": true,
+          "multiattackCount": 3,
+          "routineEnabled": true,
+          "routineSource": "manual",
+          "allocationKeys": [
+            "grave-bite:grave-bite"
+          ],
+          "renderedMultiattack": "The monster makes three Grave Bite attacks. It can replace one attack with a use of Corpse Tendrils if available.",
+          "validationStatus": "pass",
+          "validationErrors": []
+        },
+        {
+          "targetCr": 15,
+          "bandId": "cr-13-30-apex",
+          "abilityIds": [
+            "grave-bite",
+            "corpse-tendrils"
+          ],
+          "abilityTitles": [
+            "Grave Bite",
+            "Corpse Tendrils"
+          ],
+          "authoredAbilityCount": 2,
+          "compiledAbilityCount": 3,
+          "multiattackEnabled": true,
+          "multiattackCount": 3,
+          "routineEnabled": true,
+          "routineSource": "manual",
+          "allocationKeys": [
+            "grave-bite:grave-bite"
+          ],
+          "renderedMultiattack": "The monster makes three Grave Bite attacks. It can replace one attack with a use of Corpse Tendrils if available.",
+          "validationStatus": "pass",
+          "validationErrors": []
+        }
+      ],
+      "migration": {
+        "legacyGraftIds": [
+          "grave-bite",
+          "corpse-tendrils"
+        ],
+        "status": "active-native-transition",
+        "phase": "phase5.1-cr-scaled-attack-patterns",
+        "version": "monster-attack-pattern-migration-v1.4-evocative-pattern-names"
+      },
+      "issues": [],
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "version": "monster-attack-pattern-audit-v1.1-cr-scaled",
+      "applicable": true,
+      "id": "infected-bite",
+      "title": "Plague Eater",
+      "source": "jikininki",
+      "status": "pass",
+      "pass": true,
+      "identity": {
+        "fantasy": "A corpse-eating spirit plants a slow spiritual sickness and uses ordinary feeding to keep pressure immediate.",
+        "tacticalRole": "delayed-attrition striker with corpse control",
+        "signature": "mark, feed, haunt the next rest",
+        "recognitionTags": [
+          "spiritual-infection",
+          "corpse-hunger",
+          "delayed-exhaustion",
+          "grave-bite"
+        ]
+      },
+      "recognition": {
+        "pass": true,
+        "tags": [
+          "spiritual-infection",
+          "corpse-hunger",
+          "delayed-exhaustion",
+          "grave-bite"
+        ]
+      },
+      "progression": {
+        "pass": true,
+        "monotonicAbilities": true,
+        "monotonicCadence": true,
+        "lowCrAbilityCount": 2,
+        "apexAbilityCount": 3,
+        "authoredAbilityCount": 3,
+        "lowCrMultiattackCount": 0,
+        "apexMultiattackCount": 3
+      },
+      "progressionContract": {
+        "schemaVersion": "monster-attack-pattern-progression-v1.0",
+        "basis": "targetCr",
+        "calibration": "Bestiary.csv-503-monsters",
+        "calibrationTargets": {
+          "cr0To1": {
+            "meanOptions": 1.33,
+            "multiattackRate": 0.1371,
+            "medianAttacks": 2
+          },
+          "cr2To4": {
+            "meanOptions": 1.72,
+            "multiattackRate": 0.7008,
+            "medianAttacks": 2
+          },
+          "cr5To8": {
+            "meanOptions": 1.91,
+            "multiattackRate": 0.9388,
+            "medianAttacks": 2
+          },
+          "cr9To12": {
+            "meanOptions": 1.98,
+            "multiattackRate": 0.9787,
+            "medianAttacks": 3
+          },
+          "cr13Plus": {
+            "meanOptions": 2.6,
+            "multiattackRate": 0.9615,
+            "medianAttacks": 3
+          }
+        },
+        "bands": [
+          {
+            "id": "cr-0-1-nascent",
+            "minCr": 0,
+            "maxCr": 1,
+            "abilityIds": [
+              "infected-bite",
+              "grave-bite"
+            ],
+            "multiattack": {
+              "enabled": false,
+              "mode": "fixed",
+              "count": 0
+            },
+            "defaultSequence": [],
+            "opener": [],
+            "abilityPatches": {},
+            "graftPatch": null
+          },
+          {
+            "id": "cr-2-4-developed",
+            "minCr": 2,
+            "maxCr": 4,
+            "abilityIds": [
+              "infected-bite",
+              "grave-bite"
+            ],
+            "multiattack": {
+              "enabled": true,
+              "mode": "fixed",
+              "count": 2
+            },
+            "defaultSequence": [],
+            "opener": [],
+            "abilityPatches": {},
+            "graftPatch": null
+          },
+          {
+            "id": "cr-5-7-veteran",
+            "minCr": 5,
+            "maxCr": 7,
+            "abilityIds": [
+              "infected-bite",
+              "grave-bite"
+            ],
+            "multiattack": {
+              "enabled": true,
+              "mode": "fixed",
+              "count": 2
+            },
+            "defaultSequence": [],
+            "opener": [],
+            "abilityPatches": {},
+            "graftPatch": null
+          },
+          {
+            "id": "cr-8-12-mature",
+            "minCr": 8,
+            "maxCr": 12,
+            "abilityIds": [
+              "infected-bite",
+              "grave-bite",
+              "corpse-tendrils"
+            ],
+            "multiattack": {
+              "enabled": true,
+              "mode": "fixed",
+              "count": 3
+            },
+            "defaultSequence": [],
+            "opener": [],
+            "abilityPatches": {},
+            "graftPatch": null
+          },
+          {
+            "id": "cr-13-30-apex",
+            "minCr": 13,
+            "maxCr": 30,
+            "abilityIds": [
+              "infected-bite",
+              "grave-bite",
+              "corpse-tendrils"
+            ],
+            "multiattack": {
+              "enabled": true,
+              "mode": "fixed",
+              "count": 3
+            },
+            "defaultSequence": [],
+            "opener": [],
+            "abilityPatches": {},
+            "graftPatch": null
+          }
+        ]
+      },
+      "counterplay": {
+        "pass": true,
+        "channels": [
+          "telegraph",
+          "positioning",
+          "breakCondition",
+          "nonDamage"
+        ]
+      },
+      "snapshots": [
+        {
+          "targetCr": 1,
+          "bandId": "cr-0-1-nascent",
+          "abilityIds": [
+            "infected-bite",
+            "grave-bite"
+          ],
+          "abilityTitles": [
+            "Infected Bite",
+            "Grave Bite"
+          ],
+          "authoredAbilityCount": 2,
+          "compiledAbilityCount": 2,
+          "multiattackEnabled": false,
+          "multiattackCount": 0,
+          "routineEnabled": false,
+          "routineSource": "authored-pattern",
+          "allocationKeys": [],
+          "renderedMultiattack": "",
+          "validationStatus": "pass",
+          "validationErrors": []
+        },
+        {
+          "targetCr": 2,
+          "bandId": "cr-2-4-developed",
+          "abilityIds": [
+            "infected-bite",
+            "grave-bite"
+          ],
+          "abilityTitles": [
+            "Infected Bite",
+            "Grave Bite"
+          ],
+          "authoredAbilityCount": 2,
+          "compiledAbilityCount": 3,
+          "multiattackEnabled": true,
+          "multiattackCount": 2,
+          "routineEnabled": true,
+          "routineSource": "manual",
+          "allocationKeys": [
+            "infected-bite:infected-bite",
+            "infected-bite:grave-bite"
+          ],
+          "renderedMultiattack": "The monster makes one Infected Bite attack and one Grave Bite attack.",
+          "validationStatus": "pass",
+          "validationErrors": []
+        },
+        {
+          "targetCr": 5,
+          "bandId": "cr-5-7-veteran",
+          "abilityIds": [
+            "infected-bite",
+            "grave-bite"
+          ],
+          "abilityTitles": [
+            "Infected Bite",
+            "Grave Bite"
+          ],
+          "authoredAbilityCount": 2,
+          "compiledAbilityCount": 3,
+          "multiattackEnabled": true,
+          "multiattackCount": 2,
+          "routineEnabled": true,
+          "routineSource": "manual",
+          "allocationKeys": [
+            "infected-bite:infected-bite",
+            "infected-bite:grave-bite"
+          ],
+          "renderedMultiattack": "The monster makes one Infected Bite attack and one Grave Bite attack.",
+          "validationStatus": "pass",
+          "validationErrors": []
+        },
+        {
+          "targetCr": 8,
+          "bandId": "cr-8-12-mature",
+          "abilityIds": [
+            "infected-bite",
+            "grave-bite",
+            "corpse-tendrils"
+          ],
+          "abilityTitles": [
+            "Infected Bite",
+            "Grave Bite",
+            "Corpse Tendrils"
+          ],
+          "authoredAbilityCount": 3,
+          "compiledAbilityCount": 4,
+          "multiattackEnabled": true,
+          "multiattackCount": 3,
+          "routineEnabled": true,
+          "routineSource": "manual",
+          "allocationKeys": [
+            "infected-bite:infected-bite",
+            "infected-bite:grave-bite"
+          ],
+          "renderedMultiattack": "The monster makes two Infected Bite attacks and one Grave Bite attack. It can replace one attack with a use of Corpse Tendrils if available.",
+          "validationStatus": "pass",
+          "validationErrors": []
+        },
+        {
+          "targetCr": 10,
+          "bandId": "cr-8-12-mature",
+          "abilityIds": [
+            "infected-bite",
+            "grave-bite",
+            "corpse-tendrils"
+          ],
+          "abilityTitles": [
+            "Infected Bite",
+            "Grave Bite",
+            "Corpse Tendrils"
+          ],
+          "authoredAbilityCount": 3,
+          "compiledAbilityCount": 4,
+          "multiattackEnabled": true,
+          "multiattackCount": 3,
+          "routineEnabled": true,
+          "routineSource": "manual",
+          "allocationKeys": [
+            "infected-bite:infected-bite",
+            "infected-bite:grave-bite"
+          ],
+          "renderedMultiattack": "The monster makes two Infected Bite attacks and one Grave Bite attack. It can replace one attack with a use of Corpse Tendrils if available.",
+          "validationStatus": "pass",
+          "validationErrors": []
+        },
+        {
+          "targetCr": 15,
+          "bandId": "cr-13-30-apex",
+          "abilityIds": [
+            "infected-bite",
+            "grave-bite",
+            "corpse-tendrils"
+          ],
+          "abilityTitles": [
+            "Infected Bite",
+            "Grave Bite",
+            "Corpse Tendrils"
+          ],
+          "authoredAbilityCount": 3,
+          "compiledAbilityCount": 4,
+          "multiattackEnabled": true,
+          "multiattackCount": 3,
+          "routineEnabled": true,
+          "routineSource": "manual",
+          "allocationKeys": [
+            "infected-bite:infected-bite",
+            "infected-bite:grave-bite"
+          ],
+          "renderedMultiattack": "The monster makes two Infected Bite attacks and one Grave Bite attack. It can replace one attack with a use of Corpse Tendrils if available.",
+          "validationStatus": "pass",
+          "validationErrors": []
+        }
+      ],
+      "migration": {
+        "legacyGraftIds": [
+          "infected-bite",
+          "grave-bite",
+          "corpse-tendrils"
+        ],
+        "status": "active-native-transition",
+        "phase": "phase5.1-cr-scaled-attack-patterns",
+        "version": "monster-attack-pattern-migration-v1.4-evocative-pattern-names"
+      },
+      "issues": [],
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "version": "monster-attack-pattern-audit-v1.1-cr-scaled",
+      "applicable": true,
+      "id": "purulent-bite",
+      "title": "Rot Eater",
+      "source": "jikininki",
+      "status": "pass",
+      "pass": true,
+      "identity": {
+        "fantasy": "A mature corpse-eater turns a single bite into a long-term curse while continuing its immediate feeding ritual.",
+        "tacticalRole": "high-stakes delayed-attrition striker with corpse control",
+        "signature": "infect deeply, feed once, retreat behind the dead",
+        "recognitionTags": [
+          "purulent-bite",
+          "delayed-exhaustion",
+          "disease",
+          "corpse-hunger"
+        ]
+      },
+      "recognition": {
+        "pass": true,
+        "tags": [
+          "purulent-bite",
+          "delayed-exhaustion",
+          "disease",
+          "corpse-hunger"
+        ]
+      },
+      "progression": {
+        "pass": true,
+        "monotonicAbilities": true,
+        "monotonicCadence": true,
+        "lowCrAbilityCount": 1,
+        "apexAbilityCount": 3,
+        "authoredAbilityCount": 3,
+        "lowCrMultiattackCount": 0,
+        "apexMultiattackCount": 3
+      },
+      "progressionContract": {
+        "schemaVersion": "monster-attack-pattern-progression-v1.0",
+        "basis": "targetCr",
+        "calibration": "Bestiary.csv-503-monsters",
+        "calibrationTargets": {
+          "cr0To1": {
+            "meanOptions": 1.33,
+            "multiattackRate": 0.1371,
+            "medianAttacks": 2
+          },
+          "cr2To4": {
+            "meanOptions": 1.72,
+            "multiattackRate": 0.7008,
+            "medianAttacks": 2
+          },
+          "cr5To8": {
+            "meanOptions": 1.91,
+            "multiattackRate": 0.9388,
+            "medianAttacks": 2
+          },
+          "cr9To12": {
+            "meanOptions": 1.98,
+            "multiattackRate": 0.9787,
+            "medianAttacks": 3
+          },
+          "cr13Plus": {
+            "meanOptions": 2.6,
+            "multiattackRate": 0.9615,
+            "medianAttacks": 3
+          }
+        },
+        "bands": [
+          {
+            "id": "cr-0-1-nascent",
+            "minCr": 0,
+            "maxCr": 1,
+            "abilityIds": [
+              "purulent-bite"
+            ],
+            "multiattack": {
+              "enabled": false,
+              "mode": "fixed",
+              "count": 0
+            },
+            "defaultSequence": [],
+            "opener": [],
+            "abilityPatches": {},
+            "graftPatch": null
+          },
+          {
+            "id": "cr-2-4-developed",
+            "minCr": 2,
+            "maxCr": 4,
+            "abilityIds": [
+              "purulent-bite",
+              "grave-bite"
+            ],
+            "multiattack": {
+              "enabled": true,
+              "mode": "fixed",
+              "count": 2
+            },
+            "defaultSequence": [],
+            "opener": [],
+            "abilityPatches": {},
+            "graftPatch": null
+          },
+          {
+            "id": "cr-5-7-veteran",
+            "minCr": 5,
+            "maxCr": 7,
+            "abilityIds": [
+              "purulent-bite",
+              "grave-bite"
+            ],
+            "multiattack": {
+              "enabled": true,
+              "mode": "fixed",
+              "count": 2
+            },
+            "defaultSequence": [],
+            "opener": [],
+            "abilityPatches": {},
+            "graftPatch": null
+          },
+          {
+            "id": "cr-8-12-mature",
+            "minCr": 8,
+            "maxCr": 12,
+            "abilityIds": [
+              "purulent-bite",
+              "grave-bite"
+            ],
+            "multiattack": {
+              "enabled": true,
+              "mode": "fixed",
+              "count": 3
+            },
+            "defaultSequence": [],
+            "opener": [],
+            "abilityPatches": {},
+            "graftPatch": null
+          },
+          {
+            "id": "cr-13-30-apex",
+            "minCr": 13,
+            "maxCr": 30,
+            "abilityIds": [
+              "purulent-bite",
+              "grave-bite",
+              "corpse-tendrils"
+            ],
+            "multiattack": {
+              "enabled": true,
+              "mode": "fixed",
+              "count": 3
+            },
+            "defaultSequence": [],
+            "opener": [],
+            "abilityPatches": {},
+            "graftPatch": null
+          }
+        ]
+      },
+      "counterplay": {
+        "pass": true,
+        "channels": [
+          "telegraph",
+          "positioning",
+          "breakCondition",
+          "nonDamage"
+        ]
+      },
+      "snapshots": [
+        {
+          "targetCr": 1,
+          "bandId": "cr-0-1-nascent",
+          "abilityIds": [
+            "purulent-bite"
+          ],
+          "abilityTitles": [
+            "Purulent Bite"
+          ],
+          "authoredAbilityCount": 1,
+          "compiledAbilityCount": 1,
+          "multiattackEnabled": false,
+          "multiattackCount": 0,
+          "routineEnabled": false,
+          "routineSource": "authored-pattern",
+          "allocationKeys": [],
+          "renderedMultiattack": "",
+          "validationStatus": "pass",
+          "validationErrors": []
+        },
+        {
+          "targetCr": 2,
+          "bandId": "cr-2-4-developed",
+          "abilityIds": [
+            "purulent-bite",
+            "grave-bite"
+          ],
+          "abilityTitles": [
+            "Purulent Bite",
+            "Grave Bite"
+          ],
+          "authoredAbilityCount": 2,
+          "compiledAbilityCount": 3,
+          "multiattackEnabled": true,
+          "multiattackCount": 2,
+          "routineEnabled": true,
+          "routineSource": "manual",
+          "allocationKeys": [
+            "purulent-bite:purulent-bite",
+            "purulent-bite:grave-bite"
+          ],
+          "renderedMultiattack": "The monster makes one Purulent Bite attack and one Grave Bite attack.",
+          "validationStatus": "pass",
+          "validationErrors": []
+        },
+        {
+          "targetCr": 5,
+          "bandId": "cr-5-7-veteran",
+          "abilityIds": [
+            "purulent-bite",
+            "grave-bite"
+          ],
+          "abilityTitles": [
+            "Purulent Bite",
+            "Grave Bite"
+          ],
+          "authoredAbilityCount": 2,
+          "compiledAbilityCount": 3,
+          "multiattackEnabled": true,
+          "multiattackCount": 2,
+          "routineEnabled": true,
+          "routineSource": "manual",
+          "allocationKeys": [
+            "purulent-bite:purulent-bite",
+            "purulent-bite:grave-bite"
+          ],
+          "renderedMultiattack": "The monster makes one Purulent Bite attack and one Grave Bite attack.",
+          "validationStatus": "pass",
+          "validationErrors": []
+        },
+        {
+          "targetCr": 8,
+          "bandId": "cr-8-12-mature",
+          "abilityIds": [
+            "purulent-bite",
+            "grave-bite"
+          ],
+          "abilityTitles": [
+            "Purulent Bite",
+            "Grave Bite"
+          ],
+          "authoredAbilityCount": 2,
+          "compiledAbilityCount": 3,
+          "multiattackEnabled": true,
+          "multiattackCount": 3,
+          "routineEnabled": true,
+          "routineSource": "manual",
+          "allocationKeys": [
+            "purulent-bite:purulent-bite",
+            "purulent-bite:grave-bite"
+          ],
+          "renderedMultiattack": "The monster makes two Purulent Bite attacks and one Grave Bite attack.",
+          "validationStatus": "pass",
+          "validationErrors": []
+        },
+        {
+          "targetCr": 10,
+          "bandId": "cr-8-12-mature",
+          "abilityIds": [
+            "purulent-bite",
+            "grave-bite"
+          ],
+          "abilityTitles": [
+            "Purulent Bite",
+            "Grave Bite"
+          ],
+          "authoredAbilityCount": 2,
+          "compiledAbilityCount": 3,
+          "multiattackEnabled": true,
+          "multiattackCount": 3,
+          "routineEnabled": true,
+          "routineSource": "manual",
+          "allocationKeys": [
+            "purulent-bite:purulent-bite",
+            "purulent-bite:grave-bite"
+          ],
+          "renderedMultiattack": "The monster makes two Purulent Bite attacks and one Grave Bite attack.",
+          "validationStatus": "pass",
+          "validationErrors": []
+        },
+        {
+          "targetCr": 15,
+          "bandId": "cr-13-30-apex",
+          "abilityIds": [
+            "purulent-bite",
+            "grave-bite",
+            "corpse-tendrils"
+          ],
+          "abilityTitles": [
+            "Purulent Bite",
+            "Grave Bite",
+            "Corpse Tendrils"
+          ],
+          "authoredAbilityCount": 3,
+          "compiledAbilityCount": 4,
+          "multiattackEnabled": true,
+          "multiattackCount": 3,
+          "routineEnabled": true,
+          "routineSource": "manual",
+          "allocationKeys": [
+            "purulent-bite:purulent-bite",
+            "purulent-bite:grave-bite"
+          ],
+          "renderedMultiattack": "The monster makes two Purulent Bite attacks and one Grave Bite attack. It can replace one attack with a use of Corpse Tendrils if available.",
+          "validationStatus": "pass",
+          "validationErrors": []
+        }
+      ],
+      "migration": {
+        "legacyGraftIds": [
+          "purulent-bite",
+          "grave-bite",
+          "corpse-tendrils"
+        ],
+        "status": "active-native-transition",
+        "phase": "phase5.1-cr-scaled-attack-patterns",
+        "version": "monster-attack-pattern-migration-v1.4-evocative-pattern-names"
+      },
+      "issues": [],
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "version": "monster-attack-pattern-audit-v1.1-cr-scaled",
+      "applicable": true,
+      "id": "corpse-tendrils",
+      "title": "Corpse Binder",
+      "source": "jikininki",
+      "status": "pass",
+      "pass": true,
+      "identity": {
+        "fantasy": "The dead become extensions of the spirit's hunger, holding the living in place for the feeding bite.",
+        "tacticalRole": "corpse-anchored controller with focused follow-through",
+        "signature": "animate corpse, restrain, cross the field, feed",
+        "recognitionTags": [
+          "corpse-tendrils",
+          "corpse-anchor",
+          "restrained-prey",
+          "grave-hunger"
+        ]
+      },
+      "recognition": {
+        "pass": true,
+        "tags": [
+          "corpse-tendrils",
+          "corpse-anchor",
+          "restrained-prey",
+          "grave-hunger"
+        ]
+      },
+      "progression": {
+        "pass": true,
+        "monotonicAbilities": true,
+        "monotonicCadence": true,
+        "lowCrAbilityCount": 1,
+        "apexAbilityCount": 2,
+        "authoredAbilityCount": 2,
+        "lowCrMultiattackCount": 0,
+        "apexMultiattackCount": 3
+      },
+      "progressionContract": {
+        "schemaVersion": "monster-attack-pattern-progression-v1.0",
+        "basis": "targetCr",
+        "calibration": "Bestiary.csv-503-monsters",
+        "calibrationTargets": {
+          "cr0To1": {
+            "meanOptions": 1.33,
+            "multiattackRate": 0.1371,
+            "medianAttacks": 2
+          },
+          "cr2To4": {
+            "meanOptions": 1.72,
+            "multiattackRate": 0.7008,
+            "medianAttacks": 2
+          },
+          "cr5To8": {
+            "meanOptions": 1.91,
+            "multiattackRate": 0.9388,
+            "medianAttacks": 2
+          },
+          "cr9To12": {
+            "meanOptions": 1.98,
+            "multiattackRate": 0.9787,
+            "medianAttacks": 3
+          },
+          "cr13Plus": {
+            "meanOptions": 2.6,
+            "multiattackRate": 0.9615,
+            "medianAttacks": 3
+          }
+        },
+        "bands": [
+          {
+            "id": "cr-0-1-nascent",
+            "minCr": 0,
+            "maxCr": 1,
+            "abilityIds": [
+              "grave-bite"
+            ],
+            "multiattack": {
+              "enabled": false,
+              "mode": "fixed",
+              "count": 0
+            },
+            "defaultSequence": [],
+            "opener": [],
+            "abilityPatches": {},
+            "graftPatch": null
+          },
+          {
+            "id": "cr-2-4-developed",
+            "minCr": 2,
+            "maxCr": 4,
+            "abilityIds": [
+              "grave-bite",
+              "corpse-tendrils"
+            ],
+            "multiattack": {
+              "enabled": false,
+              "mode": "fixed",
+              "count": 0
+            },
+            "defaultSequence": [],
+            "opener": [],
+            "abilityPatches": {},
+            "graftPatch": null
+          },
+          {
+            "id": "cr-5-7-veteran",
+            "minCr": 5,
+            "maxCr": 7,
+            "abilityIds": [
+              "grave-bite",
+              "corpse-tendrils"
+            ],
+            "multiattack": {
+              "enabled": true,
+              "mode": "fixed",
+              "count": 2
+            },
+            "defaultSequence": [],
+            "opener": [],
+            "abilityPatches": {},
+            "graftPatch": null
+          },
+          {
+            "id": "cr-8-12-mature",
+            "minCr": 8,
+            "maxCr": 12,
+            "abilityIds": [
+              "grave-bite",
+              "corpse-tendrils"
+            ],
+            "multiattack": {
+              "enabled": true,
+              "mode": "fixed",
+              "count": 2
+            },
+            "defaultSequence": [],
+            "opener": [],
+            "abilityPatches": {},
+            "graftPatch": null
+          },
+          {
+            "id": "cr-13-30-apex",
+            "minCr": 13,
+            "maxCr": 30,
+            "abilityIds": [
+              "grave-bite",
+              "corpse-tendrils"
+            ],
+            "multiattack": {
+              "enabled": true,
+              "mode": "fixed",
+              "count": 3
+            },
+            "defaultSequence": [],
+            "opener": [],
+            "abilityPatches": {},
+            "graftPatch": null
+          }
+        ]
+      },
+      "counterplay": {
+        "pass": true,
+        "channels": [
+          "telegraph",
+          "positioning",
+          "breakCondition",
+          "nonDamage"
+        ]
+      },
+      "snapshots": [
+        {
+          "targetCr": 1,
+          "bandId": "cr-0-1-nascent",
+          "abilityIds": [
+            "grave-bite"
+          ],
+          "abilityTitles": [
+            "Grave Bite"
+          ],
+          "authoredAbilityCount": 1,
+          "compiledAbilityCount": 1,
+          "multiattackEnabled": false,
+          "multiattackCount": 0,
+          "routineEnabled": false,
+          "routineSource": "authored-pattern",
+          "allocationKeys": [],
+          "renderedMultiattack": "",
+          "validationStatus": "pass",
+          "validationErrors": []
+        },
+        {
+          "targetCr": 2,
+          "bandId": "cr-2-4-developed",
+          "abilityIds": [
+            "grave-bite",
+            "corpse-tendrils"
+          ],
+          "abilityTitles": [
+            "Grave Bite",
+            "Corpse Tendrils"
+          ],
+          "authoredAbilityCount": 2,
+          "compiledAbilityCount": 2,
+          "multiattackEnabled": false,
+          "multiattackCount": 0,
+          "routineEnabled": false,
+          "routineSource": "authored-pattern",
+          "allocationKeys": [],
+          "renderedMultiattack": "",
+          "validationStatus": "pass",
+          "validationErrors": []
+        },
+        {
+          "targetCr": 5,
+          "bandId": "cr-5-7-veteran",
+          "abilityIds": [
+            "grave-bite",
+            "corpse-tendrils"
+          ],
+          "abilityTitles": [
+            "Grave Bite",
+            "Corpse Tendrils"
+          ],
+          "authoredAbilityCount": 2,
+          "compiledAbilityCount": 3,
+          "multiattackEnabled": true,
+          "multiattackCount": 2,
+          "routineEnabled": true,
+          "routineSource": "manual",
+          "allocationKeys": [
+            "corpse-tendrils:grave-bite"
+          ],
+          "renderedMultiattack": "The monster makes two Grave Bite attacks. It can replace one attack with a use of Corpse Tendrils if available.",
+          "validationStatus": "pass",
+          "validationErrors": []
+        },
+        {
+          "targetCr": 8,
+          "bandId": "cr-8-12-mature",
+          "abilityIds": [
+            "grave-bite",
+            "corpse-tendrils"
+          ],
+          "abilityTitles": [
+            "Grave Bite",
+            "Corpse Tendrils"
+          ],
+          "authoredAbilityCount": 2,
+          "compiledAbilityCount": 3,
+          "multiattackEnabled": true,
+          "multiattackCount": 2,
+          "routineEnabled": true,
+          "routineSource": "manual",
+          "allocationKeys": [
+            "corpse-tendrils:grave-bite"
+          ],
+          "renderedMultiattack": "The monster makes two Grave Bite attacks. It can replace one attack with a use of Corpse Tendrils if available.",
+          "validationStatus": "pass",
+          "validationErrors": []
+        },
+        {
+          "targetCr": 10,
+          "bandId": "cr-8-12-mature",
+          "abilityIds": [
+            "grave-bite",
+            "corpse-tendrils"
+          ],
+          "abilityTitles": [
+            "Grave Bite",
+            "Corpse Tendrils"
+          ],
+          "authoredAbilityCount": 2,
+          "compiledAbilityCount": 3,
+          "multiattackEnabled": true,
+          "multiattackCount": 2,
+          "routineEnabled": true,
+          "routineSource": "manual",
+          "allocationKeys": [
+            "corpse-tendrils:grave-bite"
+          ],
+          "renderedMultiattack": "The monster makes two Grave Bite attacks. It can replace one attack with a use of Corpse Tendrils if available.",
+          "validationStatus": "pass",
+          "validationErrors": []
+        },
+        {
+          "targetCr": 15,
+          "bandId": "cr-13-30-apex",
+          "abilityIds": [
+            "grave-bite",
+            "corpse-tendrils"
+          ],
+          "abilityTitles": [
+            "Grave Bite",
+            "Corpse Tendrils"
+          ],
+          "authoredAbilityCount": 2,
+          "compiledAbilityCount": 3,
+          "multiattackEnabled": true,
+          "multiattackCount": 3,
+          "routineEnabled": true,
+          "routineSource": "manual",
+          "allocationKeys": [
+            "corpse-tendrils:grave-bite"
+          ],
+          "renderedMultiattack": "The monster makes three Grave Bite attacks. It can replace one attack with a use of Corpse Tendrils if available.",
+          "validationStatus": "pass",
+          "validationErrors": []
+        }
+      ],
+      "migration": {
+        "legacyGraftIds": [
+          "grave-bite",
+          "corpse-tendrils"
+        ],
+        "status": "active-native-transition",
+        "phase": "phase5.1-cr-scaled-attack-patterns",
+        "version": "monster-attack-pattern-migration-v1.4-evocative-pattern-names"
+      },
+      "issues": [],
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "version": "monster-attack-pattern-audit-v1.1-cr-scaled",
+      "applicable": true,
+      "id": "venomous-bite",
+      "title": "Venom Hunter",
+      "source": "wolf-spiders",
+      "status": "pass",
+      "pass": true,
+      "identity": {
+        "fantasy": "A patient spider changes range without changing purpose: poison prey, restrict escape, and close for the finishing bite.",
+        "tacticalRole": "range-flexible predator with a restraining deviation",
+        "signature": "spit, close, bite, web the escape",
+        "recognitionTags": [
+          "venom-fangs",
+          "poison-spit",
+          "web-shot",
+          "hunting-spider"
+        ]
+      },
+      "recognition": {
+        "pass": true,
+        "tags": [
+          "venom-fangs",
+          "poison-spit",
+          "web-shot",
+          "hunting-spider"
+        ]
+      },
+      "progression": {
+        "pass": true,
+        "monotonicAbilities": true,
+        "monotonicCadence": true,
+        "lowCrAbilityCount": 2,
+        "apexAbilityCount": 3,
+        "authoredAbilityCount": 3,
+        "lowCrMultiattackCount": 2,
+        "apexMultiattackCount": 3
+      },
+      "progressionContract": {
+        "schemaVersion": "monster-attack-pattern-progression-v1.0",
+        "basis": "targetCr",
+        "calibration": "Bestiary.csv-503-monsters",
+        "calibrationTargets": {
+          "cr0To1": {
+            "meanOptions": 1.33,
+            "multiattackRate": 0.1371,
+            "medianAttacks": 2
+          },
+          "cr2To4": {
+            "meanOptions": 1.72,
+            "multiattackRate": 0.7008,
+            "medianAttacks": 2
+          },
+          "cr5To8": {
+            "meanOptions": 1.91,
+            "multiattackRate": 0.9388,
+            "medianAttacks": 2
+          },
+          "cr9To12": {
+            "meanOptions": 1.98,
+            "multiattackRate": 0.9787,
+            "medianAttacks": 3
+          },
+          "cr13Plus": {
+            "meanOptions": 2.6,
+            "multiattackRate": 0.9615,
+            "medianAttacks": 3
+          }
+        },
+        "bands": [
+          {
+            "id": "cr-0-1-nascent",
+            "minCr": 0,
+            "maxCr": 1,
+            "abilityIds": [
+              "venomous-bite",
+              "venomous-spit"
+            ],
+            "multiattack": {
+              "enabled": true,
+              "mode": "choice",
+              "count": 2
+            },
+            "defaultSequence": [],
+            "opener": [],
+            "abilityPatches": {},
+            "graftPatch": null
+          },
+          {
+            "id": "cr-2-4-developed",
+            "minCr": 2,
+            "maxCr": 4,
+            "abilityIds": [
+              "venomous-bite",
+              "venomous-spit"
+            ],
+            "multiattack": {
+              "enabled": true,
+              "mode": "choice",
+              "count": 2
+            },
+            "defaultSequence": [],
+            "opener": [],
+            "abilityPatches": {},
+            "graftPatch": null
+          },
+          {
+            "id": "cr-5-7-veteran",
+            "minCr": 5,
+            "maxCr": 7,
+            "abilityIds": [
+              "venomous-bite",
+              "venomous-spit"
+            ],
+            "multiattack": {
+              "enabled": true,
+              "mode": "choice",
+              "count": 2
+            },
+            "defaultSequence": [],
+            "opener": [],
+            "abilityPatches": {},
+            "graftPatch": null
+          },
+          {
+            "id": "cr-8-12-mature",
+            "minCr": 8,
+            "maxCr": 12,
+            "abilityIds": [
+              "venomous-bite",
+              "venomous-spit",
+              "web"
+            ],
+            "multiattack": {
+              "enabled": true,
+              "mode": "choice",
+              "count": 3
+            },
+            "defaultSequence": [],
+            "opener": [],
+            "abilityPatches": {},
+            "graftPatch": null
+          },
+          {
+            "id": "cr-13-30-apex",
+            "minCr": 13,
+            "maxCr": 30,
+            "abilityIds": [
+              "venomous-bite",
+              "venomous-spit",
+              "web"
+            ],
+            "multiattack": {
+              "enabled": true,
+              "mode": "choice",
+              "count": 3
+            },
+            "defaultSequence": [],
+            "opener": [],
+            "abilityPatches": {},
+            "graftPatch": null
+          }
+        ]
+      },
+      "counterplay": {
+        "pass": true,
+        "channels": [
+          "telegraph",
+          "positioning",
+          "breakCondition",
+          "nonDamage"
+        ]
+      },
+      "snapshots": [
+        {
+          "targetCr": 1,
+          "bandId": "cr-0-1-nascent",
+          "abilityIds": [
+            "venomous-bite",
+            "venomous-spit"
+          ],
+          "abilityTitles": [
+            "Venomous Bite",
+            "Venomous Spit"
+          ],
+          "authoredAbilityCount": 2,
+          "compiledAbilityCount": 3,
+          "multiattackEnabled": true,
+          "multiattackCount": 2,
+          "routineEnabled": true,
+          "routineSource": "manual",
+          "allocationKeys": [
+            "venomous-bite:venomous-bite",
+            "venomous-bite:venomous-spit"
+          ],
+          "renderedMultiattack": "The monster makes two attacks, using Venomous Bite or Venomous Spit in any combination.",
+          "validationStatus": "pass",
+          "validationErrors": []
+        },
+        {
+          "targetCr": 2,
+          "bandId": "cr-2-4-developed",
+          "abilityIds": [
+            "venomous-bite",
+            "venomous-spit"
+          ],
+          "abilityTitles": [
+            "Venomous Bite",
+            "Venomous Spit"
+          ],
+          "authoredAbilityCount": 2,
+          "compiledAbilityCount": 3,
+          "multiattackEnabled": true,
+          "multiattackCount": 2,
+          "routineEnabled": true,
+          "routineSource": "manual",
+          "allocationKeys": [
+            "venomous-bite:venomous-bite",
+            "venomous-bite:venomous-spit"
+          ],
+          "renderedMultiattack": "The monster makes two attacks, using Venomous Bite or Venomous Spit in any combination.",
+          "validationStatus": "pass",
+          "validationErrors": []
+        },
+        {
+          "targetCr": 5,
+          "bandId": "cr-5-7-veteran",
+          "abilityIds": [
+            "venomous-bite",
+            "venomous-spit"
+          ],
+          "abilityTitles": [
+            "Venomous Bite",
+            "Venomous Spit"
+          ],
+          "authoredAbilityCount": 2,
+          "compiledAbilityCount": 3,
+          "multiattackEnabled": true,
+          "multiattackCount": 2,
+          "routineEnabled": true,
+          "routineSource": "manual",
+          "allocationKeys": [
+            "venomous-bite:venomous-bite",
+            "venomous-bite:venomous-spit"
+          ],
+          "renderedMultiattack": "The monster makes two attacks, using Venomous Bite or Venomous Spit in any combination.",
+          "validationStatus": "pass",
+          "validationErrors": []
+        },
+        {
+          "targetCr": 8,
+          "bandId": "cr-8-12-mature",
+          "abilityIds": [
+            "venomous-bite",
+            "venomous-spit",
+            "web"
+          ],
+          "abilityTitles": [
+            "Venomous Bite",
+            "Venomous Spit",
+            "Web"
+          ],
+          "authoredAbilityCount": 3,
+          "compiledAbilityCount": 4,
+          "multiattackEnabled": true,
+          "multiattackCount": 3,
+          "routineEnabled": true,
+          "routineSource": "manual",
+          "allocationKeys": [
+            "venomous-bite:venomous-bite",
+            "venomous-bite:venomous-spit"
+          ],
+          "renderedMultiattack": "The monster makes three attacks, using Venomous Bite or Venomous Spit in any combination. It can replace one attack with a use of Web if available.",
+          "validationStatus": "pass",
+          "validationErrors": []
+        },
+        {
+          "targetCr": 10,
+          "bandId": "cr-8-12-mature",
+          "abilityIds": [
+            "venomous-bite",
+            "venomous-spit",
+            "web"
+          ],
+          "abilityTitles": [
+            "Venomous Bite",
+            "Venomous Spit",
+            "Web"
+          ],
+          "authoredAbilityCount": 3,
+          "compiledAbilityCount": 4,
+          "multiattackEnabled": true,
+          "multiattackCount": 3,
+          "routineEnabled": true,
+          "routineSource": "manual",
+          "allocationKeys": [
+            "venomous-bite:venomous-bite",
+            "venomous-bite:venomous-spit"
+          ],
+          "renderedMultiattack": "The monster makes three attacks, using Venomous Bite or Venomous Spit in any combination. It can replace one attack with a use of Web if available.",
+          "validationStatus": "pass",
+          "validationErrors": []
+        },
+        {
+          "targetCr": 15,
+          "bandId": "cr-13-30-apex",
+          "abilityIds": [
+            "venomous-bite",
+            "venomous-spit",
+            "web"
+          ],
+          "abilityTitles": [
+            "Venomous Bite",
+            "Venomous Spit",
+            "Web"
+          ],
+          "authoredAbilityCount": 3,
+          "compiledAbilityCount": 4,
+          "multiattackEnabled": true,
+          "multiattackCount": 3,
+          "routineEnabled": true,
+          "routineSource": "manual",
+          "allocationKeys": [
+            "venomous-bite:venomous-bite",
+            "venomous-bite:venomous-spit"
+          ],
+          "renderedMultiattack": "The monster makes three attacks, using Venomous Bite or Venomous Spit in any combination. It can replace one attack with a use of Web if available.",
+          "validationStatus": "pass",
+          "validationErrors": []
+        }
+      ],
+      "migration": {
+        "legacyGraftIds": [
+          "venomous-bite",
+          "venomous-spit",
+          "web-recharge"
+        ],
+        "status": "active-native-transition",
+        "phase": "phase5.1-cr-scaled-attack-patterns",
+        "version": "monster-attack-pattern-migration-v1.4-evocative-pattern-names"
+      },
+      "issues": [],
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "version": "monster-attack-pattern-audit-v1.1-cr-scaled",
+      "applicable": true,
+      "id": "perforate",
+      "title": "Impaler",
+      "source": "wolf-spiders",
+      "status": "pass",
+      "pass": true,
+      "identity": {
+        "fantasy": "A barbed-fang predator creates a wound that demands treatment while a second bite punishes delay.",
+        "tacticalRole": "single-target attrition striker with rescue-tax control",
+        "signature": "open wound, poison, web the retreat",
+        "recognitionTags": [
+          "barbed-fangs",
+          "bleeding-wound",
+          "venom",
+          "web-shot"
+        ]
+      },
+      "recognition": {
+        "pass": true,
+        "tags": [
+          "barbed-fangs",
+          "bleeding-wound",
+          "venom",
+          "web-shot"
+        ]
+      },
+      "progression": {
+        "pass": true,
+        "monotonicAbilities": true,
+        "monotonicCadence": true,
+        "lowCrAbilityCount": 1,
+        "apexAbilityCount": 3,
+        "authoredAbilityCount": 3,
+        "lowCrMultiattackCount": 0,
+        "apexMultiattackCount": 3
+      },
+      "progressionContract": {
+        "schemaVersion": "monster-attack-pattern-progression-v1.0",
+        "basis": "targetCr",
+        "calibration": "Bestiary.csv-503-monsters",
+        "calibrationTargets": {
+          "cr0To1": {
+            "meanOptions": 1.33,
+            "multiattackRate": 0.1371,
+            "medianAttacks": 2
+          },
+          "cr2To4": {
+            "meanOptions": 1.72,
+            "multiattackRate": 0.7008,
+            "medianAttacks": 2
+          },
+          "cr5To8": {
+            "meanOptions": 1.91,
+            "multiattackRate": 0.9388,
+            "medianAttacks": 2
+          },
+          "cr9To12": {
+            "meanOptions": 1.98,
+            "multiattackRate": 0.9787,
+            "medianAttacks": 3
+          },
+          "cr13Plus": {
+            "meanOptions": 2.6,
+            "multiattackRate": 0.9615,
+            "medianAttacks": 3
+          }
+        },
+        "bands": [
+          {
+            "id": "cr-0-1-nascent",
+            "minCr": 0,
+            "maxCr": 1,
+            "abilityIds": [
+              "perforate"
+            ],
+            "multiattack": {
+              "enabled": false,
+              "mode": "fixed",
+              "count": 0
+            },
+            "defaultSequence": [],
+            "opener": [],
+            "abilityPatches": {},
+            "graftPatch": null
+          },
+          {
+            "id": "cr-2-4-developed",
+            "minCr": 2,
+            "maxCr": 4,
+            "abilityIds": [
+              "perforate",
+              "venomous-bite"
+            ],
+            "multiattack": {
+              "enabled": true,
+              "mode": "fixed",
+              "count": 2
+            },
+            "defaultSequence": [],
+            "opener": [],
+            "abilityPatches": {},
+            "graftPatch": null
+          },
+          {
+            "id": "cr-5-7-veteran",
+            "minCr": 5,
+            "maxCr": 7,
+            "abilityIds": [
+              "perforate",
+              "venomous-bite"
+            ],
+            "multiattack": {
+              "enabled": true,
+              "mode": "fixed",
+              "count": 2
+            },
+            "defaultSequence": [],
+            "opener": [],
+            "abilityPatches": {},
+            "graftPatch": null
+          },
+          {
+            "id": "cr-8-12-mature",
+            "minCr": 8,
+            "maxCr": 12,
+            "abilityIds": [
+              "perforate",
+              "venomous-bite",
+              "web"
+            ],
+            "multiattack": {
+              "enabled": true,
+              "mode": "fixed",
+              "count": 3
+            },
+            "defaultSequence": [],
+            "opener": [],
+            "abilityPatches": {},
+            "graftPatch": null
+          },
+          {
+            "id": "cr-13-30-apex",
+            "minCr": 13,
+            "maxCr": 30,
+            "abilityIds": [
+              "perforate",
+              "venomous-bite",
+              "web"
+            ],
+            "multiattack": {
+              "enabled": true,
+              "mode": "fixed",
+              "count": 3
+            },
+            "defaultSequence": [],
+            "opener": [],
+            "abilityPatches": {},
+            "graftPatch": null
+          }
+        ]
+      },
+      "counterplay": {
+        "pass": true,
+        "channels": [
+          "telegraph",
+          "positioning",
+          "breakCondition",
+          "nonDamage"
+        ]
+      },
+      "snapshots": [
+        {
+          "targetCr": 1,
+          "bandId": "cr-0-1-nascent",
+          "abilityIds": [
+            "perforate"
+          ],
+          "abilityTitles": [
+            "Perforate"
+          ],
+          "authoredAbilityCount": 1,
+          "compiledAbilityCount": 1,
+          "multiattackEnabled": false,
+          "multiattackCount": 0,
+          "routineEnabled": false,
+          "routineSource": "authored-pattern",
+          "allocationKeys": [],
+          "renderedMultiattack": "",
+          "validationStatus": "pass",
+          "validationErrors": []
+        },
+        {
+          "targetCr": 2,
+          "bandId": "cr-2-4-developed",
+          "abilityIds": [
+            "perforate",
+            "venomous-bite"
+          ],
+          "abilityTitles": [
+            "Perforate",
+            "Venomous Bite"
+          ],
+          "authoredAbilityCount": 2,
+          "compiledAbilityCount": 3,
+          "multiattackEnabled": true,
+          "multiattackCount": 2,
+          "routineEnabled": true,
+          "routineSource": "manual",
+          "allocationKeys": [
+            "perforate:perforate",
+            "perforate:venomous-bite"
+          ],
+          "renderedMultiattack": "The monster makes one Perforate attack and one Venomous Bite attack.",
+          "validationStatus": "pass",
+          "validationErrors": []
+        },
+        {
+          "targetCr": 5,
+          "bandId": "cr-5-7-veteran",
+          "abilityIds": [
+            "perforate",
+            "venomous-bite"
+          ],
+          "abilityTitles": [
+            "Perforate",
+            "Venomous Bite"
+          ],
+          "authoredAbilityCount": 2,
+          "compiledAbilityCount": 3,
+          "multiattackEnabled": true,
+          "multiattackCount": 2,
+          "routineEnabled": true,
+          "routineSource": "manual",
+          "allocationKeys": [
+            "perforate:perforate",
+            "perforate:venomous-bite"
+          ],
+          "renderedMultiattack": "The monster makes one Perforate attack and one Venomous Bite attack.",
+          "validationStatus": "pass",
+          "validationErrors": []
+        },
+        {
+          "targetCr": 8,
+          "bandId": "cr-8-12-mature",
+          "abilityIds": [
+            "perforate",
+            "venomous-bite",
+            "web"
+          ],
+          "abilityTitles": [
+            "Perforate",
+            "Venomous Bite",
+            "Web"
+          ],
+          "authoredAbilityCount": 3,
+          "compiledAbilityCount": 4,
+          "multiattackEnabled": true,
+          "multiattackCount": 3,
+          "routineEnabled": true,
+          "routineSource": "manual",
+          "allocationKeys": [
+            "perforate:perforate",
+            "perforate:venomous-bite"
+          ],
+          "renderedMultiattack": "The monster makes two Perforate attacks and one Venomous Bite attack. It can replace one attack with a use of Web if available.",
+          "validationStatus": "pass",
+          "validationErrors": []
+        },
+        {
+          "targetCr": 10,
+          "bandId": "cr-8-12-mature",
+          "abilityIds": [
+            "perforate",
+            "venomous-bite",
+            "web"
+          ],
+          "abilityTitles": [
+            "Perforate",
+            "Venomous Bite",
+            "Web"
+          ],
+          "authoredAbilityCount": 3,
+          "compiledAbilityCount": 4,
+          "multiattackEnabled": true,
+          "multiattackCount": 3,
+          "routineEnabled": true,
+          "routineSource": "manual",
+          "allocationKeys": [
+            "perforate:perforate",
+            "perforate:venomous-bite"
+          ],
+          "renderedMultiattack": "The monster makes two Perforate attacks and one Venomous Bite attack. It can replace one attack with a use of Web if available.",
+          "validationStatus": "pass",
+          "validationErrors": []
+        },
+        {
+          "targetCr": 15,
+          "bandId": "cr-13-30-apex",
+          "abilityIds": [
+            "perforate",
+            "venomous-bite",
+            "web"
+          ],
+          "abilityTitles": [
+            "Perforate",
+            "Venomous Bite",
+            "Web"
+          ],
+          "authoredAbilityCount": 3,
+          "compiledAbilityCount": 4,
+          "multiattackEnabled": true,
+          "multiattackCount": 3,
+          "routineEnabled": true,
+          "routineSource": "manual",
+          "allocationKeys": [
+            "perforate:perforate",
+            "perforate:venomous-bite"
+          ],
+          "renderedMultiattack": "The monster makes two Perforate attacks and one Venomous Bite attack. It can replace one attack with a use of Web if available.",
+          "validationStatus": "pass",
+          "validationErrors": []
+        }
+      ],
+      "migration": {
+        "legacyGraftIds": [
+          "perforate",
+          "venomous-bite",
+          "web-recharge"
+        ],
+        "status": "active-native-transition",
+        "phase": "phase5.1-cr-scaled-attack-patterns",
+        "version": "monster-attack-pattern-migration-v1.4-evocative-pattern-names"
+      },
+      "issues": [],
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "version": "monster-attack-pattern-audit-v1.1-cr-scaled",
+      "applicable": true,
+      "id": "web-recharge",
+      "title": "Web Hunter",
+      "source": "wolf-spiders",
+      "status": "pass",
+      "pass": true,
+      "identity": {
+        "fantasy": "A classic web hunter immobilizes one creature and immediately turns restraint into feeding access.",
+        "tacticalRole": "single-target controller into focused melee pressure",
+        "signature": "web, close, bite twice",
+        "recognitionTags": [
+          "web-shot",
+          "restrained-prey",
+          "venom-fangs",
+          "spider-hunt"
+        ]
+      },
+      "recognition": {
+        "pass": true,
+        "tags": [
+          "web-shot",
+          "restrained-prey",
+          "venom-fangs",
+          "spider-hunt"
+        ]
+      },
+      "progression": {
+        "pass": true,
+        "monotonicAbilities": true,
+        "monotonicCadence": true,
+        "lowCrAbilityCount": 1,
+        "apexAbilityCount": 2,
+        "authoredAbilityCount": 2,
+        "lowCrMultiattackCount": 0,
+        "apexMultiattackCount": 3
+      },
+      "progressionContract": {
+        "schemaVersion": "monster-attack-pattern-progression-v1.0",
+        "basis": "targetCr",
+        "calibration": "Bestiary.csv-503-monsters",
+        "calibrationTargets": {
+          "cr0To1": {
+            "meanOptions": 1.33,
+            "multiattackRate": 0.1371,
+            "medianAttacks": 2
+          },
+          "cr2To4": {
+            "meanOptions": 1.72,
+            "multiattackRate": 0.7008,
+            "medianAttacks": 2
+          },
+          "cr5To8": {
+            "meanOptions": 1.91,
+            "multiattackRate": 0.9388,
+            "medianAttacks": 2
+          },
+          "cr9To12": {
+            "meanOptions": 1.98,
+            "multiattackRate": 0.9787,
+            "medianAttacks": 3
+          },
+          "cr13Plus": {
+            "meanOptions": 2.6,
+            "multiattackRate": 0.9615,
+            "medianAttacks": 3
+          }
+        },
+        "bands": [
+          {
+            "id": "cr-0-1-nascent",
+            "minCr": 0,
+            "maxCr": 1,
+            "abilityIds": [
+              "venomous-bite"
+            ],
+            "multiattack": {
+              "enabled": false,
+              "mode": "fixed",
+              "count": 0
+            },
+            "defaultSequence": [],
+            "opener": [],
+            "abilityPatches": {},
+            "graftPatch": null
+          },
+          {
+            "id": "cr-2-4-developed",
+            "minCr": 2,
+            "maxCr": 4,
+            "abilityIds": [
+              "venomous-bite",
+              "web"
+            ],
+            "multiattack": {
+              "enabled": true,
+              "mode": "fixed",
+              "count": 2
+            },
+            "defaultSequence": [],
+            "opener": [],
+            "abilityPatches": {},
+            "graftPatch": null
+          },
+          {
+            "id": "cr-5-7-veteran",
+            "minCr": 5,
+            "maxCr": 7,
+            "abilityIds": [
+              "venomous-bite",
+              "web"
+            ],
+            "multiattack": {
+              "enabled": true,
+              "mode": "fixed",
+              "count": 2
+            },
+            "defaultSequence": [],
+            "opener": [],
+            "abilityPatches": {},
+            "graftPatch": null
+          },
+          {
+            "id": "cr-8-12-mature",
+            "minCr": 8,
+            "maxCr": 12,
+            "abilityIds": [
+              "venomous-bite",
+              "web"
+            ],
+            "multiattack": {
+              "enabled": true,
+              "mode": "fixed",
+              "count": 3
+            },
+            "defaultSequence": [],
+            "opener": [],
+            "abilityPatches": {},
+            "graftPatch": null
+          },
+          {
+            "id": "cr-13-30-apex",
+            "minCr": 13,
+            "maxCr": 30,
+            "abilityIds": [
+              "venomous-bite",
+              "web"
+            ],
+            "multiattack": {
+              "enabled": true,
+              "mode": "fixed",
+              "count": 3
+            },
+            "defaultSequence": [],
+            "opener": [],
+            "abilityPatches": {},
+            "graftPatch": null
+          }
+        ]
+      },
+      "counterplay": {
+        "pass": true,
+        "channels": [
+          "telegraph",
+          "positioning",
+          "breakCondition",
+          "nonDamage"
+        ]
+      },
+      "snapshots": [
+        {
+          "targetCr": 1,
+          "bandId": "cr-0-1-nascent",
+          "abilityIds": [
+            "venomous-bite"
+          ],
+          "abilityTitles": [
+            "Venomous Bite"
+          ],
+          "authoredAbilityCount": 1,
+          "compiledAbilityCount": 1,
+          "multiattackEnabled": false,
+          "multiattackCount": 0,
+          "routineEnabled": false,
+          "routineSource": "authored-pattern",
+          "allocationKeys": [],
+          "renderedMultiattack": "",
+          "validationStatus": "pass",
+          "validationErrors": []
+        },
+        {
+          "targetCr": 2,
+          "bandId": "cr-2-4-developed",
+          "abilityIds": [
+            "venomous-bite",
+            "web"
+          ],
+          "abilityTitles": [
+            "Venomous Bite",
+            "Web"
+          ],
+          "authoredAbilityCount": 2,
+          "compiledAbilityCount": 3,
+          "multiattackEnabled": true,
+          "multiattackCount": 2,
+          "routineEnabled": true,
+          "routineSource": "manual",
+          "allocationKeys": [
+            "web-recharge:venomous-bite"
+          ],
+          "renderedMultiattack": "The monster makes two Venomous Bite attacks. It can replace one attack with a use of Web if available.",
+          "validationStatus": "pass",
+          "validationErrors": []
+        },
+        {
+          "targetCr": 5,
+          "bandId": "cr-5-7-veteran",
+          "abilityIds": [
+            "venomous-bite",
+            "web"
+          ],
+          "abilityTitles": [
+            "Venomous Bite",
+            "Web"
+          ],
+          "authoredAbilityCount": 2,
+          "compiledAbilityCount": 3,
+          "multiattackEnabled": true,
+          "multiattackCount": 2,
+          "routineEnabled": true,
+          "routineSource": "manual",
+          "allocationKeys": [
+            "web-recharge:venomous-bite"
+          ],
+          "renderedMultiattack": "The monster makes two Venomous Bite attacks. It can replace one attack with a use of Web if available.",
+          "validationStatus": "pass",
+          "validationErrors": []
+        },
+        {
+          "targetCr": 8,
+          "bandId": "cr-8-12-mature",
+          "abilityIds": [
+            "venomous-bite",
+            "web"
+          ],
+          "abilityTitles": [
+            "Venomous Bite",
+            "Web"
+          ],
+          "authoredAbilityCount": 2,
+          "compiledAbilityCount": 3,
+          "multiattackEnabled": true,
+          "multiattackCount": 3,
+          "routineEnabled": true,
+          "routineSource": "manual",
+          "allocationKeys": [
+            "web-recharge:venomous-bite"
+          ],
+          "renderedMultiattack": "The monster makes three Venomous Bite attacks. It can replace one attack with a use of Web if available.",
+          "validationStatus": "pass",
+          "validationErrors": []
+        },
+        {
+          "targetCr": 10,
+          "bandId": "cr-8-12-mature",
+          "abilityIds": [
+            "venomous-bite",
+            "web"
+          ],
+          "abilityTitles": [
+            "Venomous Bite",
+            "Web"
+          ],
+          "authoredAbilityCount": 2,
+          "compiledAbilityCount": 3,
+          "multiattackEnabled": true,
+          "multiattackCount": 3,
+          "routineEnabled": true,
+          "routineSource": "manual",
+          "allocationKeys": [
+            "web-recharge:venomous-bite"
+          ],
+          "renderedMultiattack": "The monster makes three Venomous Bite attacks. It can replace one attack with a use of Web if available.",
+          "validationStatus": "pass",
+          "validationErrors": []
+        },
+        {
+          "targetCr": 15,
+          "bandId": "cr-13-30-apex",
+          "abilityIds": [
+            "venomous-bite",
+            "web"
+          ],
+          "abilityTitles": [
+            "Venomous Bite",
+            "Web"
+          ],
+          "authoredAbilityCount": 2,
+          "compiledAbilityCount": 3,
+          "multiattackEnabled": true,
+          "multiattackCount": 3,
+          "routineEnabled": true,
+          "routineSource": "manual",
+          "allocationKeys": [
+            "web-recharge:venomous-bite"
+          ],
+          "renderedMultiattack": "The monster makes three Venomous Bite attacks. It can replace one attack with a use of Web if available.",
+          "validationStatus": "pass",
+          "validationErrors": []
+        }
+      ],
+      "migration": {
+        "legacyGraftIds": [
+          "venomous-bite",
+          "web-recharge"
+        ],
+        "status": "active-native-transition",
+        "phase": "phase5.1-cr-scaled-attack-patterns",
+        "version": "monster-attack-pattern-migration-v1.4-evocative-pattern-names"
+      },
+      "issues": [],
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "version": "monster-attack-pattern-audit-v1.1-cr-scaled",
+      "applicable": true,
+      "id": "shadow-web",
+      "title": "Shadow Weaver",
+      "source": "wolf-spiders",
+      "status": "pass",
+      "pass": true,
+      "identity": {
+        "fantasy": "A darkness-adapted spider hunts across ranges and turns restraint itself into a cutting wound.",
+        "tacticalRole": "range-flexible controller with persistent web damage",
+        "signature": "harry, shadow-web, cut restrained prey",
+        "recognitionTags": [
+          "shadow-web",
+          "cutting-silk",
+          "venom",
+          "darkness-hunter"
+        ]
+      },
+      "recognition": {
+        "pass": true,
+        "tags": [
+          "shadow-web",
+          "cutting-silk",
+          "venom",
+          "darkness-hunter"
+        ]
+      },
+      "progression": {
+        "pass": true,
+        "monotonicAbilities": true,
+        "monotonicCadence": true,
+        "lowCrAbilityCount": 1,
+        "apexAbilityCount": 3,
+        "authoredAbilityCount": 3,
+        "lowCrMultiattackCount": 0,
+        "apexMultiattackCount": 3
+      },
+      "progressionContract": {
+        "schemaVersion": "monster-attack-pattern-progression-v1.0",
+        "basis": "targetCr",
+        "calibration": "Bestiary.csv-503-monsters",
+        "calibrationTargets": {
+          "cr0To1": {
+            "meanOptions": 1.33,
+            "multiattackRate": 0.1371,
+            "medianAttacks": 2
+          },
+          "cr2To4": {
+            "meanOptions": 1.72,
+            "multiattackRate": 0.7008,
+            "medianAttacks": 2
+          },
+          "cr5To8": {
+            "meanOptions": 1.91,
+            "multiattackRate": 0.9388,
+            "medianAttacks": 2
+          },
+          "cr9To12": {
+            "meanOptions": 1.98,
+            "multiattackRate": 0.9787,
+            "medianAttacks": 3
+          },
+          "cr13Plus": {
+            "meanOptions": 2.6,
+            "multiattackRate": 0.9615,
+            "medianAttacks": 3
+          }
+        },
+        "bands": [
+          {
+            "id": "cr-0-1-nascent",
+            "minCr": 0,
+            "maxCr": 1,
+            "abilityIds": [
+              "venomous-bite"
+            ],
+            "multiattack": {
+              "enabled": false,
+              "mode": "choice",
+              "count": 0
+            },
+            "defaultSequence": [],
+            "opener": [],
+            "abilityPatches": {},
+            "graftPatch": null
+          },
+          {
+            "id": "cr-2-4-developed",
+            "minCr": 2,
+            "maxCr": 4,
+            "abilityIds": [
+              "venomous-bite",
+              "venomous-spit"
+            ],
+            "multiattack": {
+              "enabled": true,
+              "mode": "choice",
+              "count": 2
+            },
+            "defaultSequence": [],
+            "opener": [],
+            "abilityPatches": {},
+            "graftPatch": null
+          },
+          {
+            "id": "cr-5-7-veteran",
+            "minCr": 5,
+            "maxCr": 7,
+            "abilityIds": [
+              "venomous-bite",
+              "venomous-spit"
+            ],
+            "multiattack": {
+              "enabled": true,
+              "mode": "choice",
+              "count": 2
+            },
+            "defaultSequence": [],
+            "opener": [],
+            "abilityPatches": {},
+            "graftPatch": null
+          },
+          {
+            "id": "cr-8-12-mature",
+            "minCr": 8,
+            "maxCr": 12,
+            "abilityIds": [
+              "venomous-bite",
+              "venomous-spit"
+            ],
+            "multiattack": {
+              "enabled": true,
+              "mode": "choice",
+              "count": 3
+            },
+            "defaultSequence": [],
+            "opener": [],
+            "abilityPatches": {},
+            "graftPatch": null
+          },
+          {
+            "id": "cr-13-30-apex",
+            "minCr": 13,
+            "maxCr": 30,
+            "abilityIds": [
+              "venomous-bite",
+              "venomous-spit",
+              "shadow-web"
+            ],
+            "multiattack": {
+              "enabled": true,
+              "mode": "choice",
+              "count": 3
+            },
+            "defaultSequence": [],
+            "opener": [],
+            "abilityPatches": {},
+            "graftPatch": null
+          }
+        ]
+      },
+      "counterplay": {
+        "pass": true,
+        "channels": [
+          "telegraph",
+          "positioning",
+          "breakCondition",
+          "nonDamage"
+        ]
+      },
+      "snapshots": [
+        {
+          "targetCr": 1,
+          "bandId": "cr-0-1-nascent",
+          "abilityIds": [
+            "venomous-bite"
+          ],
+          "abilityTitles": [
+            "Venomous Bite"
+          ],
+          "authoredAbilityCount": 1,
+          "compiledAbilityCount": 1,
+          "multiattackEnabled": false,
+          "multiattackCount": 0,
+          "routineEnabled": false,
+          "routineSource": "authored-pattern",
+          "allocationKeys": [],
+          "renderedMultiattack": "",
+          "validationStatus": "pass",
+          "validationErrors": []
+        },
+        {
+          "targetCr": 2,
+          "bandId": "cr-2-4-developed",
+          "abilityIds": [
+            "venomous-bite",
+            "venomous-spit"
+          ],
+          "abilityTitles": [
+            "Venomous Bite",
+            "Venomous Spit"
+          ],
+          "authoredAbilityCount": 2,
+          "compiledAbilityCount": 3,
+          "multiattackEnabled": true,
+          "multiattackCount": 2,
+          "routineEnabled": true,
+          "routineSource": "manual",
+          "allocationKeys": [
+            "shadow-web:venomous-bite",
+            "shadow-web:venomous-spit"
+          ],
+          "renderedMultiattack": "The monster makes two attacks, using Venomous Bite or Venomous Spit in any combination.",
+          "validationStatus": "pass",
+          "validationErrors": []
+        },
+        {
+          "targetCr": 5,
+          "bandId": "cr-5-7-veteran",
+          "abilityIds": [
+            "venomous-bite",
+            "venomous-spit"
+          ],
+          "abilityTitles": [
+            "Venomous Bite",
+            "Venomous Spit"
+          ],
+          "authoredAbilityCount": 2,
+          "compiledAbilityCount": 3,
+          "multiattackEnabled": true,
+          "multiattackCount": 2,
+          "routineEnabled": true,
+          "routineSource": "manual",
+          "allocationKeys": [
+            "shadow-web:venomous-bite",
+            "shadow-web:venomous-spit"
+          ],
+          "renderedMultiattack": "The monster makes two attacks, using Venomous Bite or Venomous Spit in any combination.",
+          "validationStatus": "pass",
+          "validationErrors": []
+        },
+        {
+          "targetCr": 8,
+          "bandId": "cr-8-12-mature",
+          "abilityIds": [
+            "venomous-bite",
+            "venomous-spit"
+          ],
+          "abilityTitles": [
+            "Venomous Bite",
+            "Venomous Spit"
+          ],
+          "authoredAbilityCount": 2,
+          "compiledAbilityCount": 3,
+          "multiattackEnabled": true,
+          "multiattackCount": 3,
+          "routineEnabled": true,
+          "routineSource": "manual",
+          "allocationKeys": [
+            "shadow-web:venomous-bite",
+            "shadow-web:venomous-spit"
+          ],
+          "renderedMultiattack": "The monster makes three attacks, using Venomous Bite or Venomous Spit in any combination.",
+          "validationStatus": "pass",
+          "validationErrors": []
+        },
+        {
+          "targetCr": 10,
+          "bandId": "cr-8-12-mature",
+          "abilityIds": [
+            "venomous-bite",
+            "venomous-spit"
+          ],
+          "abilityTitles": [
+            "Venomous Bite",
+            "Venomous Spit"
+          ],
+          "authoredAbilityCount": 2,
+          "compiledAbilityCount": 3,
+          "multiattackEnabled": true,
+          "multiattackCount": 3,
+          "routineEnabled": true,
+          "routineSource": "manual",
+          "allocationKeys": [
+            "shadow-web:venomous-bite",
+            "shadow-web:venomous-spit"
+          ],
+          "renderedMultiattack": "The monster makes three attacks, using Venomous Bite or Venomous Spit in any combination.",
+          "validationStatus": "pass",
+          "validationErrors": []
+        },
+        {
+          "targetCr": 15,
+          "bandId": "cr-13-30-apex",
+          "abilityIds": [
+            "venomous-bite",
+            "venomous-spit",
+            "shadow-web"
+          ],
+          "abilityTitles": [
+            "Venomous Bite",
+            "Venomous Spit",
+            "Shadow Web"
+          ],
+          "authoredAbilityCount": 3,
+          "compiledAbilityCount": 4,
+          "multiattackEnabled": true,
+          "multiattackCount": 3,
+          "routineEnabled": true,
+          "routineSource": "manual",
+          "allocationKeys": [
+            "shadow-web:venomous-bite",
+            "shadow-web:venomous-spit"
+          ],
+          "renderedMultiattack": "The monster makes three attacks, using Venomous Bite or Venomous Spit in any combination. It can replace one attack with a use of Shadow Web if available.",
+          "validationStatus": "pass",
+          "validationErrors": []
+        }
+      ],
+      "migration": {
+        "legacyGraftIds": [
+          "venomous-bite",
+          "venomous-spit",
+          "shadow-web"
+        ],
+        "status": "active-native-transition",
+        "phase": "phase5.1-cr-scaled-attack-patterns",
+        "version": "monster-attack-pattern-migration-v1.4-evocative-pattern-names"
+      },
+      "issues": [],
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "version": "monster-attack-pattern-audit-v1.1-cr-scaled",
+      "applicable": true,
+      "id": "venomous-spit",
+      "title": "Venom Spitter",
+      "source": "wolf-spiders",
+      "status": "pass",
+      "pass": true,
+      "identity": {
+        "fantasy": "A venom hunter refuses to become harmless at range and uses spit to create the approach for its fangs.",
+        "tacticalRole": "range-flexible striker",
+        "signature": "spit while closing, bite when safe",
+        "recognitionTags": [
+          "venom-spit",
+          "venom-fangs",
+          "range-switch",
+          "hunting-spider"
+        ]
+      },
+      "recognition": {
+        "pass": true,
+        "tags": [
+          "venom-spit",
+          "venom-fangs",
+          "range-switch",
+          "hunting-spider"
+        ]
+      },
+      "progression": {
+        "pass": true,
+        "monotonicAbilities": true,
+        "monotonicCadence": true,
+        "lowCrAbilityCount": 2,
+        "apexAbilityCount": 2,
+        "authoredAbilityCount": 2,
+        "lowCrMultiattackCount": 2,
+        "apexMultiattackCount": 3
+      },
+      "progressionContract": {
+        "schemaVersion": "monster-attack-pattern-progression-v1.0",
+        "basis": "targetCr",
+        "calibration": "Bestiary.csv-503-monsters",
+        "calibrationTargets": {
+          "cr0To1": {
+            "meanOptions": 1.33,
+            "multiattackRate": 0.1371,
+            "medianAttacks": 2
+          },
+          "cr2To4": {
+            "meanOptions": 1.72,
+            "multiattackRate": 0.7008,
+            "medianAttacks": 2
+          },
+          "cr5To8": {
+            "meanOptions": 1.91,
+            "multiattackRate": 0.9388,
+            "medianAttacks": 2
+          },
+          "cr9To12": {
+            "meanOptions": 1.98,
+            "multiattackRate": 0.9787,
+            "medianAttacks": 3
+          },
+          "cr13Plus": {
+            "meanOptions": 2.6,
+            "multiattackRate": 0.9615,
+            "medianAttacks": 3
+          }
+        },
+        "bands": [
+          {
+            "id": "cr-0-1-nascent",
+            "minCr": 0,
+            "maxCr": 1,
+            "abilityIds": [
+              "venomous-spit",
+              "venomous-bite"
+            ],
+            "multiattack": {
+              "enabled": true,
+              "mode": "choice",
+              "count": 2
+            },
+            "defaultSequence": [],
+            "opener": [],
+            "abilityPatches": {},
+            "graftPatch": null
+          },
+          {
+            "id": "cr-2-4-developed",
+            "minCr": 2,
+            "maxCr": 4,
+            "abilityIds": [
+              "venomous-spit",
+              "venomous-bite"
+            ],
+            "multiattack": {
+              "enabled": true,
+              "mode": "choice",
+              "count": 2
+            },
+            "defaultSequence": [],
+            "opener": [],
+            "abilityPatches": {},
+            "graftPatch": null
+          },
+          {
+            "id": "cr-5-7-veteran",
+            "minCr": 5,
+            "maxCr": 7,
+            "abilityIds": [
+              "venomous-spit",
+              "venomous-bite"
+            ],
+            "multiattack": {
+              "enabled": true,
+              "mode": "choice",
+              "count": 2
+            },
+            "defaultSequence": [],
+            "opener": [],
+            "abilityPatches": {},
+            "graftPatch": null
+          },
+          {
+            "id": "cr-8-12-mature",
+            "minCr": 8,
+            "maxCr": 12,
+            "abilityIds": [
+              "venomous-spit",
+              "venomous-bite"
+            ],
+            "multiattack": {
+              "enabled": true,
+              "mode": "choice",
+              "count": 3
+            },
+            "defaultSequence": [],
+            "opener": [],
+            "abilityPatches": {},
+            "graftPatch": null
+          },
+          {
+            "id": "cr-13-30-apex",
+            "minCr": 13,
+            "maxCr": 30,
+            "abilityIds": [
+              "venomous-spit",
+              "venomous-bite"
+            ],
+            "multiattack": {
+              "enabled": true,
+              "mode": "choice",
+              "count": 3
+            },
+            "defaultSequence": [],
+            "opener": [],
+            "abilityPatches": {},
+            "graftPatch": null
+          }
+        ]
+      },
+      "counterplay": {
+        "pass": true,
+        "channels": [
+          "telegraph",
+          "positioning",
+          "breakCondition",
+          "nonDamage"
+        ]
+      },
+      "snapshots": [
+        {
+          "targetCr": 1,
+          "bandId": "cr-0-1-nascent",
+          "abilityIds": [
+            "venomous-spit",
+            "venomous-bite"
+          ],
+          "abilityTitles": [
+            "Venomous Spit",
+            "Venomous Bite"
+          ],
+          "authoredAbilityCount": 2,
+          "compiledAbilityCount": 3,
+          "multiattackEnabled": true,
+          "multiattackCount": 2,
+          "routineEnabled": true,
+          "routineSource": "manual",
+          "allocationKeys": [
+            "venomous-spit:venomous-spit",
+            "venomous-spit:venomous-bite"
+          ],
+          "renderedMultiattack": "The monster makes two attacks, using Venomous Spit or Venomous Bite in any combination.",
+          "validationStatus": "pass",
+          "validationErrors": []
+        },
+        {
+          "targetCr": 2,
+          "bandId": "cr-2-4-developed",
+          "abilityIds": [
+            "venomous-spit",
+            "venomous-bite"
+          ],
+          "abilityTitles": [
+            "Venomous Spit",
+            "Venomous Bite"
+          ],
+          "authoredAbilityCount": 2,
+          "compiledAbilityCount": 3,
+          "multiattackEnabled": true,
+          "multiattackCount": 2,
+          "routineEnabled": true,
+          "routineSource": "manual",
+          "allocationKeys": [
+            "venomous-spit:venomous-spit",
+            "venomous-spit:venomous-bite"
+          ],
+          "renderedMultiattack": "The monster makes two attacks, using Venomous Spit or Venomous Bite in any combination.",
+          "validationStatus": "pass",
+          "validationErrors": []
+        },
+        {
+          "targetCr": 5,
+          "bandId": "cr-5-7-veteran",
+          "abilityIds": [
+            "venomous-spit",
+            "venomous-bite"
+          ],
+          "abilityTitles": [
+            "Venomous Spit",
+            "Venomous Bite"
+          ],
+          "authoredAbilityCount": 2,
+          "compiledAbilityCount": 3,
+          "multiattackEnabled": true,
+          "multiattackCount": 2,
+          "routineEnabled": true,
+          "routineSource": "manual",
+          "allocationKeys": [
+            "venomous-spit:venomous-spit",
+            "venomous-spit:venomous-bite"
+          ],
+          "renderedMultiattack": "The monster makes two attacks, using Venomous Spit or Venomous Bite in any combination.",
+          "validationStatus": "pass",
+          "validationErrors": []
+        },
+        {
+          "targetCr": 8,
+          "bandId": "cr-8-12-mature",
+          "abilityIds": [
+            "venomous-spit",
+            "venomous-bite"
+          ],
+          "abilityTitles": [
+            "Venomous Spit",
+            "Venomous Bite"
+          ],
+          "authoredAbilityCount": 2,
+          "compiledAbilityCount": 3,
+          "multiattackEnabled": true,
+          "multiattackCount": 3,
+          "routineEnabled": true,
+          "routineSource": "manual",
+          "allocationKeys": [
+            "venomous-spit:venomous-spit",
+            "venomous-spit:venomous-bite"
+          ],
+          "renderedMultiattack": "The monster makes three attacks, using Venomous Spit or Venomous Bite in any combination.",
+          "validationStatus": "pass",
+          "validationErrors": []
+        },
+        {
+          "targetCr": 10,
+          "bandId": "cr-8-12-mature",
+          "abilityIds": [
+            "venomous-spit",
+            "venomous-bite"
+          ],
+          "abilityTitles": [
+            "Venomous Spit",
+            "Venomous Bite"
+          ],
+          "authoredAbilityCount": 2,
+          "compiledAbilityCount": 3,
+          "multiattackEnabled": true,
+          "multiattackCount": 3,
+          "routineEnabled": true,
+          "routineSource": "manual",
+          "allocationKeys": [
+            "venomous-spit:venomous-spit",
+            "venomous-spit:venomous-bite"
+          ],
+          "renderedMultiattack": "The monster makes three attacks, using Venomous Spit or Venomous Bite in any combination.",
+          "validationStatus": "pass",
+          "validationErrors": []
+        },
+        {
+          "targetCr": 15,
+          "bandId": "cr-13-30-apex",
+          "abilityIds": [
+            "venomous-spit",
+            "venomous-bite"
+          ],
+          "abilityTitles": [
+            "Venomous Spit",
+            "Venomous Bite"
+          ],
+          "authoredAbilityCount": 2,
+          "compiledAbilityCount": 3,
+          "multiattackEnabled": true,
+          "multiattackCount": 3,
+          "routineEnabled": true,
+          "routineSource": "manual",
+          "allocationKeys": [
+            "venomous-spit:venomous-spit",
+            "venomous-spit:venomous-bite"
+          ],
+          "renderedMultiattack": "The monster makes three attacks, using Venomous Spit or Venomous Bite in any combination.",
+          "validationStatus": "pass",
+          "validationErrors": []
+        }
+      ],
+      "migration": {
+        "legacyGraftIds": [
+          "venomous-spit",
+          "venomous-bite"
+        ],
+        "status": "active-native-transition",
+        "phase": "phase5.1-cr-scaled-attack-patterns",
+        "version": "monster-attack-pattern-migration-v1.4-evocative-pattern-names"
+      },
+      "issues": [],
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "version": "monster-attack-pattern-audit-v1.1-cr-scaled",
+      "applicable": true,
+      "id": "brood-injection",
+      "title": "Broodmaker",
+      "source": "wolf-spiders",
+      "status": "pass",
+      "pass": true,
+      "identity": {
+        "fantasy": "A brood-bearing spider creates a host rather than simply killing prey, using venom and webbing to secure the implantation.",
+        "tacticalRole": "single-target horror striker with delayed treatment pressure",
+        "signature": "restrain, bite, implant, protect the host",
+        "recognitionTags": [
+          "brood-injection",
+          "moving-wound",
+          "venom-fangs",
+          "host-making"
+        ]
+      },
+      "recognition": {
+        "pass": true,
+        "tags": [
+          "brood-injection",
+          "moving-wound",
+          "venom-fangs",
+          "host-making"
+        ]
+      },
+      "progression": {
+        "pass": true,
+        "monotonicAbilities": true,
+        "monotonicCadence": true,
+        "lowCrAbilityCount": 1,
+        "apexAbilityCount": 3,
+        "authoredAbilityCount": 3,
+        "lowCrMultiattackCount": 0,
+        "apexMultiattackCount": 3
+      },
+      "progressionContract": {
+        "schemaVersion": "monster-attack-pattern-progression-v1.0",
+        "basis": "targetCr",
+        "calibration": "Bestiary.csv-503-monsters",
+        "calibrationTargets": {
+          "cr0To1": {
+            "meanOptions": 1.33,
+            "multiattackRate": 0.1371,
+            "medianAttacks": 2
+          },
+          "cr2To4": {
+            "meanOptions": 1.72,
+            "multiattackRate": 0.7008,
+            "medianAttacks": 2
+          },
+          "cr5To8": {
+            "meanOptions": 1.91,
+            "multiattackRate": 0.9388,
+            "medianAttacks": 2
+          },
+          "cr9To12": {
+            "meanOptions": 1.98,
+            "multiattackRate": 0.9787,
+            "medianAttacks": 3
+          },
+          "cr13Plus": {
+            "meanOptions": 2.6,
+            "multiattackRate": 0.9615,
+            "medianAttacks": 3
+          }
+        },
+        "bands": [
+          {
+            "id": "cr-0-1-nascent",
+            "minCr": 0,
+            "maxCr": 1,
+            "abilityIds": [
+              "venomous-bite"
+            ],
+            "multiattack": {
+              "enabled": false,
+              "mode": "fixed",
+              "count": 0
+            },
+            "defaultSequence": [],
+            "opener": [],
+            "abilityPatches": {},
+            "graftPatch": null
+          },
+          {
+            "id": "cr-2-4-developed",
+            "minCr": 2,
+            "maxCr": 4,
+            "abilityIds": [
+              "venomous-bite",
+              "brood-injection"
+            ],
+            "multiattack": {
+              "enabled": true,
+              "mode": "fixed",
+              "count": 2
+            },
+            "defaultSequence": [],
+            "opener": [],
+            "abilityPatches": {},
+            "graftPatch": null
+          },
+          {
+            "id": "cr-5-7-veteran",
+            "minCr": 5,
+            "maxCr": 7,
+            "abilityIds": [
+              "venomous-bite",
+              "brood-injection"
+            ],
+            "multiattack": {
+              "enabled": true,
+              "mode": "fixed",
+              "count": 2
+            },
+            "defaultSequence": [],
+            "opener": [],
+            "abilityPatches": {},
+            "graftPatch": null
+          },
+          {
+            "id": "cr-8-12-mature",
+            "minCr": 8,
+            "maxCr": 12,
+            "abilityIds": [
+              "venomous-bite",
+              "brood-injection"
+            ],
+            "multiattack": {
+              "enabled": true,
+              "mode": "fixed",
+              "count": 3
+            },
+            "defaultSequence": [],
+            "opener": [],
+            "abilityPatches": {},
+            "graftPatch": null
+          },
+          {
+            "id": "cr-13-30-apex",
+            "minCr": 13,
+            "maxCr": 30,
+            "abilityIds": [
+              "venomous-bite",
+              "brood-injection",
+              "web"
+            ],
+            "multiattack": {
+              "enabled": true,
+              "mode": "fixed",
+              "count": 3
+            },
+            "defaultSequence": [],
+            "opener": [],
+            "abilityPatches": {},
+            "graftPatch": null
+          }
+        ]
+      },
+      "counterplay": {
+        "pass": true,
+        "channels": [
+          "telegraph",
+          "positioning",
+          "breakCondition",
+          "nonDamage"
+        ]
+      },
+      "snapshots": [
+        {
+          "targetCr": 1,
+          "bandId": "cr-0-1-nascent",
+          "abilityIds": [
+            "venomous-bite"
+          ],
+          "abilityTitles": [
+            "Venomous Bite"
+          ],
+          "authoredAbilityCount": 1,
+          "compiledAbilityCount": 1,
+          "multiattackEnabled": false,
+          "multiattackCount": 0,
+          "routineEnabled": false,
+          "routineSource": "authored-pattern",
+          "allocationKeys": [],
+          "renderedMultiattack": "",
+          "validationStatus": "pass",
+          "validationErrors": []
+        },
+        {
+          "targetCr": 2,
+          "bandId": "cr-2-4-developed",
+          "abilityIds": [
+            "venomous-bite",
+            "brood-injection"
+          ],
+          "abilityTitles": [
+            "Venomous Bite",
+            "Brood Injection"
+          ],
+          "authoredAbilityCount": 2,
+          "compiledAbilityCount": 3,
+          "multiattackEnabled": true,
+          "multiattackCount": 2,
+          "routineEnabled": true,
+          "routineSource": "manual",
+          "allocationKeys": [
+            "brood-injection:venomous-bite"
+          ],
+          "renderedMultiattack": "The monster makes two Venomous Bite attacks. It can replace one attack with a use of Brood Injection.",
+          "validationStatus": "pass",
+          "validationErrors": []
+        },
+        {
+          "targetCr": 5,
+          "bandId": "cr-5-7-veteran",
+          "abilityIds": [
+            "venomous-bite",
+            "brood-injection"
+          ],
+          "abilityTitles": [
+            "Venomous Bite",
+            "Brood Injection"
+          ],
+          "authoredAbilityCount": 2,
+          "compiledAbilityCount": 3,
+          "multiattackEnabled": true,
+          "multiattackCount": 2,
+          "routineEnabled": true,
+          "routineSource": "manual",
+          "allocationKeys": [
+            "brood-injection:venomous-bite"
+          ],
+          "renderedMultiattack": "The monster makes two Venomous Bite attacks. It can replace one attack with a use of Brood Injection.",
+          "validationStatus": "pass",
+          "validationErrors": []
+        },
+        {
+          "targetCr": 8,
+          "bandId": "cr-8-12-mature",
+          "abilityIds": [
+            "venomous-bite",
+            "brood-injection"
+          ],
+          "abilityTitles": [
+            "Venomous Bite",
+            "Brood Injection"
+          ],
+          "authoredAbilityCount": 2,
+          "compiledAbilityCount": 3,
+          "multiattackEnabled": true,
+          "multiattackCount": 3,
+          "routineEnabled": true,
+          "routineSource": "manual",
+          "allocationKeys": [
+            "brood-injection:venomous-bite"
+          ],
+          "renderedMultiattack": "The monster makes three Venomous Bite attacks. It can replace one attack with a use of Brood Injection.",
+          "validationStatus": "pass",
+          "validationErrors": []
+        },
+        {
+          "targetCr": 10,
+          "bandId": "cr-8-12-mature",
+          "abilityIds": [
+            "venomous-bite",
+            "brood-injection"
+          ],
+          "abilityTitles": [
+            "Venomous Bite",
+            "Brood Injection"
+          ],
+          "authoredAbilityCount": 2,
+          "compiledAbilityCount": 3,
+          "multiattackEnabled": true,
+          "multiattackCount": 3,
+          "routineEnabled": true,
+          "routineSource": "manual",
+          "allocationKeys": [
+            "brood-injection:venomous-bite"
+          ],
+          "renderedMultiattack": "The monster makes three Venomous Bite attacks. It can replace one attack with a use of Brood Injection.",
+          "validationStatus": "pass",
+          "validationErrors": []
+        },
+        {
+          "targetCr": 15,
+          "bandId": "cr-13-30-apex",
+          "abilityIds": [
+            "venomous-bite",
+            "brood-injection",
+            "web"
+          ],
+          "abilityTitles": [
+            "Venomous Bite",
+            "Brood Injection",
+            "Web"
+          ],
+          "authoredAbilityCount": 3,
+          "compiledAbilityCount": 4,
+          "multiattackEnabled": true,
+          "multiattackCount": 3,
+          "routineEnabled": true,
+          "routineSource": "manual",
+          "allocationKeys": [
+            "brood-injection:venomous-bite"
+          ],
+          "renderedMultiattack": "The monster makes three Venomous Bite attacks. It can replace one attack with a use of Brood Injection. It can replace one attack with a use of Web if available.",
+          "validationStatus": "pass",
+          "validationErrors": []
+        }
+      ],
+      "migration": {
+        "legacyGraftIds": [
+          "venomous-bite",
+          "brood-injection",
+          "web-recharge"
+        ],
+        "status": "active-native-transition",
+        "phase": "phase5.1-cr-scaled-attack-patterns",
+        "version": "monster-attack-pattern-migration-v1.4-evocative-pattern-names"
+      },
+      "issues": [],
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "version": "monster-attack-pattern-audit-v1.1-cr-scaled",
+      "applicable": true,
+      "id": "cold-funeral-touch",
+      "title": "Cold Touch",
+      "source": "wax-death-masks",
+      "status": "pass",
+      "pass": true,
+      "identity": {
+        "fantasy": "A stolen face approaches like a mourner, drains warmth with repeated touches, and glides away before the victim can answer.",
+        "tacticalRole": "mobile melee lurker with intentional repeated strikes",
+        "signature": "present face, touch twice, slip away",
+        "recognitionTags": [
+          "wax-mask",
+          "borrowed-face",
+          "cold-touch",
+          "unpunished-reposition"
+        ]
+      },
+      "recognition": {
+        "pass": true,
+        "tags": [
+          "wax-mask",
+          "borrowed-face",
+          "cold-touch",
+          "unpunished-reposition"
+        ]
+      },
+      "progression": {
+        "pass": true,
+        "monotonicAbilities": true,
+        "monotonicCadence": true,
+        "lowCrAbilityCount": 1,
+        "apexAbilityCount": 1,
+        "authoredAbilityCount": 1,
+        "lowCrMultiattackCount": 0,
+        "apexMultiattackCount": 3
+      },
+      "progressionContract": {
+        "schemaVersion": "monster-attack-pattern-progression-v1.0",
+        "basis": "targetCr",
+        "calibration": "Bestiary.csv-503-monsters",
+        "calibrationTargets": {
+          "cr0To1": {
+            "meanOptions": 1.33,
+            "multiattackRate": 0.1371,
+            "medianAttacks": 2
+          },
+          "cr2To4": {
+            "meanOptions": 1.72,
+            "multiattackRate": 0.7008,
+            "medianAttacks": 2
+          },
+          "cr5To8": {
+            "meanOptions": 1.91,
+            "multiattackRate": 0.9388,
+            "medianAttacks": 2
+          },
+          "cr9To12": {
+            "meanOptions": 1.98,
+            "multiattackRate": 0.9787,
+            "medianAttacks": 3
+          },
+          "cr13Plus": {
+            "meanOptions": 2.6,
+            "multiattackRate": 0.9615,
+            "medianAttacks": 3
+          }
+        },
+        "bands": [
+          {
+            "id": "cr-0-1-nascent",
+            "minCr": 0,
+            "maxCr": 1,
+            "abilityIds": [
+              "cold-funeral-touch"
+            ],
+            "multiattack": {
+              "enabled": false,
+              "mode": "fixed",
+              "count": 0
+            },
+            "defaultSequence": [],
+            "opener": [],
+            "abilityPatches": {},
+            "graftPatch": null
+          },
+          {
+            "id": "cr-2-4-developed",
+            "minCr": 2,
+            "maxCr": 4,
+            "abilityIds": [
+              "cold-funeral-touch"
+            ],
+            "multiattack": {
+              "enabled": false,
+              "mode": "fixed",
+              "count": 0
+            },
+            "defaultSequence": [],
+            "opener": [],
+            "abilityPatches": {},
+            "graftPatch": null
+          },
+          {
+            "id": "cr-5-7-veteran",
+            "minCr": 5,
+            "maxCr": 7,
+            "abilityIds": [
+              "cold-funeral-touch"
+            ],
+            "multiattack": {
+              "enabled": false,
+              "mode": "fixed",
+              "count": 0
+            },
+            "defaultSequence": [],
+            "opener": [],
+            "abilityPatches": {},
+            "graftPatch": null
+          },
+          {
+            "id": "cr-8-12-mature",
+            "minCr": 8,
+            "maxCr": 12,
+            "abilityIds": [
+              "cold-funeral-touch"
+            ],
+            "multiattack": {
+              "enabled": true,
+              "mode": "fixed",
+              "count": 2
+            },
+            "defaultSequence": [],
+            "opener": [],
+            "abilityPatches": {},
+            "graftPatch": null
+          },
+          {
+            "id": "cr-13-30-apex",
+            "minCr": 13,
+            "maxCr": 30,
+            "abilityIds": [
+              "cold-funeral-touch"
+            ],
+            "multiattack": {
+              "enabled": true,
+              "mode": "fixed",
+              "count": 3
+            },
+            "defaultSequence": [],
+            "opener": [],
+            "abilityPatches": {},
+            "graftPatch": null
+          }
+        ]
+      },
+      "counterplay": {
+        "pass": true,
+        "channels": [
+          "telegraph",
+          "positioning",
+          "breakCondition",
+          "nonDamage"
+        ]
+      },
+      "snapshots": [
+        {
+          "targetCr": 1,
+          "bandId": "cr-0-1-nascent",
+          "abilityIds": [
+            "cold-funeral-touch"
+          ],
+          "abilityTitles": [
+            "Cold Funeral Touch"
+          ],
+          "authoredAbilityCount": 1,
+          "compiledAbilityCount": 1,
+          "multiattackEnabled": false,
+          "multiattackCount": 0,
+          "routineEnabled": false,
+          "routineSource": "authored-pattern",
+          "allocationKeys": [],
+          "renderedMultiattack": "",
+          "validationStatus": "pass",
+          "validationErrors": []
+        },
+        {
+          "targetCr": 2,
+          "bandId": "cr-2-4-developed",
+          "abilityIds": [
+            "cold-funeral-touch"
+          ],
+          "abilityTitles": [
+            "Cold Funeral Touch"
+          ],
+          "authoredAbilityCount": 1,
+          "compiledAbilityCount": 1,
+          "multiattackEnabled": false,
+          "multiattackCount": 0,
+          "routineEnabled": false,
+          "routineSource": "authored-pattern",
+          "allocationKeys": [],
+          "renderedMultiattack": "",
+          "validationStatus": "pass",
+          "validationErrors": []
+        },
+        {
+          "targetCr": 5,
+          "bandId": "cr-5-7-veteran",
+          "abilityIds": [
+            "cold-funeral-touch"
+          ],
+          "abilityTitles": [
+            "Cold Funeral Touch"
+          ],
+          "authoredAbilityCount": 1,
+          "compiledAbilityCount": 1,
+          "multiattackEnabled": false,
+          "multiattackCount": 0,
+          "routineEnabled": false,
+          "routineSource": "authored-pattern",
+          "allocationKeys": [],
+          "renderedMultiattack": "",
+          "validationStatus": "pass",
+          "validationErrors": []
+        },
+        {
+          "targetCr": 8,
+          "bandId": "cr-8-12-mature",
+          "abilityIds": [
+            "cold-funeral-touch"
+          ],
+          "abilityTitles": [
+            "Cold Funeral Touch"
+          ],
+          "authoredAbilityCount": 1,
+          "compiledAbilityCount": 2,
+          "multiattackEnabled": true,
+          "multiattackCount": 2,
+          "routineEnabled": true,
+          "routineSource": "manual",
+          "allocationKeys": [
+            "cold-funeral-touch:cold-funeral-touch"
+          ],
+          "renderedMultiattack": "The monster makes two Cold Funeral Touch attacks.",
+          "validationStatus": "pass",
+          "validationErrors": []
+        },
+        {
+          "targetCr": 10,
+          "bandId": "cr-8-12-mature",
+          "abilityIds": [
+            "cold-funeral-touch"
+          ],
+          "abilityTitles": [
+            "Cold Funeral Touch"
+          ],
+          "authoredAbilityCount": 1,
+          "compiledAbilityCount": 2,
+          "multiattackEnabled": true,
+          "multiattackCount": 2,
+          "routineEnabled": true,
+          "routineSource": "manual",
+          "allocationKeys": [
+            "cold-funeral-touch:cold-funeral-touch"
+          ],
+          "renderedMultiattack": "The monster makes two Cold Funeral Touch attacks.",
+          "validationStatus": "pass",
+          "validationErrors": []
+        },
+        {
+          "targetCr": 15,
+          "bandId": "cr-13-30-apex",
+          "abilityIds": [
+            "cold-funeral-touch"
+          ],
+          "abilityTitles": [
+            "Cold Funeral Touch"
+          ],
+          "authoredAbilityCount": 1,
+          "compiledAbilityCount": 2,
+          "multiattackEnabled": true,
+          "multiattackCount": 3,
+          "routineEnabled": true,
+          "routineSource": "manual",
+          "allocationKeys": [
+            "cold-funeral-touch:cold-funeral-touch"
+          ],
+          "renderedMultiattack": "The monster makes three Cold Funeral Touch attacks.",
+          "validationStatus": "pass",
+          "validationErrors": []
+        }
+      ],
+      "migration": {
+        "legacyGraftIds": [
+          "cold-funeral-touch"
+        ],
+        "status": "active-native-transition",
+        "phase": "phase5.1-cr-scaled-attack-patterns",
+        "version": "monster-attack-pattern-migration-v1.4-evocative-pattern-names"
+      },
+      "issues": [],
+      "errors": [],
+      "warnings": []
+    }
+  ],
+  "issues": [],
+  "errors": [],
+  "pass": true
+}

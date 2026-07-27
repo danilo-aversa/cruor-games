@@ -4,7 +4,12 @@ import {
   normalizeInspirationModuleV2,
   normalizeSemanticProvenance,
 } from "../../../shared/content/content.index.js";
-import { asArray, clone, slugify } from "./studio-component-normalizers.js";
+import {
+  asArray,
+  clone,
+  getStudioMonsterPayload,
+  slugify,
+} from "./studio-component-normalizers.js";
 import {
   buildStudioComponentFromTemplate,
   buildStudioComponentsFromTemplate,
@@ -156,9 +161,7 @@ export function hydrateStudioComponentDraft(component = {}) {
   hydrated.narrative = component.semantic?.narrative || "";
 
   if (component.semanticType === "monster-graft") {
-    hydrated.monster = clone(
-      details.monster || component.generation?.monster || {},
-    );
+    hydrated.monster = clone(getStudioMonsterPayload(component));
     hydrated.counterplay =
       details.counterplay || hydrated.monster?.rules?.counterplay?.text || "";
   }
@@ -342,7 +345,9 @@ function buildTemplateComponentDraft(component, draft) {
         ? { text: String(component.mechanics) }
         : {};
   const details = {};
-  if (component.monster) details.monster = clone(component.monster);
+  if (component.contentType === "monster-graft" || component.monster) {
+    details.monster = clone(getStudioMonsterPayload(component));
+  }
   if (component.counterplay)
     details.counterplay = String(component.counterplay);
   if (component.location) details.location = clone(component.location);

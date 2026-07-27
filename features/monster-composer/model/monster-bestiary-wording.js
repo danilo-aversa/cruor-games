@@ -1,4 +1,4 @@
-export const MONSTER_BESTIARY_WORDING_VERSION = "monster-bestiary-wording-normalizer-v1.32";
+export const MONSTER_BESTIARY_WORDING_VERSION = "monster-bestiary-wording-normalizer-v1.33-single-recharge";
 
 const DAMAGE_TYPES = Object.freeze([
   "Acid",
@@ -34,8 +34,8 @@ const DND_CONDITIONS = Object.freeze([
 ]);
 
 const DAMAGE_TYPE_PATTERN = DAMAGE_TYPES.join("|");
-const RECHARGE_PREFIX_PATTERN = /^\s*Recharge\s+(\d+)\s*[-–]\s*(\d+)\.\s*/i;
-const RECHARGE_ANY_PATTERN = /\bRecharge\s+(\d+)\s*[-–]\s*(\d+)\b/g;
+const RECHARGE_PREFIX_PATTERN = /^\s*Recharge\s+(\d+)(?:\s*[-–]\s*(\d+))?\.\s*/i;
+const RECHARGE_ANY_PATTERN = /\bRecharge\s+(\d+)(?:\s*[-–]\s*(\d+))?\b/g;
 
 function cleanString(value) {
   return String(value || "").replace(/\s+/g, " ").trim();
@@ -46,7 +46,7 @@ function stripTrailingPeriod(value) {
 }
 
 function formatRechargeRange(start, end) {
-  return `${start}–${end}`;
+  return end ? `${start}–${end}` : String(start);
 }
 
 function normalizeRechargeDash(text = "") {
@@ -179,7 +179,7 @@ export function normalizeBestiaryFeatureWording({ title = "", text = "" } = {}) 
   const normalizedTitle = normalizeRechargeDash(stripTrailingPeriod(title));
   const normalizedText = normalizeBestiaryRulesText(text);
   const recharge = extractRechargePrefix(normalizedText);
-  const titleHasRecharge = /\(\s*Recharge\s+\d+\s*[-–]\s*\d+\s*\)/i.test(normalizedTitle);
+  const titleHasRecharge = /\(\s*Recharge\s+\d+(?:\s*[-–]\s*\d+)?\s*\)/i.test(normalizedTitle);
 
   if (!recharge) {
     return {
@@ -224,7 +224,7 @@ export function getBestiaryWordingIssues({ title = "", text = "" } = {}) {
     });
   }
 
-  if (/^\s*Recharge\s+\d+\s*[-–]\s*\d+\./i.test(normalizedText) || /\.\s*Recharge\s+\d+\s*[-–]\s*\d+\./i.test(combined)) {
+  if (/^\s*Recharge\s+\d+(?:\s*[-–]\s*\d+)?\./i.test(normalizedText) || /\.\s*Recharge\s+\d+(?:\s*[-–]\s*\d+)?\./i.test(combined)) {
     issues.push({
       check: "bestiary-recharge-title",
       message: "Recharge appears as a separate sentence instead of a title parenthetical.",

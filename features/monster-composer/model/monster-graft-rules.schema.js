@@ -1,5 +1,5 @@
 import { getFeatureBalanceStat } from "./monster-graft-balance-profile.js";
-export const MONSTER_GRAFT_RULES_SCHEMA_VERSION = "monster-graft-rules-v1.15";
+export const MONSTER_GRAFT_RULES_SCHEMA_VERSION = "monster-graft-rules-v1.16";
 
 export const RULES_SECTIONS = Object.freeze([
   "trait",
@@ -274,6 +274,44 @@ export const PROCEDURE_ONGOING_TIMINGS = Object.freeze([
   "custom",
 ]);
 
+export const DAMAGE_ACTIVATION_TYPES = Object.freeze([
+  "always",
+  "conditional",
+  "triggered",
+]);
+
+export const MONSTER_EFFECT_TYPES = Object.freeze([
+  "advantage",
+  "disadvantage",
+  "movement",
+  "forcedMovement",
+  "resource",
+  "defense",
+  "control",
+  "custom",
+]);
+
+export const MONSTER_EFFECT_SUBJECTS = Object.freeze([
+  "self",
+  "target",
+  "triggeringCreature",
+  "area",
+  "custom",
+]);
+
+export const MONSTER_EFFECT_SIMULATION_POLICIES = Object.freeze([
+  "direct",
+  "proxy",
+  "nonNumeric",
+  "unmodeled",
+]);
+
+export const MONSTER_RULES_PARITY_STATUSES = Object.freeze([
+  "unreviewed",
+  "candidate",
+  "verified",
+]);
+
 export const ABILITY_REFERENCE_TYPES = Object.freeze([
   "action",
   "attack",
@@ -420,6 +458,79 @@ function normalizePositiveNumber(value, fallback = null) {
   return Number.isFinite(parsed) && parsed >= 0 ? parsed : fallback;
 }
 
+function normalizeUnitInterval(value, fallback = null) {
+  const parsed = normalizePositiveNumber(value, fallback);
+  if (parsed === null || parsed === undefined) return fallback;
+  return Math.max(0, Math.min(1, parsed));
+}
+
+function normalizeDamageActivation(activation) {
+  if (!isPlainObject(activation)) return null;
+  const type = normalizeEnum(activation.type, DAMAGE_ACTIVATION_TYPES, "conditional");
+  return {
+    ...activation,
+    type,
+    trigger: cleanString(activation.trigger),
+    expectedRate: type === "always" ? 1 : normalizeUnitInterval(activation.expectedRate, null),
+    oncePerTurn: Boolean(activation.oncePerTurn),
+    text: cleanString(activation.text),
+  };
+}
+
+function normalizeEffectSimulation(simulation) {
+  if (!isPlainObject(simulation)) return { policy: "unmodeled", model: "", axis: "", weight: null };
+  return {
+    ...simulation,
+    policy: normalizeEnum(
+      simulation.policy,
+      MONSTER_EFFECT_SIMULATION_POLICIES,
+      "unmodeled",
+    ),
+    model: cleanString(simulation.model),
+    axis: cleanString(simulation.axis),
+    weight: normalizePositiveNumber(simulation.weight, null),
+    expectedRate: normalizeUnitInterval(simulation.expectedRate, null),
+  };
+}
+
+function normalizeEffectClause(effect, index = 0) {
+  if (!isPlainObject(effect)) return null;
+  return {
+    ...effect,
+    id: cleanString(effect.id) || `effect-${index + 1}`,
+    type: normalizeEnum(effect.type, MONSTER_EFFECT_TYPES, "custom"),
+    subject: normalizeEnum(effect.subject, MONSTER_EFFECT_SUBJECTS, "custom"),
+    trigger: cleanString(effect.trigger),
+    appliesTo: cleanString(effect.appliesTo),
+    duration: cleanString(effect.duration),
+    text: cleanString(effect.text || effect.renderText),
+    simulation: normalizeEffectSimulation(effect.simulation),
+  };
+}
+
+function normalizeEffectClauses(effects) {
+  if (!Array.isArray(effects)) return [];
+  return effects.map((effect, index) => normalizeEffectClause(effect, index)).filter(Boolean);
+}
+
+function normalizeRulesParity(parity) {
+  if (!isPlainObject(parity)) {
+    return {
+      status: "unreviewed",
+      reviewedBy: "",
+      reviewedAt: "",
+      notes: "",
+    };
+  }
+  return {
+    ...parity,
+    status: normalizeEnum(parity.status, MONSTER_RULES_PARITY_STATUSES, "unreviewed"),
+    reviewedBy: cleanString(parity.reviewedBy),
+    reviewedAt: cleanString(parity.reviewedAt),
+    notes: cleanString(parity.notes),
+  };
+}
+
 function inferAttackAbilityBasis(attackType) {
   if (attackType === "ranged") return "dexterity";
   if (attackType === "melee") return "strength";
@@ -472,10 +583,26 @@ export function getDamageBudgetShare(damage = {}, rules = {}) {
   return normalizePositiveNumber(damage.budgetShare, getDamageBudgetDefaults(role).share);
 }
 
+export function getDamageActivationRate(damage = {}) {
+  const activation = normalizeDamageActivation(damage?.activation);
+  if (!activation || activation.type === "always") return 1;
+  return normalizeUnitInterval(activation.expectedRate, 0);
+}
+
 export function getDamageRoundWeight(damage = {}, rules = {}) {
   const role = damage?.budgetRole || getDefaultDamageBudgetRole(rules);
   const explicit = Array.isArray(damage?.roundWeight) ? damage.roundWeight.map(Number).filter(Number.isFinite) : null;
-  return explicit?.length ? explicit : getDamageBudgetDefaults(role).roundWeight;
+  const base = explicit?.length ? explicit : getDamageBudgetDefaults(role).roundWeight;
+  const activationRate = getDamageActivationRate(damage);
+  return base.map((value) => Number(value || 0) * activationRate);
+}
+
+export function getMonsterRuleEffects(rules = {}) {
+  return normalizeEffectClauses(rules?.effects);
+}
+
+export function getMonsterRulesParity(rules = {}) {
+  return normalizeRulesParity(rules?.parity);
 }
 
 export function getDamageExpectedTargets(damage = {}, rules = {}) {
@@ -496,9 +623,13 @@ export function getDamagePartById(damage = {}, id = "") {
 export function getDamageTotalBudgetShare(damage = {}, rules = {}) {
   const parts = getDamageParts(damage);
   if (parts.length) {
-    return parts.reduce((sum, part) => sum + getDamageBudgetShare(part, rules), 0);
+    return parts.reduce(
+      (sum, part) =>
+        sum + getDamageBudgetShare(part, rules) * getDamageActivationRate(part),
+      0,
+    );
   }
-  return getDamageBudgetShare(damage, rules);
+  return getDamageBudgetShare(damage, rules) * getDamageActivationRate(damage);
 }
 
 function normalizeMultiattackAttack(entry, index = 0) {
@@ -937,15 +1068,35 @@ function normalizeDamagePart(part, rules = {}, index = 0) {
       : part.roundWeight,
     abilityBasis: part.abilityBasis ? normalizeAttackAbilityBasis(part.abilityBasis, "monster") : part.abilityBasis,
     types: uniqueArray(part.types || part.type),
+    activation: normalizeDamageActivation(part.activation),
   };
 }
 
 
+function normalizeActivatedDamagePartShares(parts = [], rules = {}) {
+  if (!parts.some((part) => part.activation && part.activation.type !== "always")) {
+    return parts;
+  }
+  const shares = parts.map((part) => getDamageBudgetShare(part, rules));
+  const effectiveTotal = parts.reduce(
+    (sum, part, index) =>
+      sum + shares[index] * getDamageActivationRate(part),
+    0,
+  );
+  if (!(effectiveTotal > 0)) return parts;
+  return parts.map((part, index) => ({
+    ...part,
+    authoredBudgetShare: part.authoredBudgetShare ?? shares[index],
+    budgetShare: shares[index] / effectiveTotal,
+  }));
+}
+
 function normalizeDamage(damage, rules = {}) {
   if (!isPlainObject(damage)) return null;
-  const parts = Array.isArray(damage.parts)
+  const rawParts = Array.isArray(damage.parts)
     ? damage.parts.map((part, index) => normalizeDamagePart(part, rules, index)).filter(Boolean)
     : [];
+  const parts = normalizeActivatedDamagePartShares(rawParts, rules);
   const mode = normalizeEnum(damage.mode, DAMAGE_MODES, parts.length ? "parts" : "custom");
   const budgetRole = normalizeDamageBudgetRole(
     damage.budgetRole,
@@ -965,6 +1116,7 @@ function normalizeDamage(damage, rules = {}) {
       ? normalizeAttackAbilityBasis(damage.abilityBasis, "monster")
       : damage.abilityBasis,
     types: uniqueArray(damage.types || damage.type),
+    activation: normalizeDamageActivation(damage.activation),
     parts,
   };
 }
@@ -1224,6 +1376,8 @@ function mergeExplicitRules(feature = {}) {
     damage: normalizeDamage(explicit.damage, { ...inferred, ...explicit, section, actionEconomy: getRulesFallbackActionEconomy(section), resolution }) || inferred.damage,
     condition: normalizeCondition(explicit.condition) || inferred.condition,
     ongoing: normalizeOngoing(explicit.ongoing, { ...inferred, ...explicit, section, actionEconomy: getRulesFallbackActionEconomy(section), resolution }) || inferred.ongoing || null,
+    effects: normalizeEffectClauses(explicit.effects),
+    parity: normalizeRulesParity(explicit.parity),
     counterplay: {
       ...(inferred.counterplay || {}),
       ...(explicit.counterplay || {}),
@@ -1418,6 +1572,44 @@ export function validateMonsterGraftRules(feature = {}) {
     if ((rules.multiattack.replacements || []).some((replacement) => replacement.replace !== "none" && !replacement.label && !replacement.with)) {
       pushIssue(issues, "warning", "multiattack-replacement-missing-label", "Multiattack replacements should define the replacing ability label.", "rules.multiattack.replacements");
     }
+  }
+
+  const normalizedEffects = getMonsterRuleEffects(rules);
+  normalizedEffects.forEach((effect, index) => {
+    const path = `rules.effects.${index}`;
+    if (!effect.text) {
+      pushIssue(issues, "error", "effect-missing-text", "Structured effects must define player-facing text.", `${path}.text`);
+    }
+    if (effect.simulation?.policy === "unmodeled" && rules.parity?.status === "verified") {
+      pushIssue(issues, "error", "verified-effect-unmodeled", "Verified parity cannot contain an unmodeled effect.", `${path}.simulation.policy`);
+    }
+    if (effect.simulation?.policy === "proxy" && !effect.simulation?.model) {
+      pushIssue(issues, "error", "effect-proxy-missing-model", "Proxy-simulated effects must name the proxy model.", `${path}.simulation.model`);
+    }
+  });
+
+  const damageForActivation = getDamageParts(rules.damage).length
+    ? getDamageParts(rules.damage)
+    : rules.damage && rules.damage.mode !== "none"
+      ? [rules.damage]
+      : [];
+  damageForActivation.forEach((damage, index) => {
+    const activation = damage.activation;
+    if (!activation || activation.type === "always") return;
+    const path = getDamageParts(rules.damage).length
+      ? `rules.damage.parts.${index}.activation`
+      : "rules.damage.activation";
+    if (!activation.trigger) {
+      pushIssue(issues, "error", "conditional-damage-missing-trigger", "Conditional damage must define its trigger.", `${path}.trigger`);
+    }
+    if (!(Number(activation.expectedRate) > 0 && Number(activation.expectedRate) <= 1)) {
+      pushIssue(issues, "error", "conditional-damage-invalid-rate", "Conditional damage expectedRate must be greater than 0 and at most 1.", `${path}.expectedRate`);
+    }
+  });
+
+  const parity = getMonsterRulesParity(rules);
+  if (parity.status === "verified" && (!parity.reviewedBy || !parity.reviewedAt)) {
+    pushIssue(issues, "error", "verified-parity-missing-review", "Verified parity requires reviewedBy and reviewedAt.", "rules.parity");
   }
 
   if (rules.spellcasting?.enabled) {

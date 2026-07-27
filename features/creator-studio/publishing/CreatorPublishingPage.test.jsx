@@ -33,6 +33,24 @@ describe("Creator Publishing workspace", () => {
     expect(model).toContain("buildEngagementForecast");
   });
 
+
+  it("uses a vertical platform rail and a scrollbar-free adaptive preview", () => {
+    const simulator = readProjectFile(
+      "features/creator-studio/publishing/PublishingSimulatorView.jsx",
+    );
+    const styles = readProjectFile(
+      "features/creator-studio/publishing/publishing.styles.css",
+    );
+
+    expect(simulator).toContain(
+      'className="studio-component-tabs studio-component-tabs--vertical creator-publishing__platform-tabs"',
+    );
+    expect(simulator).not.toContain("creator-publishing__simulator-commandbar");
+    expect(styles).toContain("container-type: size;");
+    expect(styles).toMatch(/\.creator-publishing__preview-stage \{[\s\S]*overflow: hidden;/);
+    expect(styles).toMatch(/\.creator-publishing__release-index \.studio-library-list \{[\s\S]*overflow-x: hidden;/);
+  });
+
   it("does not depend on the standalone HTML runtime", () => {
     const source = readProjectFile(
       "features/creator-studio/publishing/CreatorPublishingPage.jsx",

@@ -32,6 +32,8 @@ import {
   getDuplicateIds,
   getExplicitMonsterRules,
   getMonsterConstraintSource,
+  getStudioMonsterGraftValidation,
+  getStudioMonsterPayload,
   getMonsterFrameFitSource,
   getMonsterGrantSource,
   hasText,
@@ -40,6 +42,27 @@ import {
 import { normalizeModuleForDraft } from "./studio-draft.js";
 import { getStudioComponentFamily } from "./studio-editor-registry.js";
 import { buildStudioSemanticCoverage } from "./studio-semantic-coverage.js";
+
+function hasStudioMonsterCounterplay(component = {}) {
+  const monster = getStudioMonsterPayload(component);
+  const profile = monster.counterplayProfile || {};
+  const profileEntries = [
+    ...asArray(profile.telegraphs),
+    ...asArray(profile.positioningAnswers),
+    ...asArray(profile.breakConditions),
+    ...asArray(profile.nonDamageAnswers),
+  ];
+  const abilityCounterplay = asArray(monster.abilities).some((ability) =>
+    hasText(ability?.counterplay) ||
+    hasText(ability?.rules?.counterplay?.text),
+  );
+  return (
+    hasText(component.counterplay) ||
+    hasText(monster.rules?.counterplay?.text) ||
+    profileEntries.some(hasText) ||
+    abilityCounterplay
+  );
+}
 
 const CANONICAL_WORKFLOW_MAP = new Map(SHARED_WORKFLOWS.map((workflow) => [workflow.id, workflow]));
 const CANONICAL_MONSTER_SLOT_MAP = new Map(SHARED_MONSTER_SLOTS.map((slot) => [slot.id, slot]));
@@ -599,8 +622,9 @@ export function validateStudioDraft(draft, contentPackExport) {
     });
 
     if (family === "monster-graft") {
+      const monsterPayload = getStudioMonsterPayload(component);
       const monsterRules = getExplicitMonsterRules(component);
-      const monsterSlot = component.monster?.slot || slots[0];
+      const monsterSlot = monsterPayload.slot || slots[0];
       if (!workflows.includes("monster-composer")) {
         issues.push(makeIssue("error", `components[${index}].workflows`, "Monster graft must include monster-composer workflow.", id));
       }
@@ -615,8 +639,20 @@ export function validateStudioDraft(draft, contentPackExport) {
       if (monsterSlot && slots.length && !slots.includes(monsterSlot)) {
         issues.push(makeIssue("warning", `components[${index}].monster.slot`, `monster.slot (${monsterSlot}) is not present in component slots.`, id));
       }
-      if (!monsterRules) {
-        issues.push(makeIssue("error", `components[${index}].monster.rules`, "Monster graft has no structured monster.rules object.", id));
+      const graftV2Validation = getStudioMonsterGraftValidation(component);
+      if (graftV2Validation.applicable) {
+        graftV2Validation.issues.forEach((issue) => {
+          issues.push(
+            makeIssue(
+              issue.severity || "warning",
+              `components[${index}].monster.${issue.path || "graftV2"}`,
+              `Graft: ${issue.message}`,
+              id,
+            ),
+          );
+        });
+      } else if (!monsterRules) {
+        issues.push(makeIssue("error", `components[${index}].monster.rules`, "Legacy Monster graft has no structured monster.rules object.", id));
       } else {
         if (!hasText(monsterRules.section)) issues.push(makeIssue("warning", `components[${index}].monster.rules.section`, "Structured rules have no stat block section.", id));
         if (!hasText(monsterRules.actionEconomy)) issues.push(makeIssue("warning", `components[${index}].monster.rules.actionEconomy`, "Structured rules have no action economy.", id));
@@ -631,8 +667,8 @@ export function validateStudioDraft(draft, contentPackExport) {
           issues.push(makeIssue("warning", `components[${index}].monster.rules.usage.recharge`, "Recharge usage has no recharge value.", id));
         }
       }
-      if (!hasText(component.counterplay) && !hasText(component.monster?.rules?.counterplay?.text)) {
-        issues.push(makeIssue("warning", `components[${index}].counterplay`, "Monster graft has no explicit counterplay text.", id));
+      if (!hasStudioMonsterCounterplay(component)) {
+        issues.push(makeIssue("warning", `components[${index}].counterplay`, "Monster graft has no explicit counterplay text or Graft counterplay profile.", id));
       }
       validateMonsterAnatomyConstraintsForStudio(component, index, issues);
       validateMonsterAnatomyGrantsForStudio(component, index, issues);

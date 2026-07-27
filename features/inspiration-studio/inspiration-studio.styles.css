@@ -6,6 +6,10 @@
   --studio-panel-strong: var(--cruor-surface-panel-strong);
   --studio-input: var(--cruor-surface-control);
   --studio-input-hover: var(--cruor-surface-control-hover);
+  --studio-panel-deep: var(--studio-panel-strong);
+  --studio-control-bg: var(--studio-input);
+  --studio-control-hover-bg: var(--studio-input-hover);
+  --studio-control-active-bg: var(--studio-panel-strong);
   --studio-line: var(--cruor-border-medium);
   --studio-line-soft: var(--cruor-border-subtle);
   --studio-line-strong: var(--cruor-border-strong-token);
@@ -3039,6 +3043,7 @@
 .studio-component-editor--tabbed[data-active-zone="fit"] [data-editor-zone]:not([data-editor-zone="fit"]),
 .studio-component-editor--tabbed[data-active-zone="anatomy"] [data-editor-zone]:not([data-editor-zone="anatomy"]),
 .studio-component-editor--tabbed[data-active-zone="rules"] [data-editor-zone]:not([data-editor-zone="rules"]),
+.studio-component-editor--tabbed[data-active-zone="graft"] [data-editor-zone]:not([data-editor-zone="graft"]),
 .studio-component-editor--tabbed[data-active-zone="output"] [data-editor-zone]:not([data-editor-zone="output"]),
 .studio-component-editor--tabbed[data-active-zone="qa"] [data-editor-zone]:not([data-editor-zone="qa"]) {
   display: none !important;
@@ -6757,3 +6762,435 @@ html[data-a11y-theme="parchment"] .inspiration-studio :where(input::placeholder,
   justify-content: center;
   min-width: 1.75rem;
 }
+
+/* Monster Graft authoring ------------------------------------------------ */
+
+.studio-graft-authoring,
+.studio-graft-output {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.studio-graft-authoring__statusbar {
+  position: sticky;
+  top: var(--studio-component-tabs-sticky-offset, 0);
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.7rem 0.8rem;
+  border: 1px solid var(--studio-line);
+  background: var(--studio-panel-deep);
+  box-shadow: 0 0.7rem 1.6rem rgba(0, 0, 0, 0.22);
+}
+
+.studio-graft-authoring__statusbar > div,
+.studio-graft-editor-toolbar,
+.studio-graft-editor-toolbar > div,
+.studio-graft-array-editor__head,
+.studio-graft-array-card__head,
+.studio-graft-output-card header,
+.studio-graft-output-card header > div {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.studio-graft-authoring__statusbar strong,
+.studio-graft-editor-toolbar > span,
+.studio-graft-array-editor__head > strong,
+.studio-graft-array-card__head > strong,
+.studio-graft-output-card header strong {
+  color: var(--cruor-text-primary);
+  font-weight: 900;
+}
+
+.studio-graft-abilities-layout {
+  display: grid;
+  grid-template-columns: minmax(13rem, 0.34fr) minmax(0, 1fr);
+  gap: 0.8rem;
+  align-items: start;
+}
+
+.studio-graft-ability-list {
+  position: sticky;
+  top: calc(var(--studio-component-tabs-sticky-offset, 0px) + 4rem);
+  display: grid;
+  gap: 0.35rem;
+  max-height: min(68vh, 54rem);
+  overflow: auto;
+  padding: 0.35rem;
+  border: 1px solid var(--studio-line);
+  background: var(--studio-panel-deep);
+}
+
+.studio-graft-ability-list > button {
+  display: grid;
+  gap: 0.25rem;
+  width: 100%;
+  min-width: 0;
+  padding: 0.65rem 0.7rem;
+  border: 1px solid transparent;
+  background: var(--studio-control-bg);
+  color: var(--studio-muted);
+  cursor: pointer;
+  text-align: left;
+}
+
+.studio-graft-ability-list > button:hover,
+.studio-graft-ability-list > button:focus-visible {
+  border-color: var(--studio-line-strong);
+  background: var(--studio-control-hover-bg);
+  color: var(--cruor-text-primary);
+}
+
+.studio-graft-ability-list > button[aria-selected="true"] {
+  border-color: var(--cruor-color-r180-g38-b54-a420);
+  background: var(--studio-control-active-bg);
+  color: var(--cruor-text-primary);
+}
+
+.studio-graft-ability-list > button > span {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-width: 0;
+}
+
+.studio-graft-ability-list > button strong,
+.studio-graft-ability-list > button small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.studio-graft-ability-list > button small {
+  color: var(--studio-faint);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: var(--text-size-xs);
+}
+
+.studio-graft-ability-workspace,
+.studio-graft-ability-editor,
+.studio-graft-ability-rules,
+.studio-graft-routine-editor,
+.studio-graft-array-editor,
+.studio-graft-output__abilities {
+  display: grid;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.studio-graft-editor-toolbar,
+.studio-graft-array-editor__head,
+.studio-graft-array-card__head,
+.studio-graft-output-card header {
+  justify-content: space-between;
+}
+
+.studio-graft-editor-toolbar {
+  padding: 0.55rem 0.65rem;
+  border: 1px solid var(--studio-line);
+  background: var(--studio-control-bg);
+}
+
+.studio-graft-array-editor,
+.studio-graft-array-card,
+.studio-graft-progression-band,
+.studio-graft-output-card,
+.studio-graft-json-editor {
+  padding: 0.75rem;
+  border: 1px solid var(--studio-line);
+  background: var(--studio-panel-deep);
+}
+
+.studio-graft-array-card,
+.studio-graft-progression-band,
+.studio-graft-json-editor {
+  display: grid;
+  gap: 0.7rem;
+}
+
+.studio-graft-array-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 5.5rem 2.25rem;
+  gap: 0.4rem;
+  align-items: center;
+}
+
+.studio-graft-checkbox-label,
+.studio-graft-ability-checklist label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 2.35rem;
+  cursor: pointer;
+}
+
+.studio-graft-checkbox-label input,
+.studio-graft-ability-checklist input {
+  flex: 0 0 auto;
+}
+
+.studio-graft-ability-checklist {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+  gap: 0.35rem;
+  padding: 0.55rem;
+  border: 1px solid var(--studio-line);
+  background: var(--studio-control-bg);
+}
+
+.studio-graft-ability-checklist label {
+  padding: 0.35rem 0.45rem;
+  border: 1px solid transparent;
+}
+
+.studio-graft-ability-checklist label:hover {
+  border-color: var(--studio-line);
+}
+
+.studio-graft-ability-checklist small {
+  color: var(--studio-faint);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+.studio-graft-inline-error {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid var(--cruor-color-r180-g38-b54-a420);
+  background: var(--cruor-color-r51-g3-b12-a320);
+  color: var(--cruor-text-primary);
+  line-height: 1.4;
+}
+
+.studio-graft-output__controls {
+  display: grid;
+  grid-template-columns: minmax(9rem, 0.25fr) minmax(0, 1fr);
+  gap: 0.75rem;
+  align-items: end;
+}
+
+.studio-graft-output-card {
+  display: grid;
+  gap: 0.6rem;
+}
+
+.studio-graft-output-card[data-synthetic="true"] {
+  border-style: dashed;
+}
+
+.studio-graft-output-card header > div {
+  align-items: flex-start;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.studio-graft-output-card header span,
+.studio-graft-output-card > small {
+  color: var(--studio-faint);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: var(--text-size-xs);
+}
+
+.studio-graft-output-card p {
+  margin: 0;
+  color: var(--studio-muted);
+  line-height: 1.55;
+  white-space: pre-wrap;
+}
+
+.studio-graft-json-editor .studio-raw-json-preview {
+  min-height: 14rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: var(--text-size-s-plus);
+  line-height: 1.45;
+  tab-size: 2;
+}
+
+@media (max-width: 980px) {
+  .studio-graft-abilities-layout,
+  .studio-graft-output__controls {
+    grid-template-columns: 1fr;
+  }
+
+  .studio-graft-ability-list {
+    position: static;
+    grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+    max-height: none;
+  }
+}
+
+@media (max-width: 620px) {
+  .studio-graft-authoring__statusbar,
+  .studio-graft-editor-toolbar,
+  .studio-graft-array-editor__head,
+  .studio-graft-array-card__head,
+  .studio-graft-output-card header {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .studio-graft-array-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Monster Graft authoring terminology and alignment ---------------------- */
+
+.studio-graft-inline-heading {
+  display: inline-flex;
+  align-items: center;
+  min-width: 0;
+  gap: 0.4rem;
+}
+
+.studio-graft-inline-heading > strong {
+  min-width: 0;
+}
+
+.studio-graft-field--span-two {
+  grid-column: span 2;
+}
+
+.studio-graft-field--inline-checkbox {
+  grid-template-columns: minmax(9.5rem, 0.8fr) minmax(0, 1.2fr);
+  align-items: center;
+  column-gap: 0.75rem;
+}
+
+.studio-graft-field--inline-checkbox .studio-field-head,
+.studio-graft-field--inline-checkbox > .studio-graft-checkbox-label {
+  min-width: 0;
+}
+
+.studio-graft-field--inline-checkbox > .studio-graft-checkbox-label {
+  justify-self: start;
+}
+
+.studio-graft-checkbox-label,
+.studio-graft-ability-checklist label {
+  min-width: 0;
+}
+
+.studio-graft-checkbox-label > span,
+.studio-graft-ability-checklist label > span {
+  min-width: 0;
+  line-height: 1.3;
+}
+
+@media (min-width: 1181px) {
+  .studio-graft-field--span-two .studio-graft-checkbox-label > span {
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 720px) {
+  .studio-graft-field--span-two {
+    grid-column: 1 / -1;
+  }
+
+  .studio-graft-field--inline-checkbox {
+    grid-template-columns: minmax(0, 1fr);
+    align-items: start;
+  }
+}
+
+/* Monster Graft checkbox and option controls ---------------------------- */
+
+.studio-graft-checkbox-label,
+.studio-graft-ability-checklist .studio-graft-check-option {
+  display: grid;
+  grid-template-columns: 1rem minmax(0, 1fr);
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+  min-height: var(--studio-control-height-compact);
+  margin: 0;
+  padding: 0.4rem 0.55rem;
+  border: 1px solid var(--studio-line);
+  background: var(--studio-control-bg);
+  color: var(--studio-muted);
+  font-size: var(--text-size-s-plus);
+  line-height: 1.25;
+  cursor: pointer;
+  transition: border-color 120ms ease, background 120ms ease, color 120ms ease;
+}
+
+.studio-graft-checkbox-label:hover,
+.studio-graft-ability-checklist .studio-graft-check-option:hover {
+  border-color: var(--studio-line-strong);
+  background: var(--studio-control-hover-bg);
+  color: var(--cruor-text-primary);
+}
+
+.studio-graft-checkbox-label:has(.studio-checkbox-input:checked),
+.studio-graft-ability-checklist .studio-graft-check-option:has(.studio-checkbox-input:checked) {
+  border-color: var(--cruor-color-r180-g38-b54-a420);
+  background: var(--studio-control-active-bg);
+  color: var(--cruor-text-primary);
+}
+
+.studio-graft-checkbox-label:has(.studio-checkbox-input:focus-visible),
+.studio-graft-ability-checklist .studio-graft-check-option:has(.studio-checkbox-input:focus-visible) {
+  box-shadow: var(--studio-focus-ring);
+}
+
+.studio-graft-checkbox-label .studio-checkbox-input,
+.studio-graft-ability-checklist .studio-checkbox-input {
+  align-self: center;
+}
+
+.studio-graft-check-option__copy {
+  display: flex;
+  align-items: baseline;
+  gap: 0.45rem;
+  min-width: 0;
+}
+
+.studio-graft-check-option__copy strong {
+  min-width: 0;
+  overflow: hidden;
+  color: inherit;
+  font-size: inherit;
+  font-weight: 750;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.studio-graft-check-option__copy small {
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  color: var(--studio-faint);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: var(--text-size-xs);
+  font-weight: 500;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.studio-graft-ability-checklist {
+  grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+  gap: 0.45rem;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+
+.studio-graft-field--inline-checkbox > .studio-graft-checkbox-label {
+  width: 100%;
+}
+
+@media (max-width: 620px) {
+  .studio-graft-check-option__copy {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.1rem;
+  }
+}
+

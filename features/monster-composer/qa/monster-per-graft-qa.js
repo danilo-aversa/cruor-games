@@ -2,6 +2,10 @@ import { ALL_MONSTER_GRAFTS, ALL_MONSTER_SOURCES } from "../data/monster-content
 import { MONSTER_FAMILY_PRESETS } from "../data/monster-presets.js";
 import { getCompatibilityStatus } from "../model/monster-composer.compatibility.js";
 import { validateMonsterGraftRules } from "../model/monster-graft-rules.schema.js";
+import {
+  isMonsterGraftV2,
+  validateMonsterGraftV2,
+} from "../model/monster-graft-v2.schema.js";
 import { evaluateMonsterFrameFit, getFeatureFrameFit } from "../model/monster-frame-fit.js";
 import { buildMonsterPublishGate } from "../model/monster-publish-gate.js";
 import {
@@ -19,7 +23,7 @@ import {
   uniqueArray,
 } from "./monster-qa-report.js";
 
-export const MONSTER_PER_GRAFT_QA_VERSION = "monster-per-graft-qa-v1.34-forced-coverage";
+export const MONSTER_PER_GRAFT_QA_VERSION = "monster-per-graft-qa-v1.40-single-recharge-title";
 
 const DEFAULT_SEED = "cruor-per-graft-qa";
 const DEFAULT_CR_MIN = 1;
@@ -140,6 +144,8 @@ function normalizeMonsterPerGraftQaOptions(options = {}) {
     crMax: Math.max(crMin, crMax),
     includeFullPayloads: Boolean(options.includeFullPayloads),
     includeReviewPayloads: options.includeReviewPayloads !== false,
+    validateDebugExport: options.validateDebugExport !== false,
+    graftIds: uniqueArray(options.graftIds).map(cleanString).filter(Boolean),
     maxFrameAttemptsPerGraft: normalizeInteger(
       options.maxFrameAttemptsPerGraft,
       MAX_FRAME_ATTEMPTS_PER_GRAFT,
@@ -214,20 +220,22 @@ function buildSyntheticFramesForGraft(graft, options) {
         const defaults = DEFAULT_FRAME_VALUES[roleId] || DEFAULT_FRAME_VALUES.standard;
         const targetCr = clamp(preferredCr || defaults.targetCr, options.crMin, options.crMax);
         tacticalRoles.slice(0, 3).forEach((tacticalRoleId) => {
-          frames.push({
-            id: `per-graft-${graft.id}-${typeId}-${category}-${roleId}-${tacticalRoleId}`,
-            typeId,
-            category,
-            roleId,
-            sourceId: graft.source || "decomposition",
-            targetCr,
-            tacticalRoleId,
-            monsterTierId: tiers[0] || defaults.monsterTierId,
-            tempoProfileId: tempos[0] || defaults.tempoProfileId,
-            dangerId: dangers[0] || defaults.dangerId,
-            seed: `${options.seed}:${graft.id}:${typeId}:${category}:${roleId}:${tacticalRoleId}`,
-            qaFrameMode: "per-graft",
-            qaFrameStatus: "forced-graft",
+          tiers.slice(0, 4).forEach((monsterTierId) => {
+            frames.push({
+              id: `per-graft-${graft.id}-${typeId}-${category}-${roleId}-${tacticalRoleId}-${monsterTierId}`,
+              typeId,
+              category,
+              roleId,
+              sourceId: graft.source || "decomposition",
+              targetCr,
+              tacticalRoleId,
+              monsterTierId: monsterTierId || defaults.monsterTierId,
+              tempoProfileId: tempos[0] || defaults.tempoProfileId,
+              dangerId: dangers[0] || defaults.dangerId,
+              seed: `${options.seed}:${graft.id}:${typeId}:${category}:${roleId}:${tacticalRoleId}:${monsterTierId}`,
+              qaFrameMode: "per-graft",
+              qaFrameStatus: "forced-graft",
+            });
           });
         });
       });
@@ -260,7 +268,7 @@ function scoreCandidateForSlot(feature, slotId, selectedFeatures, frame) {
   const frameFit = evaluateMonsterFrameFit(feature, frame);
   if (frameFit.hardBlock) return Number.POSITIVE_INFINITY;
   const slotBias = feature.slot === slotId ? 0 : 20;
-  return Math.max(0, Number(feature.cost || 0)) + Number(feature.complexity || 0) * 0.45 + frameFit.rankModifier + slotBias;
+  return Math.max(0, Number(feature.cost || 0)) + Number(feature.complexity || 0) * 6 + frameFit.rankModifier + slotBias;
 }
 
 function pickCandidateForSlot(slotId, selectedFeatures, frame, excludedIds = new Set()) {
@@ -343,43 +351,113 @@ function completeForcedSelectionForFrame(graft, frame) {
 }
 
 function getForcedRenderedItems(statBlock = {}, graftId) {
+  const exactId = cleanString(graftId);
+  const abilityPrefix = `${exactId}:`;
   return asArray(statBlock.sections)
-    .flatMap((section) => asArray(section.items).map((item) => ({ sectionId: section.id, sectionTitle: section.title, ...item })))
-    .filter((item) => item.id === graftId);
+    .flatMap((section) =>
+      asArray(section.items).map((item) => ({
+        sectionId: section.id,
+        sectionTitle: section.title,
+        ...item,
+      })),
+    )
+    .filter((item) => item.id === exactId || cleanString(item.id).startsWith(abilityPrefix));
 }
 
-function buildGraftCoverageFlags(graft, renderedItems = []) {
+function getGraftRulePayloads(graft = {}, renderedItems = []) {
+  if (isMonsterGraftV2(graft)) {
+    const renderedIds = new Set(asArray(renderedItems).map((item) => cleanString(item.id)));
+    const renderedAbilityRules = asArray(graft.abilities)
+      .filter((ability) => renderedIds.has(`${graft.id}:${ability?.id}`))
+      .map((ability) => ability?.rules)
+      .filter((rules) => rules && typeof rules === "object");
+    if (renderedAbilityRules.length) return renderedAbilityRules;
+
+    const abilityRules = asArray(graft.abilities)
+      .map((ability) => ability?.rules)
+      .filter((rules) => rules && typeof rules === "object");
+    if (abilityRules.length) return abilityRules;
+  }
   const rules = getGraftRules(graft);
-  const renderedText = renderedItems.map((item) => `${item.title || ""}. ${item.text || ""}`).join("\n");
-  const hasRenderedText = cleanString(renderedText).length > 0;
-  const conditionNames = asArray(rules.condition?.names).map((name) => cleanString(name).toLowerCase()).filter(Boolean);
-  const damageTypes = uniqueArray([
-    ...asArray(rules.damage?.types),
-    rules.damage?.type,
-    rules.damage?.damageType,
-  ]).map((type) => type.toLowerCase());
+  return rules && typeof rules === "object" ? [rules] : [];
+}
+
+function getDamageTypesFromRules(rules = {}) {
+  const damage = rules.damage || {};
+  const parts = Array.isArray(damage.parts) && damage.parts.length ? damage.parts : [damage];
+  return uniqueArray(
+    parts.flatMap((part) => [
+      ...asArray(part?.types),
+      part?.type,
+      part?.damageType,
+    ]),
+  )
+    .map((type) => cleanString(type).toLowerCase())
+    .filter(Boolean);
+}
+
+function isAreaRuleMentioned(rules = {}, normalizedRenderedText = "") {
   const areaSource = rules.areaEffect?.enabled ? rules.areaEffect : rules.targeting || {};
   const areaShape = cleanString(areaSource.shape).toLowerCase();
   const areaSize = Number(areaSource.size || 0);
-  const normalizedRenderedText = renderedText.toLowerCase();
-  const areaSizeMentioned = areaSize > 0 && (
-    normalizedRenderedText.includes(`${areaSize} feet`) ||
-    normalizedRenderedText.includes(`${areaSize}-foot`) ||
-    normalizedRenderedText.includes(`${areaSize} ft`) ||
-    normalizedRenderedText.includes(`${areaSize}-ft`)
+  const areaSizeMentioned =
+    areaSize > 0 &&
+    [
+      `${areaSize} feet`,
+      `${areaSize}-foot`,
+      `${areaSize} ft`,
+      `${areaSize}-ft`,
+    ].some((token) => normalizedRenderedText.includes(token));
+  return (
+    !areaShape ||
+    areaShape === "custom" ||
+    normalizedRenderedText.includes(areaShape) ||
+    (areaShape === "radius" && normalizedRenderedText.includes("sphere")) ||
+    areaSizeMentioned
   );
-  const usageType = cleanString(rules.usage?.type).toLowerCase();
+}
+
+function buildGraftCoverageFlags(graft, renderedItems = []) {
+  const rulePayloads = getGraftRulePayloads(graft, renderedItems);
+  const renderedText = renderedItems
+    .map((item) => `${item.title || ""}. ${item.text || ""}`)
+    .join("\n");
+  const normalizedRenderedText = renderedText.toLowerCase();
+  const hasRenderedText = cleanString(renderedText).length > 0;
+  const damageRules = rulePayloads.filter(
+    (rules) => rules.damage?.mode && rules.damage.mode !== "none",
+  );
+  const conditionNames = uniqueArray(
+    rulePayloads.flatMap((rules) => asArray(rules.condition?.names)),
+  )
+    .map((name) => cleanString(name).toLowerCase())
+    .filter(Boolean);
+  const damageTypes = uniqueArray(rulePayloads.flatMap(getDamageTypesFromRules));
+  const areaRules = rulePayloads.filter(
+    (rules) => rules.targeting?.type === "area" || Boolean(rules.areaEffect?.enabled),
+  );
+  const rechargeRules = rulePayloads.filter(
+    (rules) => cleanString(rules.usage?.type).toLowerCase() === "recharge",
+  );
 
   return {
     hasRenderedText,
-    hasDamageRule: Boolean(rules.damage?.mode && rules.damage.mode !== "none"),
-    damageMentioned: !damageTypes.length || damageTypes.some((type) => normalizedRenderedText.includes(type)),
-    hasConditionRule: Boolean(conditionNames.length),
-    conditionMentioned: !conditionNames.length || conditionNames.some((name) => normalizedRenderedText.includes(`${name} condition`)),
-    hasAreaRule: rules.targeting?.type === "area" || Boolean(rules.areaEffect?.enabled),
-    areaMentioned: !areaShape || areaShape === "custom" || normalizedRenderedText.includes(areaShape) || (areaShape === "radius" && normalizedRenderedText.includes("sphere")) || areaSizeMentioned,
-    hasRechargeRule: usageType === "recharge",
-    rechargeMentioned: usageType !== "recharge" || /\(Recharge\s+\d+[–-]\d+\)/.test(renderedText),
+    hasDamageRule: damageRules.length > 0,
+    damageMentioned:
+      !damageTypes.length ||
+      damageTypes.every((type) => normalizedRenderedText.includes(type)),
+    hasConditionRule: conditionNames.length > 0,
+    conditionMentioned:
+      !conditionNames.length ||
+      (conditionNames.every((name) => normalizedRenderedText.includes(name)) &&
+        /\bconditions?\b/.test(normalizedRenderedText)),
+    hasAreaRule: areaRules.length > 0,
+    areaMentioned:
+      !areaRules.length ||
+      areaRules.every((rules) => isAreaRuleMentioned(rules, normalizedRenderedText)),
+    hasRechargeRule: rechargeRules.length > 0,
+    rechargeMentioned:
+      !rechargeRules.length || /\(Recharge\s+\d+(?:[–-]\d+)?\)/.test(renderedText),
     renderedText,
   };
 }
@@ -452,7 +530,10 @@ function addCoverageFlagIssues({ graft, coverageFlags, caseIssues }) {
 }
 
 function addRulesSchemaIssues(graft, caseIssues) {
-  validateMonsterGraftRules(graft).issues.forEach((issue) => {
+  const validation = isMonsterGraftV2(graft)
+    ? validateMonsterGraftV2(graft)
+    : validateMonsterGraftRules(graft);
+  validation.issues.forEach((issue) => {
     caseIssues.push(makeQaIssue({
       severity: issue.severity === "error" ? "error" : "warning",
       area: "rules-schema",
@@ -623,7 +704,7 @@ function runForcedGraftCase(graft, options) {
         }));
       }
 
-      artifacts = buildExportArtifacts(context);
+      artifacts = buildExportArtifacts(context, { includeDebugExport: options.validateDebugExport });
       try {
         JSON.parse(artifacts.exportJson);
       } catch (error) {
@@ -758,7 +839,12 @@ export function runMonsterPerGraftCoverageQa(options = {}) {
   const cases = [];
   const debugPayloads = [];
 
-  ALL_MONSTER_GRAFTS.forEach((graft) => {
+  const graftIdFilter = new Set(normalized.graftIds);
+  const scopedGrafts = graftIdFilter.size
+    ? ALL_MONSTER_GRAFTS.filter((graft) => graftIdFilter.has(graft.id))
+    : ALL_MONSTER_GRAFTS;
+
+  scopedGrafts.forEach((graft) => {
     const result = runForcedGraftCase(graft, normalized);
     issues.push(...result.issues);
     cases.push(result.summary);

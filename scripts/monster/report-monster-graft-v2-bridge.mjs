@@ -66,6 +66,7 @@ function buildSyntheticAttackPattern() {
       fantasy: "A swollen corpse weaponizes its mass.",
       tacticalRole: "single-target displacement",
       signature: "impact and rupture",
+      recognitionTags: ["swollen-corpse", "impact", "displacement"],
     },
     abilities: [
       { id: "slam", title: "Heavy Slam", rules: buildRules() },
@@ -77,25 +78,48 @@ function buildSyntheticAttackPattern() {
     ],
     routine: {
       mode: "authored",
+      defaultPlan: "Strike and then pin the same target.",
+      targetSelection: "Prefer an isolated target.",
       defaultSequence: ["slam", "grab"],
+      opener: [],
+      alternatives: [],
+      intentionalRepetition: false,
+      repetitionReason: "",
       multiattack: {
         enabled: true,
-        attacks: 2,
+        mode: "choice",
+        count: 2,
+        attacks: [
+          { ref: "slam", count: 1 },
+          { ref: "grab", count: 1 },
+        ],
         choices: ["slam", "grab"],
+        replacements: [],
       },
     },
+    balanceProfile: { authoredIntent: { attrition: 1 } },
+    counterplayProfile: {
+      telegraphs: ["The corpse lowers its shoulder."],
+      positioningAnswers: ["Stay outside a straight charge lane."],
+      breakConditions: [],
+      nonDamageAnswers: [],
+    },
+    complexityProfile: {},
+    spikeRiskProfile: {},
     migration: { status: "audit-only" },
   };
 }
 
 const strict = process.argv.includes("--strict");
-const legacyModel = buildMonsterAbilitiesFromFeatures(MONSTER_GRAFTS);
-const legacyIds = MONSTER_GRAFTS.map((graft) => graft.id);
-const compiledLegacyIds = legacyModel.abilities.map((ability) => ability.id);
+const currentModel = buildMonsterAbilitiesFromFeatures(MONSTER_GRAFTS);
+const legacyGrafts = MONSTER_GRAFTS.filter((graft) => !Array.isArray(graft.abilities));
+const v2Grafts = MONSTER_GRAFTS.filter((graft) => Array.isArray(graft.abilities));
 const syntheticPattern = buildSyntheticAttackPattern();
 const syntheticBundle = buildMonsterAbilityBundleFromGraft(syntheticPattern);
-const legacyProjectionMismatches = MONSTER_GRAFTS.flatMap((graft, index) => {
-  const ability = legacyModel.abilities[index];
+const legacyProjectionMismatches = legacyGrafts.flatMap((graft) => {
+  const ability = currentModel.abilities.find(
+    (candidate) => candidate.id === graft.id && candidate.provenance.compilation === "legacy-adapter",
+  );
   const mismatches = [];
   if (ability?.id !== graft.id) mismatches.push("id");
   if (ability?.sourceGraftId !== graft.id) mismatches.push("sourceGraftId");
@@ -118,17 +142,17 @@ const syntheticRoutine = buildMonsterAttackRoutine({
 });
 
 const checks = {
-  legacyCountPreserved: legacyModel.total === MONSTER_GRAFTS.length,
-  legacyOrderPreserved:
-    JSON.stringify(compiledLegacyIds) === JSON.stringify(legacyIds),
-  legacyIdsUnique: new Set(compiledLegacyIds).size === compiledLegacyIds.length,
-  allCurrentGraftsUseLegacyAdapter:
-    legacyModel.legacyGrafts === MONSTER_GRAFTS.length && legacyModel.v2Grafts === 0,
-  currentCatalogueHasNoSyntheticAbilities: legacyModel.synthetic === 0,
-  currentCatalogueValidationHasNoErrors:
-    legacyModel.validation.errors.length === 0,
-  legacyProjectionPreservesRuntimeDomainFields:
-    legacyProjectionMismatches.length === 0,
+  currentCatalogueGraftCountPreserved: currentModel.grafts === MONSTER_GRAFTS.length,
+  currentCatalogueIdsUnique: new Set(currentModel.abilities.map((ability) => ability.id)).size === currentModel.total,
+  legacyAdapterCountCorrect: currentModel.legacyGrafts === legacyGrafts.length,
+  v2BundleCountCorrect: currentModel.v2Grafts === v2Grafts.length,
+  productionCatalogueExpanded:
+    legacyGrafts.length === 0 &&
+    v2Grafts.length === 93 &&
+    currentModel.synthetic === 15 &&
+    currentModel.total >= 139,
+  currentCatalogueValidationHasNoErrors: currentModel.validation.errors.length === 0,
+  legacyProjectionPreservesRuntimeDomainFields: legacyProjectionMismatches.length === 0,
   syntheticBundlePasses: syntheticBundle.validation.errors.length === 0,
   syntheticBundleExpandsToThreeAbilities: syntheticBundle.abilities.length === 3,
   syntheticRuntimeIdsStable:
@@ -138,7 +162,8 @@ const checks = {
       "phase-2-pressure-collapse:slam",
       "phase-2-pressure-collapse:grab",
     ]),
-  authoredRoutineResolved: syntheticRoutine.source === "manual",
+  authoredRoutineResolved:
+    syntheticRoutine.source === "manual" && syntheticRoutine.authority === "authored-pattern",
   authoredRoutineAllocationsDistinct:
     JSON.stringify(Object.keys(syntheticRoutine.allocations).sort()) ===
     JSON.stringify([
@@ -155,11 +180,11 @@ const report = {
   bridge: "monster-ability-bundle-v1.0",
   currentCatalogue: {
     grafts: MONSTER_GRAFTS.length,
-    abilities: legacyModel.total,
-    legacyGrafts: legacyModel.legacyGrafts,
-    v2Grafts: legacyModel.v2Grafts,
-    syntheticAbilities: legacyModel.synthetic,
-    validation: legacyModel.validation.status,
+    abilities: currentModel.total,
+    legacyGrafts: currentModel.legacyGrafts,
+    v2Grafts: currentModel.v2Grafts,
+    syntheticAbilities: currentModel.synthetic,
+    validation: currentModel.validation.status,
     projectionMismatches: legacyProjectionMismatches,
   },
   syntheticV2: {

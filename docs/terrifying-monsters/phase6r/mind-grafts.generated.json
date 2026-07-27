@@ -1,0 +1,1514 @@
+{
+  "version": "monster-mind-graft-editorial-audit-v1.0",
+  "editorialVersion": "monster-mind-graft-editorial-v1.1-simple-names",
+  "total": 11,
+  "expectedTotal": 11,
+  "passing": 11,
+  "warning": 0,
+  "error": 0,
+  "abilityCount": 17,
+  "bundleCount": 6,
+  "scaledCount": 3,
+  "byDecision": {
+    "RENAME_AND_REWRITE": 3,
+    "REWRITE_AND_SCALE": 1,
+    "EXPAND_INTO_BUNDLE_AND_SCALE": 1,
+    "EXPAND_INTO_BUNDLE": 1,
+    "RENAME_AND_EXPAND_INTO_BUNDLE": 3,
+    "RENAME_AND_EXPAND_INTO_PATTERN_BUNDLE": 1,
+    "RENAME_REWRITE_AND_SCALE": 1
+  },
+  "bySource": {
+    "decomposition": 2,
+    "jikininki": 5,
+    "wolf-spiders": 3,
+    "wax-death-masks": 1
+  },
+  "reports": [
+    {
+      "version": "monster-mind-graft-editorial-audit-v1.0",
+      "applicable": true,
+      "id": "mindless-command",
+      "title": "Single Command",
+      "source": "decomposition",
+      "slot": "mind",
+      "kind": "traitBundle",
+      "decision": "RENAME_AND_REWRITE",
+      "rationale": "The original concept was useful but underspecified. It now gives the GM a concrete directive format and gives players multiple ways to exploit literal obedience rather than merely describing poor tactics.",
+      "status": "pass",
+      "pass": true,
+      "abilityCount": 1,
+      "abilityIds": [
+        "command-loop"
+      ],
+      "counterplayChannels": [
+        "telegraph",
+        "positioning",
+        "breakCondition",
+        "nonDamage"
+      ],
+      "scaling": {
+        "expected": false,
+        "declared": false,
+        "bandCount": 0,
+        "sampledBandIds": [],
+        "sampledRuleVariants": 1,
+        "pass": true
+      },
+      "snapshots": [
+        {
+          "targetCr": 1,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "command-loop"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":null,\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"At the start of combat, define one short directive containing a verb and a subject. While that directive can be obeyed, the monster prioritizes it over every other objective and interprets it literally. If the directive becomes impossible, the monster attacks the nearest creature until a path to the directive reappears.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "command-loop",
+              "renderedText": "At the start of combat, define one short directive containing a verb and a subject. While that directive can be obeyed, the monster prioritizes it over every other objective and interprets it literally. If the directive becomes impossible, the monster attacks the nearest creature until a path to the directive reappears."
+            }
+          ]
+        },
+        {
+          "targetCr": 5,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "command-loop"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":null,\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"At the start of combat, define one short directive containing a verb and a subject. While that directive can be obeyed, the monster prioritizes it over every other objective and interprets it literally. If the directive becomes impossible, the monster attacks the nearest creature until a path to the directive reappears.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "command-loop",
+              "renderedText": "At the start of combat, define one short directive containing a verb and a subject. While that directive can be obeyed, the monster prioritizes it over every other objective and interprets it literally. If the directive becomes impossible, the monster attacks the nearest creature until a path to the directive reappears."
+            }
+          ]
+        },
+        {
+          "targetCr": 10,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "command-loop"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":null,\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"At the start of combat, define one short directive containing a verb and a subject. While that directive can be obeyed, the monster prioritizes it over every other objective and interprets it literally. If the directive becomes impossible, the monster attacks the nearest creature until a path to the directive reappears.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "command-loop",
+              "renderedText": "At the start of combat, define one short directive containing a verb and a subject. While that directive can be obeyed, the monster prioritizes it over every other objective and interprets it literally. If the directive becomes impossible, the monster attacks the nearest creature until a path to the directive reappears."
+            }
+          ]
+        },
+        {
+          "targetCr": 15,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "command-loop"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":null,\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"At the start of combat, define one short directive containing a verb and a subject. While that directive can be obeyed, the monster prioritizes it over every other objective and interprets it literally. If the directive becomes impossible, the monster attacks the nearest creature until a path to the directive reappears.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "command-loop",
+              "renderedText": "At the start of combat, define one short directive containing a verb and a subject. While that directive can be obeyed, the monster prioritizes it over every other objective and interprets it literally. If the directive becomes impossible, the monster attacks the nearest creature until a path to the directive reappears."
+            }
+          ]
+        }
+      ],
+      "issues": [],
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "version": "monster-mind-graft-editorial-audit-v1.0",
+      "applicable": true,
+      "id": "pressure-agony",
+      "title": "Pain Fixation",
+      "source": "decomposition",
+      "slot": "mind",
+      "kind": "traitBundle",
+      "decision": "REWRITE_AND_SCALE",
+      "rationale": "The previous trait was a generic bloodied movement bonus. It now creates a party-controlled quarry, a predictable route, and CR-scaled pursuit without increasing direct damage.",
+      "status": "pass",
+      "pass": true,
+      "abilityCount": 1,
+      "abilityIds": [
+        "agony-fixation"
+      ],
+      "counterplayChannels": [
+        "telegraph",
+        "positioning",
+        "breakCondition",
+        "nonDamage"
+      ],
+      "scaling": {
+        "expected": true,
+        "declared": true,
+        "bandCount": 3,
+        "sampledBandIds": [
+          "cr-0-4-stumbling-pursuit",
+          "cr-5-12-agonized-rush",
+          "cr-13-30-unignorable-agony"
+        ],
+        "sampledRuleVariants": 3,
+        "pass": true
+      },
+      "snapshots": [
+        {
+          "targetCr": 1,
+          "bandId": "cr-0-4-stumbling-pursuit",
+          "abilityCount": 1,
+          "abilityIds": [
+            "agony-fixation"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"The first time the creature becomes bloodied.\",\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"The monster is bloodied and can see its quarry.\",\"text\":\"At the start of its turn, the monster moves up to 10 feet toward its quarry without provoking Opportunity Attacks.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster fixates on the nearest creature that damaged it since the end of its previous turn. At the start of each of its turns while it can see that quarry, it can move up to 10 feet toward the quarry without provoking Opportunity Attacks, then it must include the quarry among its attack targets if able.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "agony-fixation",
+              "renderedText": "At the start of its turn, the monster moves up to 10 feet toward its quarry without provoking Opportunity Attacks."
+            }
+          ]
+        },
+        {
+          "targetCr": 5,
+          "bandId": "cr-5-12-agonized-rush",
+          "abilityCount": 1,
+          "abilityIds": [
+            "agony-fixation"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"The first time the creature becomes bloodied.\",\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"The monster is bloodied and can see its quarry.\",\"text\":\"At the start of its turn, the monster moves up to 15 feet toward its quarry without provoking Opportunity Attacks.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster fixates on the nearest creature that damaged it since the end of its previous turn. At the start of each of its turns while it can see that quarry, it can move up to 15 feet toward the quarry without provoking Opportunity Attacks, then it must include the quarry among its attack targets if able.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "agony-fixation",
+              "renderedText": "At the start of its turn, the monster moves up to 15 feet toward its quarry without provoking Opportunity Attacks."
+            }
+          ]
+        },
+        {
+          "targetCr": 10,
+          "bandId": "cr-5-12-agonized-rush",
+          "abilityCount": 1,
+          "abilityIds": [
+            "agony-fixation"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"The first time the creature becomes bloodied.\",\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"The monster is bloodied and can see its quarry.\",\"text\":\"At the start of its turn, the monster moves up to 15 feet toward its quarry without provoking Opportunity Attacks.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster fixates on the nearest creature that damaged it since the end of its previous turn. At the start of each of its turns while it can see that quarry, it can move up to 15 feet toward the quarry without provoking Opportunity Attacks, then it must include the quarry among its attack targets if able.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "agony-fixation",
+              "renderedText": "At the start of its turn, the monster moves up to 15 feet toward its quarry without provoking Opportunity Attacks."
+            }
+          ]
+        },
+        {
+          "targetCr": 15,
+          "bandId": "cr-13-30-unignorable-agony",
+          "abilityCount": 1,
+          "abilityIds": [
+            "agony-fixation"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"The first time the creature becomes bloodied.\",\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"The monster is bloodied and can see its quarry.\",\"text\":\"At the start of its turn, the monster moves up to 20 feet toward its quarry without provoking Opportunity Attacks.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster fixates on the nearest creature that damaged it since the end of its previous turn. At the start of each of its turns while it can see that quarry, it can move up to 20 feet toward the quarry without provoking Opportunity Attacks, then it must include the quarry among its attack targets if able.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "agony-fixation",
+              "renderedText": "At the start of its turn, the monster moves up to 20 feet toward its quarry without provoking Opportunity Attacks."
+            }
+          ]
+        }
+      ],
+      "issues": [],
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "version": "monster-mind-graft-editorial-audit-v1.0",
+      "applicable": true,
+      "id": "shame-hunger",
+      "title": "Funeral Hunger",
+      "source": "jikininki",
+      "slot": "mind",
+      "kind": "traitBundle",
+      "decision": "EXPAND_INTO_BUNDLE_AND_SCALE",
+      "rationale": "The previous feature mixed target priority and healing in one paragraph. It now separates the transferable quarry from the bounded feeding payoff and scales only the healing amount.",
+      "status": "pass",
+      "pass": true,
+      "abilityCount": 2,
+      "abilityIds": [
+        "bearer-of-shame",
+        "profane-feeding"
+      ],
+      "counterplayChannels": [
+        "telegraph",
+        "positioning",
+        "breakCondition",
+        "nonDamage"
+      ],
+      "scaling": {
+        "expected": true,
+        "declared": true,
+        "bandCount": 3,
+        "sampledBandIds": [
+          "cr-0-4-gnawing-shame",
+          "cr-5-12-devouring-shame",
+          "cr-13-30-insatiable-shame"
+        ],
+        "sampledRuleVariants": 4,
+        "pass": true
+      },
+      "snapshots": [
+        {
+          "targetCr": 1,
+          "bandId": "cr-0-4-gnawing-shame",
+          "abilityCount": 2,
+          "abilityIds": [
+            "bearer-of-shame",
+            "profane-feeding"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":null,\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"At the start of combat, the monster marks one visible creature carrying a holy symbol, funerary object, grave soil, or open wound as its Bearer of Shame. It prioritizes that creature. A different creature can visibly present a funerary offering to become the new Bearer.\"}}",
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"Immediately after the monster damages its Bearer of Shame, once per encounter.\",\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":true,\"type\":\"custom\",\"timing\":\"passive\",\"breakCondition\":\"Transfer the mark or prevent the monster from damaging the Bearer of Shame.\",\"text\":\"The monster regains Hit Points equal to twice its Proficiency Bonus.\",\"uses\":null,\"value\":null,\"damageTypes\":[]},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster regains Hit Points equal to twice its Proficiency Bonus.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "bearer-of-shame",
+              "renderedText": "At the start of combat, the monster marks one visible creature carrying a holy symbol, funerary object, grave soil, or open wound as its Bearer of Shame. It prioritizes that creature. A different creature can visibly present a funerary offering to become the new Bearer."
+            },
+            {
+              "abilityId": "profane-feeding",
+              "renderedText": "The monster regains Hit Points equal to twice its Proficiency Bonus."
+            }
+          ]
+        },
+        {
+          "targetCr": 5,
+          "bandId": "cr-5-12-devouring-shame",
+          "abilityCount": 2,
+          "abilityIds": [
+            "bearer-of-shame",
+            "profane-feeding"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":null,\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"At the start of combat, the monster marks one visible creature carrying a holy symbol, funerary object, grave soil, or open wound as its Bearer of Shame. It prioritizes that creature. A different creature can visibly present a funerary offering to become the new Bearer.\"}}",
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"Immediately after the monster damages its Bearer of Shame, once per encounter.\",\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":true,\"type\":\"custom\",\"timing\":\"passive\",\"breakCondition\":\"Transfer the mark or prevent the monster from damaging the Bearer of Shame.\",\"text\":\"The monster regains Hit Points equal to three times its Proficiency Bonus.\",\"uses\":null,\"value\":null,\"damageTypes\":[]},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster regains Hit Points equal to three times its Proficiency Bonus.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "bearer-of-shame",
+              "renderedText": "At the start of combat, the monster marks one visible creature carrying a holy symbol, funerary object, grave soil, or open wound as its Bearer of Shame. It prioritizes that creature. A different creature can visibly present a funerary offering to become the new Bearer."
+            },
+            {
+              "abilityId": "profane-feeding",
+              "renderedText": "The monster regains Hit Points equal to three times its Proficiency Bonus."
+            }
+          ]
+        },
+        {
+          "targetCr": 10,
+          "bandId": "cr-5-12-devouring-shame",
+          "abilityCount": 2,
+          "abilityIds": [
+            "bearer-of-shame",
+            "profane-feeding"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":null,\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"At the start of combat, the monster marks one visible creature carrying a holy symbol, funerary object, grave soil, or open wound as its Bearer of Shame. It prioritizes that creature. A different creature can visibly present a funerary offering to become the new Bearer.\"}}",
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"Immediately after the monster damages its Bearer of Shame, once per encounter.\",\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":true,\"type\":\"custom\",\"timing\":\"passive\",\"breakCondition\":\"Transfer the mark or prevent the monster from damaging the Bearer of Shame.\",\"text\":\"The monster regains Hit Points equal to three times its Proficiency Bonus.\",\"uses\":null,\"value\":null,\"damageTypes\":[]},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster regains Hit Points equal to three times its Proficiency Bonus.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "bearer-of-shame",
+              "renderedText": "At the start of combat, the monster marks one visible creature carrying a holy symbol, funerary object, grave soil, or open wound as its Bearer of Shame. It prioritizes that creature. A different creature can visibly present a funerary offering to become the new Bearer."
+            },
+            {
+              "abilityId": "profane-feeding",
+              "renderedText": "The monster regains Hit Points equal to three times its Proficiency Bonus."
+            }
+          ]
+        },
+        {
+          "targetCr": 15,
+          "bandId": "cr-13-30-insatiable-shame",
+          "abilityCount": 2,
+          "abilityIds": [
+            "bearer-of-shame",
+            "profane-feeding"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":null,\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"At the start of combat, the monster marks one visible creature carrying a holy symbol, funerary object, grave soil, or open wound as its Bearer of Shame. It prioritizes that creature. A different creature can visibly present a funerary offering to become the new Bearer.\"}}",
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"Immediately after the monster damages its Bearer of Shame, once per encounter.\",\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":true,\"type\":\"custom\",\"timing\":\"passive\",\"breakCondition\":\"Transfer the mark or prevent the monster from damaging the Bearer of Shame.\",\"text\":\"The monster regains Hit Points equal to four times its Proficiency Bonus.\",\"uses\":null,\"value\":null,\"damageTypes\":[]},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster regains Hit Points equal to four times its Proficiency Bonus.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "bearer-of-shame",
+              "renderedText": "At the start of combat, the monster marks one visible creature carrying a holy symbol, funerary object, grave soil, or open wound as its Bearer of Shame. It prioritizes that creature. A different creature can visibly present a funerary offering to become the new Bearer."
+            },
+            {
+              "abilityId": "profane-feeding",
+              "renderedText": "The monster regains Hit Points equal to four times its Proficiency Bonus."
+            }
+          ]
+        }
+      ],
+      "issues": [],
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "version": "monster-mind-graft-editorial-audit-v1.0",
+      "applicable": true,
+      "id": "corpse-craving",
+      "title": "Corpse Hunger",
+      "source": "jikininki",
+      "slot": "mind",
+      "kind": "traitBundle",
+      "decision": "EXPAND_INTO_BUNDLE",
+      "rationale": "The original self-save was awkward and its feeding state had no defined action. The new bundle creates deterministic bait movement, a bounded bonus-action reward, and a player-facing vulnerability window.",
+      "status": "pass",
+      "pass": true,
+      "abilityCount": 2,
+      "abilityIds": [
+        "corpse-compulsion",
+        "feed-on-the-dead"
+      ],
+      "counterplayChannels": [
+        "telegraph",
+        "positioning",
+        "breakCondition",
+        "nonDamage"
+      ],
+      "scaling": {
+        "expected": false,
+        "declared": false,
+        "bandCount": 0,
+        "sampledBandIds": [],
+        "sampledRuleVariants": 2,
+        "pass": true
+      },
+      "snapshots": [
+        {
+          "targetCr": 1,
+          "bandId": null,
+          "abilityCount": 2,
+          "abilityIds": [
+            "corpse-compulsion",
+            "feed-on-the-dead"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"The monster starts its turn able to see an unattended corpse within 30 feet.\",\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"The monster can see an unattended corpse within 30 feet.\",\"text\":\"The monster moves toward the nearest visible unattended corpse before pursuing other objectives.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster must move toward the nearest visible unattended corpse if able.\"}}",
+            "{\"section\":\"bonusAction\",\"actionEconomy\":\"bonusAction\",\"usage\":{\"type\":\"atWill\"},\"trigger\":\"The monster is adjacent to an unattended corpse.\",\"resolution\":{\"type\":\"automatic\",\"attackType\":\"melee\"},\"targeting\":{\"type\":\"object\",\"targets\":\"one adjacent corpse\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"The monster is adjacent to an unattended corpse.\",\"text\":\"The monster consumes part of the corpse and gains Temporary Hit Points equal to twice its Proficiency Bonus. Until the start of its next turn, it cannot take Reactions and has disadvantage on attack rolls against living creatures.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster consumes part of the corpse and gains Temporary Hit Points equal to twice its Proficiency Bonus. Until the start of its next turn, it cannot take Reactions and has disadvantage on attack rolls against living creatures.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "corpse-compulsion",
+              "renderedText": "The monster moves toward the nearest visible unattended corpse before pursuing other objectives."
+            },
+            {
+              "abilityId": "feed-on-the-dead",
+              "renderedText": "The monster consumes part of the corpse and gains Temporary Hit Points equal to twice its Proficiency Bonus. Until the start of its next turn, it cannot take Reactions and has disadvantage on attack rolls against living creatures."
+            }
+          ]
+        },
+        {
+          "targetCr": 5,
+          "bandId": null,
+          "abilityCount": 2,
+          "abilityIds": [
+            "corpse-compulsion",
+            "feed-on-the-dead"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"The monster starts its turn able to see an unattended corpse within 30 feet.\",\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"The monster can see an unattended corpse within 30 feet.\",\"text\":\"The monster moves toward the nearest visible unattended corpse before pursuing other objectives.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster must move toward the nearest visible unattended corpse if able.\"}}",
+            "{\"section\":\"bonusAction\",\"actionEconomy\":\"bonusAction\",\"usage\":{\"type\":\"atWill\"},\"trigger\":\"The monster is adjacent to an unattended corpse.\",\"resolution\":{\"type\":\"automatic\",\"attackType\":\"melee\"},\"targeting\":{\"type\":\"object\",\"targets\":\"one adjacent corpse\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"The monster is adjacent to an unattended corpse.\",\"text\":\"The monster consumes part of the corpse and gains Temporary Hit Points equal to twice its Proficiency Bonus. Until the start of its next turn, it cannot take Reactions and has disadvantage on attack rolls against living creatures.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster consumes part of the corpse and gains Temporary Hit Points equal to twice its Proficiency Bonus. Until the start of its next turn, it cannot take Reactions and has disadvantage on attack rolls against living creatures.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "corpse-compulsion",
+              "renderedText": "The monster moves toward the nearest visible unattended corpse before pursuing other objectives."
+            },
+            {
+              "abilityId": "feed-on-the-dead",
+              "renderedText": "The monster consumes part of the corpse and gains Temporary Hit Points equal to twice its Proficiency Bonus. Until the start of its next turn, it cannot take Reactions and has disadvantage on attack rolls against living creatures."
+            }
+          ]
+        },
+        {
+          "targetCr": 10,
+          "bandId": null,
+          "abilityCount": 2,
+          "abilityIds": [
+            "corpse-compulsion",
+            "feed-on-the-dead"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"The monster starts its turn able to see an unattended corpse within 30 feet.\",\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"The monster can see an unattended corpse within 30 feet.\",\"text\":\"The monster moves toward the nearest visible unattended corpse before pursuing other objectives.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster must move toward the nearest visible unattended corpse if able.\"}}",
+            "{\"section\":\"bonusAction\",\"actionEconomy\":\"bonusAction\",\"usage\":{\"type\":\"atWill\"},\"trigger\":\"The monster is adjacent to an unattended corpse.\",\"resolution\":{\"type\":\"automatic\",\"attackType\":\"melee\"},\"targeting\":{\"type\":\"object\",\"targets\":\"one adjacent corpse\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"The monster is adjacent to an unattended corpse.\",\"text\":\"The monster consumes part of the corpse and gains Temporary Hit Points equal to twice its Proficiency Bonus. Until the start of its next turn, it cannot take Reactions and has disadvantage on attack rolls against living creatures.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster consumes part of the corpse and gains Temporary Hit Points equal to twice its Proficiency Bonus. Until the start of its next turn, it cannot take Reactions and has disadvantage on attack rolls against living creatures.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "corpse-compulsion",
+              "renderedText": "The monster moves toward the nearest visible unattended corpse before pursuing other objectives."
+            },
+            {
+              "abilityId": "feed-on-the-dead",
+              "renderedText": "The monster consumes part of the corpse and gains Temporary Hit Points equal to twice its Proficiency Bonus. Until the start of its next turn, it cannot take Reactions and has disadvantage on attack rolls against living creatures."
+            }
+          ]
+        },
+        {
+          "targetCr": 15,
+          "bandId": null,
+          "abilityCount": 2,
+          "abilityIds": [
+            "corpse-compulsion",
+            "feed-on-the-dead"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"The monster starts its turn able to see an unattended corpse within 30 feet.\",\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"The monster can see an unattended corpse within 30 feet.\",\"text\":\"The monster moves toward the nearest visible unattended corpse before pursuing other objectives.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster must move toward the nearest visible unattended corpse if able.\"}}",
+            "{\"section\":\"bonusAction\",\"actionEconomy\":\"bonusAction\",\"usage\":{\"type\":\"atWill\"},\"trigger\":\"The monster is adjacent to an unattended corpse.\",\"resolution\":{\"type\":\"automatic\",\"attackType\":\"melee\"},\"targeting\":{\"type\":\"object\",\"targets\":\"one adjacent corpse\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"The monster is adjacent to an unattended corpse.\",\"text\":\"The monster consumes part of the corpse and gains Temporary Hit Points equal to twice its Proficiency Bonus. Until the start of its next turn, it cannot take Reactions and has disadvantage on attack rolls against living creatures.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster consumes part of the corpse and gains Temporary Hit Points equal to twice its Proficiency Bonus. Until the start of its next turn, it cannot take Reactions and has disadvantage on attack rolls against living creatures.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "corpse-compulsion",
+              "renderedText": "The monster moves toward the nearest visible unattended corpse before pursuing other objectives."
+            },
+            {
+              "abilityId": "feed-on-the-dead",
+              "renderedText": "The monster consumes part of the corpse and gains Temporary Hit Points equal to twice its Proficiency Bonus. Until the start of its next turn, it cannot take Reactions and has disadvantage on attack rolls against living creatures."
+            }
+          ]
+        }
+      ],
+      "issues": [],
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "version": "monster-mind-graft-editorial-audit-v1.0",
+      "applicable": true,
+      "id": "nocturnal-haunting",
+      "title": "Night Hunter",
+      "source": "jikininki",
+      "slot": "mind",
+      "kind": "traitBundle",
+      "decision": "RENAME_AND_EXPAND_INTO_BUNDLE",
+      "rationale": "The original was mostly an adventure note. It now creates a combat-readable light aversion and a distinct conditional stalking action without duplicating Umbral Skin's invisibility progression.",
+      "status": "pass",
+      "pass": true,
+      "abilityCount": 2,
+      "abilityIds": [
+        "daylight-withdrawal",
+        "grave-night-stalker"
+      ],
+      "counterplayChannels": [
+        "telegraph",
+        "positioning",
+        "breakCondition",
+        "nonDamage"
+      ],
+      "scaling": {
+        "expected": false,
+        "declared": false,
+        "bandCount": 0,
+        "sampledBandIds": [],
+        "sampledRuleVariants": 2,
+        "pass": true
+      },
+      "snapshots": [
+        {
+          "targetCr": 1,
+          "bandId": null,
+          "abilityCount": 2,
+          "abilityIds": [
+            "daylight-withdrawal",
+            "grave-night-stalker"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":null,\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"While in Bright Light, the monster cannot willingly end its turn farther from Dim Light or Darkness if a safe route toward either exists.\"}}",
+            "{\"section\":\"bonusAction\",\"actionEconomy\":\"bonusAction\",\"usage\":{\"type\":\"atWill\"},\"trigger\":\"The monster is in dim light or darkness and no hostile creature is within 10 feet of it.\",\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"The monster is in dim light or darkness and no hostile creature is within 10 feet of it.\",\"text\":\"The monster takes the Hide action. While in Dim Light or Darkness, it has advantage on Dexterity (Stealth) checks.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster takes the Hide action. While in Dim Light or Darkness, it has advantage on Dexterity (Stealth) checks.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "daylight-withdrawal",
+              "renderedText": "While in Bright Light, the monster cannot willingly end its turn farther from Dim Light or Darkness if a safe route toward either exists."
+            },
+            {
+              "abilityId": "grave-night-stalker",
+              "renderedText": "The monster takes the Hide action. While in Dim Light or Darkness, it has advantage on Dexterity (Stealth) checks."
+            }
+          ]
+        },
+        {
+          "targetCr": 5,
+          "bandId": null,
+          "abilityCount": 2,
+          "abilityIds": [
+            "daylight-withdrawal",
+            "grave-night-stalker"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":null,\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"While in Bright Light, the monster cannot willingly end its turn farther from Dim Light or Darkness if a safe route toward either exists.\"}}",
+            "{\"section\":\"bonusAction\",\"actionEconomy\":\"bonusAction\",\"usage\":{\"type\":\"atWill\"},\"trigger\":\"The monster is in dim light or darkness and no hostile creature is within 10 feet of it.\",\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"The monster is in dim light or darkness and no hostile creature is within 10 feet of it.\",\"text\":\"The monster takes the Hide action. While in Dim Light or Darkness, it has advantage on Dexterity (Stealth) checks.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster takes the Hide action. While in Dim Light or Darkness, it has advantage on Dexterity (Stealth) checks.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "daylight-withdrawal",
+              "renderedText": "While in Bright Light, the monster cannot willingly end its turn farther from Dim Light or Darkness if a safe route toward either exists."
+            },
+            {
+              "abilityId": "grave-night-stalker",
+              "renderedText": "The monster takes the Hide action. While in Dim Light or Darkness, it has advantage on Dexterity (Stealth) checks."
+            }
+          ]
+        },
+        {
+          "targetCr": 10,
+          "bandId": null,
+          "abilityCount": 2,
+          "abilityIds": [
+            "daylight-withdrawal",
+            "grave-night-stalker"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":null,\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"While in Bright Light, the monster cannot willingly end its turn farther from Dim Light or Darkness if a safe route toward either exists.\"}}",
+            "{\"section\":\"bonusAction\",\"actionEconomy\":\"bonusAction\",\"usage\":{\"type\":\"atWill\"},\"trigger\":\"The monster is in dim light or darkness and no hostile creature is within 10 feet of it.\",\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"The monster is in dim light or darkness and no hostile creature is within 10 feet of it.\",\"text\":\"The monster takes the Hide action. While in Dim Light or Darkness, it has advantage on Dexterity (Stealth) checks.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster takes the Hide action. While in Dim Light or Darkness, it has advantage on Dexterity (Stealth) checks.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "daylight-withdrawal",
+              "renderedText": "While in Bright Light, the monster cannot willingly end its turn farther from Dim Light or Darkness if a safe route toward either exists."
+            },
+            {
+              "abilityId": "grave-night-stalker",
+              "renderedText": "The monster takes the Hide action. While in Dim Light or Darkness, it has advantage on Dexterity (Stealth) checks."
+            }
+          ]
+        },
+        {
+          "targetCr": 15,
+          "bandId": null,
+          "abilityCount": 2,
+          "abilityIds": [
+            "daylight-withdrawal",
+            "grave-night-stalker"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":null,\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"While in Bright Light, the monster cannot willingly end its turn farther from Dim Light or Darkness if a safe route toward either exists.\"}}",
+            "{\"section\":\"bonusAction\",\"actionEconomy\":\"bonusAction\",\"usage\":{\"type\":\"atWill\"},\"trigger\":\"The monster is in dim light or darkness and no hostile creature is within 10 feet of it.\",\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"The monster is in dim light or darkness and no hostile creature is within 10 feet of it.\",\"text\":\"The monster takes the Hide action. While in Dim Light or Darkness, it has advantage on Dexterity (Stealth) checks.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster takes the Hide action. While in Dim Light or Darkness, it has advantage on Dexterity (Stealth) checks.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "daylight-withdrawal",
+              "renderedText": "While in Bright Light, the monster cannot willingly end its turn farther from Dim Light or Darkness if a safe route toward either exists."
+            },
+            {
+              "abilityId": "grave-night-stalker",
+              "renderedText": "The monster takes the Hide action. While in Dim Light or Darkness, it has advantage on Dexterity (Stealth) checks."
+            }
+          ]
+        }
+      ],
+      "issues": [],
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "version": "monster-mind-graft-editorial-audit-v1.0",
+      "applicable": true,
+      "id": "deceitful-apparition",
+      "title": "Dead Impostor",
+      "source": "jikininki",
+      "slot": "mind",
+      "kind": "traitBundle",
+      "decision": "RENAME_AND_REWRITE",
+      "rationale": "The original disguise had no clear table procedure. It now defines what the apparition knows, how a character actively tests it, and how successful evidence changes the whole scene.",
+      "status": "pass",
+      "pass": true,
+      "abilityCount": 1,
+      "abilityIds": [
+        "corpse-worn-guise"
+      ],
+      "counterplayChannels": [
+        "telegraph",
+        "positioning",
+        "breakCondition",
+        "nonDamage"
+      ],
+      "scaling": {
+        "expected": false,
+        "declared": false,
+        "bandCount": 0,
+        "sampledBandIds": [],
+        "sampledRuleVariants": 1,
+        "pass": true
+      },
+      "snapshots": [
+        {
+          "targetCr": 1,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "corpse-worn-guise"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":null,\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster can appear and sound like a mundane person whose corpse it has consumed. A creature can spend an Action testing the disguise with a specific memory, funerary record, or physical evidence, making an Insight or Investigation check contested by the monster's Deception. On a success, the disguise is exposed to every witness who can perceive the evidence.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "corpse-worn-guise",
+              "renderedText": "The monster can appear and sound like a mundane person whose corpse it has consumed. A creature can spend an Action testing the disguise with a specific memory, funerary record, or physical evidence, making an Insight or Investigation check contested by the monster's Deception. On a success, the disguise is exposed to every witness who can perceive the evidence."
+            }
+          ]
+        },
+        {
+          "targetCr": 5,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "corpse-worn-guise"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":null,\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster can appear and sound like a mundane person whose corpse it has consumed. A creature can spend an Action testing the disguise with a specific memory, funerary record, or physical evidence, making an Insight or Investigation check contested by the monster's Deception. On a success, the disguise is exposed to every witness who can perceive the evidence.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "corpse-worn-guise",
+              "renderedText": "The monster can appear and sound like a mundane person whose corpse it has consumed. A creature can spend an Action testing the disguise with a specific memory, funerary record, or physical evidence, making an Insight or Investigation check contested by the monster's Deception. On a success, the disguise is exposed to every witness who can perceive the evidence."
+            }
+          ]
+        },
+        {
+          "targetCr": 10,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "corpse-worn-guise"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":null,\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster can appear and sound like a mundane person whose corpse it has consumed. A creature can spend an Action testing the disguise with a specific memory, funerary record, or physical evidence, making an Insight or Investigation check contested by the monster's Deception. On a success, the disguise is exposed to every witness who can perceive the evidence.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "corpse-worn-guise",
+              "renderedText": "The monster can appear and sound like a mundane person whose corpse it has consumed. A creature can spend an Action testing the disguise with a specific memory, funerary record, or physical evidence, making an Insight or Investigation check contested by the monster's Deception. On a success, the disguise is exposed to every witness who can perceive the evidence."
+            }
+          ]
+        },
+        {
+          "targetCr": 15,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "corpse-worn-guise"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":null,\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster can appear and sound like a mundane person whose corpse it has consumed. A creature can spend an Action testing the disguise with a specific memory, funerary record, or physical evidence, making an Insight or Investigation check contested by the monster's Deception. On a success, the disguise is exposed to every witness who can perceive the evidence.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "corpse-worn-guise",
+              "renderedText": "The monster can appear and sound like a mundane person whose corpse it has consumed. A creature can spend an Action testing the disguise with a specific memory, funerary record, or physical evidence, making an Insight or Investigation check contested by the monster's Deception. On a success, the disguise is exposed to every witness who can perceive the evidence."
+            }
+          ]
+        }
+      ],
+      "issues": [],
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "version": "monster-mind-graft-editorial-audit-v1.0",
+      "applicable": true,
+      "id": "mortal-afterlife",
+      "title": "Stolen Life",
+      "source": "jikininki",
+      "slot": "mind",
+      "kind": "traitBundle",
+      "decision": "RENAME_AND_REWRITE",
+      "rationale": "The original self-save and vague community exposure were difficult to adjudicate. The new feature defines an Identity Anchor, evidence threshold, witnesses, and a bounded once-per-encounter consequence.",
+      "status": "pass",
+      "pass": true,
+      "abilityCount": 1,
+      "abilityIds": [
+        "identity-collapse"
+      ],
+      "counterplayChannels": [
+        "telegraph",
+        "positioning",
+        "breakCondition",
+        "nonDamage"
+      ],
+      "scaling": {
+        "expected": false,
+        "declared": false,
+        "bandCount": 0,
+        "sampledBandIds": [],
+        "sampledRuleVariants": 1,
+        "pass": true
+      },
+      "snapshots": [
+        {
+          "targetCr": 1,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "identity-collapse"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"The first time at least two witnesses clearly expose the monster's stolen identity with records, remains, or testimony.\",\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"At least two witnesses perceive credible evidence that exposes the stolen identity.\",\"text\":\"The monster loses its Reactions and must route toward its Identity Anchor or a usable corpse on its next turn.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster cannot take Reactions until the end of its next turn. On its next turn, it must move toward its Identity Anchor or a corpse it can use to rebuild the persona before taking other movement.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "identity-collapse",
+              "renderedText": "The monster loses its Reactions and must route toward its Identity Anchor or a usable corpse on its next turn."
+            }
+          ]
+        },
+        {
+          "targetCr": 5,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "identity-collapse"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"The first time at least two witnesses clearly expose the monster's stolen identity with records, remains, or testimony.\",\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"At least two witnesses perceive credible evidence that exposes the stolen identity.\",\"text\":\"The monster loses its Reactions and must route toward its Identity Anchor or a usable corpse on its next turn.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster cannot take Reactions until the end of its next turn. On its next turn, it must move toward its Identity Anchor or a corpse it can use to rebuild the persona before taking other movement.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "identity-collapse",
+              "renderedText": "The monster loses its Reactions and must route toward its Identity Anchor or a usable corpse on its next turn."
+            }
+          ]
+        },
+        {
+          "targetCr": 10,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "identity-collapse"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"The first time at least two witnesses clearly expose the monster's stolen identity with records, remains, or testimony.\",\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"At least two witnesses perceive credible evidence that exposes the stolen identity.\",\"text\":\"The monster loses its Reactions and must route toward its Identity Anchor or a usable corpse on its next turn.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster cannot take Reactions until the end of its next turn. On its next turn, it must move toward its Identity Anchor or a corpse it can use to rebuild the persona before taking other movement.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "identity-collapse",
+              "renderedText": "The monster loses its Reactions and must route toward its Identity Anchor or a usable corpse on its next turn."
+            }
+          ]
+        },
+        {
+          "targetCr": 15,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "identity-collapse"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"The first time at least two witnesses clearly expose the monster's stolen identity with records, remains, or testimony.\",\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"At least two witnesses perceive credible evidence that exposes the stolen identity.\",\"text\":\"The monster loses its Reactions and must route toward its Identity Anchor or a usable corpse on its next turn.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster cannot take Reactions until the end of its next turn. On its next turn, it must move toward its Identity Anchor or a corpse it can use to rebuild the persona before taking other movement.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "identity-collapse",
+              "renderedText": "The monster loses its Reactions and must route toward its Identity Anchor or a usable corpse on its next turn."
+            }
+          ]
+        }
+      ],
+      "issues": [],
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "version": "monster-mind-graft-editorial-audit-v1.0",
+      "applicable": true,
+      "id": "maternal-swarm-instinct",
+      "title": "Brood Guard",
+      "source": "wolf-spiders",
+      "slot": "mind",
+      "kind": "traitBundle",
+      "decision": "RENAME_AND_EXPAND_INTO_BUNDLE",
+      "rationale": "The original spawned a swarm and granted flat damage, duplicating Body and summon mechanics. It now focuses purely on maternal decision logic: an explicit Brood anchor, target priority, and baitable reaction movement.",
+      "status": "pass",
+      "pass": true,
+      "abilityCount": 2,
+      "abilityIds": [
+        "brood-priority",
+        "protective-rush"
+      ],
+      "counterplayChannels": [
+        "telegraph",
+        "positioning",
+        "breakCondition",
+        "nonDamage"
+      ],
+      "scaling": {
+        "expected": false,
+        "declared": false,
+        "bandCount": 0,
+        "sampledBandIds": [],
+        "sampledRuleVariants": 2,
+        "pass": true
+      },
+      "snapshots": [
+        {
+          "targetCr": 1,
+          "bandId": null,
+          "abilityCount": 2,
+          "abilityIds": [
+            "brood-priority",
+            "protective-rush"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":null,\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"At the start of combat, designate one visible allied creature, egg cluster, webbed object, or occupied nursery space as the Brood. The monster prioritizes enemies within 10 feet of the Brood.\"}}",
+            "{\"section\":\"reaction\",\"actionEconomy\":\"reaction\",\"usage\":{\"type\":\"triggered\"},\"trigger\":\"A hostile creature damages the Brood or enters the Brood's space.\",\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"single\",\"targets\":\"the triggering hostile creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"A hostile creature damages the Brood or enters the Brood's space.\",\"text\":\"The monster moves up to half its Speed toward the triggering creature without provoking Opportunity Attacks.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster moves up to half its Speed toward the triggering creature without provoking Opportunity Attacks.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "brood-priority",
+              "renderedText": "At the start of combat, designate one visible allied creature, egg cluster, webbed object, or occupied nursery space as the Brood. The monster prioritizes enemies within 10 feet of the Brood."
+            },
+            {
+              "abilityId": "protective-rush",
+              "renderedText": "The monster moves up to half its Speed toward the triggering creature without provoking Opportunity Attacks."
+            }
+          ]
+        },
+        {
+          "targetCr": 5,
+          "bandId": null,
+          "abilityCount": 2,
+          "abilityIds": [
+            "brood-priority",
+            "protective-rush"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":null,\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"At the start of combat, designate one visible allied creature, egg cluster, webbed object, or occupied nursery space as the Brood. The monster prioritizes enemies within 10 feet of the Brood.\"}}",
+            "{\"section\":\"reaction\",\"actionEconomy\":\"reaction\",\"usage\":{\"type\":\"triggered\"},\"trigger\":\"A hostile creature damages the Brood or enters the Brood's space.\",\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"single\",\"targets\":\"the triggering hostile creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"A hostile creature damages the Brood or enters the Brood's space.\",\"text\":\"The monster moves up to half its Speed toward the triggering creature without provoking Opportunity Attacks.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster moves up to half its Speed toward the triggering creature without provoking Opportunity Attacks.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "brood-priority",
+              "renderedText": "At the start of combat, designate one visible allied creature, egg cluster, webbed object, or occupied nursery space as the Brood. The monster prioritizes enemies within 10 feet of the Brood."
+            },
+            {
+              "abilityId": "protective-rush",
+              "renderedText": "The monster moves up to half its Speed toward the triggering creature without provoking Opportunity Attacks."
+            }
+          ]
+        },
+        {
+          "targetCr": 10,
+          "bandId": null,
+          "abilityCount": 2,
+          "abilityIds": [
+            "brood-priority",
+            "protective-rush"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":null,\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"At the start of combat, designate one visible allied creature, egg cluster, webbed object, or occupied nursery space as the Brood. The monster prioritizes enemies within 10 feet of the Brood.\"}}",
+            "{\"section\":\"reaction\",\"actionEconomy\":\"reaction\",\"usage\":{\"type\":\"triggered\"},\"trigger\":\"A hostile creature damages the Brood or enters the Brood's space.\",\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"single\",\"targets\":\"the triggering hostile creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"A hostile creature damages the Brood or enters the Brood's space.\",\"text\":\"The monster moves up to half its Speed toward the triggering creature without provoking Opportunity Attacks.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster moves up to half its Speed toward the triggering creature without provoking Opportunity Attacks.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "brood-priority",
+              "renderedText": "At the start of combat, designate one visible allied creature, egg cluster, webbed object, or occupied nursery space as the Brood. The monster prioritizes enemies within 10 feet of the Brood."
+            },
+            {
+              "abilityId": "protective-rush",
+              "renderedText": "The monster moves up to half its Speed toward the triggering creature without provoking Opportunity Attacks."
+            }
+          ]
+        },
+        {
+          "targetCr": 15,
+          "bandId": null,
+          "abilityCount": 2,
+          "abilityIds": [
+            "brood-priority",
+            "protective-rush"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":null,\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"At the start of combat, designate one visible allied creature, egg cluster, webbed object, or occupied nursery space as the Brood. The monster prioritizes enemies within 10 feet of the Brood.\"}}",
+            "{\"section\":\"reaction\",\"actionEconomy\":\"reaction\",\"usage\":{\"type\":\"triggered\"},\"trigger\":\"A hostile creature damages the Brood or enters the Brood's space.\",\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"single\",\"targets\":\"the triggering hostile creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"A hostile creature damages the Brood or enters the Brood's space.\",\"text\":\"The monster moves up to half its Speed toward the triggering creature without provoking Opportunity Attacks.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster moves up to half its Speed toward the triggering creature without provoking Opportunity Attacks.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "brood-priority",
+              "renderedText": "At the start of combat, designate one visible allied creature, egg cluster, webbed object, or occupied nursery space as the Brood. The monster prioritizes enemies within 10 feet of the Brood."
+            },
+            {
+              "abilityId": "protective-rush",
+              "renderedText": "The monster moves up to half its Speed toward the triggering creature without provoking Opportunity Attacks."
+            }
+          ]
+        }
+      ],
+      "issues": [],
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "version": "monster-mind-graft-editorial-audit-v1.0",
+      "applicable": true,
+      "id": "hundred-eyed",
+      "title": "Many Eyes",
+      "source": "wolf-spiders",
+      "slot": "mind",
+      "kind": "traitBundle",
+      "decision": "RENAME_AND_EXPAND_INTO_BUNDLE",
+      "rationale": "The original was a generic perception bonus and was conceptually close to Body. The new version makes the many eyes a cognitive system with a visible target-fixing decision and explicit overload counters.",
+      "status": "pass",
+      "pass": true,
+      "abilityCount": 2,
+      "abilityIds": [
+        "hundredfold-attention",
+        "fix-the-unseen"
+      ],
+      "counterplayChannels": [
+        "telegraph",
+        "positioning",
+        "breakCondition",
+        "nonDamage"
+      ],
+      "scaling": {
+        "expected": false,
+        "declared": false,
+        "bandCount": 0,
+        "sampledBandIds": [],
+        "sampledRuleVariants": 2,
+        "pass": true
+      },
+      "snapshots": [
+        {
+          "targetCr": 1,
+          "bandId": null,
+          "abilityCount": 2,
+          "abilityIds": [
+            "hundredfold-attention",
+            "fix-the-unseen"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":null,\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster cannot be Surprised while conscious and gains a bonus to Passive Perception equal to its Proficiency Bonus.\"}}",
+            "{\"section\":\"bonusAction\",\"actionEconomy\":\"bonusAction\",\"usage\":{\"type\":\"atWill\"},\"trigger\":null,\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"single\",\"targets\":\"one creature the monster can see\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"\",\"text\":\"Until the start of the monster's next turn, the target gains no benefit from being unseen by the monster unless its sight is disabled, every eye is covered, or Line of Sight is denied.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"Until the start of the monster's next turn, the target gains no benefit from being unseen by the monster unless its sight is disabled, every eye is covered, or Line of Sight is denied.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "hundredfold-attention",
+              "renderedText": "The monster cannot be Surprised while conscious and gains a bonus to Passive Perception equal to its Proficiency Bonus."
+            },
+            {
+              "abilityId": "fix-the-unseen",
+              "renderedText": "Until the start of the monster's next turn, the target gains no benefit from being unseen by the monster unless its sight is disabled, every eye is covered, or Line of Sight is denied."
+            }
+          ]
+        },
+        {
+          "targetCr": 5,
+          "bandId": null,
+          "abilityCount": 2,
+          "abilityIds": [
+            "hundredfold-attention",
+            "fix-the-unseen"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":null,\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster cannot be Surprised while conscious and gains a bonus to Passive Perception equal to its Proficiency Bonus.\"}}",
+            "{\"section\":\"bonusAction\",\"actionEconomy\":\"bonusAction\",\"usage\":{\"type\":\"atWill\"},\"trigger\":null,\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"single\",\"targets\":\"one creature the monster can see\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"\",\"text\":\"Until the start of the monster's next turn, the target gains no benefit from being unseen by the monster unless its sight is disabled, every eye is covered, or Line of Sight is denied.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"Until the start of the monster's next turn, the target gains no benefit from being unseen by the monster unless its sight is disabled, every eye is covered, or Line of Sight is denied.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "hundredfold-attention",
+              "renderedText": "The monster cannot be Surprised while conscious and gains a bonus to Passive Perception equal to its Proficiency Bonus."
+            },
+            {
+              "abilityId": "fix-the-unseen",
+              "renderedText": "Until the start of the monster's next turn, the target gains no benefit from being unseen by the monster unless its sight is disabled, every eye is covered, or Line of Sight is denied."
+            }
+          ]
+        },
+        {
+          "targetCr": 10,
+          "bandId": null,
+          "abilityCount": 2,
+          "abilityIds": [
+            "hundredfold-attention",
+            "fix-the-unseen"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":null,\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster cannot be Surprised while conscious and gains a bonus to Passive Perception equal to its Proficiency Bonus.\"}}",
+            "{\"section\":\"bonusAction\",\"actionEconomy\":\"bonusAction\",\"usage\":{\"type\":\"atWill\"},\"trigger\":null,\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"single\",\"targets\":\"one creature the monster can see\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"\",\"text\":\"Until the start of the monster's next turn, the target gains no benefit from being unseen by the monster unless its sight is disabled, every eye is covered, or Line of Sight is denied.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"Until the start of the monster's next turn, the target gains no benefit from being unseen by the monster unless its sight is disabled, every eye is covered, or Line of Sight is denied.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "hundredfold-attention",
+              "renderedText": "The monster cannot be Surprised while conscious and gains a bonus to Passive Perception equal to its Proficiency Bonus."
+            },
+            {
+              "abilityId": "fix-the-unseen",
+              "renderedText": "Until the start of the monster's next turn, the target gains no benefit from being unseen by the monster unless its sight is disabled, every eye is covered, or Line of Sight is denied."
+            }
+          ]
+        },
+        {
+          "targetCr": 15,
+          "bandId": null,
+          "abilityCount": 2,
+          "abilityIds": [
+            "hundredfold-attention",
+            "fix-the-unseen"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":null,\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster cannot be Surprised while conscious and gains a bonus to Passive Perception equal to its Proficiency Bonus.\"}}",
+            "{\"section\":\"bonusAction\",\"actionEconomy\":\"bonusAction\",\"usage\":{\"type\":\"atWill\"},\"trigger\":null,\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"single\",\"targets\":\"one creature the monster can see\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"\",\"text\":\"Until the start of the monster's next turn, the target gains no benefit from being unseen by the monster unless its sight is disabled, every eye is covered, or Line of Sight is denied.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"Until the start of the monster's next turn, the target gains no benefit from being unseen by the monster unless its sight is disabled, every eye is covered, or Line of Sight is denied.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "hundredfold-attention",
+              "renderedText": "The monster cannot be Surprised while conscious and gains a bonus to Passive Perception equal to its Proficiency Bonus."
+            },
+            {
+              "abilityId": "fix-the-unseen",
+              "renderedText": "Until the start of the monster's next turn, the target gains no benefit from being unseen by the monster unless its sight is disabled, every eye is covered, or Line of Sight is denied."
+            }
+          ]
+        }
+      ],
+      "issues": [],
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "version": "monster-mind-graft-editorial-audit-v1.0",
+      "applicable": true,
+      "id": "hunter-spider",
+      "title": "Patient Hunter",
+      "source": "wolf-spiders",
+      "slot": "mind",
+      "kind": "traitBundle",
+      "decision": "RENAME_AND_EXPAND_INTO_PATTERN_BUNDLE",
+      "rationale": "The original was only advantage on Stealth plus bonus-action Hide. It now defines quarry selection, retarget conditions, spatial constraints, and a complete stalking procedure.",
+      "status": "pass",
+      "pass": true,
+      "abilityCount": 2,
+      "abilityIds": [
+        "choose-quarry",
+        "stalkers-patience"
+      ],
+      "counterplayChannels": [
+        "telegraph",
+        "positioning",
+        "breakCondition",
+        "nonDamage"
+      ],
+      "scaling": {
+        "expected": false,
+        "declared": false,
+        "bandCount": 0,
+        "sampledBandIds": [],
+        "sampledRuleVariants": 2,
+        "pass": true
+      },
+      "snapshots": [
+        {
+          "targetCr": 1,
+          "bandId": null,
+          "abilityCount": 2,
+          "abilityIds": [
+            "choose-quarry",
+            "stalkers-patience"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":null,\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"At the start of combat, the monster marks one visible creature that is isolated, Restrained, wounded, or farthest from its allies as its Quarry. It can choose a new Quarry when the current one becomes unreachable or ends its turn adjacent to an ally.\"}}",
+            "{\"section\":\"bonusAction\",\"actionEconomy\":\"bonusAction\",\"usage\":{\"type\":\"atWill\"},\"trigger\":\"The monster is in cover, dim light, darkness, or webbing and is no closer to another enemy than to its Quarry.\",\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"The monster is in cover, dim light, darkness, or webbing and is no closer to another enemy than to its Quarry.\",\"text\":\"The monster takes the Hide action.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster takes the Hide action.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "choose-quarry",
+              "renderedText": "At the start of combat, the monster marks one visible creature that is isolated, Restrained, wounded, or farthest from its allies as its Quarry. It can choose a new Quarry when the current one becomes unreachable or ends its turn adjacent to an ally."
+            },
+            {
+              "abilityId": "stalkers-patience",
+              "renderedText": "The monster takes the Hide action."
+            }
+          ]
+        },
+        {
+          "targetCr": 5,
+          "bandId": null,
+          "abilityCount": 2,
+          "abilityIds": [
+            "choose-quarry",
+            "stalkers-patience"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":null,\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"At the start of combat, the monster marks one visible creature that is isolated, Restrained, wounded, or farthest from its allies as its Quarry. It can choose a new Quarry when the current one becomes unreachable or ends its turn adjacent to an ally.\"}}",
+            "{\"section\":\"bonusAction\",\"actionEconomy\":\"bonusAction\",\"usage\":{\"type\":\"atWill\"},\"trigger\":\"The monster is in cover, dim light, darkness, or webbing and is no closer to another enemy than to its Quarry.\",\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"The monster is in cover, dim light, darkness, or webbing and is no closer to another enemy than to its Quarry.\",\"text\":\"The monster takes the Hide action.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster takes the Hide action.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "choose-quarry",
+              "renderedText": "At the start of combat, the monster marks one visible creature that is isolated, Restrained, wounded, or farthest from its allies as its Quarry. It can choose a new Quarry when the current one becomes unreachable or ends its turn adjacent to an ally."
+            },
+            {
+              "abilityId": "stalkers-patience",
+              "renderedText": "The monster takes the Hide action."
+            }
+          ]
+        },
+        {
+          "targetCr": 10,
+          "bandId": null,
+          "abilityCount": 2,
+          "abilityIds": [
+            "choose-quarry",
+            "stalkers-patience"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":null,\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"At the start of combat, the monster marks one visible creature that is isolated, Restrained, wounded, or farthest from its allies as its Quarry. It can choose a new Quarry when the current one becomes unreachable or ends its turn adjacent to an ally.\"}}",
+            "{\"section\":\"bonusAction\",\"actionEconomy\":\"bonusAction\",\"usage\":{\"type\":\"atWill\"},\"trigger\":\"The monster is in cover, dim light, darkness, or webbing and is no closer to another enemy than to its Quarry.\",\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"The monster is in cover, dim light, darkness, or webbing and is no closer to another enemy than to its Quarry.\",\"text\":\"The monster takes the Hide action.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster takes the Hide action.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "choose-quarry",
+              "renderedText": "At the start of combat, the monster marks one visible creature that is isolated, Restrained, wounded, or farthest from its allies as its Quarry. It can choose a new Quarry when the current one becomes unreachable or ends its turn adjacent to an ally."
+            },
+            {
+              "abilityId": "stalkers-patience",
+              "renderedText": "The monster takes the Hide action."
+            }
+          ]
+        },
+        {
+          "targetCr": 15,
+          "bandId": null,
+          "abilityCount": 2,
+          "abilityIds": [
+            "choose-quarry",
+            "stalkers-patience"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":null,\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"At the start of combat, the monster marks one visible creature that is isolated, Restrained, wounded, or farthest from its allies as its Quarry. It can choose a new Quarry when the current one becomes unreachable or ends its turn adjacent to an ally.\"}}",
+            "{\"section\":\"bonusAction\",\"actionEconomy\":\"bonusAction\",\"usage\":{\"type\":\"atWill\"},\"trigger\":\"The monster is in cover, dim light, darkness, or webbing and is no closer to another enemy than to its Quarry.\",\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"The monster is in cover, dim light, darkness, or webbing and is no closer to another enemy than to its Quarry.\",\"text\":\"The monster takes the Hide action.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster takes the Hide action.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "choose-quarry",
+              "renderedText": "At the start of combat, the monster marks one visible creature that is isolated, Restrained, wounded, or farthest from its allies as its Quarry. It can choose a new Quarry when the current one becomes unreachable or ends its turn adjacent to an ally."
+            },
+            {
+              "abilityId": "stalkers-patience",
+              "renderedText": "The monster takes the Hide action."
+            }
+          ]
+        }
+      ],
+      "issues": [],
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "version": "monster-mind-graft-editorial-audit-v1.0",
+      "applicable": true,
+      "id": "borrowed-face",
+      "title": "Borrowed Face",
+      "source": "wax-death-masks",
+      "slot": "mind",
+      "kind": "traitBundle",
+      "decision": "RENAME_REWRITE_AND_SCALE",
+      "rationale": "The original only denied reactions and overlapped the disguise graft. It now represents a funerary memory shock, adds approach denial, ties the effect to a breakable mask, and scales only the number of first-time witnesses.",
+      "status": "pass",
+      "pass": true,
+      "abilityCount": 1,
+      "abilityIds": [
+        "recognition-shock"
+      ],
+      "counterplayChannels": [
+        "telegraph",
+        "positioning",
+        "breakCondition",
+        "nonDamage"
+      ],
+      "scaling": {
+        "expected": true,
+        "declared": true,
+        "bandCount": 3,
+        "sampledBandIds": [
+          "cr-0-7-single-memory",
+          "cr-8-15-shared-memory"
+        ],
+        "sampledRuleVariants": 2,
+        "pass": true
+      },
+      "snapshots": [
+        {
+          "targetCr": 1,
+          "bandId": "cr-0-7-single-memory",
+          "abilityCount": 1,
+          "abilityIds": [
+            "recognition-shock"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"A creature first sees the mask clearly.\",\"resolution\":{\"type\":\"savingThrow\",\"ability\":\"wisdom\",\"dc\":\"monster\"},\"targeting\":{\"type\":\"single\",\"targets\":\"one creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"failure\":\"The target cannot take Reactions against the monster and cannot willingly move closer to it until the start of its next turn.\",\"success\":\"No effect.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "recognition-shock",
+              "renderedText": "A creature first sees the mask clearly. Wisdom Saving Throw: DC 15, one creature. Failure: The target cannot take Reactions against the monster and cannot willingly move closer to it until the start of its next turn. Success: No effect."
+            }
+          ]
+        },
+        {
+          "targetCr": 5,
+          "bandId": "cr-0-7-single-memory",
+          "abilityCount": 1,
+          "abilityIds": [
+            "recognition-shock"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"A creature first sees the mask clearly.\",\"resolution\":{\"type\":\"savingThrow\",\"ability\":\"wisdom\",\"dc\":\"monster\"},\"targeting\":{\"type\":\"single\",\"targets\":\"one creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"failure\":\"The target cannot take Reactions against the monster and cannot willingly move closer to it until the start of its next turn.\",\"success\":\"No effect.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "recognition-shock",
+              "renderedText": "A creature first sees the mask clearly. Wisdom Saving Throw: DC 15, one creature. Failure: The target cannot take Reactions against the monster and cannot willingly move closer to it until the start of its next turn. Success: No effect."
+            }
+          ]
+        },
+        {
+          "targetCr": 10,
+          "bandId": "cr-8-15-shared-memory",
+          "abilityCount": 1,
+          "abilityIds": [
+            "recognition-shock"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"A creature first sees the mask clearly.\",\"resolution\":{\"type\":\"savingThrow\",\"ability\":\"wisdom\",\"dc\":\"monster\"},\"targeting\":{\"type\":\"multiple\",\"targets\":\"up to two creatures\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"failure\":\"The target cannot take Reactions against the monster and cannot willingly move closer to it until the start of its next turn.\",\"success\":\"No effect.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "recognition-shock",
+              "renderedText": "A creature first sees the mask clearly. Wisdom Saving Throw: DC 15, up to two creatures. Failure: The target cannot take Reactions against the monster and cannot willingly move closer to it until the start of its next turn. Success: No effect."
+            }
+          ]
+        },
+        {
+          "targetCr": 15,
+          "bandId": "cr-8-15-shared-memory",
+          "abilityCount": 1,
+          "abilityIds": [
+            "recognition-shock"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"A creature first sees the mask clearly.\",\"resolution\":{\"type\":\"savingThrow\",\"ability\":\"wisdom\",\"dc\":\"monster\"},\"targeting\":{\"type\":\"multiple\",\"targets\":\"up to two creatures\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"failure\":\"The target cannot take Reactions against the monster and cannot willingly move closer to it until the start of its next turn.\",\"success\":\"No effect.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "recognition-shock",
+              "renderedText": "A creature first sees the mask clearly. Wisdom Saving Throw: DC 15, up to two creatures. Failure: The target cannot take Reactions against the monster and cannot willingly move closer to it until the start of its next turn. Success: No effect."
+            }
+          ]
+        }
+      ],
+      "issues": [],
+      "errors": [],
+      "warnings": []
+    }
+  ],
+  "issues": [],
+  "warnings": [],
+  "errors": [],
+  "pass": true
+}

@@ -3,7 +3,11 @@ import { MONSTER_FAMILY_PRESETS } from "../data/monster-presets.js";
 import { renderStructuredRulesText } from "./monster-graft-rules.render.js";
 import { normalizeBestiaryFeatureWording, normalizeBestiaryRulesText } from "./monster-bestiary-wording.js";
 import { normalizeMonsterGraftRules, validateMonsterGraftRules } from "./monster-graft-rules.schema.js";
-import { buildMonsterAbilityBundleFromGraft } from "./monster-ability-model.js";
+import { buildMonsterAbilityBundleFromGraft, expandMonsterFeaturesForStatBlock } from "./monster-ability-model.js";
+import {
+  getAbilityAvailabilityForCr,
+  projectMonsterAbilityModelForCr,
+} from "./monster-attack-pattern-progression.js";
 import { buildGeneratedMultiattackFeature } from "./monster-attack-routine.js";
 import { SLOTS } from "../monster-composer.workflow.js";
 import { asArray, hasSelectedSlot, uniqueArray } from "./monster-composer.selection.js";
@@ -119,7 +123,7 @@ export function getSectionLabel(section) {
 }
 
 export function groupFeaturesBySection(features) {
-  return features.reduce((groups, feature) => {
+  return expandMonsterFeaturesForStatBlock(features).reduce((groups, feature) => {
     const section = getFeatureSection(feature);
     if (!groups[section]) groups[section] = [];
     groups[section].push(feature);
@@ -191,13 +195,18 @@ function getExportItem(item, computed) {
 }
 
 function getActionsForOutput(actions = [], fallback = [], computed = null) {
-  const baseActions = actions.length ? actions : fallback;
-  const generatedMultiattack = buildGeneratedMultiattackFeature(computed?.attackRoutine, computed);
-  if (!generatedMultiattack) return baseActions;
-  const alreadyHasMultiattack = baseActions.some((action) =>
-    String(action?.title || "").trim().toLowerCase() === "multiattack" || action?.rules?.multiattack?.enabled,
-  );
-  return alreadyHasMultiattack ? baseActions : [generatedMultiattack, ...baseActions];
+  const targetCr = Number(computed?.targetCr || 0);
+  const baseActions = (actions.length ? actions : fallback)
+    .filter((action) => getAbilityAvailabilityForCr(action, targetCr).available)
+    .filter((action) =>
+      String(action?.title || "").trim().toLowerCase() !== "multiattack" &&
+      !action?.rules?.multiattack?.enabled,
+    );
+  const generatedMultiattack =
+    Number(computed?.attackRoutine?.count || 0) > 1
+      ? buildGeneratedMultiattackFeature(computed?.attackRoutine, computed)
+      : null;
+  return generatedMultiattack ? [generatedMultiattack, ...baseActions] : baseActions;
 }
 
 function exportItems(items, fallback, computed) {
@@ -492,6 +501,13 @@ export function buildExportReadiness({
   };
 }
 
+function formatAuthoredPlanSequence(sequence = []) {
+  return (Array.isArray(sequence) ? sequence : [])
+    .map((entry) => String(entry?.title || entry?.localAbilityId || "").trim())
+    .filter(Boolean)
+    .join(" → ");
+}
+
 export function buildExportRunSheet({
   computed,
   selectedFeatures,
@@ -507,7 +523,14 @@ export function buildExportRunSheet({
   const weakness = selectedFeatures.find((feature) => feature.slot === "weakness");
   const movement = selectedFeatures.find((feature) => feature.slot === "movement");
   const horror = selectedFeatures.find((feature) => feature.slot === "horror");
-  const mainAction = actions[0] || selectedFeatures.find((feature) => feature.slot === "attack");
+  const projectedActions = getActionsForOutput(actions, [], computed);
+  const mainAction =
+    projectedActions.find((action) => String(action?.title || "").toLowerCase() !== "multiattack") ||
+    projectedActions[0] ||
+    selectedFeatures.find((feature) => feature.slot === "attack");
+  const authoredPlan = computed?.attackRoutine?.authoredPlan || computed?.dprProfile?.attackRoutine?.authoredPlan || null;
+  const authoredOpener = formatAuthoredPlanSequence(authoredPlan?.opener);
+  const authoredDefault = formatAuthoredPlanSequence(authoredPlan?.defaultSequence);
   const reaction = reactions[0];
   const lair = lairActions[0];
   const death = deathEffects[0];
@@ -515,17 +538,17 @@ export function buildExportRunSheet({
   return [
     {
       label: "Open With",
-      value: horror
+      value: authoredOpener || (horror
         ? horror.title
         : movement
           ? movement.title
           : mainAction
             ? mainAction.title
-            : computed.name,
+            : computed.name),
     },
     {
       label: "Default Turn",
-      value: mainAction ? mainAction.title : "Use the fallback Strike action",
+      value: authoredDefault || (mainAction ? mainAction.title : "Use the fallback Strike action"),
     },
     {
       label: "Watch Closely",
@@ -543,7 +566,7 @@ export function buildExportRunSheet({
     { label: "Death Beat", value: death ? death.title : "None" },
     {
       label: "Rules Sections",
-      value: `${traits.length} Traits · ${actions.length} Actions · ${bonusActions.length} Bonus · ${reactions.length} Reactions · ${lairActions.length} Lair`,
+      value: `${traits.length} Traits · ${projectedActions.length} Actions · ${bonusActions.length} Bonus · ${reactions.length} Reactions · ${lairActions.length} Lair`,
     },
   ];
 }
@@ -595,7 +618,9 @@ function buildStructuredFeature(feature, computed = null) {
   const compatibility = getFeatureCompatibility(feature);
   const mechanicProfile = getFeatureMechanicProfile(feature);
   const counterplayProfile = getFeatureCounterplayProfile(feature);
-  const abilityBundle = buildMonsterAbilityBundleFromGraft(feature);
+  const abilityBundle = buildMonsterAbilityBundleFromGraft(feature, {
+    targetCr: computed?.targetCr ?? null,
+  });
   return {
     schemaVersion: FEATURE_SCHEMA_VERSION,
     id: feature.id,
@@ -1191,6 +1216,10 @@ function buildDebugExportPayload({
     rulesProfile: computed.rulesProfile,
     rulesValidation: computed.rulesValidation,
     abilityModel: computed.abilityModel,
+    projectedAbilityModel: projectMonsterAbilityModelForCr(
+      computed.abilityModel,
+      computed.targetCr,
+    ),
     effectiveProfile: computed.effectiveProfile,
     dprProfile: computed.dprProfile,
     attackRoutine: computed.attackRoutine,
@@ -1227,6 +1256,10 @@ function buildDebugExportPayload({
       rulesProfile: computed.rulesProfile,
       rulesValidation: computed.rulesValidation,
       abilityModel: computed.abilityModel,
+      projectedAbilityModel: projectMonsterAbilityModelForCr(
+        computed.abilityModel,
+        computed.targetCr,
+      ),
       effectiveProfile: computed.effectiveProfile,
       dprProfile: computed.dprProfile,
       crValidation: computed.crValidation,

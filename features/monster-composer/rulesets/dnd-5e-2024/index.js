@@ -22,9 +22,9 @@ import {
   scoreForAbilityMod,
 } from "./monster-rules-engine.js";
 import {
-  MONSTER_DPR_SIMULATOR_VERSION,
+  MONSTER_DPR_SIMULATOR_VERSION_CR_SCALED as MONSTER_DPR_SIMULATOR_VERSION,
   buildThreeRoundDprProfile,
-} from "./monster-dpr-simulator.js";
+} from "./monster-dpr-simulator.cr-scaled.js";
 import {
   MONSTER_CR_VALIDATOR_VERSION,
   buildMonsterCrValidation,
@@ -37,7 +37,7 @@ import {
 } from "./monster-effective-profile.js";
 
 export * from "./monster-rules-engine.js";
-export * from "./monster-dpr-simulator.js";
+export * from "./monster-dpr-simulator.cr-scaled.js";
 export * from "./monster-cr-validator.js";
 export * from "./monster-effective-profile.js";
 
@@ -56,7 +56,6 @@ export const dnd5e2024Ruleset = Object.freeze({
     effectiveProfile: MONSTER_EFFECTIVE_PROFILE_VERSION,
   },
 
-  // Core math helpers.
   abilityLabel,
   abilityMod,
   abilityName,
@@ -74,7 +73,6 @@ export const dnd5e2024Ruleset = Object.freeze({
   resolveDamageAbilityModifier,
   scoreForAbilityMod,
 
-  // Stable ruleset-level adapter interface.
   buildRulesProfile: buildDndCompliantMonsterStats,
   buildDndCompliantMonsterStats,
   simulateDpr: buildThreeRoundDprProfile,

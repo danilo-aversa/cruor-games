@@ -1,0 +1,2591 @@
+{
+  "version": "monster-rules-parity-v1.0",
+  "total": 129,
+  "verified": 96,
+  "passed": 96,
+  "failed": 0,
+  "effects": 13,
+  "conditionalDamage": 3,
+  "reports": [
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": true,
+      "featureId": "swollen-corpse:pressure-vent",
+      "status": "verified",
+      "pass": true,
+      "renderedText": "The first time the creature becomes bloodied. Constitution Saving Throw: DC 13, other creatures in a 5-foot Emanation originating from the creature. Failure: The target has the Poisoned condition until the end of its next turn. Success: No effect.",
+      "effectCount": 0,
+      "damageClauseCount": 0,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": true,
+      "featureId": "fresh-bloat-hide:body-trait",
+      "status": "verified",
+      "pass": true,
+      "renderedText": "While the monster has more than half its Hit Points, it gains a +2 bonus to Armor Class. When it first becomes Bloodied, this bonus ends and its walking speed increases by 10 feet until the end of the encounter.",
+      "effectCount": 0,
+      "damageClauseCount": 0,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": true,
+      "featureId": "volatile-immobile-mass:body-trait",
+      "status": "verified",
+      "pass": true,
+      "renderedText": "The monster's speed is 0, it is immune to the Prone condition, and the reach of its melee attacks increases by 5 feet. Forced movement moves it only half the normal distance.",
+      "effectCount": 0,
+      "damageClauseCount": 0,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": true,
+      "featureId": "skin-slippage:body-trait",
+      "status": "verified",
+      "pass": true,
+      "renderedText": "The monster has Advantage on ability checks and saving throws made to end the Grappled or Restrained condition. Immediately after it ends either condition, it can move up to 10 feet without provoking Opportunity Attacks.",
+      "effectCount": 0,
+      "damageClauseCount": 0,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": true,
+      "featureId": "mindless-command:command-loop",
+      "status": "verified",
+      "pass": true,
+      "renderedText": "At the start of combat, define one short directive containing a verb and a subject. While that directive can be obeyed, the monster prioritizes it over every other objective and interprets it literally. If the directive becomes impossible, the monster attacks the nearest creature until a path to the directive reappears.",
+      "effectCount": 0,
+      "damageClauseCount": 0,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": true,
+      "featureId": "pressure-agony:agony-fixation",
+      "status": "verified",
+      "pass": true,
+      "renderedText": "At the start of its turn, the monster moves up to 10 feet toward its quarry without provoking Opportunity Attacks and must include that quarry among its attack targets if able.",
+      "effectCount": 0,
+      "damageClauseCount": 0,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": true,
+      "featureId": "stumbling-mass:dead-march",
+      "status": "verified",
+      "pass": true,
+      "renderedText": "At the start of its turn, the monster chooses a destination it can see. Until the end of the turn, it follows the shortest passable route toward that destination and cannot willingly change destinations. It ignores nonmagical difficult terrain created by rubble, corpses, mud, or loose bones while moving along that route.",
+      "effectCount": 0,
+      "damageClauseCount": 0,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": true,
+      "featureId": "rupture-charge:rupture-charge",
+      "status": "verified",
+      "pass": true,
+      "renderedText": "The monster moves up to half its speed in a straight line without provoking Opportunity Attacks. If it moves at least 15 feet and then hits with a melee attack before the end of the turn, it pushes the target 5 feet. The monster cannot take reactions until the start of its next turn.",
+      "effectCount": 0,
+      "damageClauseCount": 0,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": true,
+      "featureId": "collapsed-crawler:low-crawl",
+      "status": "verified",
+      "pass": true,
+      "renderedText": "The monster can move through openings as though it were one size smaller and can move through the spaces of prone or dead creatures, treating those spaces as difficult terrain. It is immune to the Prone condition, but it cannot climb or jump farther than 5 feet.",
+      "effectCount": 0,
+      "damageClauseCount": 0,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": true,
+      "featureId": "slam-decomposition:heavy-slam",
+      "status": "verified",
+      "pass": true,
+      "renderedText": "Melee Attack Roll: +6, reach 5 ft. Hit: the target takes 17 (3d10) Bludgeoning damage. If the creature moved at least 10 feet straight toward the target this turn, the target takes an extra 3 (1d4) Bludgeoning damage.",
+      "effectCount": 0,
+      "damageClauseCount": 2,
+      "conditionalDamageCount": 1,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": false,
+      "featureId": "slam-decomposition:corpse-grab",
+      "status": "unreviewed",
+      "pass": true,
+      "renderedText": "Dexterity Saving Throw: DC 13, one Large or smaller creature within reach. Failure: The target has the Grappled condition and has the Restrained condition while the grapple lasts. The target can escape with an Athletics or Acrobatics check against DC 13. Success: The target is not grappled.",
+      "effectCount": 0,
+      "damageClauseCount": 0,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": false,
+      "featureId": "empowered-slam:empowered-slam",
+      "status": "unreviewed",
+      "pass": true,
+      "renderedText": "Melee Attack Roll: +6, reach 5 ft. Hit: the target takes 14 (3d8) Bludgeoning damage and must make a Strength Saving Throw. Strength Saving Throw: DC 13. Failure: The target is pushed 5 feet. If it collides with a creature or object, both take the monster's Proficiency Bonus Bludgeoning damage. Success: The target is not pushed.",
+      "effectCount": 0,
+      "damageClauseCount": 1,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": false,
+      "featureId": "empowered-slam:corpse-grab",
+      "status": "unreviewed",
+      "pass": true,
+      "renderedText": "Dexterity Saving Throw: DC 13, one Large or smaller creature within reach. Failure: The target has the Grappled condition and has the Restrained condition while the grapple lasts. The target can escape with an Athletics or Acrobatics check against DC 13. Success: The target is not grappled.",
+      "effectCount": 0,
+      "damageClauseCount": 0,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": false,
+      "featureId": "empowered-slam:acid-vomit",
+      "status": "unreviewed",
+      "pass": true,
+      "renderedText": "Recharge 5-6. Dexterity Saving Throw: DC 13, each creature in a 30-foot Cone originating from the creature. Failure: The target takes 14 (3d8) Acid damage and is covered in purge fluid. While covered, it can't regain Hit Points and takes the monster's Proficiency Bonus Acid damage at the start of each of its turns. A creature can take an action to clean the fluid with a suitable approach. Success: Half damage only.",
+      "effectCount": 0,
+      "damageClauseCount": 1,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": true,
+      "featureId": "acid-vomit:heavy-slam",
+      "status": "verified",
+      "pass": true,
+      "renderedText": "Melee Attack Roll: +6, reach 5 ft. Hit: the target takes 17 (3d10) Bludgeoning damage. If the creature moved at least 10 feet straight toward the target this turn, the target takes an extra 3 (1d4) Bludgeoning damage.",
+      "effectCount": 0,
+      "damageClauseCount": 2,
+      "conditionalDamageCount": 1,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": false,
+      "featureId": "acid-vomit:acid-vomit",
+      "status": "unreviewed",
+      "pass": true,
+      "renderedText": "Recharge 5-6. Dexterity Saving Throw: DC 13, each creature in a 30-foot Cone originating from the creature. Failure: The target takes 14 (3d8) Acid damage and is covered in purge fluid. While covered, it can't regain Hit Points and takes the monster's Proficiency Bonus Acid damage at the start of each of its turns. A creature can take an action to clean the fluid with a suitable approach. Success: Half damage only.",
+      "effectCount": 0,
+      "damageClauseCount": 1,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": true,
+      "featureId": "corpse-grab:heavy-slam",
+      "status": "verified",
+      "pass": true,
+      "renderedText": "Melee Attack Roll: +6, reach 5 ft. Hit: the target takes 17 (3d10) Bludgeoning damage. If the creature moved at least 10 feet straight toward the target this turn, the target takes an extra 3 (1d4) Bludgeoning damage.",
+      "effectCount": 0,
+      "damageClauseCount": 2,
+      "conditionalDamageCount": 1,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": false,
+      "featureId": "corpse-grab:corpse-grab",
+      "status": "unreviewed",
+      "pass": true,
+      "renderedText": "Dexterity Saving Throw: DC 13, one Large or smaller creature within reach. Failure: The target has the Grappled condition and has the Restrained condition while the grapple lasts. The target can escape with an Athletics or Acrobatics check against DC 13. Success: The target is not grappled.",
+      "effectCount": 0,
+      "damageClauseCount": 0,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": true,
+      "featureId": "gas-buildup:pressure-clock",
+      "status": "verified",
+      "pass": true,
+      "renderedText": "The monster gains 1 Pressure, to a maximum of 3. The number of Pressure markers is visible. At 3 Pressure, it must use Pressure Vent at the start of its next turn.",
+      "effectCount": 0,
+      "damageClauseCount": 0,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": true,
+      "featureId": "gas-buildup:pressure-vent",
+      "status": "verified",
+      "pass": true,
+      "renderedText": "At the start of the monster's turn while it has 3 Pressure. Constitution Saving Throw: DC 13, other creatures in a 10-foot Emanation originating from the creature. Failure: The target takes 3 (1d4) Poison and Thunder damage and is pushed 5 feet away from the monster. Success: Half damage only. The monster loses all Pressure. Before the vent, an adjacent creature can use an action to puncture a visible blister; if it does, that creature chooses a 15-foot Cone for the vent instead of the Emanation.",
+      "effectCount": 0,
+      "damageClauseCount": 1,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": true,
+      "featureId": "unstable-rupture:unstable-rupture",
+      "status": "verified",
+      "pass": true,
+      "renderedText": "Dexterity Saving Throw: DC 13, other creatures in a 5-foot Emanation originating from the creature. Failure: The target takes 3 (1d4) Poison and Slashing damage. Success: Half damage only.",
+      "effectCount": 0,
+      "damageClauseCount": 1,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": true,
+      "featureId": "dangerously-unstable:critical-pressure",
+      "status": "verified",
+      "pass": true,
+      "renderedText": "The first time the monster becomes bloodied. Dexterity Saving Throw: DC 13, other creatures in a 10-foot Emanation originating from the creature. Failure: The target takes 13 (5d4) Poison and Thunder damage and has the Prone condition. Success: Half damage only. The monster drops to 0 Hit Points after the detonation. Before it resolves, an adjacent creature can use an action to make a Dexterity (Sleight of Hand) or Intelligence (Investigation) check against the monster's save DC. On a success, the countdown ends, the monster loses its reactions until the start of its next turn, and no detonation occurs.",
+      "effectCount": 0,
+      "damageClauseCount": 1,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": true,
+      "featureId": "undead-fortitude:undead-fortitude",
+      "status": "verified",
+      "pass": true,
+      "renderedText": "If damage reduces the monster to 0 Hit Points, unless the damage is Radiant or from a Critical Hit, the monster makes a Constitution Saving Throw with a DC equal to 5 plus the damage taken. On a success, it drops to 1 Hit Point instead.",
+      "effectCount": 0,
+      "damageClauseCount": 0,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": true,
+      "featureId": "siege-corpse:siege-monster",
+      "status": "verified",
+      "pass": true,
+      "renderedText": "The monster deals double damage to objects and structures.",
+      "effectCount": 0,
+      "damageClauseCount": 0,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": true,
+      "featureId": "siege-corpse:breach",
+      "status": "verified",
+      "pass": true,
+      "renderedText": "The first time each encounter the monster destroys a Large or larger object or section of structure, the resulting 10-foot space becomes difficult terrain and grants Half Cover until cleared.",
+      "effectCount": 0,
+      "damageClauseCount": 0,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": true,
+      "featureId": "head-weak-spot:weakness",
+      "status": "verified",
+      "pass": true,
+      "renderedText": "A character can target the head with a called shot. The attack takes a -5 penalty. On a hit, the attack becomes a critical hit.",
+      "effectCount": 1,
+      "damageClauseCount": 0,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 1,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": true,
+      "featureId": "mechanical-stress:weakness",
+      "status": "verified",
+      "pass": true,
+      "renderedText": "When the creature takes more than half its maximum hit points in one hit, the attacker chooses head, arms, or leg. Head: the creature has the Blinded condition but dies in 2 rounds without triggering Gas Buildup. Arms: it has disadvantage on attacks requiring arms. Leg: it has the Prone condition and its speed becomes 5 feet.",
+      "effectCount": 2,
+      "damageClauseCount": 0,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 2,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": true,
+      "featureId": "radiant-preservation-failure:weakness",
+      "status": "verified",
+      "pass": true,
+      "renderedText": "When the creature takes radiant damage, it cannot use Unstable reactions until the start of its next turn.",
+      "effectCount": 0,
+      "damageClauseCount": 0,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": true,
+      "featureId": "corpse-bloom-death:death-effect",
+      "status": "verified",
+      "pass": true,
+      "renderedText": "When the creature dies or drops to 0 Hit Points, its corpse creates a 10-foot Radius patch of slick rot. The area is difficult terrain. A creature that examines the patch can find one clue tied to the Source Anchor.",
+      "effectCount": 0,
+      "damageClauseCount": 0,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": true,
+      "featureId": "toxic-detonation:death-effect",
+      "status": "verified",
+      "pass": true,
+      "renderedText": "The creature dies or drops to 0 hit points. Dexterity Saving Throw: DC 13, each creature in a 10-foot Emanation originating from the creature. Failure: The target takes 4 (1d6) Poison damage and has the Poisoned condition until the end of its next turn. Success: Half damage only.",
+      "effectCount": 0,
+      "damageClauseCount": 1,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": true,
+      "featureId": "purge-fluid-flood:death-effect",
+      "status": "verified",
+      "pass": true,
+      "renderedText": "The creature dies or drops to 0 hit points. Dexterity Saving Throw: DC 13, each creature in a 15-foot Radius centered on the corpse. Failure: The target has the Prone condition. The condition lasts until cleaned or burned away. Success: No effect.",
+      "effectCount": 0,
+      "damageClauseCount": 0,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": true,
+      "featureId": "choking-air:lair-effect",
+      "status": "verified",
+      "pass": true,
+      "renderedText": "Constitution Saving Throw: DC 13, each creature in a 10-foot Radius at a point the monster can see. Failure: The target cannot take reactions until the start of its next turn while it remains in the choking area. Success: No effect.",
+      "effectCount": 0,
+      "damageClauseCount": 0,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": true,
+      "featureId": "corpse-pressure-room:lair-effect",
+      "status": "verified",
+      "pass": true,
+      "renderedText": "Constitution Saving Throw: DC 13, each creature within 5 feet of the swelling corpse or body part. Failure: The target triggers the toxic burst and suffers its listed effect. Success: The target avoids the burst.",
+      "effectCount": 0,
+      "damageClauseCount": 0,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": true,
+      "featureId": "shame-hunger:bearer-of-shame",
+      "status": "verified",
+      "pass": true,
+      "renderedText": "At the start of combat, the monster marks one visible creature carrying a holy symbol, funerary object, grave soil, or open wound as its Bearer of Shame. It prioritizes that creature. A different creature can visibly present a funerary offering to become the new Bearer.",
+      "effectCount": 0,
+      "damageClauseCount": 0,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": true,
+      "featureId": "shame-hunger:profane-feeding",
+      "status": "verified",
+      "pass": true,
+      "renderedText": "Once per encounter, immediately after the monster damages its Bearer of Shame, it regains Hit Points equal to twice its Proficiency Bonus.",
+      "effectCount": 0,
+      "damageClauseCount": 0,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": true,
+      "featureId": "corpse-craving:corpse-compulsion",
+      "status": "verified",
+      "pass": true,
+      "renderedText": "The monster moves toward the nearest visible unattended corpse before pursuing other objectives.",
+      "effectCount": 0,
+      "damageClauseCount": 0,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": true,
+      "featureId": "corpse-craving:feed-on-the-dead",
+      "status": "verified",
+      "pass": true,
+      "renderedText": "The monster consumes part of the corpse and gains Temporary Hit Points equal to twice its Proficiency Bonus. Until the start of its next turn, it cannot take Reactions and has disadvantage on attack rolls against living creatures.",
+      "effectCount": 0,
+      "damageClauseCount": 0,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": true,
+      "featureId": "nocturnal-haunting:daylight-withdrawal",
+      "status": "verified",
+      "pass": true,
+      "renderedText": "While in Bright Light, the monster cannot willingly end its turn farther from Dim Light or Darkness if a safe route toward either exists.",
+      "effectCount": 0,
+      "damageClauseCount": 0,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": true,
+      "featureId": "nocturnal-haunting:grave-night-stalker",
+      "status": "verified",
+      "pass": true,
+      "renderedText": "The monster takes the Hide action. While in Dim Light or Darkness, it has advantage on Dexterity (Stealth) checks.",
+      "effectCount": 0,
+      "damageClauseCount": 0,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": true,
+      "featureId": "ethereal-sight:grave-sight",
+      "status": "verified",
+      "pass": true,
+      "renderedText": "The monster can see 60 feet into the Ethereal Plane while it is on the Material Plane. It also knows whether an unattended corpse it can see is inhabited, animated, or spiritually anchored.",
+      "effectCount": 0,
+      "damageClauseCount": 0,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": true,
+      "featureId": "ethereal-sight:corpse-anchor",
+      "status": "verified",
+      "pass": true,
+      "renderedText": "The monster enters an unattended Medium or larger corpse within 5 feet. While anchored, its speed is 0, it has Half Cover, and it cannot be moved against its will. It can leave the corpse as a Bonus Action. It is expelled into an adjacent space if the corpse is destroyed, burned, or moved more than 10 feet at once.",
+      "effectCount": 0,
+      "damageClauseCount": 0,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": true,
+      "featureId": "incorporeal-movement:ghost-passage",
+      "status": "verified",
+      "pass": true,
+      "renderedText": "The monster can move through creatures and objects as if they were difficult terrain, but it cannot end its turn inside an object. The first time each turn it enters a solid object, a visible frost outline appears on the surface nearest its intended exit and remains until it emerges or the turn ends.",
+      "effectCount": 0,
+      "damageClauseCount": 0,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": false,
+      "featureId": "grave-bite:grave-bite",
+      "status": "unreviewed",
+      "pass": true,
+      "renderedText": "Melee Attack Roll: +6, reach 5 ft. Hit: the target takes 14 (3d8) Piercing and Necrotic damage. If the target is below half Hit Points, the monster gains Temporary Hit Points equal to the Necrotic damage dealt.",
+      "effectCount": 0,
+      "damageClauseCount": 1,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": false,
+      "featureId": "grave-bite:corpse-tendrils",
+      "status": "unreviewed",
+      "pass": true,
+      "renderedText": "Dexterity Saving Throw: DC 13, each creature in a 10-foot Emanation originating from the creature. Failure: a target has the Restrained condition for 1 minute. It repeats the save at the end of each of its turns, ending the effect on a success. Success: No effect.",
+      "effectCount": 0,
+      "damageClauseCount": 0,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": false,
+      "featureId": "infected-bite:infected-bite",
+      "status": "unreviewed",
+      "pass": true,
+      "renderedText": "Melee Attack Roll: +6, reach 5 ft. Hit: the target takes 14 (3d8) Necrotic damage. If the target is not Undead, it makes a Constitution Saving Throw. Constitution Saving Throw: DC 13. Failure: At the end of its next Long Rest, the target gains 1 Exhaustion level, to a maximum of 3 levels from this feature. Success: No disease effect.",
+      "effectCount": 0,
+      "damageClauseCount": 1,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": false,
+      "featureId": "infected-bite:grave-bite",
+      "status": "unreviewed",
+      "pass": true,
+      "renderedText": "Melee Attack Roll: +6, reach 5 ft. Hit: the target takes 14 (3d8) Piercing and Necrotic damage. If the target is below half Hit Points, the monster gains Temporary Hit Points equal to the Necrotic damage dealt.",
+      "effectCount": 0,
+      "damageClauseCount": 1,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": false,
+      "featureId": "infected-bite:corpse-tendrils",
+      "status": "unreviewed",
+      "pass": true,
+      "renderedText": "Dexterity Saving Throw: DC 13, each creature in a 10-foot Emanation originating from the creature. Failure: a target has the Restrained condition for 1 minute. It repeats the save at the end of each of its turns, ending the effect on a success. Success: No effect.",
+      "effectCount": 0,
+      "damageClauseCount": 0,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": false,
+      "featureId": "purulent-bite:purulent-bite",
+      "status": "unreviewed",
+      "pass": true,
+      "renderedText": "Melee Attack Roll: +6, reach 5 ft. Hit: 8 (3d4) Piercing damage. Constitution Saving Throw: DC 13. Failure: At the end of its next Long Rest, the target gains 2 Exhaustion levels, to a maximum of 4 levels from this feature. If it fails by 5 or more, it also contracts the disease for 1d4 weeks. Success: No disease effect.",
+      "effectCount": 0,
+      "damageClauseCount": 1,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": false,
+      "featureId": "purulent-bite:grave-bite",
+      "status": "unreviewed",
+      "pass": true,
+      "renderedText": "Melee Attack Roll: +6, reach 5 ft. Hit: the target takes 14 (3d8) Piercing and Necrotic damage. If the target is below half Hit Points, the monster gains Temporary Hit Points equal to the Necrotic damage dealt.",
+      "effectCount": 0,
+      "damageClauseCount": 1,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": false,
+      "featureId": "purulent-bite:corpse-tendrils",
+      "status": "unreviewed",
+      "pass": true,
+      "renderedText": "Dexterity Saving Throw: DC 13, each creature in a 10-foot Emanation originating from the creature. Failure: a target has the Restrained condition for 1 minute. It repeats the save at the end of each of its turns, ending the effect on a success. Success: No effect.",
+      "effectCount": 0,
+      "damageClauseCount": 0,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": true,
+      "featureId": "horrific-apparition:horrific-apparition",
+      "status": "verified",
+      "pass": true,
+      "renderedText": "Recharge 5-6. Wisdom Saving Throw: DC 13, non-undead creatures that can see the spirit in a 30-foot Cone originating from the creature. Failure: The target takes 4 (1d6) Psychic damage and has the Frightened condition until the end of its next turn. Success: The target takes half damage and is immune to this spirit's Horrific Apparition for 24 hours.",
+      "effectCount": 0,
+      "damageClauseCount": 1,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": false,
+      "featureId": "corpse-tendrils:grave-bite",
+      "status": "unreviewed",
+      "pass": true,
+      "renderedText": "Melee Attack Roll: +6, reach 5 ft. Hit: the target takes 14 (3d8) Piercing and Necrotic damage. If the target is below half Hit Points, the monster gains Temporary Hit Points equal to the Necrotic damage dealt.",
+      "effectCount": 0,
+      "damageClauseCount": 1,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": false,
+      "featureId": "corpse-tendrils:corpse-tendrils",
+      "status": "unreviewed",
+      "pass": true,
+      "renderedText": "Dexterity Saving Throw: DC 13, each creature in a 10-foot Emanation originating from the creature. Failure: a target has the Restrained condition for 1 minute. It repeats the save at the end of each of its turns, ending the effect on a success. Success: No effect.",
+      "effectCount": 0,
+      "damageClauseCount": 0,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": true,
+      "featureId": "flesh-harvest:flesh-harvest",
+      "status": "verified",
+      "pass": true,
+      "renderedText": "The monster consumes the corpse, ends one condition affecting it, and gains 5 temporary Hit Points.",
+      "effectCount": 0,
+      "damageClauseCount": 0,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": true,
+      "featureId": "flesh-harvest:sated-form",
+      "status": "verified",
+      "pass": true,
+      "renderedText": "The monster's speed increases by 10 feet, and it cannot benefit from being Invisible or disguised. This state ends when those temporary Hit Points are gone.",
+      "effectCount": 0,
+      "damageClauseCount": 0,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": true,
+      "featureId": "deceitful-apparition:corpse-worn-guise",
+      "status": "verified",
+      "pass": true,
+      "renderedText": "The monster can appear and sound like a mundane person whose corpse it has consumed. A creature can spend an Action testing the disguise with a specific memory, funerary record, or physical evidence, making an Insight or Investigation check contested by the monster's Deception. On a success, the disguise is exposed to every witness who can perceive the evidence.",
+      "effectCount": 0,
+      "damageClauseCount": 0,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": true,
+      "featureId": "mortal-afterlife:identity-collapse",
+      "status": "verified",
+      "pass": true,
+      "renderedText": "The monster loses its Reactions and must route toward its Identity Anchor or a usable corpse on its next turn.",
+      "effectCount": 0,
+      "damageClauseCount": 0,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": true,
+      "featureId": "vanish-spirit:vanish",
+      "status": "verified",
+      "pass": true,
+      "renderedText": "The monster has the Invisible condition and moves up to half its speed without provoking Opportunity Attacks. The Invisible condition ends when this movement ends, if the monster enters bright light, or immediately after it makes an attack roll.",
+      "effectCount": 0,
+      "damageClauseCount": 0,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": true,
+      "featureId": "cunning-action-spirit:cunning-hunt",
+      "status": "verified",
+      "pass": true,
+      "renderedText": "The monster chooses one option: Rush, moving up to half its speed toward a visible enemy; Slip, moving up to 10 feet without provoking Opportunity Attacks; or Stalk, taking the Hide action if it is obscured or behind cover.",
+      "effectCount": 0,
+      "damageClauseCount": 0,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": true,
+      "featureId": "horrific-assault:false-corpse",
+      "status": "verified",
+      "pass": true,
+      "renderedText": "The monster is indistinguishable from an ordinary corpse. A creature within 5 feet can use an action to make a Wisdom (Medicine) or Intelligence (Investigation) check against the monster's save DC, identifying it on a success.",
+      "effectCount": 0,
+      "damageClauseCount": 0,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": true,
+      "featureId": "horrific-assault:horrific-assault",
+      "status": "verified",
+      "pass": true,
+      "renderedText": "The monster can move up to half its speed without provoking Opportunity Attacks. A creature that did not identify it cannot take reactions until the start of that creature's next turn.",
+      "effectCount": 0,
+      "damageClauseCount": 0,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": true,
+      "featureId": "no-witnesses-rage:witness-rage",
+      "status": "verified",
+      "pass": true,
+      "renderedText": "The monster moves up to its speed toward the witness without provoking Opportunity Attacks. For 1 minute, the first time each turn it hits a visible witness, it deals extra Necrotic damage equal to its Proficiency Bonus, and it cannot willingly end its turn farther from every visible witness. The rage ends early if it starts a turn unable to see a witness.",
+      "effectCount": 0,
+      "damageClauseCount": 1,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": true,
+      "featureId": "daytime-weakness:weakness",
+      "status": "verified",
+      "pass": true,
+      "renderedText": "While forced to remain on the Material Plane during daytime, the creature has disadvantage on attack rolls, ability checks, and saving throws.",
+      "effectCount": 1,
+      "damageClauseCount": 0,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 1,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": true,
+      "featureId": "shameful-feeding:weakness",
+      "status": "verified",
+      "pass": true,
+      "renderedText": "If caught eating a corpse or other repugnant meal, the creature has the Frightened condition until it succeeds on a Wisdom save at the start of one of its turns. This overrides immunity to the Frightened condition.",
+      "effectCount": 1,
+      "damageClauseCount": 0,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 1,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": true,
+      "featureId": "dangerous-hunger:weakness",
+      "status": "verified",
+      "pass": true,
+      "renderedText": "A corpse soaked in holy water, packed with salt, or otherwise prepared against ghosts counts as bait. If the spirit feeds from it, it takes radiant damage and cannot use Incorporeal Movement until the end of its next turn.",
+      "effectCount": 0,
+      "damageClauseCount": 0,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": true,
+      "featureId": "salt-and-names:weakness",
+      "status": "verified",
+      "pass": true,
+      "renderedText": "Wisdom Saving Throw: DC 13, one target. Failure: the monster cannot willingly move closer to that character until the end of its next turn. Success: No effect.",
+      "effectCount": 0,
+      "damageClauseCount": 0,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": true,
+      "featureId": "spectral-dust-death:death-effect",
+      "status": "verified",
+      "pass": true,
+      "renderedText": "On death, the creature leaves spectral dust and small grave goods from its meals. A character who studies them learns one useful fact about the spirit's feeding route, victim, or lair.",
+      "effectCount": 0,
+      "damageClauseCount": 0,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": true,
+      "featureId": "last-meal-memory:death-effect",
+      "status": "verified",
+      "pass": true,
+      "renderedText": "The creature dies or drops to 0 hit points. Wisdom Saving Throw: DC 13, each creature in a 30-foot Emanation originating from the creature. Failure: it is Frightened until the end of its next turn. Success or failure, it learns one clue from the consumed victim. Success: No effect.",
+      "effectCount": 0,
+      "damageClauseCount": 0,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": true,
+      "featureId": "funeral-silence-lair:lair-effect",
+      "status": "verified",
+      "pass": true,
+      "renderedText": "At initiative count 20, choose a 20-foot Radius at a point the monster can see. Until the next count 20, sound in that area is muffled. Creatures inside have disadvantage on checks relying on hearing, and verbal spell components require a successful spellcasting ability check against the monster DC.",
+      "effectCount": 1,
+      "damageClauseCount": 0,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 1,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": true,
+      "featureId": "graveyard-offerings-lair:lair-effect",
+      "status": "verified",
+      "pass": true,
+      "renderedText": "Wisdom Saving Throw: DC 13, each creature within 10 feet of one funerary object or corpse within 60 feet of the monster. Failure: The target must spend 10 feet of movement moving toward the luring funerary object or corpse. Success: No effect. The luring funerary object or corpse must be within 60 feet of the monster.",
+      "effectCount": 0,
+      "damageClauseCount": 0,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": true,
+      "featureId": "maternal-swarm-instinct:brood-priority",
+      "status": "verified",
+      "pass": true,
+      "renderedText": "At the start of combat, designate one visible allied creature, egg cluster, webbed object, or occupied nursery space as the Brood. The monster prioritizes enemies within 10 feet of the Brood.",
+      "effectCount": 0,
+      "damageClauseCount": 0,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": true,
+      "featureId": "maternal-swarm-instinct:protective-rush",
+      "status": "verified",
+      "pass": true,
+      "renderedText": "The monster moves up to half its Speed toward the triggering creature without provoking Opportunity Attacks.",
+      "effectCount": 0,
+      "damageClauseCount": 0,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": true,
+      "featureId": "egg-carrier:exposed-clutch",
+      "status": "verified",
+      "pass": true,
+      "renderedText": "The monster begins combat carrying three visible eggs. Each egg is a Tiny object with AC 10, 1 Hit Point, immunity to Poison and Psychic damage, and vulnerability to Fire damage. While any eggs remain, the monster's speed is reduced by 10 feet. The final egg's destruction ends this penalty.",
+      "effectCount": 0,
+      "damageClauseCount": 0,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": true,
+      "featureId": "egg-carrier:hatching-cycle",
+      "status": "verified",
+      "pass": true,
+      "renderedText": "One surviving egg hatches into one spider minion in an adjacent unoccupied space.",
+      "effectCount": 0,
+      "damageClauseCount": 0,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": true,
+      "featureId": "spider-climb:body-trait",
+      "status": "verified",
+      "pass": true,
+      "renderedText": "The monster has a climb speed equal to its walking speed and can move across difficult surfaces and ceilings without making an ability check. While touching a wall or ceiling, it is immune to the Prone condition while attached. Forced movement that pulls it away from the surface causes it to fall normally.",
+      "effectCount": 0,
+      "damageClauseCount": 0,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": true,
+      "featureId": "web-walker:body-trait",
+      "status": "verified",
+      "pass": true,
+      "renderedText": "The monster ignores movement restrictions caused by webs. While touching a web, it knows the location of every other creature touching the same connected web and cannot be surprised by any of them.",
+      "effectCount": 0,
+      "damageClauseCount": 0,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": true,
+      "featureId": "barbed-chitin:body-trait",
+      "status": "verified",
+      "pass": true,
+      "renderedText": "The triggering creature takes 3 (1d4) Piercing damage. A creature can take this damage only once per turn.",
+      "effectCount": 0,
+      "damageClauseCount": 1,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": true,
+      "featureId": "umbral-skin:umbral-skin",
+      "status": "verified",
+      "pass": true,
+      "renderedText": "In Dim Light or Darkness, the monster has Advantage on Dexterity (Stealth) checks. Bright Light or Fire or Radiant damage suppresses this benefit until the end of its next turn.",
+      "effectCount": 0,
+      "damageClauseCount": 0,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": true,
+      "featureId": "malformed-broodling:body-trait",
+      "status": "verified",
+      "pass": true,
+      "renderedText": "The monster has 1 Hit Point. An allied spider within 5 feet can use a Bonus Action to devour it, destroying it and gaining Temporary Hit Points equal to twice that spider's Proficiency Bonus.",
+      "effectCount": 0,
+      "damageClauseCount": 0,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": true,
+      "featureId": "hundred-eyed:hundredfold-attention",
+      "status": "verified",
+      "pass": true,
+      "renderedText": "The monster cannot be Surprised while conscious and gains a bonus to Passive Perception equal to its Proficiency Bonus.",
+      "effectCount": 0,
+      "damageClauseCount": 0,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": true,
+      "featureId": "hundred-eyed:fix-the-unseen",
+      "status": "verified",
+      "pass": true,
+      "renderedText": "Until the start of the monster's next turn, the target gains no benefit from being unseen by the monster unless its sight is disabled, every eye is covered, or Line of Sight is denied.",
+      "effectCount": 0,
+      "damageClauseCount": 0,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": true,
+      "featureId": "wall-crawler:wall-route",
+      "status": "verified",
+      "pass": true,
+      "renderedText": "The monster has a climb speed equal to its walking speed and can move across walls and ceilings without making an ability check.",
+      "effectCount": 0,
+      "damageClauseCount": 0,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": true,
+      "featureId": "wall-crawler:drop-route",
+      "status": "verified",
+      "pass": true,
+      "renderedText": "Once on each of its turns after descending at least 10 feet from a wall or ceiling, the monster can move up to 10 additional feet on the ground without provoking Opportunity Attacks.",
+      "effectCount": 0,
+      "damageClauseCount": 0,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": true,
+      "featureId": "web-dancer:cast-line",
+      "status": "verified",
+      "pass": true,
+      "renderedText": "The monster creates a web line between itself and a surface within 30 feet it can see, then moves along the line up to its remaining speed without provoking Opportunity Attacks. The line remains as a visible fragile object vulnerable to fire until destroyed.",
+      "effectCount": 0,
+      "damageClauseCount": 0,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": true,
+      "featureId": "web-dancer:web-route",
+      "status": "verified",
+      "pass": true,
+      "renderedText": "The monster can move along any intact web line it created as though the line were a climbable surface. It ignores movement restrictions caused by its own web lines.",
+      "effectCount": 0,
+      "damageClauseCount": 0,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": true,
+      "featureId": "shadow-jump:shadow-step",
+      "status": "verified",
+      "pass": true,
+      "renderedText": "The monster chooses an unoccupied space in darkness within 20 feet that it can see. The source and destination shadows visibly stretch toward each other, then the monster teleports to the destination. Bright light on either space before the teleport resolves prevents the movement without expending the use.",
+      "effectCount": 0,
+      "damageClauseCount": 0,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": true,
+      "featureId": "predatory-jump:predatory-leap",
+      "status": "verified",
+      "pass": true,
+      "renderedText": "The monster chooses an unoccupied landing space within 20 feet that it can see, visibly crouches toward it, and jumps there without provoking Opportunity Attacks.",
+      "effectCount": 0,
+      "damageClauseCount": 0,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": false,
+      "featureId": "venomous-bite:venomous-bite",
+      "status": "unreviewed",
+      "pass": true,
+      "renderedText": "Melee Attack Roll: +6, reach 5 ft. Hit: the target takes 14 (3d8) Piercing and Poison damage and must make a Constitution Saving Throw. The target has the Paralyzed and Poisoned conditions. The condition lasts 1 hour. Constitution Saving Throw: DC 13. Failure: If this damage reduces the target to 0 Hit Points, it has the Paralyzed and Poisoned conditions for 1 hour. Success: No additional effect.",
+      "effectCount": 0,
+      "damageClauseCount": 1,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": false,
+      "featureId": "venomous-bite:venomous-spit",
+      "status": "unreviewed",
+      "pass": true,
+      "renderedText": "Ranged Attack Roll: +6, range 30/120 ft. Hit: the target takes 14 (3d8) Poison damage.",
+      "effectCount": 0,
+      "damageClauseCount": 1,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": false,
+      "featureId": "venomous-bite:web",
+      "status": "unreviewed",
+      "pass": true,
+      "renderedText": "Recharge 5-6. Dexterity Saving Throw: DC 13, each creature in a 60-foot Emanation originating from the creature. Failure: The target has the Restrained condition until the web is destroyed. The web has low AC and Hit Points, vulnerability to Fire damage, and immunity to Poison and Psychic damage. Success: No effect.",
+      "effectCount": 0,
+      "damageClauseCount": 0,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": false,
+      "featureId": "perforate:perforate",
+      "status": "unreviewed",
+      "pass": true,
+      "renderedText": "Melee Attack Roll: +6, reach 5 ft. Hit: the target takes 14 (3d8) Piercing damage and must make a Constitution Saving Throw. Constitution Saving Throw: DC 13. Failure: The wound keeps bleeding. The target takes Piercing damage equal to the monster's Proficiency Bonus at the start of each of its turns until it receives healing or a creature succeeds on a Medicine check to close the wound. Success: No ongoing wound.",
+      "effectCount": 0,
+      "damageClauseCount": 1,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": false,
+      "featureId": "perforate:venomous-bite",
+      "status": "unreviewed",
+      "pass": true,
+      "renderedText": "Melee Attack Roll: +6, reach 5 ft. Hit: the target takes 14 (3d8) Piercing and Poison damage and must make a Constitution Saving Throw. The target has the Paralyzed and Poisoned conditions. The condition lasts 1 hour. Constitution Saving Throw: DC 13. Failure: If this damage reduces the target to 0 Hit Points, it has the Paralyzed and Poisoned conditions for 1 hour. Success: No additional effect.",
+      "effectCount": 0,
+      "damageClauseCount": 1,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": false,
+      "featureId": "perforate:web",
+      "status": "unreviewed",
+      "pass": true,
+      "renderedText": "Recharge 5-6. Dexterity Saving Throw: DC 13, each creature in a 60-foot Emanation originating from the creature. Failure: The target has the Restrained condition until the web is destroyed. The web has low AC and Hit Points, vulnerability to Fire damage, and immunity to Poison and Psychic damage. Success: No effect.",
+      "effectCount": 0,
+      "damageClauseCount": 0,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": false,
+      "featureId": "web-recharge:venomous-bite",
+      "status": "unreviewed",
+      "pass": true,
+      "renderedText": "Melee Attack Roll: +6, reach 5 ft. Hit: the target takes 14 (3d8) Piercing and Poison damage and must make a Constitution Saving Throw. The target has the Paralyzed and Poisoned conditions. The condition lasts 1 hour. Constitution Saving Throw: DC 13. Failure: If this damage reduces the target to 0 Hit Points, it has the Paralyzed and Poisoned conditions for 1 hour. Success: No additional effect.",
+      "effectCount": 0,
+      "damageClauseCount": 1,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": false,
+      "featureId": "web-recharge:web",
+      "status": "unreviewed",
+      "pass": true,
+      "renderedText": "Recharge 5-6. Dexterity Saving Throw: DC 13, each creature in a 60-foot Emanation originating from the creature. Failure: The target has the Restrained condition until the web is destroyed. The web has low AC and Hit Points, vulnerability to Fire damage, and immunity to Poison and Psychic damage. Success: No effect.",
+      "effectCount": 0,
+      "damageClauseCount": 0,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": false,
+      "featureId": "shadow-web:venomous-bite",
+      "status": "unreviewed",
+      "pass": true,
+      "renderedText": "Melee Attack Roll: +6, reach 5 ft. Hit: the target takes 14 (3d8) Piercing and Poison damage and must make a Constitution Saving Throw. The target has the Paralyzed and Poisoned conditions. The condition lasts 1 hour. Constitution Saving Throw: DC 13. Failure: If this damage reduces the target to 0 Hit Points, it has the Paralyzed and Poisoned conditions for 1 hour. Success: No additional effect.",
+      "effectCount": 0,
+      "damageClauseCount": 1,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": false,
+      "featureId": "shadow-web:venomous-spit",
+      "status": "unreviewed",
+      "pass": true,
+      "renderedText": "Ranged Attack Roll: +6, range 30/120 ft. Hit: the target takes 14 (3d8) Poison damage.",
+      "effectCount": 0,
+      "damageClauseCount": 1,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": false,
+      "featureId": "shadow-web:shadow-web",
+      "status": "unreviewed",
+      "pass": true,
+      "renderedText": "Recharge 5-6. Dexterity Saving Throw: DC 13, each creature in a 60-foot Emanation originating from the creature. Failure: The target has the Restrained condition until the web is destroyed. While restrained by the web, the target takes 3 (1d4) Slashing damage at the start of each of its turns. Shadow webs have higher AC and Hit Points than ordinary webs. Success: No effect.",
+      "effectCount": 0,
+      "damageClauseCount": 1,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": false,
+      "featureId": "venomous-spit:venomous-spit",
+      "status": "unreviewed",
+      "pass": true,
+      "renderedText": "Ranged Attack Roll: +6, range 30/120 ft. Hit: the target takes 14 (3d8) Poison damage.",
+      "effectCount": 0,
+      "damageClauseCount": 1,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": false,
+      "featureId": "venomous-spit:venomous-bite",
+      "status": "unreviewed",
+      "pass": true,
+      "renderedText": "Melee Attack Roll: +6, reach 5 ft. Hit: the target takes 14 (3d8) Piercing and Poison damage and must make a Constitution Saving Throw. The target has the Paralyzed and Poisoned conditions. The condition lasts 1 hour. Constitution Saving Throw: DC 13. Failure: If this damage reduces the target to 0 Hit Points, it has the Paralyzed and Poisoned conditions for 1 hour. Success: No additional effect.",
+      "effectCount": 0,
+      "damageClauseCount": 1,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": false,
+      "featureId": "brood-injection:venomous-bite",
+      "status": "unreviewed",
+      "pass": true,
+      "renderedText": "Melee Attack Roll: +6, reach 5 ft. Hit: the target takes 14 (3d8) Piercing and Poison damage and must make a Constitution Saving Throw. The target has the Paralyzed and Poisoned conditions. The condition lasts 1 hour. Constitution Saving Throw: DC 13. Failure: If this damage reduces the target to 0 Hit Points, it has the Paralyzed and Poisoned conditions for 1 hour. Success: No additional effect.",
+      "effectCount": 0,
+      "damageClauseCount": 1,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": false,
+      "featureId": "brood-injection:brood-injection",
+      "status": "unreviewed",
+      "pass": true,
+      "renderedText": "Constitution Saving Throw: DC 13, one target. Failure: The target's speed is reduced by 10 feet, and it takes 3 (1d4) Piercing damage at the start of its next turn. An action and a successful Medicine check ends the effect. Success: No effect.",
+      "effectCount": 0,
+      "damageClauseCount": 1,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": false,
+      "featureId": "brood-injection:web",
+      "status": "unreviewed",
+      "pass": true,
+      "renderedText": "Recharge 5-6. Dexterity Saving Throw: DC 13, each creature in a 60-foot Emanation originating from the creature. Failure: The target has the Restrained condition until the web is destroyed. The web has low AC and Hit Points, vulnerability to Fire damage, and immunity to Poison and Psychic damage. Success: No effect.",
+      "effectCount": 0,
+      "damageClauseCount": 0,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": true,
+      "featureId": "enrage-broodmother:enrage",
+      "status": "verified",
+      "pass": true,
+      "renderedText": "The monster moves up to half its speed toward the triggering creature without provoking Opportunity Attacks. Until the end of its next turn, its speed increases by 10 feet and it cannot willingly move farther from that creature.",
+      "effectCount": 0,
+      "damageClauseCount": 0,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": true,
+      "featureId": "web-architect:web-network",
+      "status": "verified",
+      "pass": true,
+      "renderedText": "The monster marks two visible web anchors. Each anchor is a fragile object that can be cut, burned, occupied, or destroyed.",
+      "effectCount": 0,
+      "damageClauseCount": 0,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": true,
+      "featureId": "web-architect:reconfigure-webs",
+      "status": "verified",
+      "pass": true,
+      "renderedText": "The first time the monster becomes bloodied, each new wall occupies a 30-foot-long, 5-foot-wide Line between two surviving anchors. The wall is difficult terrain and grants Half Cover through it until an anchor is destroyed or the wall is burned or cut.",
+      "effectCount": 0,
+      "damageClauseCount": 0,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": true,
+      "featureId": "corrosive-web:corrosive-web",
+      "status": "verified",
+      "pass": true,
+      "renderedText": "The first time each round a web created by the monster is destroyed. Dexterity Saving Throw: DC 13, the affected space in a 5-foot Emanation originating from the creature. Failure: The target takes 3 (1d4) Acid damage. Success: Half damage only. The affected space is difficult terrain until the end of the monster's next turn.",
+      "effectCount": 0,
+      "damageClauseCount": 1,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": true,
+      "featureId": "hunter-spider:choose-quarry",
+      "status": "verified",
+      "pass": true,
+      "renderedText": "At the start of combat, the monster marks one visible creature that is isolated, Restrained, wounded, or farthest from its allies as its Quarry. It can choose a new Quarry when the current one becomes unreachable or ends its turn adjacent to an ally.",
+      "effectCount": 0,
+      "damageClauseCount": 0,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": true,
+      "featureId": "hunter-spider:stalkers-patience",
+      "status": "verified",
+      "pass": true,
+      "renderedText": "The monster takes the Hide action.",
+      "effectCount": 0,
+      "damageClauseCount": 0,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": true,
+      "featureId": "thin-legs:weakness",
+      "status": "verified",
+      "pass": true,
+      "renderedText": "When the creature moves at least 5 feet on a slippery surface such as ice, oil, grease, or polished wet stone, it automatically fails checks made to keep its balance.",
+      "effectCount": 0,
+      "damageClauseCount": 0,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": true,
+      "featureId": "fear-of-fire:weakness",
+      "status": "verified",
+      "pass": true,
+      "renderedText": "While within 30 feet of a fire with a radius greater than 10 feet, wildfire, or a similar blaze, the monster has the Frightened condition.",
+      "effectCount": 0,
+      "damageClauseCount": 0,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": true,
+      "featureId": "underbelly-weak-spot:weakness",
+      "status": "verified",
+      "pass": true,
+      "renderedText": "When the creature jumps, climbs from ceiling to wall, or is knocked prone, the next hit against it before the start of its next turn deals extra damage of the same type equal to 2d6.",
+      "effectCount": 1,
+      "damageClauseCount": 0,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 1,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": true,
+      "featureId": "eyes-weak-spot:weakness",
+      "status": "verified",
+      "pass": true,
+      "renderedText": "A character can target the eyes with a called shot at a -5 penalty. On a hit, the creature has the Blinded condition until the end of its next turn. If the attack deals at least 30 damage, the blindness lasts until magically healed or until the creature finishes a short rest.",
+      "effectCount": 1,
+      "damageClauseCount": 0,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 1,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": true,
+      "featureId": "brood-tell:weakness",
+      "status": "verified",
+      "pass": true,
+      "renderedText": "Before using its strongest attack, the brood shifts toward the target. A character who notices this can use a reaction to move 5 feet without provoking from the monster.",
+      "effectCount": 0,
+      "damageClauseCount": 0,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": true,
+      "featureId": "egg-hatch-death:death-effect",
+      "status": "verified",
+      "pass": true,
+      "renderedText": "On death, each remaining egg hatches on a 13 or higher on a d20. Hatched eggs create spider minions in adjacent spaces. If the body was burned before death, this effect does not trigger.",
+      "effectCount": 1,
+      "damageClauseCount": 0,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 1,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": true,
+      "featureId": "silk-cocoon-remains:death-effect",
+      "status": "verified",
+      "pass": true,
+      "renderedText": "On death, the body tears open nearby cocoons or drops its own silk-wrapped trophies. Searching the silk reveals one clue, treasure roll, or sign of a missing NPC.",
+      "effectCount": 0,
+      "damageClauseCount": 0,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": true,
+      "featureId": "sticky-surroundings:lair-effect",
+      "status": "verified",
+      "pass": true,
+      "renderedText": "At initiative count 20, creatures in the lair without Web Walker have disadvantage on Dexterity Saving Throws and Dexterity (Acrobatics) checks until initiative count 20 on the next round.",
+      "effectCount": 1,
+      "damageClauseCount": 0,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 1,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": true,
+      "featureId": "broodmother-web-lair:lair-effect",
+      "status": "verified",
+      "pass": true,
+      "renderedText": "At initiative count 20, the monster creates magical webbing in a 20-foot Cube at a point it can see within 60 feet. While maintaining this effect, it cannot take other lair actions. A target that succeeds on the saving throw or escapes becomes immune to this lair action for 24 hours.",
+      "effectCount": 1,
+      "damageClauseCount": 0,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 1,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": true,
+      "featureId": "dense-web-region:lair-effect",
+      "status": "verified",
+      "pass": true,
+      "renderedText": "At initiative count 20, choose one visible surface in the lair. Until cleared or burned, it becomes difficult terrain for creatures without Web Walker. Spiders attacking surprised targets on that surface have advantage.",
+      "effectCount": 1,
+      "damageClauseCount": 0,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 1,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": true,
+      "featureId": "waxen-mask-body:body-trait",
+      "status": "verified",
+      "pass": true,
+      "renderedText": "The monster has Resistance to Cold and Necrotic damage, but it cannot regain Hit Points. After it takes Fire damage, these resistances are suppressed until the start of its next turn.",
+      "effectCount": 0,
+      "damageClauseCount": 0,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": true,
+      "featureId": "borrowed-face:recognition-shock",
+      "status": "verified",
+      "pass": true,
+      "renderedText": "A creature first sees the mask clearly. Wisdom Saving Throw: DC 13, one creature. Failure: The target cannot take Reactions against the monster and cannot willingly move closer to it until the start of its next turn. Success: No effect.",
+      "effectCount": 0,
+      "damageClauseCount": 0,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": true,
+      "featureId": "shadow-stillness:unseen-advance",
+      "status": "verified",
+      "pass": true,
+      "renderedText": "Once per round, when no conscious hostile creature has line of sight to it, the monster can move up to half its speed without provoking Opportunity Attacks. This movement ends immediately if a conscious hostile creature regains line of sight to it.",
+      "effectCount": 0,
+      "damageClauseCount": 0,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": true,
+      "featureId": "mask-phase:changing-mask",
+      "status": "verified",
+      "pass": true,
+      "renderedText": "Choose one mask and announce it visibly. Mourner increases the monster's speed by 10 feet and imposes disadvantage on Opportunity Attacks against it. Accuser adds its Proficiency Bonus as Psychic harm to the first hit it scores each turn against a Frightened creature. Saint immediately ends one condition affecting it and grants advantage on its next saving throw before the end of its next turn. The chosen mask lasts until the encounter ends or the mask is removed. Fire exposure suppresses the chosen benefit until the start of the monster's next turn. While the monster has the Grappled or Restrained condition, an adjacent creature can use an action to remove the mask with a successful Strength (Athletics) or Dexterity (Sleight of Hand) check against the monster's save DC.",
+      "effectCount": 0,
+      "damageClauseCount": 0,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": true,
+      "featureId": "fire-softens-it:weakness",
+      "status": "verified",
+      "pass": true,
+      "renderedText": "After the monster takes fire damage, the next attack against it before the start of its next turn has advantage.",
+      "effectCount": 1,
+      "damageClauseCount": 0,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 1,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": false,
+      "featureId": "cold-funeral-touch:cold-funeral-touch",
+      "status": "unreviewed",
+      "pass": true,
+      "renderedText": "Melee Attack Roll: +6, reach 5 ft. Hit: the target takes 14 (3d8) Cold and Necrotic damage. If the monster is wearing or presenting a recognizable face, it can move 10 feet after the hit without provoking opportunity attacks from that target.",
+      "effectCount": 0,
+      "damageClauseCount": 1,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": true,
+      "featureId": "face-curse:death-effect",
+      "status": "verified",
+      "pass": true,
+      "renderedText": "The creature dies or drops to 0 hit points. Wisdom Saving Throw: DC 13, one creature. Failure: The target has the Frightened condition until the end of its next turn. If the mask was broken before death, this does not trigger. Success: No effect.",
+      "effectCount": 0,
+      "damageClauseCount": 0,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": true,
+      "featureId": "stench:stench",
+      "status": "verified",
+      "pass": true,
+      "renderedText": "A breathing creature other than the monster starts its turn in the aura. Constitution Saving Throw: DC 13, other creatures that can breathe in a 5-foot Emanation originating from the creature. Failure: The target has the Poisoned condition until the start of its next turn. Success: The target is immune to this monster's Stench for 24 hours.",
+      "effectCount": 0,
+      "damageClauseCount": 0,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": true,
+      "featureId": "crawling-dread:crawling-dread",
+      "status": "verified",
+      "pass": true,
+      "renderedText": "The first time the monster becomes bloodied. Wisdom Saving Throw: DC 13, hostile creatures that can see the monster in a 15-foot Emanation originating from the creature. Failure: The target has the Frightened condition and cannot take reactions until the end of its next turn. Success: A creature can use its reaction to avert its eyes and automatically succeed, but it cannot see the monster until the start of its next turn. Otherwise, no effect.",
+      "effectCount": 0,
+      "damageClauseCount": 0,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    },
+    {
+      "version": "monster-rules-parity-v1.0",
+      "applicable": true,
+      "featureId": "wail:wail",
+      "status": "verified",
+      "pass": true,
+      "renderedText": "Recharge 6. Wisdom Saving Throw: DC 13, creatures that can hear the monster in a 20-foot Emanation originating from the creature. Failure: The target takes 4 (1d6) Psychic damage and has the Frightened condition until the end of its next turn. Success: The target takes half damage. A creature that cannot hear the monster automatically succeeds.",
+      "effectCount": 0,
+      "damageClauseCount": 1,
+      "conditionalDamageCount": 0,
+      "simulation": {
+        "direct": 0,
+        "proxy": 0,
+        "nonNumeric": 0,
+        "unmodeled": 0
+      },
+      "errors": 0,
+      "warnings": 0,
+      "issues": []
+    }
+  ]
+}

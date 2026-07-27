@@ -163,4 +163,23 @@ describe("monster graft source authority", () => {
     expect(result.audit.registryOnly).toBe(1);
     expect(result.audit.fallbacks).toBe(1);
   });
+
+  it("treats CR progression as part of source-representation parity", () => {
+    const withProgression = {
+      ...nativeGraft,
+      progression: {
+        schemaVersion: "monster-graft-progression-v1.0",
+        basis: "targetCr",
+        bands: [{ id: "low", minCr: 0, maxCr: 30, abilityIds: ["slam"] }],
+      },
+    };
+    const result = resolveMonsterGraftCatalogue({
+      nativeGrafts: [withProgression],
+      registryGrafts: [{ ...generatedRegistryGraft, progression: null }],
+    });
+
+    expect(result.audit.divergentRepresentations).toBe(1);
+    expect(result.audit.rows[0].representationsEquivalent).toBe(false);
+  });
+
 });

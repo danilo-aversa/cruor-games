@@ -1,0 +1,635 @@
+{
+  "version": "monster-public-hardening-v1.2-twist-reviewed",
+  "pass": true,
+  "summary": {
+    "checks": 37,
+    "passed": 37,
+    "failed": 0,
+    "catalogGrafts": 93,
+    "coreQa": {
+      "total": 11,
+      "error": 0,
+      "warning": 0,
+      "info": 11
+    },
+    "forcedGrafts": 93,
+    "forcedPassed": 93,
+    "matrixFrames": 84,
+    "matrixPublishReady": 84,
+    "matrixNonBlockingReviews": 12,
+    "averageCrDelta": 0.6,
+    "sourceEquivalentRepresentations": 93
+  },
+  "coverage": {
+    "crCheckpoints": [
+      1,
+      2,
+      5,
+      8,
+      10,
+      15,
+      20
+    ],
+    "sources": [
+      "decomposition",
+      "jikininki",
+      "wolf-spiders",
+      "wax-death-masks"
+    ],
+    "frameProfiles": [
+      "standard",
+      "elite-ambusher",
+      "boss-controller"
+    ],
+    "bySource": [
+      {
+        "id": "decomposition",
+        "count": 21
+      },
+      {
+        "id": "jikininki",
+        "count": 21
+      },
+      {
+        "id": "wolf-spiders",
+        "count": 21
+      },
+      {
+        "id": "wax-death-masks",
+        "count": 21
+      }
+    ],
+    "bySlot": [
+      {
+        "id": "attack",
+        "count": 15
+      },
+      {
+        "id": "weakness",
+        "count": 13
+      },
+      {
+        "id": "body",
+        "count": 12
+      },
+      {
+        "id": "twist",
+        "count": 12
+      },
+      {
+        "id": "mind",
+        "count": 11
+      },
+      {
+        "id": "movement",
+        "count": 11
+      },
+      {
+        "id": "death",
+        "count": 8
+      },
+      {
+        "id": "lair",
+        "count": 7
+      },
+      {
+        "id": "horror",
+        "count": 4
+      }
+    ]
+  },
+  "catalog": {
+    "total": 93,
+    "v2": 93,
+    "attackPatterns": 15,
+    "schemaErrors": [],
+    "nonScalableCompatibilityRoots": []
+  },
+  "coreQa": {
+    "summary": {
+      "total": 11,
+      "error": 0,
+      "warning": 0,
+      "info": 11
+    }
+  },
+  "perGraft": {
+    "summary": {
+      "total": 0,
+      "error": 0,
+      "warning": 0,
+      "info": 0
+    },
+    "analytics": {
+      "totalGrafts": 93,
+      "passed": 93,
+      "review": 0,
+      "failed": 0,
+      "forcedRendered": 93,
+      "parserPassed": 93,
+      "parserReview": 0,
+      "parserFailed": 0,
+      "publishReady": 93,
+      "publishBlocked": 0,
+      "publishReview": 0,
+      "damagingGrafts": 24,
+      "conditionGrafts": 27,
+      "areaGrafts": 28,
+      "rechargeGrafts": 4,
+      "bySlot": [
+        {
+          "id": "attack",
+          "count": 15
+        },
+        {
+          "id": "weakness",
+          "count": 13
+        },
+        {
+          "id": "body",
+          "count": 12
+        },
+        {
+          "id": "twist",
+          "count": 12
+        },
+        {
+          "id": "mind",
+          "count": 11
+        },
+        {
+          "id": "movement",
+          "count": 11
+        },
+        {
+          "id": "death",
+          "count": 8
+        },
+        {
+          "id": "lair",
+          "count": 7
+        },
+        {
+          "id": "horror",
+          "count": 4
+        }
+      ],
+      "bySource": [
+        {
+          "id": "wolf-spiders",
+          "count": 33
+        },
+        {
+          "id": "decomposition",
+          "count": 27
+        },
+        {
+          "id": "jikininki",
+          "count": 25
+        },
+        {
+          "id": "wax-death-masks",
+          "count": 8
+        }
+      ],
+      "topChecks": []
+    }
+  },
+  "matrix": {
+    "summary": {
+      "total": 347,
+      "error": 0,
+      "warning": 0,
+      "info": 347
+    },
+    "analytics": {
+      "generated": 84,
+      "completeGenerated": 84,
+      "forgeIncomplete": 0,
+      "forgeInvalid": 0,
+      "balanceAnalyzed": 84,
+      "balanceSkipped": 0,
+      "exportSkipped": 0,
+      "publicPayloads": 84,
+      "debugPayloads": 84,
+      "publicPayloadsWithDebugFields": 0,
+      "publicPayloadsWithLegacyText": 0,
+      "debugPayloadsMissingInternals": 0,
+      "averageCrDelta": 0.6,
+      "aboveTargetBy2": 0,
+      "aboveTargetBy4": 0,
+      "belowTargetBy2": 0,
+      "publishReady": 84,
+      "publishBlocked": 0,
+      "publishReview": 12,
+      "publishUnknown": 0,
+      "lowPressureMismatch": 0,
+      "statBlockParserPassed": 84,
+      "statBlockParserReview": 0,
+      "statBlockParserFailed": 0,
+      "statBlockParserNotRun": 0,
+      "scalableMainActionFallbackAdded": 0,
+      "missingScalableMainAction": 0,
+      "lowCrDprSpikeWarnings": 0,
+      "crFitApplied": 76,
+      "averageCrFitInitialDelta": 3.57,
+      "averageCrFitDeltaReduction": 2.98,
+      "topChecks": [
+        {
+          "key": "cr-fitting:closed-loop-applied",
+          "count": 76
+        },
+        {
+          "key": "cr-fitting:pass-1-reduced-hp-reduced-dpr",
+          "count": 49
+        },
+        {
+          "key": "frame-power-stack:frame-power-stack/capped-budget",
+          "count": 48
+        },
+        {
+          "key": "frame-power-stack:frame-power-stack/high-tier-boss",
+          "count": 28
+        },
+        {
+          "key": "cr-fitting:low-cr-spike-aware-best-pass-selected",
+          "count": 24
+        },
+        {
+          "key": "dpr-simulator:multiple-main-actions-alternative",
+          "count": 24
+        },
+        {
+          "key": "cr-fitting:pass-1-control-aware-hardening",
+          "count": 15
+        },
+        {
+          "key": "cr-fitting:pass-1-reduced-hp-reduced-dpr-reduced-save-dc",
+          "count": 15
+        },
+        {
+          "key": "cr-fitting:pass-1-reduced-hp",
+          "count": 10
+        },
+        {
+          "key": "frame-power-stack:frame-power-stack/capped-dpr-multiplier",
+          "count": 8
+        },
+        {
+          "key": "frame-power-stack:frame-power-stack/capped-hp-multiplier",
+          "count": 8
+        },
+        {
+          "key": "cr-fitting:pass-2-reduced-hp",
+          "count": 7
+        }
+      ],
+      "topProblematicGrafts": [],
+      "bySource": [
+        {
+          "id": "decomposition",
+          "count": 21
+        },
+        {
+          "id": "jikininki",
+          "count": 21
+        },
+        {
+          "id": "wolf-spiders",
+          "count": 21
+        },
+        {
+          "id": "wax-death-masks",
+          "count": 21
+        }
+      ],
+      "byCategory": [
+        {
+          "id": "Spirit",
+          "count": 42
+        },
+        {
+          "id": "Zombie",
+          "count": 21
+        },
+        {
+          "id": "Spider",
+          "count": 21
+        }
+      ],
+      "byType": [
+        {
+          "id": "undead",
+          "count": 63
+        },
+        {
+          "id": "beast",
+          "count": 21
+        }
+      ]
+    }
+  },
+  "sourceBoundary": {
+    "feed": {
+      "coreSources": 4,
+      "coreGrafts": 93,
+      "contentPackSources": 4,
+      "contentPackGrafts": 93,
+      "totalSources": 4,
+      "totalGrafts": 93,
+      "sourceBoundary": {
+        "selectedNative": 93,
+        "selectedRegistry": 0,
+        "canonicalRegistryEntries": 0,
+        "sourceMismatches": 0,
+        "fallbacks": 0,
+        "divergentRepresentations": 0,
+        "byAuthorityMode": {
+          "native-legacy": 93,
+          "registry-shadow": 0,
+          "registry-canonical": 0
+        }
+      }
+    },
+    "audit": {
+      "nativeGrafts": 93,
+      "registryGrafts": 93,
+      "totalGrafts": 93,
+      "selectedNative": 93,
+      "selectedRegistry": 0,
+      "sourceMismatches": 0,
+      "fallbacks": 0,
+      "equivalentRepresentations": 93,
+      "divergentRepresentations": 0,
+      "canonicalFallbacks": 0,
+      "shadowCoverageGaps": 0,
+      "byAuthorityMode": {
+        "native-legacy": 93,
+        "registry-shadow": 0,
+        "registry-canonical": 0
+      }
+    }
+  },
+  "checks": [
+    {
+      "id": "catalog-total",
+      "label": "Catalog contains the expected 93 grafts.",
+      "actual": 93,
+      "expected": 93,
+      "pass": true
+    },
+    {
+      "id": "catalog-v2",
+      "label": "Every catalog entry uses Graft v2.",
+      "actual": 93,
+      "expected": 93,
+      "pass": true
+    },
+    {
+      "id": "catalog-schema",
+      "label": "Every Graft v2 entry passes schema validation.",
+      "actual": 0,
+      "expected": 0,
+      "pass": true
+    },
+    {
+      "id": "attack-compatibility-roots",
+      "label": "All Attack Patterns expose a scalable compatibility root to legacy runtime gates.",
+      "actual": 0,
+      "expected": 0,
+      "pass": true
+    },
+    {
+      "id": "core-errors",
+      "label": "Core Monster QA has no errors.",
+      "actual": 0,
+      "expected": 0,
+      "pass": true
+    },
+    {
+      "id": "core-warnings",
+      "label": "Core Monster QA has no warnings.",
+      "actual": 0,
+      "expected": 0,
+      "pass": true
+    },
+    {
+      "id": "per-graft-total",
+      "label": "Forced coverage exercises every graft.",
+      "actual": 93,
+      "expected": 93,
+      "pass": true
+    },
+    {
+      "id": "per-graft-passed",
+      "label": "Every forced graft case passes.",
+      "actual": 93,
+      "expected": 93,
+      "pass": true
+    },
+    {
+      "id": "per-graft-review",
+      "label": "Forced graft coverage has no review-only cases.",
+      "actual": 0,
+      "expected": 0,
+      "pass": true
+    },
+    {
+      "id": "per-graft-failed",
+      "label": "Forced graft coverage has no failed cases.",
+      "actual": 0,
+      "expected": 0,
+      "pass": true
+    },
+    {
+      "id": "per-graft-rendered",
+      "label": "Every forced graft renders a stat-block item.",
+      "actual": 93,
+      "expected": 93,
+      "pass": true
+    },
+    {
+      "id": "per-graft-parser",
+      "label": "Every forced graft passes the rendered stat-block parser.",
+      "actual": 93,
+      "expected": 93,
+      "pass": true
+    },
+    {
+      "id": "per-graft-publish",
+      "label": "Every forced graft case is publish-ready.",
+      "actual": 93,
+      "expected": 93,
+      "pass": true
+    },
+    {
+      "id": "per-graft-issues",
+      "label": "Forced coverage emits no issues.",
+      "actual": 0,
+      "expected": 0,
+      "pass": true
+    },
+    {
+      "id": "matrix-frames",
+      "label": "The public matrix covers all 84 source/CR/frame combinations.",
+      "actual": 84,
+      "expected": 84,
+      "pass": true
+    },
+    {
+      "id": "matrix-complete",
+      "label": "Every matrix frame produces a complete build.",
+      "actual": 84,
+      "expected": 84,
+      "pass": true
+    },
+    {
+      "id": "matrix-errors",
+      "label": "The matrix emits no errors.",
+      "actual": 0,
+      "expected": 0,
+      "pass": true
+    },
+    {
+      "id": "matrix-warnings",
+      "label": "The matrix emits no warnings.",
+      "actual": 0,
+      "expected": 0,
+      "pass": true
+    },
+    {
+      "id": "matrix-publish-ready",
+      "label": "Every matrix build is publish-ready.",
+      "actual": 84,
+      "expected": 84,
+      "pass": true
+    },
+    {
+      "id": "matrix-blocked",
+      "label": "No matrix build is publish-blocked.",
+      "actual": 0,
+      "expected": 0,
+      "pass": true
+    },
+    {
+      "id": "matrix-parser",
+      "label": "Every matrix stat block passes parser validation.",
+      "actual": 84,
+      "expected": 84,
+      "pass": true
+    },
+    {
+      "id": "matrix-public-payload",
+      "label": "Every public JSON payload is valid.",
+      "actual": 84,
+      "expected": 84,
+      "pass": true
+    },
+    {
+      "id": "matrix-debug-payload",
+      "label": "Every debug JSON payload is valid.",
+      "actual": 84,
+      "expected": 84,
+      "pass": true
+    },
+    {
+      "id": "matrix-public-debug-fields",
+      "label": "Public payloads contain no debug-only fields.",
+      "actual": 0,
+      "expected": 0,
+      "pass": true
+    },
+    {
+      "id": "matrix-public-legacy-text",
+      "label": "Public payloads contain no legacy placeholder text.",
+      "actual": 0,
+      "expected": 0,
+      "pass": true
+    },
+    {
+      "id": "matrix-debug-internals",
+      "label": "Debug payloads retain all required internal fields.",
+      "actual": 0,
+      "expected": 0,
+      "pass": true
+    },
+    {
+      "id": "matrix-scalable-fallback",
+      "label": "No high-CR build needs a synthetic fallback action.",
+      "actual": 0,
+      "expected": 0,
+      "pass": true
+    },
+    {
+      "id": "matrix-missing-scalable",
+      "label": "No high-CR build lacks a scalable main action.",
+      "actual": 0,
+      "expected": 0,
+      "pass": true
+    },
+    {
+      "id": "matrix-cr-high-outliers",
+      "label": "No matrix build finishes two or more CR above target.",
+      "actual": 0,
+      "expected": 0,
+      "pass": true
+    },
+    {
+      "id": "matrix-cr-low-outliers",
+      "label": "No matrix build finishes two or more CR below target.",
+      "actual": 0,
+      "expected": 0,
+      "pass": true
+    },
+    {
+      "id": "matrix-average-cr",
+      "label": "Average absolute CR drift remains within one CR.",
+      "actual": 0.6,
+      "expected": "<= 1",
+      "pass": true
+    },
+    {
+      "id": "source-count",
+      "label": "Source boundary exposes all 93 native and registry grafts.",
+      "actual": "93/93",
+      "expected": "93/93",
+      "pass": true
+    },
+    {
+      "id": "source-mismatch",
+      "label": "Source boundary has no source mismatches.",
+      "actual": 0,
+      "expected": 0,
+      "pass": true
+    },
+    {
+      "id": "source-fallback",
+      "label": "Source boundary uses no fallback representations.",
+      "actual": 0,
+      "expected": 0,
+      "pass": true
+    },
+    {
+      "id": "source-equivalence",
+      "label": "Native and registry-shadow representations are equivalent.",
+      "actual": 93,
+      "expected": 93,
+      "pass": true
+    },
+    {
+      "id": "source-canonical-fallback",
+      "label": "No canonical source fallback is pending.",
+      "actual": 0,
+      "expected": 0,
+      "pass": true
+    },
+    {
+      "id": "source-shadow-gaps",
+      "label": "No registry-shadow coverage gap remains.",
+      "actual": 0,
+      "expected": 0,
+      "pass": true
+    }
+  ],
+  "failures": []
+}

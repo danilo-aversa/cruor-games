@@ -45,6 +45,40 @@
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
+/* Fill the final incomplete row without requiring per-field span classes. */
+.inspiration-studio .studio-form-grid {
+  grid-auto-flow: row dense;
+}
+
+.inspiration-studio .studio-form-grid:not(.studio-form-grid--compact):not(.studio-form-grid--primary):not([data-columns="three"]):not([data-columns="four"]):not([data-columns="one"]) > .studio-form-row:last-child:nth-child(odd):not(.studio-form-row--wide):not(.studio-graft-field--span-two) {
+  grid-column: span 2;
+}
+
+.inspiration-studio .studio-form-grid--compact > .studio-form-row:last-child:nth-child(3n + 1):not(.studio-form-row--wide):not(.studio-graft-field--span-two),
+.inspiration-studio .studio-form-grid[data-columns="three"] > .studio-form-row:last-child:nth-child(3n + 1):not(.studio-form-row--wide):not(.studio-graft-field--span-two) {
+  grid-column: span 3;
+}
+
+.inspiration-studio .studio-form-grid--compact > .studio-form-row:last-child:nth-child(3n + 2):not(.studio-form-row--wide):not(.studio-graft-field--span-two),
+.inspiration-studio .studio-form-grid[data-columns="three"] > .studio-form-row:last-child:nth-child(3n + 2):not(.studio-form-row--wide):not(.studio-graft-field--span-two) {
+  grid-column: span 2;
+}
+
+.inspiration-studio .studio-form-grid--primary > .studio-form-row:last-child:nth-child(4n + 1):not(.studio-form-row--wide):not(.studio-graft-field--span-two),
+.inspiration-studio .studio-form-grid[data-columns="four"] > .studio-form-row:last-child:nth-child(4n + 1):not(.studio-form-row--wide):not(.studio-graft-field--span-two) {
+  grid-column: span 4;
+}
+
+.inspiration-studio .studio-form-grid--primary > .studio-form-row:last-child:nth-child(4n + 2):not(.studio-form-row--wide):not(.studio-graft-field--span-two),
+.inspiration-studio .studio-form-grid[data-columns="four"] > .studio-form-row:last-child:nth-child(4n + 2):not(.studio-form-row--wide):not(.studio-graft-field--span-two) {
+  grid-column: span 3;
+}
+
+.inspiration-studio .studio-form-grid--primary > .studio-form-row:last-child:nth-child(4n + 3):not(.studio-form-row--wide):not(.studio-graft-field--span-two),
+.inspiration-studio .studio-form-grid[data-columns="four"] > .studio-form-row:last-child:nth-child(4n + 3):not(.studio-form-row--wide):not(.studio-graft-field--span-two) {
+  grid-column: span 2;
+}
+
 .inspiration-studio .studio-form-row {
   display: grid;
   gap: var(--studio-field-gap);
@@ -69,6 +103,61 @@
   height: 18px;
   min-height: 18px;
   padding: 0;
+}
+
+.inspiration-studio .studio-checkbox-input {
+  appearance: none;
+  display: inline-grid;
+  place-content: center;
+  width: 1rem;
+  min-width: 1rem;
+  height: 1rem;
+  min-height: 1rem;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--studio-line-strong);
+  border-radius: 2px;
+  background: var(--studio-control-bg);
+  color: var(--cruor-text-primary);
+  cursor: pointer;
+  box-shadow: none;
+  transition: border-color 120ms ease, background 120ms ease, box-shadow 120ms ease;
+}
+
+.inspiration-studio .studio-checkbox-input::before {
+  content: "";
+  width: 0.48rem;
+  height: 0.26rem;
+  border-left: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  opacity: 0;
+  transform: translateY(-0.05rem) rotate(-45deg) scale(0.7);
+  transition: opacity 120ms ease, transform 120ms ease;
+}
+
+.inspiration-studio .studio-checkbox-input:hover {
+  border-color: var(--studio-accent-muted);
+  background: var(--studio-control-hover-bg);
+}
+
+.inspiration-studio .studio-checkbox-input:checked {
+  border-color: var(--studio-accent-muted);
+  background: var(--studio-control-active-bg);
+}
+
+.inspiration-studio .studio-checkbox-input:checked::before {
+  opacity: 1;
+  transform: translateY(-0.05rem) rotate(-45deg) scale(1);
+}
+
+.inspiration-studio .studio-checkbox-input:focus-visible {
+  outline: 0;
+  box-shadow: var(--studio-focus-ring);
+}
+
+.inspiration-studio .studio-checkbox-input:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
 }
 
 .inspiration-studio .studio-fieldset {
@@ -642,6 +731,14 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  .inspiration-studio .studio-form-grid > .studio-form-row:last-child:not(.studio-form-row--wide):not(.studio-graft-field--span-two) {
+    grid-column: auto;
+  }
+
+  .inspiration-studio .studio-form-grid > .studio-form-row:last-child:nth-child(odd):not(.studio-form-row--wide):not(.studio-graft-field--span-two) {
+    grid-column: span 2;
+  }
+
   .inspiration-studio .studio-form-row--wide {
     grid-column: span 2;
   }
@@ -662,6 +759,10 @@
   .inspiration-studio .studio-form-grid[data-columns="three"],
   .inspiration-studio .studio-form-grid[data-columns="four"] {
     grid-template-columns: minmax(0, 1fr);
+  }
+
+  .inspiration-studio .studio-form-grid > .studio-form-row:last-child:not(.studio-form-row--wide):not(.studio-graft-field--span-two) {
+    grid-column: span 1;
   }
 
   .inspiration-studio .studio-form-row--wide {

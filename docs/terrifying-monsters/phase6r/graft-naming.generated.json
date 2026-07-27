@@ -1,0 +1,706 @@
+{
+  "version": "monster-graft-naming-audit-v1.4-twist-reviewed",
+  "reviewedSlots": [
+    "attack",
+    "body",
+    "horror",
+    "mind",
+    "movement",
+    "twist"
+  ],
+  "rules": {
+    "maxWords": 2,
+    "maxCharacters": 24,
+    "punctuationPattern": {},
+    "forbiddenDashPattern": {},
+    "genericTitles": [
+      "Graft",
+      "Attack Pattern",
+      "Trait Bundle",
+      "Movement Pattern",
+      "Mind Graft",
+      "Body Graft"
+    ],
+    "canonicalBestiaryNames": [
+      "Cunning Action",
+      "Ethereal Sight",
+      "Incorporeal Movement",
+      "Siege Monster",
+      "Spider Climb",
+      "Stench",
+      "Undead Fortitude",
+      "Vanish",
+      "Web",
+      "Web Walker",
+      "Wail"
+    ],
+    "approvedExceptions": [
+      "Cold Funeral Touch"
+    ]
+  },
+  "total": 65,
+  "passing": 65,
+  "error": 0,
+  "bySlot": {
+    "attack": 15,
+    "body": 12,
+    "horror": 4,
+    "mind": 11,
+    "movement": 11,
+    "twist": 12
+  },
+  "reports": [
+    {
+      "id": "acid-vomit",
+      "slot": "attack",
+      "title": "Acid Brute",
+      "wordCount": 2,
+      "canonicalBestiaryName": false,
+      "approvedException": false,
+      "issues": [],
+      "pass": true
+    },
+    {
+      "id": "brood-injection",
+      "slot": "attack",
+      "title": "Broodmaker",
+      "wordCount": 1,
+      "canonicalBestiaryName": false,
+      "approvedException": false,
+      "issues": [],
+      "pass": true
+    },
+    {
+      "id": "cold-funeral-touch",
+      "slot": "attack",
+      "title": "Cold Touch",
+      "wordCount": 2,
+      "canonicalBestiaryName": false,
+      "approvedException": false,
+      "issues": [],
+      "pass": true
+    },
+    {
+      "id": "corpse-tendrils",
+      "slot": "attack",
+      "title": "Corpse Binder",
+      "wordCount": 2,
+      "canonicalBestiaryName": false,
+      "approvedException": false,
+      "issues": [],
+      "pass": true
+    },
+    {
+      "id": "slam-decomposition",
+      "slot": "attack",
+      "title": "Crusher",
+      "wordCount": 1,
+      "canonicalBestiaryName": false,
+      "approvedException": false,
+      "issues": [],
+      "pass": true
+    },
+    {
+      "id": "corpse-grab",
+      "slot": "attack",
+      "title": "Grappler",
+      "wordCount": 1,
+      "canonicalBestiaryName": false,
+      "approvedException": false,
+      "issues": [],
+      "pass": true
+    },
+    {
+      "id": "grave-bite",
+      "slot": "attack",
+      "title": "Grave Eater",
+      "wordCount": 2,
+      "canonicalBestiaryName": false,
+      "approvedException": false,
+      "issues": [],
+      "pass": true
+    },
+    {
+      "id": "perforate",
+      "slot": "attack",
+      "title": "Impaler",
+      "wordCount": 1,
+      "canonicalBestiaryName": false,
+      "approvedException": false,
+      "issues": [],
+      "pass": true
+    },
+    {
+      "id": "empowered-slam",
+      "slot": "attack",
+      "title": "Juggernaut",
+      "wordCount": 1,
+      "canonicalBestiaryName": false,
+      "approvedException": false,
+      "issues": [],
+      "pass": true
+    },
+    {
+      "id": "infected-bite",
+      "slot": "attack",
+      "title": "Plague Eater",
+      "wordCount": 2,
+      "canonicalBestiaryName": false,
+      "approvedException": false,
+      "issues": [],
+      "pass": true
+    },
+    {
+      "id": "purulent-bite",
+      "slot": "attack",
+      "title": "Rot Eater",
+      "wordCount": 2,
+      "canonicalBestiaryName": false,
+      "approvedException": false,
+      "issues": [],
+      "pass": true
+    },
+    {
+      "id": "shadow-web",
+      "slot": "attack",
+      "title": "Shadow Weaver",
+      "wordCount": 2,
+      "canonicalBestiaryName": false,
+      "approvedException": false,
+      "issues": [],
+      "pass": true
+    },
+    {
+      "id": "venomous-bite",
+      "slot": "attack",
+      "title": "Venom Hunter",
+      "wordCount": 2,
+      "canonicalBestiaryName": false,
+      "approvedException": false,
+      "issues": [],
+      "pass": true
+    },
+    {
+      "id": "venomous-spit",
+      "slot": "attack",
+      "title": "Venom Spitter",
+      "wordCount": 2,
+      "canonicalBestiaryName": false,
+      "approvedException": false,
+      "issues": [],
+      "pass": true
+    },
+    {
+      "id": "web-recharge",
+      "slot": "attack",
+      "title": "Web Hunter",
+      "wordCount": 2,
+      "canonicalBestiaryName": false,
+      "approvedException": false,
+      "issues": [],
+      "pass": true
+    },
+    {
+      "id": "barbed-chitin",
+      "slot": "body",
+      "title": "Barbed Chitin",
+      "wordCount": 2,
+      "canonicalBestiaryName": false,
+      "approvedException": false,
+      "issues": [],
+      "pass": true
+    },
+    {
+      "id": "fresh-bloat-hide",
+      "slot": "body",
+      "title": "Bloat Hide",
+      "wordCount": 2,
+      "canonicalBestiaryName": false,
+      "approvedException": false,
+      "issues": [],
+      "pass": true
+    },
+    {
+      "id": "malformed-broodling",
+      "slot": "body",
+      "title": "Broodling",
+      "wordCount": 1,
+      "canonicalBestiaryName": false,
+      "approvedException": false,
+      "issues": [],
+      "pass": true
+    },
+    {
+      "id": "volatile-immobile-mass",
+      "slot": "body",
+      "title": "Corpse Mass",
+      "wordCount": 2,
+      "canonicalBestiaryName": false,
+      "approvedException": false,
+      "issues": [],
+      "pass": true
+    },
+    {
+      "id": "egg-carrier",
+      "slot": "body",
+      "title": "Egg Carrier",
+      "wordCount": 2,
+      "canonicalBestiaryName": false,
+      "approvedException": false,
+      "issues": [],
+      "pass": true
+    },
+    {
+      "id": "ethereal-sight",
+      "slot": "body",
+      "title": "Ethereal Sight",
+      "wordCount": 2,
+      "canonicalBestiaryName": true,
+      "approvedException": false,
+      "issues": [],
+      "pass": true
+    },
+    {
+      "id": "umbral-skin",
+      "slot": "body",
+      "title": "Shadow Skin",
+      "wordCount": 2,
+      "canonicalBestiaryName": false,
+      "approvedException": false,
+      "issues": [],
+      "pass": true
+    },
+    {
+      "id": "skin-slippage",
+      "slot": "body",
+      "title": "Shedding Skin",
+      "wordCount": 2,
+      "canonicalBestiaryName": false,
+      "approvedException": false,
+      "issues": [],
+      "pass": true
+    },
+    {
+      "id": "spider-climb",
+      "slot": "body",
+      "title": "Spider Climb",
+      "wordCount": 2,
+      "canonicalBestiaryName": true,
+      "approvedException": false,
+      "issues": [],
+      "pass": true
+    },
+    {
+      "id": "swollen-corpse",
+      "slot": "body",
+      "title": "Swollen Corpse",
+      "wordCount": 2,
+      "canonicalBestiaryName": false,
+      "approvedException": false,
+      "issues": [],
+      "pass": true
+    },
+    {
+      "id": "waxen-mask-body",
+      "slot": "body",
+      "title": "Waxen Flesh",
+      "wordCount": 2,
+      "canonicalBestiaryName": false,
+      "approvedException": false,
+      "issues": [],
+      "pass": true
+    },
+    {
+      "id": "web-walker",
+      "slot": "body",
+      "title": "Web Walker",
+      "wordCount": 2,
+      "canonicalBestiaryName": true,
+      "approvedException": false,
+      "issues": [],
+      "pass": true
+    },
+    {
+      "id": "crawling-dread",
+      "slot": "horror",
+      "title": "Crawling Dread",
+      "wordCount": 2,
+      "canonicalBestiaryName": false,
+      "approvedException": false,
+      "issues": [],
+      "pass": true
+    },
+    {
+      "id": "horrific-apparition",
+      "slot": "horror",
+      "title": "Horrific Apparition",
+      "wordCount": 2,
+      "canonicalBestiaryName": false,
+      "approvedException": false,
+      "issues": [],
+      "pass": true
+    },
+    {
+      "id": "stench",
+      "slot": "horror",
+      "title": "Stench",
+      "wordCount": 1,
+      "canonicalBestiaryName": true,
+      "approvedException": false,
+      "issues": [],
+      "pass": true
+    },
+    {
+      "id": "wail",
+      "slot": "horror",
+      "title": "Wail",
+      "wordCount": 1,
+      "canonicalBestiaryName": true,
+      "approvedException": false,
+      "issues": [],
+      "pass": true
+    },
+    {
+      "id": "borrowed-face",
+      "slot": "mind",
+      "title": "Borrowed Face",
+      "wordCount": 2,
+      "canonicalBestiaryName": false,
+      "approvedException": false,
+      "issues": [],
+      "pass": true
+    },
+    {
+      "id": "maternal-swarm-instinct",
+      "slot": "mind",
+      "title": "Brood Guard",
+      "wordCount": 2,
+      "canonicalBestiaryName": false,
+      "approvedException": false,
+      "issues": [],
+      "pass": true
+    },
+    {
+      "id": "corpse-craving",
+      "slot": "mind",
+      "title": "Corpse Hunger",
+      "wordCount": 2,
+      "canonicalBestiaryName": false,
+      "approvedException": false,
+      "issues": [],
+      "pass": true
+    },
+    {
+      "id": "deceitful-apparition",
+      "slot": "mind",
+      "title": "Dead Impostor",
+      "wordCount": 2,
+      "canonicalBestiaryName": false,
+      "approvedException": false,
+      "issues": [],
+      "pass": true
+    },
+    {
+      "id": "shame-hunger",
+      "slot": "mind",
+      "title": "Funeral Hunger",
+      "wordCount": 2,
+      "canonicalBestiaryName": false,
+      "approvedException": false,
+      "issues": [],
+      "pass": true
+    },
+    {
+      "id": "hundred-eyed",
+      "slot": "mind",
+      "title": "Many Eyes",
+      "wordCount": 2,
+      "canonicalBestiaryName": false,
+      "approvedException": false,
+      "issues": [],
+      "pass": true
+    },
+    {
+      "id": "nocturnal-haunting",
+      "slot": "mind",
+      "title": "Night Hunter",
+      "wordCount": 2,
+      "canonicalBestiaryName": false,
+      "approvedException": false,
+      "issues": [],
+      "pass": true
+    },
+    {
+      "id": "pressure-agony",
+      "slot": "mind",
+      "title": "Pain Fixation",
+      "wordCount": 2,
+      "canonicalBestiaryName": false,
+      "approvedException": false,
+      "issues": [],
+      "pass": true
+    },
+    {
+      "id": "hunter-spider",
+      "slot": "mind",
+      "title": "Patient Hunter",
+      "wordCount": 2,
+      "canonicalBestiaryName": false,
+      "approvedException": false,
+      "issues": [],
+      "pass": true
+    },
+    {
+      "id": "mindless-command",
+      "slot": "mind",
+      "title": "Single Command",
+      "wordCount": 2,
+      "canonicalBestiaryName": false,
+      "approvedException": false,
+      "issues": [],
+      "pass": true
+    },
+    {
+      "id": "mortal-afterlife",
+      "slot": "mind",
+      "title": "Stolen Life",
+      "wordCount": 2,
+      "canonicalBestiaryName": false,
+      "approvedException": false,
+      "issues": [],
+      "pass": true
+    },
+    {
+      "id": "collapsed-crawler",
+      "slot": "movement",
+      "title": "Crawling Ruin",
+      "wordCount": 2,
+      "canonicalBestiaryName": false,
+      "approvedException": false,
+      "issues": [],
+      "pass": true
+    },
+    {
+      "id": "cunning-action-spirit",
+      "slot": "movement",
+      "title": "Cunning Action",
+      "wordCount": 2,
+      "canonicalBestiaryName": true,
+      "approvedException": false,
+      "issues": [],
+      "pass": true
+    },
+    {
+      "id": "incorporeal-movement",
+      "slot": "movement",
+      "title": "Incorporeal Movement",
+      "wordCount": 2,
+      "canonicalBestiaryName": true,
+      "approvedException": false,
+      "issues": [],
+      "pass": true
+    },
+    {
+      "id": "predatory-jump",
+      "slot": "movement",
+      "title": "Predatory Leap",
+      "wordCount": 2,
+      "canonicalBestiaryName": false,
+      "approvedException": false,
+      "issues": [],
+      "pass": true
+    },
+    {
+      "id": "rupture-charge",
+      "slot": "movement",
+      "title": "Rupture Charge",
+      "wordCount": 2,
+      "canonicalBestiaryName": false,
+      "approvedException": false,
+      "issues": [],
+      "pass": true
+    },
+    {
+      "id": "shadow-jump",
+      "slot": "movement",
+      "title": "Shadow Step",
+      "wordCount": 2,
+      "canonicalBestiaryName": false,
+      "approvedException": false,
+      "issues": [],
+      "pass": true
+    },
+    {
+      "id": "stumbling-mass",
+      "slot": "movement",
+      "title": "Stumbling Mass",
+      "wordCount": 2,
+      "canonicalBestiaryName": false,
+      "approvedException": false,
+      "issues": [],
+      "pass": true
+    },
+    {
+      "id": "shadow-stillness",
+      "slot": "movement",
+      "title": "Unseen Advance",
+      "wordCount": 2,
+      "canonicalBestiaryName": false,
+      "approvedException": false,
+      "issues": [],
+      "pass": true
+    },
+    {
+      "id": "vanish-spirit",
+      "slot": "movement",
+      "title": "Vanish",
+      "wordCount": 1,
+      "canonicalBestiaryName": true,
+      "approvedException": false,
+      "issues": [],
+      "pass": true
+    },
+    {
+      "id": "wall-crawler",
+      "slot": "movement",
+      "title": "Wall Stalker",
+      "wordCount": 2,
+      "canonicalBestiaryName": false,
+      "approvedException": false,
+      "issues": [],
+      "pass": true
+    },
+    {
+      "id": "web-dancer",
+      "slot": "movement",
+      "title": "Web Swing",
+      "wordCount": 2,
+      "canonicalBestiaryName": false,
+      "approvedException": false,
+      "issues": [],
+      "pass": true
+    },
+    {
+      "id": "mask-phase",
+      "slot": "twist",
+      "title": "Changing Mask",
+      "wordCount": 2,
+      "canonicalBestiaryName": false,
+      "approvedException": false,
+      "issues": [],
+      "pass": true
+    },
+    {
+      "id": "corrosive-web",
+      "slot": "twist",
+      "title": "Corrosive Web",
+      "wordCount": 2,
+      "canonicalBestiaryName": false,
+      "approvedException": false,
+      "issues": [],
+      "pass": true
+    },
+    {
+      "id": "dangerously-unstable",
+      "slot": "twist",
+      "title": "Dangerously Unstable",
+      "wordCount": 2,
+      "canonicalBestiaryName": false,
+      "approvedException": false,
+      "issues": [],
+      "pass": true
+    },
+    {
+      "id": "enrage-broodmother",
+      "slot": "twist",
+      "title": "Enrage",
+      "wordCount": 1,
+      "canonicalBestiaryName": false,
+      "approvedException": false,
+      "issues": [],
+      "pass": true
+    },
+    {
+      "id": "flesh-harvest",
+      "slot": "twist",
+      "title": "Flesh Harvest",
+      "wordCount": 2,
+      "canonicalBestiaryName": false,
+      "approvedException": false,
+      "issues": [],
+      "pass": true
+    },
+    {
+      "id": "gas-buildup",
+      "slot": "twist",
+      "title": "Gas Buildup",
+      "wordCount": 2,
+      "canonicalBestiaryName": false,
+      "approvedException": false,
+      "issues": [],
+      "pass": true
+    },
+    {
+      "id": "horrific-assault",
+      "slot": "twist",
+      "title": "Horrific Assault",
+      "wordCount": 2,
+      "canonicalBestiaryName": false,
+      "approvedException": false,
+      "issues": [],
+      "pass": true
+    },
+    {
+      "id": "siege-corpse",
+      "slot": "twist",
+      "title": "Siege Monster",
+      "wordCount": 2,
+      "canonicalBestiaryName": true,
+      "approvedException": false,
+      "issues": [],
+      "pass": true
+    },
+    {
+      "id": "undead-fortitude",
+      "slot": "twist",
+      "title": "Undead Fortitude",
+      "wordCount": 2,
+      "canonicalBestiaryName": true,
+      "approvedException": false,
+      "issues": [],
+      "pass": true
+    },
+    {
+      "id": "unstable-rupture",
+      "slot": "twist",
+      "title": "Unstable Rupture",
+      "wordCount": 2,
+      "canonicalBestiaryName": false,
+      "approvedException": false,
+      "issues": [],
+      "pass": true
+    },
+    {
+      "id": "web-architect",
+      "slot": "twist",
+      "title": "Web Architect",
+      "wordCount": 2,
+      "canonicalBestiaryName": false,
+      "approvedException": false,
+      "issues": [],
+      "pass": true
+    },
+    {
+      "id": "no-witnesses-rage",
+      "slot": "twist",
+      "title": "Witness Rage",
+      "wordCount": 2,
+      "canonicalBestiaryName": false,
+      "approvedException": false,
+      "issues": [],
+      "pass": true
+    }
+  ],
+  "errors": [],
+  "pass": true
+}

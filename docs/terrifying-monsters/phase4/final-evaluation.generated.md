@@ -1,6 +1,6 @@
 # Terrifying Monsters — Final Evaluation v2 Audit
 
-**Evaluation:** `monster-final-evaluation-v2.0`  
+**Evaluation:** `monster-final-evaluation-v2.1-cr-scaled-repertoire`  
 **Scenarios:** 8  
 **Checks:** 40/40 passed
 

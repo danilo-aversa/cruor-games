@@ -2,7 +2,6 @@ import { useEffect, useMemo, useState } from "react";
 import {
   StudioIcon,
   StudioIconButton,
-  StudioStatusBadge,
   StudioTab,
   StudioTabs,
 } from "../../inspiration-studio/ui/index.js";
@@ -60,6 +59,7 @@ function ReleaseIndex({ activeReleaseId, collapsed, onCollapse, onSelect, releas
               className={release.id === activeReleaseId ? "is-active" : ""}
               key={release.id}
               type="button"
+              title={release.title}
               onClick={() => onSelect(release.id)}
             >
               <span className="studio-list-button__topline">
@@ -370,37 +370,14 @@ export default function PublishingSimulatorView({
 }) {
   const [platform, setPlatform] = useState("instagram");
   const [releaseIndexCollapsed, setReleaseIndexCollapsed] = useState(false);
-  const [analyticsVisible, setAnalyticsVisible] = useState(true);
   const release = releases.find((candidate) => candidate.id === activeReleaseId) || releases[0];
 
   if (!release) return null;
 
   return (
     <section className="creator-publishing__view creator-publishing__simulator-view" aria-label="Post and profile simulator">
-      <div className="creator-publishing__simulator-commandbar studio-panel cruor-ui-panel-surface">
-        <span>
-          <StudioIcon name="fa-file-lines" />
-          <span><small>Current Release</small><strong>{release.title}</strong></span>
-        </span>
-        <span>
-          <StudioStatusBadge status="neutral">{release.instagramFormat}</StudioStatusBadge>
-          <StudioIconButton
-            icon={releaseIndexCollapsed ? "fa-list" : "fa-list-check"}
-            label="Toggle season releases"
-            aria-pressed={!releaseIndexCollapsed}
-            onClick={() => setReleaseIndexCollapsed((value) => !value)}
-          />
-          <StudioIconButton
-            icon="fa-chart-column"
-            label="Toggle audience activity"
-            aria-pressed={analyticsVisible}
-            onClick={() => setAnalyticsVisible((value) => !value)}
-          />
-        </span>
-      </div>
-
       <div
-        className={`creator-publishing__simulator-layout${releaseIndexCollapsed ? " is-library-collapsed" : ""}${analyticsVisible ? "" : " is-right-rail-collapsed"}`}
+        className={`creator-publishing__simulator-layout${releaseIndexCollapsed ? " is-library-collapsed" : ""}`}
       >
         <ReleaseIndex
           activeReleaseId={release.id}
@@ -411,10 +388,21 @@ export default function PublishingSimulatorView({
         />
 
         <main className="creator-publishing__simulator-workspace">
-          <StudioTabs className="creator-publishing__platform-tabs" label="Platform preview">
+          <div className="creator-publishing__preview-stage">
+            {platform === "instagram" ? <InstagramPostPreview release={release} /> : null}
+            {platform === "profile" ? <InstagramProfilePreview releases={releases} /> : null}
+            {platform === "facebook" ? <FacebookPreview release={release} /> : null}
+          </div>
+
+          <StudioTabs
+            className="studio-component-tabs studio-component-tabs--vertical creator-publishing__platform-tabs"
+            label="Platform preview"
+            orientation="vertical"
+          >
             {PLATFORM_TABS.map((item) => (
               <StudioTab
                 active={platform === item.id}
+                hint={item.label}
                 icon={item.icon}
                 key={item.id}
                 label={item.label}
@@ -422,21 +410,13 @@ export default function PublishingSimulatorView({
               />
             ))}
           </StudioTabs>
-
-          <div className="creator-publishing__preview-stage">
-            {platform === "instagram" ? <InstagramPostPreview release={release} /> : null}
-            {platform === "profile" ? <InstagramProfilePreview releases={releases} /> : null}
-            {platform === "facebook" ? <FacebookPreview release={release} /> : null}
-          </div>
         </main>
 
-        {analyticsVisible ? (
-          <AudienceActivity
-            onTimeChange={(time) => onReleaseTimeChange(release.id, time)}
-            platform={platform}
-            release={release}
-          />
-        ) : null}
+        <AudienceActivity
+          onTimeChange={(time) => onReleaseTimeChange(release.id, time)}
+          platform={platform}
+          release={release}
+        />
       </div>
     </section>
   );

@@ -127,12 +127,16 @@ function buildParityReviewFlags(graft) {
   const conditionNames = asArray(rules.condition?.names).map(lower);
   const conditionSpecial = asArray(rules.condition?.special).map(lower);
   const damageParts = getDamageParts(rules.damage);
+  const effectTypes = asArray(rules.effects).map((effect) => lower(effect?.type));
   const flags = [];
   const add = (flag) => {
     if (!flags.includes(flag)) flags.push(flag);
   };
 
-  if (/\badvantage\b|\bdisadvantage\b/.test(mechanics)) {
+  if (
+    /\badvantage\b|\bdisadvantage\b/.test(mechanics) &&
+    !effectTypes.some((type) => ["advantage", "disadvantage"].includes(type))
+  ) {
     add("advantage-disadvantage-review");
   }
 
@@ -140,7 +144,8 @@ function buildParityReviewFlags(graft) {
     /\b(extra|additional) damage die\b|\bextra damage\b|\badditional damage\b/.test(
       mechanics,
     ) &&
-    damageParts.length === 0
+    damageParts.length === 0 &&
+    !effectTypes.includes("custom")
   ) {
     add("conditional-extra-damage-review");
   }
@@ -252,7 +257,8 @@ function buildParityReviewFlags(graft) {
     !hasEnabledBlock(rules.ongoing) &&
     !hasEnabledBlock(rules.areaEffect) &&
     !hasEnabledBlock(rules.procedure) &&
-    !rules.trigger
+    !rules.trigger &&
+    !/start of|end of/.test(rulesText)
   ) {
     add("turn-timing-review");
   }
@@ -280,17 +286,48 @@ function getAttackPatternStatus(graft) {
   return "single-action";
 }
 
+function getInventoryAbilityFeatures(graft = {}) {
+  if (!Array.isArray(graft.abilities) || !graft.abilities.length) return [graft];
+  return graft.abilities.map((ability) => ({
+    ...ability,
+    id: `${graft.id}:${ability.id}`,
+    source: graft.source,
+    slot: graft.slot,
+    cost: graft.cost,
+    complexity: graft.complexity,
+  }));
+}
+
+function getAggregateParityStatus(abilityFeatures = []) {
+  const statuses = abilityFeatures.map((feature) => feature.rules?.parity?.status || "unreviewed");
+  if (statuses.length && statuses.every((status) => status === "verified")) return "verified";
+  if (statuses.some((status) => status === "verified")) return "mixed";
+  return "unreviewed";
+}
+
 function buildInventoryRow(graft, index, overrides) {
-  const rules = graft.rules || {};
-  const damageBlocks = getDamageBlocks(rules);
+  const abilityFeatures = getInventoryAbilityFeatures(graft);
+  const abilityRules = abilityFeatures.map((feature) => feature.rules || {});
+  const damageBlocks = abilityRules.flatMap(getDamageBlocks);
   const damageBudgetRoles = [
     ...new Set(damageBlocks.map((damage) => cleanString(damage.budgetRole)).filter(Boolean)),
   ];
   const damageTypes = [
     ...new Set(damageBlocks.flatMap((damage) => asArray(damage.types || damage.type)).map(cleanString).filter(Boolean)),
   ];
-  const conditionNames = asArray(rules.condition?.names).map(cleanString).filter(Boolean);
-  const flags = buildParityReviewFlags(graft);
+  const conditionNames = [
+    ...new Set(abilityRules.flatMap((rules) => asArray(rules.condition?.names)).map(cleanString).filter(Boolean)),
+  ];
+  const flags = [
+    ...new Set(abilityFeatures.flatMap((feature) => buildParityReviewFlags(feature))),
+  ].sort();
+  const ruleVersions = [...new Set(abilityRules.map((rules) => rules.schemaVersion || "none"))];
+  const migrationSources = [...new Set(abilityRules.map((rules) => rules.migration?.source || "none"))];
+  const convertedFrom = [...new Set(abilityRules.map((rules) => rules.migration?.convertedFrom || "none"))];
+  const authoredRoutine = Boolean(graft.kind === "attackPattern" && graft.routine?.defaultSequence?.length);
+  const authoredMultiattack = Boolean(graft.routine?.multiattack?.enabled) || abilityRules.some((rules) => hasEnabledBlock(rules.multiattack));
+  const multiattackParticipation = abilityRules.some((rules) => Boolean(rules.multiattackParticipation?.enabled));
+  const primaryRules = abilityRules[0] || graft.rules || {};
 
   return {
     index: index + 1,
@@ -298,30 +335,41 @@ function buildInventoryRow(graft, index, overrides) {
     title: graft.title,
     source: graft.source,
     slot: graft.slot,
-    section: graft.section || rules.section || "trait",
+    section: graft.section || primaryRules.section || "trait",
     cost: Number(graft.cost || 0),
     complexity: Number(graft.complexity || 0),
-    rulesSchemaVersion: rules.schemaVersion || "none",
-    migrationSource: rules.migration?.source || "none",
-    convertedFrom: rules.migration?.convertedFrom || "none",
-    isStructured: Boolean(rules.migration?.isStructured),
+    rulesSchemaVersion: ruleVersions.join("|") || "none",
+    migrationSource: migrationSources.join("|") || "none",
+    convertedFrom: convertedFrom.join("|") || "none",
+    isStructured: abilityRules.length > 0 && abilityRules.every((rules) => Boolean(rules.migration?.isStructured)),
     balanceProfileSource: getBalanceProfileSource(graft),
-    currentAbilityCount: getCurrentAbilityCount(graft),
-    attackPatternStatus: getAttackPatternStatus(graft),
-    actionEconomy: rules.actionEconomy || "passive",
-    usageType: rules.usage?.type || "passive",
+    currentAbilityCount: abilityFeatures.length,
+    attackPatternStatus: graft.slot !== "attack"
+      ? "not-applicable"
+      : authoredRoutine
+        ? "authored-routine"
+        : abilityFeatures.length > 1
+          ? "ability-bundle"
+          : "single-action",
+    actionEconomy: [...new Set(abilityRules.map((rules) => rules.actionEconomy || "passive"))].join("|"),
+    usageType: [...new Set(abilityRules.map((rules) => rules.usage?.type || "passive"))].join("|"),
     damageBudgetRoles,
     damageTypes,
     conditionNames,
-    hasAreaTargeting: rules.targeting?.type === "area",
-    hasAreaEffect: hasEnabledBlock(rules.areaEffect),
-    hasOngoing: hasEnabledBlock(rules.ongoing),
-    hasDefense: hasEnabledBlock(rules.defense),
-    hasSummon: hasEnabledBlock(rules.summon),
-    hasProcedure: hasEnabledBlock(rules.procedure),
-    hasMultiattack: hasEnabledBlock(rules.multiattack),
-    hasMultiattackParticipation: hasEnabledBlock(rules.multiattackParticipation),
-    referenceCount: asArray(rules.references).length,
+    parityStatus: getAggregateParityStatus(abilityFeatures),
+    effectCount: abilityRules.reduce((sum, rules) => sum + asArray(rules.effects).length, 0),
+    conditionalDamageCount: damageBlocks.filter(
+      (damage) => damage.activation && damage.activation.type !== "always",
+    ).length,
+    hasAreaTargeting: abilityRules.some((rules) => rules.targeting?.type === "area"),
+    hasAreaEffect: abilityRules.some((rules) => hasEnabledBlock(rules.areaEffect)),
+    hasOngoing: abilityRules.some((rules) => hasEnabledBlock(rules.ongoing)),
+    hasDefense: abilityRules.some((rules) => hasEnabledBlock(rules.defense)),
+    hasSummon: abilityRules.some((rules) => hasEnabledBlock(rules.summon)),
+    hasProcedure: abilityRules.some((rules) => hasEnabledBlock(rules.procedure)),
+    hasMultiattack: authoredMultiattack,
+    hasMultiattackParticipation: multiattackParticipation,
+    referenceCount: abilityRules.reduce((sum, rules) => sum + asArray(rules.references).length, 0),
     fitPresent: Boolean(graft.fit),
     compatibilityOverride: Boolean(overrides.compatibility[graft.id]),
     anatomyConstraintOverride: Boolean(overrides.anatomyConstraints[graft.id]),
@@ -350,10 +398,19 @@ function buildSummary(rows, currentRulesSchemaVersion, overrideSummary) {
     usingLegacyBalanceStats: rows.filter((row) => row.balanceProfileSource === "legacyStats").length,
     usingBalanceProfile: rows.filter((row) => row.balanceProfileSource === "balanceProfile").length,
     attackGrafts: attackRows.length,
-    attackGraftsWithAbilityBundles: attackRows.filter((row) => row.attackPatternStatus === "ability-bundle").length,
+    attackGraftsWithAbilityBundles: attackRows.filter(
+      (row) => row.attackPatternStatus === "authored-routine" || row.currentAbilityCount > 1,
+    ).length,
     attackGraftsWithAuthoredRoutine: attackRows.filter((row) => row.attackPatternStatus === "authored-routine").length,
+    authoredAttackAbilities: attackRows.reduce((sum, row) => sum + row.currentAbilityCount, 0),
     attackGraftsWithMultiattack: attackRows.filter((row) => row.hasMultiattack).length,
     attackGraftsWithMultiattackParticipation: attackRows.filter((row) => row.hasMultiattackParticipation).length,
+    parityVerified: rows.filter((row) => row.parityStatus === "verified").length,
+    structuredEffectClauses: rows.reduce((sum, row) => sum + row.effectCount, 0),
+    conditionalDamageClauses: rows.reduce(
+      (sum, row) => sum + row.conditionalDamageCount,
+      0,
+    ),
     parityReviewCandidates: flaggedRows.length,
     parityReviewFlagCounts: countValues(flaggedRows.flatMap((row) => row.parityReviewFlags)),
     overrides: overrideSummary,
@@ -453,9 +510,13 @@ The parity flags are **review candidates**, not automatic proof of a defect. The
 | Using explicit balanceProfile | ${summary.usingBalanceProfile} |
 | Attack-slot grafts | ${summary.attackGrafts} |
 | Attack ability bundles | ${summary.attackGraftsWithAbilityBundles} |
+| Authored Attack abilities | ${summary.authoredAttackAbilities} |
 | Attack grafts with authored routine | ${summary.attackGraftsWithAuthoredRoutine} |
 | Attack grafts with authored Multiattack | ${summary.attackGraftsWithMultiattack} |
 | Attack grafts with Multiattack participation | ${summary.attackGraftsWithMultiattackParticipation} |
+| Verified parity grafts | ${summary.parityVerified} |
+| Structured effect clauses | ${summary.structuredEffectClauses} |
+| Conditional damage clauses | ${summary.conditionalDamageClauses} |
 | Parity review candidates | ${summary.parityReviewCandidates} |
 
 ## Distribution by source
@@ -476,7 +537,7 @@ The source catalogue still embeds older rules versions even when the current nor
 
 ${renderAttackTable(rows)}
 
-The current catalogue models every Attack-slot graft as one ability. None supplies an authored Multiattack or explicit participation in a composed attack routine.
+Every Attack-slot graft now uses an authored Attack Pattern v2 contract. The table reports the authored repertoire, routine, Multiattack, and explicit participation state preserved by the compiler bridge.
 
 ## Side override inventory
 

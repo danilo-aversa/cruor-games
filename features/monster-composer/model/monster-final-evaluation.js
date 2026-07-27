@@ -1,4 +1,5 @@
-export const MONSTER_FINAL_EVALUATION_VERSION = "monster-final-evaluation-v2.0";
+import { projectMonsterAbilityModelForCr } from "./monster-attack-pattern-progression.js";
+export const MONSTER_FINAL_EVALUATION_VERSION = "monster-final-evaluation-v2.1-cr-scaled-repertoire";
 export const MONSTER_FINAL_EVALUATION_SCALE = Object.freeze({ min: 0, max: 10 });
 
 const PRESSURE_LABELS_V2 = Object.freeze({
@@ -475,6 +476,7 @@ export function buildFinalMonsterEvaluation({
   buildCost = null,
   complexityCap = null,
 } = {}) {
+  const projectedAbilityModel = projectMonsterAbilityModelForCr(abilityModel, targetCr);
   const pressure = buildPressureMeasure({
     targetCr,
     baseline,
@@ -482,20 +484,20 @@ export function buildFinalMonsterEvaluation({
     dprProfile,
     effectiveProfile,
     crValidation,
-    abilityModel,
+    abilityModel: projectedAbilityModel,
     attackRoutine,
     mechanicsSummary,
     tempoProfile,
     monsterTier,
   });
   const complexity = buildComplexityMeasure({
-    abilityModel,
+    abilityModel: projectedAbilityModel,
     dprProfile,
     attackRoutine,
     mechanicsSummary,
   });
-  const counterplay = buildCounterplayMeasure({ counterplayAudit, abilityModel, selectedFeatures });
-  const spikeRisk = buildSpikeRiskMeasure({ targetCr, baseline, dprProfile, effectiveProfile, abilityModel });
+  const counterplay = buildCounterplayMeasure({ counterplayAudit, abilityModel: projectedAbilityModel, selectedFeatures });
+  const spikeRisk = buildSpikeRiskMeasure({ targetCr, baseline, dprProfile, effectiveProfile, abilityModel: projectedAbilityModel });
   const budget = buildBudgetMeasure({ buildBudget, buildCost });
 
   return {
@@ -513,6 +515,7 @@ export function buildFinalMonsterEvaluation({
     invariants: {
       pressureUsesFinalCompiledOutput: true,
       complexityUsesFlattenedAbilityModel: true,
+      repertoireUsesCrProjection: true,
       buildBudgetIsNotPressure: true,
       counterplayDoesNotReducePressure: true,
       spikeRiskIsNotAveragePressure: true,

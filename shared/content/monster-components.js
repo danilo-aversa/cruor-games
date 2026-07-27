@@ -6,7 +6,7 @@ const MONSTER_COMPONENT_WORKFLOW_ID = "monster-composer";
 const MONSTER_COMPONENT_TYPE = "Monster Component";
 const MONSTER_GRAFT_CONTENT_TYPE = "monster-graft";
 const ARCHIVED_PROTOTYPE_SOURCE_ANCHOR_IDS = new Set(["gashadokuro", "jack-the-ripper"]);
-const MONSTER_COMPONENT_ADAPTER_VERSION = "monster-component-adapter-v2.0";
+const MONSTER_COMPONENT_ADAPTER_VERSION = "monster-component-adapter-v2.1-i18n-parity";
 const MONSTER_GRAFT_AUTHORING_SCHEMA_VERSION = "monster-graft-authoring-v1.0";
 
 const GRAFT_V2_OPTIONAL_FIELDS = Object.freeze([
@@ -14,6 +14,7 @@ const GRAFT_V2_OPTIONAL_FIELDS = Object.freeze([
   "identity",
   "abilities",
   "routine",
+  "progression",
   "modifiers",
   "compatibility",
   "hooks",
@@ -126,6 +127,7 @@ export function monsterGraftToSharedComponent(graft) {
     tableText: graft.mechanics || "",
     mechanics: graft.mechanics || "",
     counterplay: graft.counterplay || "",
+    i18n: graft.i18n || graft.translations || {},
     monster: {
       graftId: graft.id,
       slot: graft.slot,

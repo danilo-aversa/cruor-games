@@ -8,6 +8,7 @@ import {
 import {
   asArray,
   clone,
+  getStudioMonsterPayload,
   normalizeMonsterConstraintData,
   normalizeMonsterGrantData,
   slugify,
@@ -53,7 +54,7 @@ function updateGenericSemantic(component) {
   const details = cleanObject(semantic.details);
   const family = getStudioComponentFamily(component);
   if (family === "monster-graft") {
-    const monster = cleanObject(component.monster);
+    const monster = cleanObject(getStudioMonsterPayload(component));
     const constraints = normalizeMonsterConstraintData(component);
     const anatomyGrants = normalizeMonsterGrantData(component);
     details.monster = {

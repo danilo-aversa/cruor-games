@@ -38,6 +38,7 @@ import {
   getMonsterFrameFitSummary,
   getMonsterGrantSource,
   getMonsterGrantSummary,
+  isStudioMonsterGraftV2,
   isPlainObject,
   joinList,
   normalizeStatus,
@@ -64,6 +65,10 @@ import {
 } from "./model/studio-editor-registry.js";
 import { isStudioSpecializedSemanticType } from "./schema/studio-semantic-editor-registry.js";
 import { StudioSemanticComponentEditor } from "./editors/StudioSemanticComponentEditor.jsx";
+import {
+  StudioMonsterGraftEditor,
+  StudioMonsterGraftOutputPreview,
+} from "./editors/StudioMonsterGraftEditor.jsx";
 import InspirationCard from "../inspirations/components/InspirationCard.jsx";
 import { getInspirationCardMeta } from "../inspirations/inspirations.card-config.js";
 import {
@@ -925,12 +930,39 @@ const SECTION_HELP = {
 
 const COMPONENT_EDITOR_TABS = Object.freeze([
   { id: "overview", label: "Overview", icon: "fa-id-card", hint: "Identity, status, source anchors, tags, and short playable copy." },
-  { id: "fit", label: "Generator Fit", icon: "fa-sliders", hint: "Slot, stat-block section, budget, complexity, and frame fit." },
+  { id: "fit", label: "Generator Fit", icon: "fa-sliders", hint: "Placement, budget, complexity, and frame fit." },
   { id: "anatomy", label: "Anatomy", icon: "fa-dna", hint: "Anatomy grants and hard body/creature compatibility constraints." },
   { id: "rules", label: "Rules", icon: "fa-scale-balanced", hint: "Structured rule blocks used by the stat-block renderer." },
   { id: "output", label: "Output", icon: "fa-scroll", hint: "Counterplay and final generated or manual stat-block text." },
   { id: "qa", label: "QA / Debug", icon: "fa-shield-halved", hint: "Compatibility matrix and raw JSON inspection." },
 ]);
+
+const GRAFT_COMPONENT_EDITOR_TABS = Object.freeze(
+  COMPONENT_EDITOR_TABS.map((tab) => {
+    if (tab.id === "rules") {
+      return {
+        id: "graft",
+        label: "Graft",
+        icon: "fa-code-branch",
+        hint: "Abilities, routine, CR progression, counterplay, and evaluation profiles.",
+      };
+    }
+    if (tab.id === "fit") {
+      return {
+        ...tab,
+        label: "Build Fit",
+        hint: "Build cost, complexity, anatomy compatibility, and creature/frame restrictions.",
+      };
+    }
+    if (tab.id === "output") {
+      return {
+        ...tab,
+        hint: "Compiled ability repertoire, Multiattack, and generated stat-block text at a selected CR.",
+      };
+    }
+    return tab;
+  }),
+);
 
 const BASIC_COMPONENT_EDITOR_TABS = Object.freeze([
   { id: "overview", label: "Overview", icon: "fa-id-card", hint: "Identity, status, source anchors, tags, and generator copy." },
@@ -1080,7 +1112,11 @@ function getMapInfluenceSourceFallback(component = {}) {
 }
 
 function getComponentEditorTabs(component = {}) {
-  if (getStudioComponentFamily(component) === "monster-graft") return COMPONENT_EDITOR_TABS;
+  if (getStudioComponentFamily(component) === "monster-graft") {
+    return isStudioMonsterGraftV2(component)
+      ? GRAFT_COMPONENT_EDITOR_TABS
+      : COMPONENT_EDITOR_TABS;
+  }
   return BASIC_COMPONENT_EDITOR_TABS;
 }
 
@@ -1089,6 +1125,7 @@ function getComponentEditorTabSummary(component = {}, tabId = "overview") {
   if (tabId === "fit") return "Control where this graft appears, how costly it is, and which monster frames should prefer or reject it.";
   if (tabId === "anatomy") return "Use hard anatomy gates only when the graft would be incoherent on the wrong body.";
   if (tabId === "rules") return "Expose only the structured rule blocks that this graft actually needs.";
+  if (tabId === "graft") return "Create the Graft abilities, routine, CR progression, and evaluation metadata used by the Monster Composer.";
   if (tabId === "output") return "Review the player-facing counterplay and final stat-block text before export.";
   if (tabId === "qa") return "Debug compatibility, validation context, and raw component data without cluttering normal editing.";
   return "";
@@ -3133,6 +3170,7 @@ function ComponentEditor({
 
 function ComponentAdvancedEditor({ component, onChange, onRemove }) {
   const isMonsterGraft = getStudioComponentFamily(component) === "monster-graft";
+  const isGraftV2 = isMonsterGraft && isStudioMonsterGraftV2(component);
   const isLocationRegion = getStudioComponentFamily(component) === "location-region";
   const [spellPickerQuery, setSpellPickerQuery] = useState("");
   const [spellPickerLevel, setSpellPickerLevel] = useState("all");
@@ -3795,7 +3833,7 @@ function ComponentAdvancedEditor({ component, onChange, onRemove }) {
   const monsterFrameFit = isMonsterGraft ? (normalizeMonsterFrameFit(getMonsterFrameFitSource(component)) || {}) : {};
   const monsterFrameFitSummary = isMonsterGraft ? getMonsterFrameFitSummary(component) : [];
   const compatibilityMatrix = isMonsterGraft ? buildStudioCompatibilityMatrix(component) : [];
-  const usesInferredRules = Boolean(isMonsterGraft && !explicitMonsterRules && (component.mechanics || component.tableText));
+  const usesInferredRules = Boolean(isMonsterGraft && !isGraftV2 && !explicitMonsterRules && (component.mechanics || component.tableText));
   const ruleSection = component.monster?.section || monsterRules.section || "trait";
   const actionEconomy = monsterRules.actionEconomy || "passive";
   const usageType = monsterRules.usage?.type || "passive";
@@ -4006,6 +4044,14 @@ function ComponentAdvancedEditor({ component, onChange, onRemove }) {
       </nav>
 
 
+      {activeComponentEditorTab === "graft" ? (
+        <StudioMonsterGraftEditor component={component} onChange={onChange} />
+      ) : null}
+
+      {isGraftV2 && activeComponentEditorTab === "output" ? (
+        <StudioMonsterGraftOutputPreview component={component} />
+      ) : null}
+
       {activeComponentEditorTab === "overview" ? (
         <div className="studio-component-zone" data-editor-zone="overview">
           <StudioCollapsibleSection icon="fa-id-card" title="Identity" help="Core component identity, source links, workflows, and implementation tags.">
@@ -4060,17 +4106,21 @@ function ComponentAdvancedEditor({ component, onChange, onRemove }) {
 
       {isMonsterGraft ? (
         <div className="studio-component-editor__subpanel studio-component-editor__subpanel--monster" hidden={activeComponentEditorTab === "overview"}>
-          <StudioCollapsibleSection zone="fit" icon="fa-id-card" title="Frame" help="Frame fields define where the graft belongs in the Monster Composer, where it prints in the stat block, and how much budget it consumes.">
-            <div className="studio-form-grid studio-form-grid--compact">
-              <StudioField label="Monster Slot" icon="fa-table-cells-large" hint={FIELD_HELP.monsterSlot}>
-                <StudioInput value={component.monster?.slot || joinList(component.slots)} onChange={setMonsterSlot} />
-              </StudioField>
-              <StudioField label="Rules Section" icon="fa-file-lines" hint={FIELD_HELP.rulesSection}>
-                <StudioSelect options={MONSTER_RULE_SECTION_OPTIONS} value={ruleSection} onChange={(value) => {
-                  setField(["monster", "section"], value);
-                  setRulesField(["section"], value);
-                }} />
-              </StudioField>
+          <StudioCollapsibleSection zone="fit" icon="fa-id-card" title={isGraftV2 ? "Build Cost" : "Frame"} help={isGraftV2 ? "Cost and Complexity describe how expensive the Graft is to install in a generated monster. Type and Slot are configured in the Graft tab; stat-block placement belongs to each ability." : "Frame fields define where the graft belongs in the Monster Composer, where it prints in the stat block, and how much budget it consumes."}>
+            <div className={isGraftV2 ? "studio-form-grid" : "studio-form-grid studio-form-grid--compact"}>
+              {!isGraftV2 ? (
+                <>
+                  <StudioField label="Monster Slot" icon="fa-table-cells-large" hint={FIELD_HELP.monsterSlot}>
+                    <StudioInput value={component.monster?.slot || joinList(component.slots)} onChange={setMonsterSlot} />
+                  </StudioField>
+                  <StudioField label="Rules Section" icon="fa-file-lines" hint={FIELD_HELP.rulesSection}>
+                    <StudioSelect options={MONSTER_RULE_SECTION_OPTIONS} value={ruleSection} onChange={(value) => {
+                      setField(["monster", "section"], value);
+                      setRulesField(["section"], value);
+                    }} />
+                  </StudioField>
+                </>
+              ) : null}
               <StudioField label="Cost" icon="fa-gauge-high" hint={FIELD_HELP.monsterCost}>
                 <input type="number" value={component.monster?.cost ?? 0} onChange={(event) => setField(["monster", "cost"], Number(event.target.value))} />
               </StudioField>
@@ -5188,29 +5238,33 @@ function ComponentAdvancedEditor({ component, onChange, onRemove }) {
             ) : null}
           </div>
 
-          {hasCounterplayBlock ? (
-            <StudioCollapsibleSection zone="output" icon="fa-shield-halved" title="Counterplay" help="Counterplay explains what players can notice, prevent, avoid, exploit, or clean up." actions={<RemoveRulesBlockButton label="Counterplay" onClick={() => removeRulesBlock("counterplay")} />}>
-              <StudioField label="Counterplay" icon="fa-shield-halved" hint={FIELD_HELP.counterplay}>
-                <StudioTextarea rows={3} value={component.counterplay} onChange={(value) => setField(["counterplay"], value)} />
-              </StudioField>
-            </StudioCollapsibleSection>
-          ) : null}
+          {!isGraftV2 ? (
+            <>
+              {hasCounterplayBlock ? (
+                <StudioCollapsibleSection zone="output" icon="fa-shield-halved" title="Counterplay" help="Counterplay explains what players can notice, prevent, avoid, exploit, or clean up." actions={<RemoveRulesBlockButton label="Counterplay" onClick={() => removeRulesBlock("counterplay")} />}>
+                  <StudioField label="Counterplay" icon="fa-shield-halved" hint={FIELD_HELP.counterplay}>
+                    <StudioTextarea rows={3} value={component.counterplay} onChange={(value) => setField(["counterplay"], value)} />
+                  </StudioField>
+                </StudioCollapsibleSection>
+              ) : null}
 
-          <StudioDividerLabel zone="output" icon="fa-scroll" title="Stat Block Text" help="This final text is what the Monster Composer exports for this graft. Generated mode is built from the fields above; Manual Override can still use formula tokens." />
-          <StudioCollapsibleSection zone="output" icon="fa-scroll" title="Text Source" help="Choose whether this graft exports generated text or a manual override.">
-            <div className="studio-text-source-toggle" role="group" aria-label="Stat block text source">
-              <button type="button" aria-pressed={textSource !== "manual"} onClick={() => setRulesField(["text", "source"], "generated")}>Generated</button>
-              <button type="button" aria-pressed={textSource === "manual"} onClick={() => setRulesField(["text", "source"], "manual")}>Manual Override</button>
-            </div>
-            {textSource === "manual" ? (
-              <StudioField label="Manual Stat Block Text" icon="fa-pen-to-square" hint={FIELD_HELP.manualRulesText}>
-                <StudioTextarea rows={5} value={monsterRules.text?.manual} onChange={(value) => setRulesField(["text", "manual"], value)} placeholder="Use tokens like {attack-bonus}, {save-dc}, {damage:standard}, {damage-part:venom}." />
-              </StudioField>
-            ) : null}
-            <StudioField label="Generated Stat Block Preview" icon="fa-eye" hint={FIELD_HELP.generatedRulesPreview}>
-              <StudioTextarea className="studio-generated-preview" rows={6} readOnly value={finalRulesPreview || "No generated rules text yet."} />
-            </StudioField>
-          </StudioCollapsibleSection>
+              <StudioDividerLabel zone="output" icon="fa-scroll" title="Stat Block Text" help="This final text is what the Monster Composer exports for this graft. Generated mode is built from the fields above; Manual Override can still use formula tokens." />
+              <StudioCollapsibleSection zone="output" icon="fa-scroll" title="Text Source" help="Choose whether this graft exports generated text or a manual override.">
+                <div className="studio-text-source-toggle" role="group" aria-label="Stat block text source">
+                  <button type="button" aria-pressed={textSource !== "manual"} onClick={() => setRulesField(["text", "source"], "generated")}>Generated</button>
+                  <button type="button" aria-pressed={textSource === "manual"} onClick={() => setRulesField(["text", "source"], "manual")}>Manual Override</button>
+                </div>
+                {textSource === "manual" ? (
+                  <StudioField label="Manual Stat Block Text" icon="fa-pen-to-square" hint={FIELD_HELP.manualRulesText}>
+                    <StudioTextarea rows={5} value={monsterRules.text?.manual} onChange={(value) => setRulesField(["text", "manual"], value)} placeholder="Use tokens like {attack-bonus}, {save-dc}, {damage:standard}, {damage-part:venom}." />
+                  </StudioField>
+                ) : null}
+                <StudioField label="Generated Stat Block Preview" icon="fa-eye" hint={FIELD_HELP.generatedRulesPreview}>
+                  <StudioTextarea className="studio-generated-preview" rows={6} readOnly value={finalRulesPreview || "No generated rules text yet."} />
+                </StudioField>
+              </StudioCollapsibleSection>
+            </>
+          ) : null}
         </div>
       ) : null}
 

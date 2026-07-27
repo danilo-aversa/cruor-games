@@ -42,9 +42,10 @@ describe("Inspiration Studio v2-only writer", () => {
     const graft = buildComponentTemplate("monster-action", draft);
     draft.components.push(graft);
     draft.capabilities.push("monster-composer");
-    graft.monster.rules.resolution = {
+    graft.monster.abilities[0].rules.resolution = {
       type: "savingThrow",
-      ability: "Constitution",
+      ability: "constitution",
+      dc: "monster",
     };
 
     const moduleExport = buildModuleExport(draft);
@@ -55,17 +56,26 @@ describe("Inspiration Studio v2-only writer", () => {
     expect(graft).toMatchObject({
       schemaVersion: SEMANTIC_SCHEMA_VERSIONS.COMPONENT,
       semanticType: "monster-graft",
-      monster: { rules: { resolution: { ability: "Constitution" } } },
+      monster: {
+        kind: "attackPattern",
+        slot: "attack",
+        abilities: [
+          { rules: { resolution: { ability: "constitution" } } },
+        ],
+      },
     });
+    expect(graft.monster).not.toHaveProperty("rules");
     expect(exportedGraft).toMatchObject({
       schemaVersion: SEMANTIC_SCHEMA_VERSIONS.COMPONENT,
       semanticType: "monster-graft",
       semantic: {
         details: {
           monster: {
-            rules: {
-              resolution: { ability: "Constitution" },
-            },
+            kind: "attackPattern",
+            slot: "attack",
+            abilities: [
+              { rules: { resolution: { ability: "constitution" } } },
+            ],
           },
         },
       },

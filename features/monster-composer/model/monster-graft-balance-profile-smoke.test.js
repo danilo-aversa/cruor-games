@@ -11,7 +11,7 @@ import {
 
 describe("Monster graft balance profile smoke", () => {
   it("normalizes legacy stats into stable balance profiles", () => {
-    expect(ALL_MONSTER_GRAFTS).toHaveLength(90);
+    expect(ALL_MONSTER_GRAFTS).toHaveLength(93);
 
     ALL_MONSTER_GRAFTS.forEach((feature) => {
       const profile = getMonsterGraftBalanceProfile(feature);
@@ -33,8 +33,8 @@ describe("Monster graft balance profile smoke", () => {
     expect(summed.hp).toBe(manualHp);
 
     const audit = buildLegacyStatsMigrationAudit(ALL_MONSTER_GRAFTS);
-    expect(audit.total).toBe(90);
-    expect(audit.usingLegacyStats).toBe(90);
+    expect(audit.total).toBe(93);
+    expect(audit.usingLegacyStats).toBe(93);
     expect(audit.usingBalanceProfile).toBe(0);
     expect(getFeatureBalanceStats({ id: "empty" }).dpr).toBe(0);
   });

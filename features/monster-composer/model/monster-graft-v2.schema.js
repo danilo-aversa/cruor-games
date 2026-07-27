@@ -30,6 +30,28 @@ export const MONSTER_GRAFT_V2_MULTIATTACK_MODES = Object.freeze([
   "choice",
 ]);
 
+export const MONSTER_GRAFT_V2_KIND_SLOT_CONTRACT = Object.freeze({
+  traitBundle: Object.freeze(["body", "mind"]),
+  attackPattern: Object.freeze(["attack"]),
+  movementPattern: Object.freeze(["movement"]),
+  horrorFeature: Object.freeze(["horror"]),
+  combatTwist: Object.freeze(["twist"]),
+  weakness: Object.freeze(["weakness"]),
+  deathEffect: Object.freeze(["death"]),
+  lairEffect: Object.freeze(["lair"]),
+  composite: Object.freeze([
+    "body",
+    "mind",
+    "movement",
+    "attack",
+    "horror",
+    "twist",
+    "weakness",
+    "death",
+    "lair",
+  ]),
+});
+
 function asArray(value) {
   if (!value) return [];
   return Array.isArray(value) ? value.filter(Boolean) : [value].filter(Boolean);
@@ -95,6 +117,8 @@ function normalizeRoutineAlternative(entry = {}, index = 0) {
     ...normalized,
     id: cleanString(normalized.id) || `alternative-${index + 1}`,
     when: cleanString(normalized.when),
+    purpose: cleanString(normalized.purpose),
+    targetSelection: cleanString(normalized.targetSelection),
     sequence: normalizeStringArray(normalized.sequence),
   };
 }
@@ -192,15 +216,84 @@ function normalizeRoutine(routine = {}) {
       MONSTER_GRAFT_V2_ROUTINE_MODES,
       defaultSequence.length ? "authored" : "none",
     ),
+    defaultPlan: cleanString(normalized.defaultPlan),
+    targetSelection: cleanString(normalized.targetSelection),
     defaultSequence,
     opener: normalizeStringArray(normalized.opener),
+    intentionalRepetition: Boolean(normalized.intentionalRepetition),
+    repetitionReason: cleanString(normalized.repetitionReason),
+    nonMultiattackReason: cleanString(normalized.nonMultiattackReason),
     alternatives: asArray(normalized.alternatives).map(normalizeRoutineAlternative),
     multiattack: normalizeMultiattack(normalized.multiattack, defaultSequence),
   };
 }
 
+
+function normalizeProgressionBand(entry = {}, index = 0) {
+  const normalized = isPlainObject(entry) ? entry : {};
+  const minCr = Number.isFinite(Number(normalized.minCr)) ? Number(normalized.minCr) : 0;
+  const maxCr = Number.isFinite(Number(normalized.maxCr)) ? Number(normalized.maxCr) : 30;
+  const abilityPatches = isPlainObject(normalized.abilityPatches)
+    ? Object.fromEntries(
+        Object.entries(normalized.abilityPatches)
+          .map(([abilityId, patch]) => [
+            cleanString(abilityId),
+            isPlainObject(patch) ? { ...patch } : null,
+          ])
+          .filter(([abilityId, patch]) => abilityId && patch),
+      )
+    : {};
+  return {
+    ...normalized,
+    id: cleanString(normalized.id) || `band-${index + 1}`,
+    minCr,
+    maxCr,
+    abilityIds: uniqueArray(normalized.abilityIds),
+    abilityPatches,
+    graftPatch: isPlainObject(normalized.graftPatch)
+      ? { ...normalized.graftPatch }
+      : null,
+    defaultSequence: normalizeStringArray(normalized.defaultSequence),
+    opener: normalizeStringArray(normalized.opener),
+    multiattack: isPlainObject(normalized.multiattack)
+      ? {
+          ...normalized.multiattack,
+          enabled: Boolean(normalized.multiattack.enabled),
+          mode: normalizeEnum(
+            normalized.multiattack.mode,
+            MONSTER_GRAFT_V2_MULTIATTACK_MODES,
+            "fixed",
+          ),
+          count: normalized.multiattack.enabled
+            ? normalizePositiveInteger(normalized.multiattack.count, 2)
+            : 0,
+        }
+      : null,
+  };
+}
+
+function normalizeProgression(progression = null) {
+  if (!isPlainObject(progression)) return null;
+  return {
+    ...progression,
+    basis: cleanString(progression.basis) || "targetCr",
+    bands: asArray(progression.bands).map(normalizeProgressionBand),
+  };
+}
+
 function normalizeProfile(profile) {
   return isPlainObject(profile) ? { ...profile } : null;
+}
+
+function normalizeCounterplayProfile(profile = {}) {
+  if (!isPlainObject(profile)) return null;
+  return {
+    ...profile,
+    telegraphs: uniqueArray(profile.telegraphs),
+    positioningAnswers: uniqueArray(profile.positioningAnswers),
+    breakConditions: uniqueArray(profile.breakConditions),
+    nonDamageAnswers: uniqueArray(profile.nonDamageAnswers),
+  };
 }
 
 function normalizeMigration(migration = {}) {
@@ -260,11 +353,12 @@ export function normalizeMonsterGraftV2(graft = {}) {
     identity: normalizeIdentity(graft.identity),
     abilities: asArray(graft.abilities).map(normalizeAbility),
     routine: normalizeRoutine(graft.routine),
+    progression: normalizeProgression(graft.progression),
     modifiers: asArray(graft.modifiers).filter(isPlainObject),
     compatibility: normalizeProfile(graft.compatibility),
     balanceProfile: normalizeProfile(graft.balanceProfile || graft.balance),
     complexityProfile: normalizeProfile(graft.complexityProfile),
-    counterplayProfile: normalizeProfile(graft.counterplayProfile),
+    counterplayProfile: normalizeCounterplayProfile(graft.counterplayProfile),
     spikeRiskProfile: normalizeProfile(graft.spikeRiskProfile),
     migration: normalizeMigration(graft.migration),
   };
@@ -319,6 +413,126 @@ export function validateMonsterGraftV2(graft = {}) {
     );
   }
 
+  const allowedSlots =
+    MONSTER_GRAFT_V2_KIND_SLOT_CONTRACT[normalized.kind] || [];
+  if (
+    normalized.slot &&
+    allowedSlots.length &&
+    !allowedSlots.includes(normalized.slot)
+  ) {
+    issues.push(
+      createIssue(
+        "error",
+        "graft-v2-kind-slot",
+        `Graft kind ${normalized.kind} is not valid for slot ${normalized.slot}.`,
+        "slot",
+      ),
+    );
+  }
+
+  if (!normalized.abilities.length) {
+    issues.push(
+      createIssue(
+        "error",
+        "graft-v2-empty-bundle",
+        "Graft v2 must emit at least one structured ability.",
+        "abilities",
+      ),
+    );
+  }
+
+  ["fantasy", "tacticalRole", "signature"].forEach((field) => {
+    if (!cleanString(normalized.identity?.[field])) {
+      issues.push(
+        createIssue(
+          "error",
+          "graft-v2-identity",
+          `Graft v2 identity is missing ${field}.`,
+          `identity.${field}`,
+        ),
+      );
+    }
+  });
+  if (normalized.identity.recognitionTags.length < 3) {
+    issues.push(
+      createIssue(
+        "error",
+        "graft-v2-recognition",
+        "Graft v2 identity requires at least three recognition tags.",
+        "identity.recognitionTags",
+      ),
+    );
+  }
+
+  [
+    ["balanceProfile", normalized.balanceProfile],
+    ["complexityProfile", normalized.complexityProfile],
+    ["counterplayProfile", normalized.counterplayProfile],
+    ["spikeRiskProfile", normalized.spikeRiskProfile],
+  ].forEach(([field, value]) => {
+    if (!isPlainObject(value)) {
+      issues.push(
+        createIssue(
+          "error",
+          "graft-v2-profile",
+          `Graft v2 requires an explicit ${field}.`,
+          field,
+        ),
+      );
+    }
+  });
+
+  const counterplayChannels = [
+    normalized.counterplayProfile?.telegraphs,
+    normalized.counterplayProfile?.positioningAnswers,
+    normalized.counterplayProfile?.breakConditions,
+    normalized.counterplayProfile?.nonDamageAnswers,
+  ].filter((entries) => Array.isArray(entries) && entries.length).length;
+  if (counterplayChannels < 2) {
+    issues.push(
+      createIssue(
+        "error",
+        "graft-v2-counterplay-channels",
+        "Graft v2 requires at least two independent counterplay channels.",
+        "counterplayProfile",
+      ),
+    );
+  }
+
+  const routineRequiredKinds = new Set([
+    "movementPattern",
+    "horrorFeature",
+    "combatTwist",
+    "deathEffect",
+    "lairEffect",
+  ]);
+  if (
+    routineRequiredKinds.has(normalized.kind) &&
+    normalized.routine.mode === "none"
+  ) {
+    issues.push(
+      createIssue(
+        "error",
+        "graft-v2-support-routine",
+        `${normalized.kind} requires an authored procedure or single-use routine.`,
+        "routine.mode",
+      ),
+    );
+  }
+  if (
+    normalized.kind !== "attackPattern" &&
+    normalized.routine.multiattack.enabled
+  ) {
+    issues.push(
+      createIssue(
+        "error",
+        "graft-v2-support-multiattack",
+        "Only Attack Pattern grafts may author Multiattack.",
+        "routine.multiattack",
+      ),
+    );
+  }
+
   const localIds = normalized.abilities.map((ability) => ability.id);
   const duplicates = localIds.filter((id, index) => localIds.indexOf(id) !== index);
   uniqueArray(duplicates).forEach((id) => {
@@ -331,6 +545,91 @@ export function validateMonsterGraftV2(graft = {}) {
       ),
     );
   });
+
+  if (normalized.progression) {
+    const bands = normalized.progression.bands;
+    if (!bands.length) {
+      issues.push(createIssue(
+        "error",
+        "graft-v2-progression-empty",
+        "A declared progression requires at least one CR band.",
+        "progression.bands",
+      ));
+    }
+    bands.forEach((band, index) => {
+      const path = `progression.bands[${index}]`;
+      if (band.minCr > band.maxCr) {
+        issues.push(createIssue(
+          "error",
+          "graft-v2-progression-range",
+          `Progression band ${band.id} has minCr above maxCr.`,
+          path,
+        ));
+      }
+      band.abilityIds.forEach((abilityId) => {
+        if (!localIds.includes(abilityId)) {
+          issues.push(createIssue(
+            "error",
+            "graft-v2-progression-reference",
+            `Progression band ${band.id} references unknown ability ${abilityId}.`,
+            `${path}.abilityIds`,
+          ));
+        }
+      });
+      Object.entries(band.abilityPatches || {}).forEach(
+        ([abilityId, patch]) => {
+          if (!localIds.includes(abilityId)) {
+            issues.push(
+              createIssue(
+                "error",
+                "graft-v2-progression-patch-reference",
+                `Progression band ${band.id} patches unknown ability ${abilityId}.`,
+                `${path}.abilityPatches`,
+              ),
+            );
+          }
+          if (!isPlainObject(patch)) {
+            issues.push(
+              createIssue(
+                "error",
+                "graft-v2-progression-patch",
+                `Progression patch for ${abilityId} must be an object.`,
+                `${path}.abilityPatches.${abilityId}`,
+              ),
+            );
+          }
+        },
+      );
+      if (!band.abilityIds.length) {
+        issues.push(createIssue(
+          "error",
+          "graft-v2-progression-no-abilities",
+          `Progression band ${band.id} emits no abilities.`,
+          `${path}.abilityIds`,
+        ));
+      }
+    });
+    const sorted = [...bands].sort((a, b) => a.minCr - b.minCr || a.maxCr - b.maxCr);
+    sorted.slice(1).forEach((band, index) => {
+      const previous = sorted[index];
+      if (band.minCr <= previous.maxCr) {
+        issues.push(createIssue(
+          "error",
+          "graft-v2-progression-overlap",
+          `Progression bands ${previous.id} and ${band.id} overlap.`,
+          "progression.bands",
+        ));
+      }
+      if (band.minCr > previous.maxCr + 1) {
+        issues.push(createIssue(
+          "warning",
+          "graft-v2-progression-gap",
+          `Progression has a CR gap between ${previous.id} and ${band.id}.`,
+          "progression.bands",
+        ));
+      }
+    });
+  }
 
   normalized.abilities.forEach((ability, index) => {
     const path = `abilities[${index}]`;
@@ -425,6 +724,128 @@ export function validateMonsterGraftV2(graft = {}) {
         ),
       );
     }
+    if (!normalized.routine.defaultPlan) {
+      issues.push(
+        createIssue(
+          "error",
+          "graft-v2-attack-pattern-default-plan",
+          "Attack Pattern grafts require a plain-language default plan.",
+          "routine.defaultPlan",
+        ),
+      );
+    }
+    if (!normalized.routine.targetSelection) {
+      issues.push(
+        createIssue(
+          "error",
+          "graft-v2-attack-pattern-target-selection",
+          "Attack Pattern grafts require explicit target-selection logic.",
+          "routine.targetSelection",
+        ),
+      );
+    }
+    if (!normalized.routine.defaultSequence.length) {
+      issues.push(
+        createIssue(
+          "error",
+          "graft-v2-attack-pattern-default-sequence",
+          "Attack Pattern grafts require a default ability sequence.",
+          "routine.defaultSequence",
+        ),
+      );
+    }
+    if (normalized.identity.recognitionTags.length < 3) {
+      issues.push(
+        createIssue(
+          "error",
+          "graft-v2-attack-pattern-recognition",
+          "Attack Pattern identity requires at least three recognition tags.",
+          "identity.recognitionTags",
+        ),
+      );
+    }
+
+    const counterplayChannels = [
+      normalized.counterplayProfile?.telegraphs,
+      normalized.counterplayProfile?.positioningAnswers,
+      normalized.counterplayProfile?.breakConditions,
+      normalized.counterplayProfile?.nonDamageAnswers,
+    ].filter((entries) => Array.isArray(entries) && entries.length).length;
+    if (counterplayChannels < 2) {
+      issues.push(
+        createIssue(
+          "error",
+          "graft-v2-attack-pattern-counterplay",
+          "Attack Pattern grafts require at least two independent counterplay channels.",
+          "counterplayProfile",
+        ),
+      );
+    }
+
+    normalized.routine.alternatives.forEach((alternative, index) => {
+      if (!alternative.when) {
+        issues.push(
+          createIssue(
+            "error",
+            "graft-v2-attack-pattern-alternative-condition",
+            "Every routine alternative requires a condition.",
+            `routine.alternatives[${index}].when`,
+          ),
+        );
+      }
+      if (!alternative.sequence.length) {
+        issues.push(
+          createIssue(
+            "error",
+            "graft-v2-attack-pattern-alternative-sequence",
+            "Every routine alternative requires an ability sequence.",
+            `routine.alternatives[${index}].sequence`,
+          ),
+        );
+      }
+    });
+
+    const uniqueDefaultAbilities = new Set(normalized.routine.defaultSequence);
+    if (
+      normalized.routine.defaultSequence.length > 1 &&
+      uniqueDefaultAbilities.size === 1 &&
+      !normalized.routine.intentionalRepetition
+    ) {
+      issues.push(
+        createIssue(
+          "error",
+          "graft-v2-attack-pattern-accidental-repetition",
+          "Repeated use of one ability must be marked as intentional.",
+          "routine.intentionalRepetition",
+        ),
+      );
+    }
+    if (
+      normalized.abilities.length < 2 &&
+      !normalized.routine.intentionalRepetition
+    ) {
+      issues.push(
+        createIssue(
+          "error",
+          "graft-v2-attack-pattern-thin-repertoire",
+          "A one-ability Attack Pattern must explicitly justify intentional repetition.",
+          "abilities",
+        ),
+      );
+    }
+    if (
+      !normalized.routine.multiattack.enabled &&
+      !normalized.routine.nonMultiattackReason
+    ) {
+      issues.push(
+        createIssue(
+          "error",
+          "graft-v2-attack-pattern-no-multiattack-reason",
+          "An Attack Pattern without Multiattack requires an explicit reason.",
+          "routine.nonMultiattackReason",
+        ),
+      );
+    }
   }
 
   const abilityIds = new Set(localIds);
@@ -454,6 +875,65 @@ export function validateMonsterGraftV2(graft = {}) {
         "routine.multiattack",
       ),
     );
+  }
+
+  if (normalized.kind === "attackPattern") {
+    const abilitiesById = new Map(
+      normalized.abilities.map((ability) => [ability.id, ability]),
+    );
+    normalized.routine.multiattack.attacks.forEach((attack, index) => {
+      const ability = abilitiesById.get(attack.ref);
+      if (!ability) return;
+      const actionEconomy = cleanString(ability.rules?.actionEconomy || ability.section);
+      const resolutionType = cleanString(ability.rules?.resolution?.type);
+      const usageType = cleanString(ability.rules?.usage?.type || "atWill");
+      if (actionEconomy !== "action") {
+        issues.push(
+          createIssue(
+            "error",
+            "graft-v2-multiattack-non-action",
+            `Multiattack reference ${attack.ref} is not an Action.`,
+            `routine.multiattack.attacks[${index}]`,
+          ),
+        );
+      }
+      if (!["attackRoll", "attackRollSavingThrow"].includes(resolutionType)) {
+        issues.push(
+          createIssue(
+            "error",
+            "graft-v2-multiattack-non-attack",
+            `Multiattack reference ${attack.ref} is not an attack-roll ability.`,
+            `routine.multiattack.attacks[${index}]`,
+          ),
+        );
+      }
+      if (usageType !== "atWill") {
+        issues.push(
+          createIssue(
+            "error",
+            "graft-v2-multiattack-limited-attack",
+            `Limited-use ability ${attack.ref} must be a replacement, not a normal Multiattack attack.`,
+            `routine.multiattack.attacks[${index}]`,
+          ),
+        );
+      }
+    });
+
+    normalized.routine.multiattack.replacements.forEach((replacement, index) => {
+      const ability = abilitiesById.get(replacement.with);
+      if (!ability) return;
+      const usageType = cleanString(ability.rules?.usage?.type || "atWill");
+      if (usageType === "recharge" && replacement.availability !== "ifAvailable") {
+        issues.push(
+          createIssue(
+            "error",
+            "graft-v2-recharge-replacement-availability",
+            `Recharge replacement ${replacement.with} must be marked ifAvailable.`,
+            `routine.multiattack.replacements[${index}].availability`,
+          ),
+        );
+      }
+    });
   }
 
   const errors = issues.filter((issue) => issue.severity === "error");

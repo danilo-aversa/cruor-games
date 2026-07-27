@@ -5,6 +5,7 @@ import {
   slugify,
 } from "./studio-component-normalizers.js";
 import { listStudioSemanticEditorDefinitions } from "../schema/studio-semantic-editor-registry.js";
+import { buildStudioGraftPayloadFromTemplate } from "./studio-monster-graft-authoring.js";
 
 
 const CRYPT_ROOM_ARCHETYPE_TEMPLATE_IDS = Object.freeze([
@@ -741,32 +742,11 @@ function buildBaseComponent(template, draft = {}) {
 
 function buildMonsterComponent(template, draft = {}) {
   const component = buildBaseComponent(template, draft);
-  const rules = {
-    section: template.section,
-    actionEconomy: template.actionEconomy,
-    usage: clone(template.usage || { type: "passive" }),
-    resolution: clone(template.resolution || { type: "none" }),
-    targeting: clone(template.targeting || { type: "self", targets: "the creature" }),
-    damage: clone(template.damage || { mode: "none", types: [] }),
-    condition: null,
-    counterplay: {
-      text: template.counterplay || "",
-    },
-    text: {},
-  };
-
-  if (template.trigger) rules.trigger = template.trigger;
-
   component.monster = {
-    slot: template.slot,
-    section: template.section,
-    typeBias: [],
-    roleBias: [],
-    cost: template.cost ?? 1,
-    complexity: template.complexity ?? 1,
-    stats: {},
-    rules,
+    ...buildStudioGraftPayloadFromTemplate(template),
+    graftId: component.id,
   };
+  component.slots = [component.monster.slot];
   component.counterplay = template.counterplay || "";
   return component;
 }

@@ -969,7 +969,7 @@ export function forgeMonsterSelection(frame, { slots = REQUIRED_PLAYABLE_SLOTS, 
   return forgeMonsterSelectionDetailed(frame, { slots, allowRelaxedCoreFallback }).selected;
 }
 
-export function buildExportArtifacts(context) {
+export function buildExportArtifacts(context, { includeDebugExport = true } = {}) {
   const args = {
     name: context.computed.name,
     creatureType: context.creatureType,
@@ -993,7 +993,7 @@ export function buildExportArtifacts(context) {
   };
   const exportText = buildExportText(args);
   const exportJson = buildExportJson(args);
-  const debugExportJson = buildDebugExportJson(args);
+  const debugExportJson = includeDebugExport ? buildDebugExportJson(args) : "";
   const statBlock = buildRenderableStatBlock(args);
   const statBlockParse = parseMonsterRenderedStatBlock({
     exportText,

@@ -129,10 +129,11 @@ export function StudioSelect({ onChange, options = [], value, ...props }) {
   );
 }
 
-export function StudioCheckbox({ checked = false, onChange, ...props }) {
+export function StudioCheckbox({ checked = false, className = "", onChange, ...props }) {
   return (
     <input
       {...props}
+      className={["studio-checkbox-input", className].filter(Boolean).join(" ")}
       type="checkbox"
       checked={checked}
       onChange={(event) => onChange?.(event.target.checked, event)}

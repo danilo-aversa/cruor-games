@@ -65,7 +65,7 @@ function buildAttackPattern(overrides = {}) {
       fantasy: "A gas-swollen corpse weaponizes its mass.",
       tacticalRole: "single-target displacement",
       signature: "impact and rupture",
-      recognitionTags: ["impact", "rupture"],
+      recognitionTags: ["impact", "rupture", "swollen-corpse"],
     },
     abilities: [
       { id: "slam", title: "Heavy Slam", rules: buildRules() },
@@ -75,15 +75,45 @@ function buildAttackPattern(overrides = {}) {
         rules: buildRules({ budgetRole: "secondaryAttack", budgetShare: 0.4 }),
       },
     ],
+    progression: {
+      schemaVersion: "monster-attack-pattern-progression-v1.0",
+      basis: "targetCr",
+      bands: [
+        { id: "low", minCr: 0, maxCr: 1, abilityIds: ["slam"], multiattack: { enabled: false, count: 0 } },
+        { id: "mid", minCr: 2, maxCr: 8, abilityIds: ["slam", "grab"], multiattack: { enabled: true, mode: "choice", count: 2 } },
+        { id: "high", minCr: 9, maxCr: 30, abilityIds: ["slam", "grab"], multiattack: { enabled: true, mode: "choice", count: 3 } },
+      ],
+    },
     routine: {
       mode: "authored",
+      defaultPlan: "Strike and then pin the same target.",
+      targetSelection: "Prefer an isolated target.",
       defaultSequence: ["slam", "grab"],
+      opener: [],
+      alternatives: [],
+      intentionalRepetition: false,
+      repetitionReason: "",
       multiattack: {
         enabled: true,
-        attacks: 2,
+        mode: "choice",
+        count: 2,
+        attacks: [
+          { ref: "slam", count: 1 },
+          { ref: "grab", count: 1 },
+        ],
         choices: ["slam", "grab"],
+        replacements: [],
       },
     },
+    balanceProfile: { authoredIntent: { attrition: 1 } },
+    counterplayProfile: {
+      telegraphs: ["The corpse lowers its shoulder."],
+      positioningAnswers: ["Stay outside a straight charge lane."],
+      breakConditions: [],
+      nonDamageAnswers: [],
+    },
+    complexityProfile: {},
+    spikeRiskProfile: {},
     migration: { status: "draft", legacyGraftIds: ["slam-decomposition"] },
     ...overrides,
   };
@@ -115,11 +145,28 @@ describe("monster Graft v2 schema", () => {
       "slam",
       "grab",
     ]);
+    expect(normalized.progression.bands.map((band) => band.id)).toEqual(["low", "mid", "high"]);
     expect(report.status).toBe("pass");
     expect(report.errors).toEqual([]);
   });
 
-  it("allows a zero-ability modifier graft while preserving the explicit bundle", () => {
+  it("blocks overlapping CR bands and missing progression ability references", () => {
+    const graft = buildAttackPattern({
+      progression: {
+        basis: "targetCr",
+        bands: [
+          { id: "one", minCr: 0, maxCr: 5, abilityIds: ["slam"], multiattack: { enabled: false } },
+          { id: "two", minCr: 5, maxCr: 30, abilityIds: ["missing"], multiattack: { enabled: true, count: 2 } },
+        ],
+      },
+    });
+    const report = validateMonsterGraftV2(graft);
+    const codes = report.errors.map((issue) => issue.code);
+    expect(codes).toContain("graft-v2-progression-overlap");
+    expect(codes).toContain("graft-v2-progression-reference");
+  });
+
+  it("blocks empty modifier-only grafts and support kinds without a routine", () => {
     const graft = buildAttackPattern({
       id: "pressure-modifier",
       title: "Pressure Modifier",
@@ -130,9 +177,11 @@ describe("monster Graft v2 schema", () => {
       modifiers: [{ target: "attack", operation: "append" }],
     });
     const report = validateMonsterGraftV2(graft);
+    const codes = report.errors.map((issue) => issue.code);
 
-    expect(report.status).toBe("pass");
-    expect(report.normalized.abilities).toEqual([]);
+    expect(report.status).toBe("error");
+    expect(codes).toContain("graft-v2-empty-bundle");
+    expect(codes).toContain("graft-v2-support-routine");
     expect(report.normalized.modifiers).toHaveLength(1);
   });
 
@@ -144,8 +193,24 @@ describe("monster Graft v2 schema", () => {
       ],
       routine: {
         mode: "authored",
+        defaultPlan: "Use an invalid sequence for validation testing.",
+        targetSelection: "Prefer an isolated target.",
         defaultSequence: ["slam", "missing"],
-        multiattack: { enabled: true, attacks: 2, choices: ["slam", "missing"] },
+        opener: [],
+        alternatives: [],
+        intentionalRepetition: false,
+        repetitionReason: "",
+        multiattack: {
+          enabled: true,
+          mode: "choice",
+          count: 2,
+          attacks: [
+            { ref: "slam", count: 1 },
+            { ref: "missing", count: 1 },
+          ],
+          choices: ["slam", "missing"],
+          replacements: [],
+        },
       },
     });
     const report = validateMonsterGraftV2(graft);

@@ -1,0 +1,500 @@
+{
+  "version": "monster-horror-graft-editorial-audit-v1.0",
+  "editorialVersion": "monster-horror-graft-editorial-v1.0",
+  "expectedTotal": 4,
+  "total": 4,
+  "passing": 4,
+  "warning": 0,
+  "error": 0,
+  "abilityCount": 4,
+  "bundleCount": 0,
+  "scaledCount": 4,
+  "bySource": {
+    "decomposition": 1,
+    "jikininki": 1,
+    "wax-death-masks": 1,
+    "wolf-spiders": 1
+  },
+  "byDecision": {
+    "ADD_CANONICAL_SOURCE_HORROR": 2,
+    "REWRITE_AND_SCALE": 1,
+    "ADD_SOURCE_HORROR": 1
+  },
+  "reports": [
+    {
+      "version": "monster-horror-graft-editorial-audit-v1.0",
+      "applicable": true,
+      "id": "stench",
+      "title": "Stench",
+      "source": "decomposition",
+      "decision": "ADD_CANONICAL_SOURCE_HORROR",
+      "status": "pass",
+      "pass": true,
+      "abilityCount": 1,
+      "counterplayChannels": [
+        "telegraph",
+        "positioning",
+        "breakCondition",
+        "nonDamage"
+      ],
+      "scaling": {
+        "expected": true,
+        "declared": true,
+        "bandCount": 3,
+        "sampledBandIds": [
+          "cr-0-4-stench",
+          "cr-5-12-stench",
+          "cr-13-30-stench"
+        ],
+        "sampledRuleVariants": 3,
+        "pass": true
+      },
+      "snapshots": [
+        {
+          "targetCr": 1,
+          "bandId": "cr-0-4-stench",
+          "abilityCount": 1,
+          "abilityIds": [
+            "stench"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"A breathing creature other than the monster starts its turn in the aura.\",\"resolution\":{\"type\":\"savingThrow\",\"ability\":\"constitution\",\"dc\":\"monster\"},\"targeting\":{\"type\":\"area\",\"shape\":\"radius\",\"size\":5,\"unit\":\"ft\",\"targets\":\"other creatures that can breathe\"},\"areaEffect\":{\"enabled\":true,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":5,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"startsTurnInArea\",\"repeatTiming\":\"startsTurnInArea\",\"targets\":\"other creatures that can breathe\",\"excludes\":[\"the monster\",\"creatures that do not breathe\"],\"text\":\"A breathing creature that starts its turn in the aura makes the listed Constitution saving throw.\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[\"poisoned\"],\"severity\":\"moderate\",\"direction\":\"enemy\",\"duration\":\"until the start of its next turn\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"failure\":\"The target has the Poisoned condition until the start of its next turn.\",\"success\":\"The target is immune to this monster's Stench for 24 hours.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "stench",
+              "renderedText": "A breathing creature other than the monster starts its turn in the aura. Constitution Saving Throw: DC 15, other creatures that can breathe in a 5-foot Emanation originating from the creature. Failure: The target has the Poisoned condition until the start of its next turn. Success: The target is immune to this monster's Stench for 24 hours."
+            }
+          ]
+        },
+        {
+          "targetCr": 5,
+          "bandId": "cr-5-12-stench",
+          "abilityCount": 1,
+          "abilityIds": [
+            "stench"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"A breathing creature other than the monster starts its turn in the aura.\",\"resolution\":{\"type\":\"savingThrow\",\"ability\":\"constitution\",\"dc\":\"monster\"},\"targeting\":{\"type\":\"area\",\"shape\":\"radius\",\"size\":10,\"unit\":\"ft\",\"targets\":\"other creatures that can breathe\"},\"areaEffect\":{\"enabled\":true,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":10,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"startsTurnInArea\",\"repeatTiming\":\"startsTurnInArea\",\"targets\":\"other creatures that can breathe\",\"excludes\":[\"the monster\",\"creatures that do not breathe\"],\"text\":\"A breathing creature that starts its turn in the aura makes the listed Constitution saving throw.\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[\"poisoned\"],\"severity\":\"moderate\",\"direction\":\"enemy\",\"duration\":\"until the start of its next turn\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"failure\":\"The target has the Poisoned condition until the start of its next turn.\",\"success\":\"The target is immune to this monster's Stench for 24 hours.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "stench",
+              "renderedText": "A breathing creature other than the monster starts its turn in the aura. Constitution Saving Throw: DC 15, other creatures that can breathe in a 10-foot Emanation originating from the creature. Failure: The target has the Poisoned condition until the start of its next turn. Success: The target is immune to this monster's Stench for 24 hours."
+            }
+          ]
+        },
+        {
+          "targetCr": 10,
+          "bandId": "cr-5-12-stench",
+          "abilityCount": 1,
+          "abilityIds": [
+            "stench"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"A breathing creature other than the monster starts its turn in the aura.\",\"resolution\":{\"type\":\"savingThrow\",\"ability\":\"constitution\",\"dc\":\"monster\"},\"targeting\":{\"type\":\"area\",\"shape\":\"radius\",\"size\":10,\"unit\":\"ft\",\"targets\":\"other creatures that can breathe\"},\"areaEffect\":{\"enabled\":true,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":10,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"startsTurnInArea\",\"repeatTiming\":\"startsTurnInArea\",\"targets\":\"other creatures that can breathe\",\"excludes\":[\"the monster\",\"creatures that do not breathe\"],\"text\":\"A breathing creature that starts its turn in the aura makes the listed Constitution saving throw.\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[\"poisoned\"],\"severity\":\"moderate\",\"direction\":\"enemy\",\"duration\":\"until the start of its next turn\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"failure\":\"The target has the Poisoned condition until the start of its next turn.\",\"success\":\"The target is immune to this monster's Stench for 24 hours.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "stench",
+              "renderedText": "A breathing creature other than the monster starts its turn in the aura. Constitution Saving Throw: DC 15, other creatures that can breathe in a 10-foot Emanation originating from the creature. Failure: The target has the Poisoned condition until the start of its next turn. Success: The target is immune to this monster's Stench for 24 hours."
+            }
+          ]
+        },
+        {
+          "targetCr": 15,
+          "bandId": "cr-13-30-stench",
+          "abilityCount": 1,
+          "abilityIds": [
+            "stench"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"A breathing creature other than the monster starts its turn in the aura.\",\"resolution\":{\"type\":\"savingThrow\",\"ability\":\"constitution\",\"dc\":\"monster\"},\"targeting\":{\"type\":\"area\",\"shape\":\"radius\",\"size\":15,\"unit\":\"ft\",\"targets\":\"other creatures that can breathe\"},\"areaEffect\":{\"enabled\":true,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":15,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"startsTurnInArea\",\"repeatTiming\":\"startsTurnInArea\",\"targets\":\"other creatures that can breathe\",\"excludes\":[\"the monster\",\"creatures that do not breathe\"],\"text\":\"A breathing creature that starts its turn in the aura makes the listed Constitution saving throw.\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[\"poisoned\"],\"severity\":\"moderate\",\"direction\":\"enemy\",\"duration\":\"until the start of its next turn\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"failure\":\"The target has the Poisoned condition until the start of its next turn.\",\"success\":\"The target is immune to this monster's Stench for 24 hours.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "stench",
+              "renderedText": "A breathing creature other than the monster starts its turn in the aura. Constitution Saving Throw: DC 15, other creatures that can breathe in a 15-foot Emanation originating from the creature. Failure: The target has the Poisoned condition until the start of its next turn. Success: The target is immune to this monster's Stench for 24 hours."
+            }
+          ]
+        }
+      ],
+      "issues": [],
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "version": "monster-horror-graft-editorial-audit-v1.0",
+      "applicable": true,
+      "id": "horrific-apparition",
+      "title": "Horrific Apparition",
+      "source": "jikininki",
+      "decision": "REWRITE_AND_SCALE",
+      "status": "pass",
+      "pass": true,
+      "abilityCount": 1,
+      "counterplayChannels": [
+        "telegraph",
+        "positioning",
+        "breakCondition",
+        "nonDamage"
+      ],
+      "scaling": {
+        "expected": true,
+        "declared": true,
+        "bandCount": 3,
+        "sampledBandIds": [
+          "cr-0-4-apparition",
+          "cr-5-12-apparition",
+          "cr-13-30-apparition"
+        ],
+        "sampledRuleVariants": 3,
+        "pass": true
+      },
+      "snapshots": [
+        {
+          "targetCr": 1,
+          "bandId": "cr-0-4-apparition",
+          "abilityCount": 1,
+          "abilityIds": [
+            "horrific-apparition"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"action\",\"actionEconomy\":\"action\",\"usage\":{\"type\":\"recharge\",\"value\":\"5-6\"},\"trigger\":null,\"resolution\":{\"type\":\"savingThrow\",\"ability\":\"wisdom\",\"dc\":\"monster\"},\"targeting\":{\"type\":\"area\",\"shape\":\"cone\",\"size\":30,\"unit\":\"ft\",\"targets\":\"non-undead creatures that can see the spirit\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"budget\",\"budgetRole\":\"rechargeControl\",\"types\":[\"psychic\"],\"scale\":\"minor\",\"budgetShare\":0.45,\"expectedTargets\":2,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[\"frightened\"],\"severity\":\"major\",\"direction\":\"enemy\",\"duration\":\"until the end of its next turn\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"failure\":\"The target takes {damage} Psychic damage and has the Frightened condition until the end of its next turn.\",\"success\":\"The target takes half damage and is immune to this spirit's Horrific Apparition for 24 hours.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "horrific-apparition",
+              "renderedText": "Recharge 5-6. Wisdom Saving Throw: DC 15, non-undead creatures that can see the spirit in a 30-foot Cone originating from the creature. Failure: The target takes 4 (1d6) Psychic damage and has the Frightened condition until the end of its next turn. Success: The target takes half damage and is immune to this spirit's Horrific Apparition for 24 hours."
+            }
+          ]
+        },
+        {
+          "targetCr": 5,
+          "bandId": "cr-5-12-apparition",
+          "abilityCount": 1,
+          "abilityIds": [
+            "horrific-apparition"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"action\",\"actionEconomy\":\"action\",\"usage\":{\"type\":\"recharge\",\"value\":\"5-6\"},\"trigger\":null,\"resolution\":{\"type\":\"savingThrow\",\"ability\":\"wisdom\",\"dc\":\"monster\"},\"targeting\":{\"type\":\"area\",\"shape\":\"cone\",\"size\":45,\"unit\":\"ft\",\"targets\":\"non-undead creatures that can see the spirit\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"budget\",\"budgetRole\":\"rechargeControl\",\"types\":[\"psychic\"],\"scale\":\"minor\",\"budgetShare\":0.45,\"expectedTargets\":2,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[\"frightened\"],\"severity\":\"major\",\"direction\":\"enemy\",\"duration\":\"until the end of its next turn\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"failure\":\"The target takes {damage} Psychic damage and has the Frightened condition until the end of its next turn.\",\"success\":\"The target takes half damage and is immune to this spirit's Horrific Apparition for 24 hours.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "horrific-apparition",
+              "renderedText": "Recharge 5-6. Wisdom Saving Throw: DC 15, non-undead creatures that can see the spirit in a 45-foot Cone originating from the creature. Failure: The target takes 4 (1d6) Psychic damage and has the Frightened condition until the end of its next turn. Success: The target takes half damage and is immune to this spirit's Horrific Apparition for 24 hours."
+            }
+          ]
+        },
+        {
+          "targetCr": 10,
+          "bandId": "cr-5-12-apparition",
+          "abilityCount": 1,
+          "abilityIds": [
+            "horrific-apparition"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"action\",\"actionEconomy\":\"action\",\"usage\":{\"type\":\"recharge\",\"value\":\"5-6\"},\"trigger\":null,\"resolution\":{\"type\":\"savingThrow\",\"ability\":\"wisdom\",\"dc\":\"monster\"},\"targeting\":{\"type\":\"area\",\"shape\":\"cone\",\"size\":45,\"unit\":\"ft\",\"targets\":\"non-undead creatures that can see the spirit\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"budget\",\"budgetRole\":\"rechargeControl\",\"types\":[\"psychic\"],\"scale\":\"minor\",\"budgetShare\":0.45,\"expectedTargets\":2,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[\"frightened\"],\"severity\":\"major\",\"direction\":\"enemy\",\"duration\":\"until the end of its next turn\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"failure\":\"The target takes {damage} Psychic damage and has the Frightened condition until the end of its next turn.\",\"success\":\"The target takes half damage and is immune to this spirit's Horrific Apparition for 24 hours.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "horrific-apparition",
+              "renderedText": "Recharge 5-6. Wisdom Saving Throw: DC 15, non-undead creatures that can see the spirit in a 45-foot Cone originating from the creature. Failure: The target takes 4 (1d6) Psychic damage and has the Frightened condition until the end of its next turn. Success: The target takes half damage and is immune to this spirit's Horrific Apparition for 24 hours."
+            }
+          ]
+        },
+        {
+          "targetCr": 15,
+          "bandId": "cr-13-30-apparition",
+          "abilityCount": 1,
+          "abilityIds": [
+            "horrific-apparition"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"action\",\"actionEconomy\":\"action\",\"usage\":{\"type\":\"recharge\",\"value\":\"5-6\"},\"trigger\":null,\"resolution\":{\"type\":\"savingThrow\",\"ability\":\"wisdom\",\"dc\":\"monster\"},\"targeting\":{\"type\":\"area\",\"shape\":\"cone\",\"size\":60,\"unit\":\"ft\",\"targets\":\"non-undead creatures that can see the spirit\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"budget\",\"budgetRole\":\"rechargeControl\",\"types\":[\"psychic\"],\"scale\":\"medium\",\"budgetShare\":0.45,\"expectedTargets\":2,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[\"frightened\"],\"severity\":\"major\",\"direction\":\"enemy\",\"duration\":\"until the end of its next turn\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"failure\":\"The target takes {damage} Psychic damage and has the Frightened condition until the end of its next turn.\",\"success\":\"The target takes half damage and is immune to this spirit's Horrific Apparition for 24 hours.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "horrific-apparition",
+              "renderedText": "Recharge 5-6. Wisdom Saving Throw: DC 15, non-undead creatures that can see the spirit in a 60-foot Cone originating from the creature. Failure: The target takes 4 (1d6) Psychic damage and has the Frightened condition until the end of its next turn. Success: The target takes half damage and is immune to this spirit's Horrific Apparition for 24 hours."
+            }
+          ]
+        }
+      ],
+      "issues": [],
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "version": "monster-horror-graft-editorial-audit-v1.0",
+      "applicable": true,
+      "id": "wail",
+      "title": "Wail",
+      "source": "wax-death-masks",
+      "decision": "ADD_CANONICAL_SOURCE_HORROR",
+      "status": "pass",
+      "pass": true,
+      "abilityCount": 1,
+      "counterplayChannels": [
+        "telegraph",
+        "positioning",
+        "breakCondition",
+        "nonDamage"
+      ],
+      "scaling": {
+        "expected": true,
+        "declared": true,
+        "bandCount": 3,
+        "sampledBandIds": [
+          "cr-0-4-wail",
+          "cr-5-12-wail",
+          "cr-13-30-wail"
+        ],
+        "sampledRuleVariants": 3,
+        "pass": true
+      },
+      "snapshots": [
+        {
+          "targetCr": 1,
+          "bandId": "cr-0-4-wail",
+          "abilityCount": 1,
+          "abilityIds": [
+            "wail"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"action\",\"actionEconomy\":\"action\",\"usage\":{\"type\":\"recharge\",\"value\":\"6\"},\"trigger\":null,\"resolution\":{\"type\":\"savingThrow\",\"ability\":\"wisdom\",\"dc\":\"monster\"},\"targeting\":{\"type\":\"area\",\"shape\":\"radius\",\"size\":20,\"unit\":\"ft\",\"targets\":\"creatures that can hear the monster\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"budget\",\"budgetRole\":\"rechargeControl\",\"types\":[\"psychic\"],\"scale\":\"minor\",\"budgetShare\":0.45,\"expectedTargets\":2,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[\"frightened\"],\"severity\":\"major\",\"direction\":\"enemy\",\"duration\":\"until the end of its next turn\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"failure\":\"The target takes {damage} Psychic damage and has the Frightened condition until the end of its next turn.\",\"success\":\"The target takes half damage. A creature that cannot hear the monster automatically succeeds.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "wail",
+              "renderedText": "Recharge 6. Wisdom Saving Throw: DC 15, creatures that can hear the monster in a 20-foot Emanation originating from the creature. Failure: The target takes 4 (1d6) Psychic damage and has the Frightened condition until the end of its next turn. Success: The target takes half damage. A creature that cannot hear the monster automatically succeeds."
+            }
+          ]
+        },
+        {
+          "targetCr": 5,
+          "bandId": "cr-5-12-wail",
+          "abilityCount": 1,
+          "abilityIds": [
+            "wail"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"action\",\"actionEconomy\":\"action\",\"usage\":{\"type\":\"recharge\",\"value\":\"6\"},\"trigger\":null,\"resolution\":{\"type\":\"savingThrow\",\"ability\":\"wisdom\",\"dc\":\"monster\"},\"targeting\":{\"type\":\"area\",\"shape\":\"radius\",\"size\":30,\"unit\":\"ft\",\"targets\":\"creatures that can hear the monster\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"budget\",\"budgetRole\":\"rechargeControl\",\"types\":[\"psychic\"],\"scale\":\"minor\",\"budgetShare\":0.45,\"expectedTargets\":2,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[\"frightened\"],\"severity\":\"major\",\"direction\":\"enemy\",\"duration\":\"until the end of its next turn\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"failure\":\"The target takes {damage} Psychic damage and has the Frightened condition until the end of its next turn.\",\"success\":\"The target takes half damage. A creature that cannot hear the monster automatically succeeds.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "wail",
+              "renderedText": "Recharge 6. Wisdom Saving Throw: DC 15, creatures that can hear the monster in a 30-foot Emanation originating from the creature. Failure: The target takes 4 (1d6) Psychic damage and has the Frightened condition until the end of its next turn. Success: The target takes half damage. A creature that cannot hear the monster automatically succeeds."
+            }
+          ]
+        },
+        {
+          "targetCr": 10,
+          "bandId": "cr-5-12-wail",
+          "abilityCount": 1,
+          "abilityIds": [
+            "wail"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"action\",\"actionEconomy\":\"action\",\"usage\":{\"type\":\"recharge\",\"value\":\"6\"},\"trigger\":null,\"resolution\":{\"type\":\"savingThrow\",\"ability\":\"wisdom\",\"dc\":\"monster\"},\"targeting\":{\"type\":\"area\",\"shape\":\"radius\",\"size\":30,\"unit\":\"ft\",\"targets\":\"creatures that can hear the monster\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"budget\",\"budgetRole\":\"rechargeControl\",\"types\":[\"psychic\"],\"scale\":\"minor\",\"budgetShare\":0.45,\"expectedTargets\":2,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[\"frightened\"],\"severity\":\"major\",\"direction\":\"enemy\",\"duration\":\"until the end of its next turn\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"failure\":\"The target takes {damage} Psychic damage and has the Frightened condition until the end of its next turn.\",\"success\":\"The target takes half damage. A creature that cannot hear the monster automatically succeeds.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "wail",
+              "renderedText": "Recharge 6. Wisdom Saving Throw: DC 15, creatures that can hear the monster in a 30-foot Emanation originating from the creature. Failure: The target takes 4 (1d6) Psychic damage and has the Frightened condition until the end of its next turn. Success: The target takes half damage. A creature that cannot hear the monster automatically succeeds."
+            }
+          ]
+        },
+        {
+          "targetCr": 15,
+          "bandId": "cr-13-30-wail",
+          "abilityCount": 1,
+          "abilityIds": [
+            "wail"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"action\",\"actionEconomy\":\"action\",\"usage\":{\"type\":\"recharge\",\"value\":\"6\"},\"trigger\":null,\"resolution\":{\"type\":\"savingThrow\",\"ability\":\"wisdom\",\"dc\":\"monster\"},\"targeting\":{\"type\":\"area\",\"shape\":\"radius\",\"size\":45,\"unit\":\"ft\",\"targets\":\"creatures that can hear the monster\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"budget\",\"budgetRole\":\"rechargeControl\",\"types\":[\"psychic\"],\"scale\":\"medium\",\"budgetShare\":0.45,\"expectedTargets\":2,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[\"frightened\"],\"severity\":\"major\",\"direction\":\"enemy\",\"duration\":\"until the end of its next turn\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"failure\":\"The target takes {damage} Psychic damage and has the Frightened condition until the end of its next turn.\",\"success\":\"The target takes half damage. A creature that cannot hear the monster automatically succeeds.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "wail",
+              "renderedText": "Recharge 6. Wisdom Saving Throw: DC 15, creatures that can hear the monster in a 45-foot Emanation originating from the creature. Failure: The target takes 4 (1d6) Psychic damage and has the Frightened condition until the end of its next turn. Success: The target takes half damage. A creature that cannot hear the monster automatically succeeds."
+            }
+          ]
+        }
+      ],
+      "issues": [],
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "version": "monster-horror-graft-editorial-audit-v1.0",
+      "applicable": true,
+      "id": "crawling-dread",
+      "title": "Crawling Dread",
+      "source": "wolf-spiders",
+      "decision": "ADD_SOURCE_HORROR",
+      "status": "pass",
+      "pass": true,
+      "abilityCount": 1,
+      "counterplayChannels": [
+        "telegraph",
+        "positioning",
+        "breakCondition",
+        "nonDamage"
+      ],
+      "scaling": {
+        "expected": true,
+        "declared": true,
+        "bandCount": 3,
+        "sampledBandIds": [
+          "cr-0-4-brood-glimpse",
+          "cr-5-12-brood-reveal",
+          "cr-13-30-brood-wave"
+        ],
+        "sampledRuleVariants": 3,
+        "pass": true
+      },
+      "snapshots": [
+        {
+          "targetCr": 1,
+          "bandId": "cr-0-4-brood-glimpse",
+          "abilityCount": 1,
+          "abilityIds": [
+            "crawling-dread"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"freeTrigger\",\"usage\":{\"type\":\"triggered\"},\"trigger\":\"The first time the monster becomes bloodied.\",\"resolution\":{\"type\":\"savingThrow\",\"ability\":\"wisdom\",\"dc\":\"monster\"},\"targeting\":{\"type\":\"area\",\"shape\":\"radius\",\"size\":15,\"unit\":\"ft\",\"targets\":\"hostile creatures that can see the monster\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[\"frightened\"],\"severity\":\"major\",\"direction\":\"enemy\",\"duration\":\"until the end of its next turn\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"failure\":\"The target has the Frightened condition and cannot take reactions until the end of its next turn.\",\"success\":\"A creature can use its reaction to avert its eyes and automatically succeed, but it cannot see the monster until the start of its next turn. Otherwise, no effect.\",\"response\":\"A creature can use its reaction to avert its eyes and automatically succeed, but it cannot see the monster until the start of its next turn.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "crawling-dread",
+              "renderedText": "The first time the monster becomes bloodied. Wisdom Saving Throw: DC 15, hostile creatures that can see the monster in a 15-foot Emanation originating from the creature. Failure: The target has the Frightened condition and cannot take reactions until the end of its next turn. Success: A creature can use its reaction to avert its eyes and automatically succeed, but it cannot see the monster until the start of its next turn. Otherwise, no effect."
+            }
+          ]
+        },
+        {
+          "targetCr": 5,
+          "bandId": "cr-5-12-brood-reveal",
+          "abilityCount": 1,
+          "abilityIds": [
+            "crawling-dread"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"freeTrigger\",\"usage\":{\"type\":\"triggered\"},\"trigger\":\"The first time the monster becomes bloodied.\",\"resolution\":{\"type\":\"savingThrow\",\"ability\":\"wisdom\",\"dc\":\"monster\"},\"targeting\":{\"type\":\"area\",\"shape\":\"radius\",\"size\":30,\"unit\":\"ft\",\"targets\":\"hostile creatures that can see the monster\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[\"frightened\"],\"severity\":\"major\",\"direction\":\"enemy\",\"duration\":\"until the end of its next turn\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"failure\":\"The target has the Frightened condition and cannot take reactions until the end of its next turn.\",\"success\":\"A creature can use its reaction to avert its eyes and automatically succeed, but it cannot see the monster until the start of its next turn. Otherwise, no effect.\",\"response\":\"A creature can use its reaction to avert its eyes and automatically succeed, but it cannot see the monster until the start of its next turn.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "crawling-dread",
+              "renderedText": "The first time the monster becomes bloodied. Wisdom Saving Throw: DC 15, hostile creatures that can see the monster in a 30-foot Emanation originating from the creature. Failure: The target has the Frightened condition and cannot take reactions until the end of its next turn. Success: A creature can use its reaction to avert its eyes and automatically succeed, but it cannot see the monster until the start of its next turn. Otherwise, no effect."
+            }
+          ]
+        },
+        {
+          "targetCr": 10,
+          "bandId": "cr-5-12-brood-reveal",
+          "abilityCount": 1,
+          "abilityIds": [
+            "crawling-dread"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"freeTrigger\",\"usage\":{\"type\":\"triggered\"},\"trigger\":\"The first time the monster becomes bloodied.\",\"resolution\":{\"type\":\"savingThrow\",\"ability\":\"wisdom\",\"dc\":\"monster\"},\"targeting\":{\"type\":\"area\",\"shape\":\"radius\",\"size\":30,\"unit\":\"ft\",\"targets\":\"hostile creatures that can see the monster\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[\"frightened\"],\"severity\":\"major\",\"direction\":\"enemy\",\"duration\":\"until the end of its next turn\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"failure\":\"The target has the Frightened condition and cannot take reactions until the end of its next turn.\",\"success\":\"A creature can use its reaction to avert its eyes and automatically succeed, but it cannot see the monster until the start of its next turn. Otherwise, no effect.\",\"response\":\"A creature can use its reaction to avert its eyes and automatically succeed, but it cannot see the monster until the start of its next turn.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "crawling-dread",
+              "renderedText": "The first time the monster becomes bloodied. Wisdom Saving Throw: DC 15, hostile creatures that can see the monster in a 30-foot Emanation originating from the creature. Failure: The target has the Frightened condition and cannot take reactions until the end of its next turn. Success: A creature can use its reaction to avert its eyes and automatically succeed, but it cannot see the monster until the start of its next turn. Otherwise, no effect."
+            }
+          ]
+        },
+        {
+          "targetCr": 15,
+          "bandId": "cr-13-30-brood-wave",
+          "abilityCount": 1,
+          "abilityIds": [
+            "crawling-dread"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"freeTrigger\",\"usage\":{\"type\":\"triggered\"},\"trigger\":\"The first time the monster becomes bloodied.\",\"resolution\":{\"type\":\"savingThrow\",\"ability\":\"wisdom\",\"dc\":\"monster\"},\"targeting\":{\"type\":\"area\",\"shape\":\"radius\",\"size\":45,\"unit\":\"ft\",\"targets\":\"hostile creatures that can see the monster\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[\"frightened\"],\"severity\":\"major\",\"direction\":\"enemy\",\"duration\":\"until the end of its next turn\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"failure\":\"The target has the Frightened condition and cannot take reactions until the end of its next turn.\",\"success\":\"A creature can use its reaction to avert its eyes and automatically succeed, but it cannot see the monster until the start of its next turn. Otherwise, no effect.\",\"response\":\"A creature can use its reaction to avert its eyes and automatically succeed, but it cannot see the monster until the start of its next turn.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "crawling-dread",
+              "renderedText": "The first time the monster becomes bloodied. Wisdom Saving Throw: DC 15, hostile creatures that can see the monster in a 45-foot Emanation originating from the creature. Failure: The target has the Frightened condition and cannot take reactions until the end of its next turn. Success: A creature can use its reaction to avert its eyes and automatically succeed, but it cannot see the monster until the start of its next turn. Otherwise, no effect."
+            }
+          ]
+        }
+      ],
+      "issues": [],
+      "errors": [],
+      "warnings": []
+    }
+  ],
+  "issues": [],
+  "errors": [],
+  "pass": true
+}

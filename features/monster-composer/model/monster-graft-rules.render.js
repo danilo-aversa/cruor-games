@@ -1172,19 +1172,19 @@ function renderStructuredRules(feature, computed = null, options = {}) {
   if (rules.spellcasting?.enabled) return renderSpellcastingRules(feature, rules, scopedComputed, options);
   if (rules.summon?.enabled) return renderSummonRules(feature, rules, scopedComputed, options);
   if (rules.procedure?.enabled) return renderProcedureRules(feature, rules, scopedComputed, options);
-  if (rules.defense?.enabled) return renderDefenseRules(feature, rules, scopedComputed, options);
   if (rules.areaEffect?.enabled && !hasAttackResolution(rules) && !hasSaveResolution(rules)) return renderAreaEffectRules(feature, rules, scopedComputed, options);
+  if (rules.defense?.enabled) return renderDefenseRules(feature, rules, scopedComputed, options);
   if (rules.references?.length && !hasAttackResolution(rules) && !hasSaveResolution(rules) && !rules.text?.effect) return renderAbilityReferencesRules(feature, rules, scopedComputed, options);
   if (rules.actionEconomy === "reaction") return renderReactionRules(feature, rules, scopedComputed, options);
+  if (hasAttackResolution(rules)) return renderAttackRules(feature, rules, scopedComputed, options);
+  if (hasSaveResolution(rules)) return renderSaveRules(feature, rules, scopedComputed, options);
   if (rules.text?.effect && ["trait", "death"].includes(rules.section)) {
     return applyTokens(rules.text.effect, { feature, rules, computed: scopedComputed }, options);
   }
-  if (!hasAttackResolution(rules) && !hasSaveResolution(rules) && rules.condition?.names?.length) {
+  if (rules.condition?.names?.length) {
     const passiveCondition = renderPassiveConditionRules(feature, rules, scopedComputed, options);
     if (passiveCondition) return passiveCondition;
   }
-  if (hasAttackResolution(rules)) return renderAttackRules(feature, rules, scopedComputed, options);
-  if (hasSaveResolution(rules)) return renderSaveRules(feature, rules, scopedComputed, options);
   if (rules.text?.effect) return applyTokens(rules.text.effect, { feature, rules, computed: scopedComputed }, options);
   return null;
 }

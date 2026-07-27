@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { buildMonsterAttackRoutine } from "./monster-attack-routine.js";
+import { projectMonsterAbilityModelForCr } from "./monster-attack-pattern-progression.js";
 import {
   MONSTER_ABILITY_BUNDLE_VERSION,
   buildMonsterAbilitiesFromFeatures,
@@ -65,6 +66,7 @@ const attackPattern = {
     fantasy: "A swollen corpse collapses into its victim.",
     tacticalRole: "single-target displacement",
     signature: "impact and rupture",
+    recognitionTags: ["impact", "rupture", "swollen-corpse"],
   },
   abilities: [
     { id: "slam", title: "Heavy Slam", rules: buildRules() },
@@ -74,15 +76,44 @@ const attackPattern = {
       rules: buildRules({ budgetRole: "secondaryAttack", budgetShare: 0.4 }),
     },
   ],
+  progression: {
+    schemaVersion: "monster-attack-pattern-progression-v1.0",
+    basis: "targetCr",
+    bands: [
+      { id: "low", minCr: 0, maxCr: 1, abilityIds: ["slam"], multiattack: { enabled: false, count: 0 } },
+      { id: "mid", minCr: 2, maxCr: 8, abilityIds: ["slam", "grab"], multiattack: { enabled: true, mode: "choice", count: 2 } },
+      { id: "high", minCr: 9, maxCr: 30, abilityIds: ["slam", "grab"], multiattack: { enabled: true, mode: "choice", count: 3 } },
+    ],
+  },
   routine: {
     mode: "authored",
+    defaultPlan: "Strike and then pin the same target.",
+    targetSelection: "Prefer an isolated target.",
     defaultSequence: ["slam", "grab"],
+    opener: [],
+    alternatives: [],
+    intentionalRepetition: false,
+    repetitionReason: "",
     multiattack: {
       enabled: true,
-      attacks: 2,
+      mode: "choice",
+      count: 2,
+      attacks: [
+        { ref: "slam", count: 1 },
+        { ref: "grab", count: 1 },
+      ],
       choices: ["slam", "grab"],
+      replacements: [],
     },
   },
+  counterplayProfile: {
+    telegraphs: ["The corpse lowers its shoulder."],
+    positioningAnswers: ["Stay outside a straight charge lane."],
+    breakConditions: [],
+    nonDamageAnswers: [],
+  },
+  complexityProfile: {},
+  spikeRiskProfile: {},
   authoring: { origin: "inspiration-module", canonical: true },
   migration: { status: "draft" },
 };
@@ -133,6 +164,37 @@ describe("monster ability bundle compiler", () => {
         compilation: "graft-v2-bundle",
       },
     });
+  });
+
+  it("changes the same graft from one action to a larger high-CR routine", () => {
+    const low = buildMonsterAbilityBundleFromGraft(attackPattern, { targetCr: 1 });
+    const mid = buildMonsterAbilityBundleFromGraft(attackPattern, { targetCr: 5 });
+    const high = buildMonsterAbilityBundleFromGraft(attackPattern, { targetCr: 10 });
+
+    expect(low.abilities.map((ability) => ability.localAbilityId)).toEqual(["slam"]);
+    expect(mid.abilities.map((ability) => ability.localAbilityId)).toEqual([
+      "multiattack",
+      "slam",
+      "grab",
+    ]);
+    expect(mid.routine.multiattack.count).toBe(2);
+    expect(high.routine.multiattack.count).toBe(3);
+  });
+
+  it("updates the synthetic Multiattack inside a projected full Ability Model", () => {
+    const full = buildMonsterAbilitiesFromFeatures([attackPattern]);
+    const low = projectMonsterAbilityModelForCr(full, 1);
+    const high = projectMonsterAbilityModelForCr(full, 10);
+    const highMultiattack = high.abilities.find((ability) => ability.synthetic);
+
+    expect(low.abilities.map((ability) => ability.localAbilityId)).toEqual(["slam"]);
+    expect(highMultiattack.rules.multiattack.count).toBe(3);
+    expect(
+      highMultiattack.rules.multiattack.attacks.reduce(
+        (sum, attack) => sum + Number(attack.count || 0),
+        0,
+      ),
+    ).toBe(3);
   });
 
   it("flattens multiple graft bundles without changing legacy ability ids", () => {

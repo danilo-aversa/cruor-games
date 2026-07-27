@@ -1,0 +1,1590 @@
+{
+  "version": "monster-twist-graft-editorial-audit-v1.0",
+  "editorialVersion": "monster-twist-graft-editorial-v1.0",
+  "checkpoints": [
+    1,
+    5,
+    10,
+    15
+  ],
+  "expectedIds": [
+    "gas-buildup",
+    "unstable-rupture",
+    "dangerously-unstable",
+    "undead-fortitude",
+    "siege-corpse",
+    "flesh-harvest",
+    "horrific-assault",
+    "no-witnesses-rage",
+    "enrage-broodmother",
+    "web-architect",
+    "corrosive-web",
+    "mask-phase"
+  ],
+  "expectedTotal": 12,
+  "scaledIds": [
+    "gas-buildup",
+    "unstable-rupture",
+    "dangerously-unstable",
+    "flesh-harvest",
+    "web-architect",
+    "corrosive-web"
+  ],
+  "total": 12,
+  "passing": 12,
+  "warning": 0,
+  "error": 0,
+  "abilityCount": 17,
+  "bundleCount": 5,
+  "progressionCount": 6,
+  "scaledCount": 6,
+  "byDecision": {
+    "REWRITE_INTO_PRESSURE_PATTERN": 1,
+    "REWRITE_AND_SCALE": 1,
+    "REWRITE_AS_COUNTDOWN": 1,
+    "KEEP_CANONICAL": 1,
+    "EXPAND_CANONICAL_SCENE_TWIST": 1,
+    "EXPAND_INTO_PHASE": 1,
+    "REWRITE_AS_AMBUSH_REVEAL": 1,
+    "RENAME_AND_REWRITE": 1,
+    "REWRITE_AS_DETERMINISTIC_TRIGGER": 1,
+    "EXPAND_INTO_TERRAIN_PHASE": 1,
+    "REWRITE_AS_DESTRUCTION_REVERSAL": 1,
+    "REWRITE_AS_VISIBLE_PHASE_CHOICE": 1
+  },
+  "bySource": {
+    "decomposition": 5,
+    "jikininki": 3,
+    "wolf-spiders": 3,
+    "wax-death-masks": 1
+  },
+  "missingIds": [],
+  "unexpectedIds": [],
+  "reports": [
+    {
+      "version": "monster-twist-graft-editorial-audit-v1.0",
+      "applicable": true,
+      "id": "gas-buildup",
+      "title": "Gas Buildup",
+      "source": "decomposition",
+      "decision": "REWRITE_INTO_PRESSURE_PATTERN",
+      "status": "pass",
+      "pass": true,
+      "abilityCount": 2,
+      "progressionBandCount": 3,
+      "counterplayChannels": [
+        "telegraph",
+        "positioning",
+        "breakCondition",
+        "nonDamage"
+      ],
+      "scaling": {
+        "expected": true,
+        "declared": true,
+        "bandCount": 3,
+        "sampledBandIds": [
+          "cr-0-4-small-vent",
+          "cr-5-12-full-vent",
+          "cr-13-30-pressure-wave"
+        ],
+        "sampledRuleVariants": 4,
+        "pass": true
+      },
+      "snapshots": [
+        {
+          "targetCr": 1,
+          "bandId": "cr-0-4-small-vent",
+          "abilityCount": 2,
+          "abilityIds": [
+            "pressure-clock",
+            "pressure-vent"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"At the end of a turn in which the monster moved at least 15 feet or made two or more attacks.\",\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"The monster moved at least 15 feet or made two or more attacks during the turn.\",\"text\":\"The monster gains 1 Pressure, to a maximum of 3. The number of Pressure markers is visible. At 3 Pressure, it must use Pressure Vent at the start of its next turn.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster gains 1 Pressure, to a maximum of 3. The number of Pressure markers is visible. At 3 Pressure, it must use Pressure Vent at the start of its next turn.\"}}",
+            "{\"section\":\"trait\",\"actionEconomy\":\"freeTrigger\",\"usage\":{\"type\":\"triggered\"},\"trigger\":\"At the start of the monster's turn while it has 3 Pressure.\",\"resolution\":{\"type\":\"savingThrow\",\"ability\":\"constitution\",\"dc\":\"monster\"},\"targeting\":{\"type\":\"area\",\"shape\":\"radius\",\"size\":10,\"unit\":\"ft\",\"targets\":\"other creatures\"},\"areaEffect\":{\"enabled\":true,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":10,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"repeatTiming\":\"startOfTurn\",\"targets\":\"other creatures\",\"excludes\":[\"the monster\"],\"text\":\"The monster vents grave gas and loses all Pressure.\"},\"damage\":{\"mode\":\"budget\",\"budgetRole\":\"reactionPunish\",\"types\":[\"poison\",\"thunder\"],\"scale\":\"minor\",\"budgetShare\":0.35,\"expectedTargets\":1.5,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"failure\":\"The target takes {damage} Poison and Thunder damage and is pushed 5 feet away from the monster.\",\"success\":\"Half damage only.\",\"effect\":\"The monster loses all Pressure. Before the vent, an adjacent creature can use an action to puncture a visible blister; if it does, that creature chooses a 15-foot Cone for the vent instead of the Emanation.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "pressure-clock",
+              "renderedText": "The monster gains 1 Pressure, to a maximum of 3. The number of Pressure markers is visible. At 3 Pressure, it must use Pressure Vent at the start of its next turn."
+            },
+            {
+              "abilityId": "pressure-vent",
+              "renderedText": "At the start of the monster's turn while it has 3 Pressure. Constitution Saving Throw: DC 15, other creatures in a 10-foot Emanation originating from the creature. Failure: The target takes 3 (1d4) Poison and Thunder damage and is pushed 5 feet away from the monster. Success: Half damage only. The monster loses all Pressure. Before the vent, an adjacent creature can use an action to puncture a visible blister; if it does, that creature chooses a 15-foot Cone for the vent instead of the Emanation."
+            }
+          ]
+        },
+        {
+          "targetCr": 5,
+          "bandId": "cr-5-12-full-vent",
+          "abilityCount": 2,
+          "abilityIds": [
+            "pressure-clock",
+            "pressure-vent"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"At the end of a turn in which the monster moved at least 15 feet or made two or more attacks.\",\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"The monster moved at least 15 feet or made two or more attacks during the turn.\",\"text\":\"The monster gains 1 Pressure, to a maximum of 3. The number of Pressure markers is visible. At 3 Pressure, it must use Pressure Vent at the start of its next turn.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster gains 1 Pressure, to a maximum of 3. The number of Pressure markers is visible. At 3 Pressure, it must use Pressure Vent at the start of its next turn.\"}}",
+            "{\"section\":\"trait\",\"actionEconomy\":\"freeTrigger\",\"usage\":{\"type\":\"triggered\"},\"trigger\":\"At the start of the monster's turn while it has 3 Pressure.\",\"resolution\":{\"type\":\"savingThrow\",\"ability\":\"constitution\",\"dc\":\"monster\"},\"targeting\":{\"type\":\"area\",\"shape\":\"radius\",\"size\":15,\"unit\":\"ft\",\"targets\":\"other creatures\"},\"areaEffect\":{\"enabled\":true,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":15,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"repeatTiming\":\"startOfTurn\",\"targets\":\"other creatures\",\"excludes\":[\"the monster\"],\"text\":\"The monster vents grave gas and loses all Pressure.\"},\"damage\":{\"mode\":\"budget\",\"budgetRole\":\"reactionPunish\",\"types\":[\"poison\",\"thunder\"],\"scale\":\"minor\",\"budgetShare\":0.35,\"expectedTargets\":1.5,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"failure\":\"The target takes {damage} Poison and Thunder damage and is pushed 10 feet away from the monster.\",\"success\":\"Half damage only.\",\"effect\":\"The monster loses all Pressure. Before the vent, an adjacent creature can use an action to puncture a visible blister; if it does, that creature chooses a 20-foot Cone for the vent instead of the Emanation.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "pressure-clock",
+              "renderedText": "The monster gains 1 Pressure, to a maximum of 3. The number of Pressure markers is visible. At 3 Pressure, it must use Pressure Vent at the start of its next turn."
+            },
+            {
+              "abilityId": "pressure-vent",
+              "renderedText": "At the start of the monster's turn while it has 3 Pressure. Constitution Saving Throw: DC 15, other creatures in a 15-foot Emanation originating from the creature. Failure: The target takes 3 (1d4) Poison and Thunder damage and is pushed 10 feet away from the monster. Success: Half damage only. The monster loses all Pressure. Before the vent, an adjacent creature can use an action to puncture a visible blister; if it does, that creature chooses a 20-foot Cone for the vent instead of the Emanation."
+            }
+          ]
+        },
+        {
+          "targetCr": 10,
+          "bandId": "cr-5-12-full-vent",
+          "abilityCount": 2,
+          "abilityIds": [
+            "pressure-clock",
+            "pressure-vent"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"At the end of a turn in which the monster moved at least 15 feet or made two or more attacks.\",\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"The monster moved at least 15 feet or made two or more attacks during the turn.\",\"text\":\"The monster gains 1 Pressure, to a maximum of 3. The number of Pressure markers is visible. At 3 Pressure, it must use Pressure Vent at the start of its next turn.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster gains 1 Pressure, to a maximum of 3. The number of Pressure markers is visible. At 3 Pressure, it must use Pressure Vent at the start of its next turn.\"}}",
+            "{\"section\":\"trait\",\"actionEconomy\":\"freeTrigger\",\"usage\":{\"type\":\"triggered\"},\"trigger\":\"At the start of the monster's turn while it has 3 Pressure.\",\"resolution\":{\"type\":\"savingThrow\",\"ability\":\"constitution\",\"dc\":\"monster\"},\"targeting\":{\"type\":\"area\",\"shape\":\"radius\",\"size\":15,\"unit\":\"ft\",\"targets\":\"other creatures\"},\"areaEffect\":{\"enabled\":true,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":15,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"repeatTiming\":\"startOfTurn\",\"targets\":\"other creatures\",\"excludes\":[\"the monster\"],\"text\":\"The monster vents grave gas and loses all Pressure.\"},\"damage\":{\"mode\":\"budget\",\"budgetRole\":\"reactionPunish\",\"types\":[\"poison\",\"thunder\"],\"scale\":\"minor\",\"budgetShare\":0.35,\"expectedTargets\":1.5,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"failure\":\"The target takes {damage} Poison and Thunder damage and is pushed 10 feet away from the monster.\",\"success\":\"Half damage only.\",\"effect\":\"The monster loses all Pressure. Before the vent, an adjacent creature can use an action to puncture a visible blister; if it does, that creature chooses a 20-foot Cone for the vent instead of the Emanation.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "pressure-clock",
+              "renderedText": "The monster gains 1 Pressure, to a maximum of 3. The number of Pressure markers is visible. At 3 Pressure, it must use Pressure Vent at the start of its next turn."
+            },
+            {
+              "abilityId": "pressure-vent",
+              "renderedText": "At the start of the monster's turn while it has 3 Pressure. Constitution Saving Throw: DC 15, other creatures in a 15-foot Emanation originating from the creature. Failure: The target takes 3 (1d4) Poison and Thunder damage and is pushed 10 feet away from the monster. Success: Half damage only. The monster loses all Pressure. Before the vent, an adjacent creature can use an action to puncture a visible blister; if it does, that creature chooses a 20-foot Cone for the vent instead of the Emanation."
+            }
+          ]
+        },
+        {
+          "targetCr": 15,
+          "bandId": "cr-13-30-pressure-wave",
+          "abilityCount": 2,
+          "abilityIds": [
+            "pressure-clock",
+            "pressure-vent"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"At the end of a turn in which the monster moved at least 15 feet or made two or more attacks.\",\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"The monster moved at least 15 feet or made two or more attacks during the turn.\",\"text\":\"The monster gains 1 Pressure, to a maximum of 3. The number of Pressure markers is visible. At 3 Pressure, it must use Pressure Vent at the start of its next turn.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster gains 1 Pressure, to a maximum of 3. The number of Pressure markers is visible. At 3 Pressure, it must use Pressure Vent at the start of its next turn.\"}}",
+            "{\"section\":\"trait\",\"actionEconomy\":\"freeTrigger\",\"usage\":{\"type\":\"triggered\"},\"trigger\":\"At the start of the monster's turn while it has 3 Pressure.\",\"resolution\":{\"type\":\"savingThrow\",\"ability\":\"constitution\",\"dc\":\"monster\"},\"targeting\":{\"type\":\"area\",\"shape\":\"radius\",\"size\":20,\"unit\":\"ft\",\"targets\":\"other creatures\"},\"areaEffect\":{\"enabled\":true,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":20,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"repeatTiming\":\"startOfTurn\",\"targets\":\"other creatures\",\"excludes\":[\"the monster\"],\"text\":\"The monster vents grave gas and loses all Pressure.\"},\"damage\":{\"mode\":\"budget\",\"budgetRole\":\"reactionPunish\",\"types\":[\"poison\",\"thunder\"],\"scale\":\"minor\",\"budgetShare\":0.35,\"expectedTargets\":1.5,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"failure\":\"The target takes {damage} Poison and Thunder damage and is pushed 15 feet away from the monster.\",\"success\":\"Half damage only.\",\"effect\":\"The monster loses all Pressure. Before the vent, an adjacent creature can use an action to puncture a visible blister; if it does, that creature chooses a 30-foot Cone for the vent instead of the Emanation.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "pressure-clock",
+              "renderedText": "The monster gains 1 Pressure, to a maximum of 3. The number of Pressure markers is visible. At 3 Pressure, it must use Pressure Vent at the start of its next turn."
+            },
+            {
+              "abilityId": "pressure-vent",
+              "renderedText": "At the start of the monster's turn while it has 3 Pressure. Constitution Saving Throw: DC 15, other creatures in a 20-foot Emanation originating from the creature. Failure: The target takes 3 (1d4) Poison and Thunder damage and is pushed 15 feet away from the monster. Success: Half damage only. The monster loses all Pressure. Before the vent, an adjacent creature can use an action to puncture a visible blister; if it does, that creature chooses a 30-foot Cone for the vent instead of the Emanation."
+            }
+          ]
+        }
+      ],
+      "issues": [],
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "version": "monster-twist-graft-editorial-audit-v1.0",
+      "applicable": true,
+      "id": "unstable-rupture",
+      "title": "Unstable Rupture",
+      "source": "decomposition",
+      "decision": "REWRITE_AND_SCALE",
+      "status": "pass",
+      "pass": true,
+      "abilityCount": 1,
+      "progressionBandCount": 3,
+      "counterplayChannels": [
+        "telegraph",
+        "positioning",
+        "breakCondition",
+        "nonDamage"
+      ],
+      "scaling": {
+        "expected": true,
+        "declared": true,
+        "bandCount": 3,
+        "sampledBandIds": [
+          "cr-0-4-split-seam",
+          "cr-5-12-open-rupture",
+          "cr-13-30-body-spray"
+        ],
+        "sampledRuleVariants": 3,
+        "pass": true
+      },
+      "snapshots": [
+        {
+          "targetCr": 1,
+          "bandId": "cr-0-4-split-seam",
+          "abilityCount": 1,
+          "abilityIds": [
+            "unstable-rupture"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"reaction\",\"actionEconomy\":\"reaction\",\"usage\":{\"type\":\"triggered\"},\"trigger\":\"The monster takes Piercing or Slashing damage.\",\"resolution\":{\"type\":\"savingThrow\",\"ability\":\"dexterity\",\"dc\":\"monster\"},\"targeting\":{\"type\":\"area\",\"shape\":\"radius\",\"size\":5,\"unit\":\"ft\",\"targets\":\"other creatures\"},\"areaEffect\":{\"enabled\":true,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":5,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"repeatTiming\":\"reaction\",\"targets\":\"other creatures\",\"excludes\":[\"the monster\"],\"text\":\"A cut seam sprays creatures near the monster.\"},\"damage\":{\"mode\":\"budget\",\"budgetRole\":\"reactionPunish\",\"types\":[\"poison\",\"slashing\"],\"scale\":\"minor\",\"budgetShare\":0.4,\"expectedTargets\":1.5,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"failure\":\"The target takes {damage} Poison and Slashing damage.\",\"success\":\"Half damage only.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "unstable-rupture",
+              "renderedText": "Dexterity Saving Throw: DC 15, other creatures in a 5-foot Emanation originating from the creature. Failure: The target takes 3 (1d4) Poison and Slashing damage. Success: Half damage only."
+            }
+          ]
+        },
+        {
+          "targetCr": 5,
+          "bandId": "cr-5-12-open-rupture",
+          "abilityCount": 1,
+          "abilityIds": [
+            "unstable-rupture"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"reaction\",\"actionEconomy\":\"reaction\",\"usage\":{\"type\":\"triggered\"},\"trigger\":\"The monster takes Piercing or Slashing damage.\",\"resolution\":{\"type\":\"savingThrow\",\"ability\":\"dexterity\",\"dc\":\"monster\"},\"targeting\":{\"type\":\"area\",\"shape\":\"radius\",\"size\":10,\"unit\":\"ft\",\"targets\":\"other creatures\"},\"areaEffect\":{\"enabled\":true,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":10,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"repeatTiming\":\"reaction\",\"targets\":\"other creatures\",\"excludes\":[\"the monster\"],\"text\":\"A cut seam sprays creatures near the monster.\"},\"damage\":{\"mode\":\"budget\",\"budgetRole\":\"reactionPunish\",\"types\":[\"poison\",\"slashing\"],\"scale\":\"minor\",\"budgetShare\":0.4,\"expectedTargets\":1.5,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"failure\":\"The target takes {damage} Poison and Slashing damage.\",\"success\":\"Half damage only.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "unstable-rupture",
+              "renderedText": "Dexterity Saving Throw: DC 15, other creatures in a 10-foot Emanation originating from the creature. Failure: The target takes 3 (1d4) Poison and Slashing damage. Success: Half damage only."
+            }
+          ]
+        },
+        {
+          "targetCr": 10,
+          "bandId": "cr-5-12-open-rupture",
+          "abilityCount": 1,
+          "abilityIds": [
+            "unstable-rupture"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"reaction\",\"actionEconomy\":\"reaction\",\"usage\":{\"type\":\"triggered\"},\"trigger\":\"The monster takes Piercing or Slashing damage.\",\"resolution\":{\"type\":\"savingThrow\",\"ability\":\"dexterity\",\"dc\":\"monster\"},\"targeting\":{\"type\":\"area\",\"shape\":\"radius\",\"size\":10,\"unit\":\"ft\",\"targets\":\"other creatures\"},\"areaEffect\":{\"enabled\":true,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":10,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"repeatTiming\":\"reaction\",\"targets\":\"other creatures\",\"excludes\":[\"the monster\"],\"text\":\"A cut seam sprays creatures near the monster.\"},\"damage\":{\"mode\":\"budget\",\"budgetRole\":\"reactionPunish\",\"types\":[\"poison\",\"slashing\"],\"scale\":\"minor\",\"budgetShare\":0.4,\"expectedTargets\":1.5,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"failure\":\"The target takes {damage} Poison and Slashing damage.\",\"success\":\"Half damage only.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "unstable-rupture",
+              "renderedText": "Dexterity Saving Throw: DC 15, other creatures in a 10-foot Emanation originating from the creature. Failure: The target takes 3 (1d4) Poison and Slashing damage. Success: Half damage only."
+            }
+          ]
+        },
+        {
+          "targetCr": 15,
+          "bandId": "cr-13-30-body-spray",
+          "abilityCount": 1,
+          "abilityIds": [
+            "unstable-rupture"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"reaction\",\"actionEconomy\":\"reaction\",\"usage\":{\"type\":\"triggered\"},\"trigger\":\"The monster takes Piercing or Slashing damage.\",\"resolution\":{\"type\":\"savingThrow\",\"ability\":\"dexterity\",\"dc\":\"monster\"},\"targeting\":{\"type\":\"area\",\"shape\":\"radius\",\"size\":15,\"unit\":\"ft\",\"targets\":\"other creatures\"},\"areaEffect\":{\"enabled\":true,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":15,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"repeatTiming\":\"reaction\",\"targets\":\"other creatures\",\"excludes\":[\"the monster\"],\"text\":\"A cut seam sprays creatures near the monster.\"},\"damage\":{\"mode\":\"budget\",\"budgetRole\":\"reactionPunish\",\"types\":[\"poison\",\"slashing\"],\"scale\":\"minor\",\"budgetShare\":0.4,\"expectedTargets\":1.5,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"failure\":\"The target takes {damage} Poison and Slashing damage.\",\"success\":\"Half damage only.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "unstable-rupture",
+              "renderedText": "Dexterity Saving Throw: DC 15, other creatures in a 15-foot Emanation originating from the creature. Failure: The target takes 3 (1d4) Poison and Slashing damage. Success: Half damage only."
+            }
+          ]
+        }
+      ],
+      "issues": [],
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "version": "monster-twist-graft-editorial-audit-v1.0",
+      "applicable": true,
+      "id": "dangerously-unstable",
+      "title": "Dangerously Unstable",
+      "source": "decomposition",
+      "decision": "REWRITE_AS_COUNTDOWN",
+      "status": "pass",
+      "pass": true,
+      "abilityCount": 1,
+      "progressionBandCount": 3,
+      "counterplayChannels": [
+        "telegraph",
+        "positioning",
+        "breakCondition",
+        "nonDamage"
+      ],
+      "scaling": {
+        "expected": true,
+        "declared": true,
+        "bandCount": 3,
+        "sampledBandIds": [
+          "cr-0-4-contained-fuse",
+          "cr-5-12-violent-fuse",
+          "cr-13-30-catastrophic-fuse"
+        ],
+        "sampledRuleVariants": 3,
+        "pass": true
+      },
+      "snapshots": [
+        {
+          "targetCr": 1,
+          "bandId": "cr-0-4-contained-fuse",
+          "abilityCount": 1,
+          "abilityIds": [
+            "critical-pressure"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"freeTrigger\",\"usage\":{\"type\":\"limited\",\"uses\":1,\"period\":\"encounter\"},\"trigger\":\"The first time the monster becomes bloodied.\",\"resolution\":{\"type\":\"savingThrow\",\"ability\":\"dexterity\",\"dc\":\"monster\"},\"targeting\":{\"type\":\"area\",\"shape\":\"radius\",\"size\":10,\"unit\":\"ft\",\"targets\":\"other creatures\"},\"areaEffect\":{\"enabled\":true,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":10,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"repeatTiming\":\"endOfNextTurn\",\"targets\":\"other creatures\",\"excludes\":[\"the monster\"],\"text\":\"The visible countdown detonates at the end of the monster's next turn.\"},\"damage\":{\"mode\":\"budget\",\"budgetRole\":\"rechargeBurst\",\"types\":[\"poison\",\"thunder\"],\"scale\":\"standard\",\"budgetShare\":0.8,\"expectedTargets\":2,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[\"prone\"],\"severity\":\"moderate\",\"direction\":\"enemy\",\"duration\":\"until the end of its next turn\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"failure\":\"The target takes {damage} Poison and Thunder damage and has the Prone condition.\",\"success\":\"Half damage only.\",\"effect\":\"The monster drops to 0 Hit Points after the detonation. Before it resolves, an adjacent creature can use an action to make a Dexterity (Sleight of Hand) or Intelligence (Investigation) check against the monster's save DC. On a success, the countdown ends, the monster loses its reactions until the start of its next turn, and no detonation occurs.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "critical-pressure",
+              "renderedText": "The first time the monster becomes bloodied. Dexterity Saving Throw: DC 15, other creatures in a 10-foot Emanation originating from the creature. Failure: The target takes 11 (2d10) Poison and Thunder damage and has the Prone condition. Success: Half damage only. The monster drops to 0 Hit Points after the detonation. Before it resolves, an adjacent creature can use an action to make a Dexterity (Sleight of Hand) or Intelligence (Investigation) check against the monster's save DC. On a success, the countdown ends, the monster loses its reactions until the start of its next turn, and no detonation occurs."
+            }
+          ]
+        },
+        {
+          "targetCr": 5,
+          "bandId": "cr-5-12-violent-fuse",
+          "abilityCount": 1,
+          "abilityIds": [
+            "critical-pressure"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"freeTrigger\",\"usage\":{\"type\":\"limited\",\"uses\":1,\"period\":\"encounter\"},\"trigger\":\"The first time the monster becomes bloodied.\",\"resolution\":{\"type\":\"savingThrow\",\"ability\":\"dexterity\",\"dc\":\"monster\"},\"targeting\":{\"type\":\"area\",\"shape\":\"radius\",\"size\":15,\"unit\":\"ft\",\"targets\":\"other creatures\"},\"areaEffect\":{\"enabled\":true,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":15,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"repeatTiming\":\"endOfNextTurn\",\"targets\":\"other creatures\",\"excludes\":[\"the monster\"],\"text\":\"The visible countdown detonates at the end of the monster's next turn.\"},\"damage\":{\"mode\":\"budget\",\"budgetRole\":\"rechargeBurst\",\"types\":[\"poison\",\"thunder\"],\"scale\":\"standard\",\"budgetShare\":0.8,\"expectedTargets\":2,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[\"prone\"],\"severity\":\"moderate\",\"direction\":\"enemy\",\"duration\":\"until the end of its next turn\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"failure\":\"The target takes {damage} Poison and Thunder damage and has the Prone condition.\",\"success\":\"Half damage only.\",\"effect\":\"The monster drops to 0 Hit Points after the detonation. Before it resolves, an adjacent creature can use an action to make a Dexterity (Sleight of Hand) or Intelligence (Investigation) check against the monster's save DC. On a success, the countdown ends, the monster loses its reactions until the start of its next turn, and no detonation occurs.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "critical-pressure",
+              "renderedText": "The first time the monster becomes bloodied. Dexterity Saving Throw: DC 15, other creatures in a 15-foot Emanation originating from the creature. Failure: The target takes 11 (2d10) Poison and Thunder damage and has the Prone condition. Success: Half damage only. The monster drops to 0 Hit Points after the detonation. Before it resolves, an adjacent creature can use an action to make a Dexterity (Sleight of Hand) or Intelligence (Investigation) check against the monster's save DC. On a success, the countdown ends, the monster loses its reactions until the start of its next turn, and no detonation occurs."
+            }
+          ]
+        },
+        {
+          "targetCr": 10,
+          "bandId": "cr-5-12-violent-fuse",
+          "abilityCount": 1,
+          "abilityIds": [
+            "critical-pressure"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"freeTrigger\",\"usage\":{\"type\":\"limited\",\"uses\":1,\"period\":\"encounter\"},\"trigger\":\"The first time the monster becomes bloodied.\",\"resolution\":{\"type\":\"savingThrow\",\"ability\":\"dexterity\",\"dc\":\"monster\"},\"targeting\":{\"type\":\"area\",\"shape\":\"radius\",\"size\":15,\"unit\":\"ft\",\"targets\":\"other creatures\"},\"areaEffect\":{\"enabled\":true,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":15,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"repeatTiming\":\"endOfNextTurn\",\"targets\":\"other creatures\",\"excludes\":[\"the monster\"],\"text\":\"The visible countdown detonates at the end of the monster's next turn.\"},\"damage\":{\"mode\":\"budget\",\"budgetRole\":\"rechargeBurst\",\"types\":[\"poison\",\"thunder\"],\"scale\":\"standard\",\"budgetShare\":0.8,\"expectedTargets\":2,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[\"prone\"],\"severity\":\"moderate\",\"direction\":\"enemy\",\"duration\":\"until the end of its next turn\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"failure\":\"The target takes {damage} Poison and Thunder damage and has the Prone condition.\",\"success\":\"Half damage only.\",\"effect\":\"The monster drops to 0 Hit Points after the detonation. Before it resolves, an adjacent creature can use an action to make a Dexterity (Sleight of Hand) or Intelligence (Investigation) check against the monster's save DC. On a success, the countdown ends, the monster loses its reactions until the start of its next turn, and no detonation occurs.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "critical-pressure",
+              "renderedText": "The first time the monster becomes bloodied. Dexterity Saving Throw: DC 15, other creatures in a 15-foot Emanation originating from the creature. Failure: The target takes 11 (2d10) Poison and Thunder damage and has the Prone condition. Success: Half damage only. The monster drops to 0 Hit Points after the detonation. Before it resolves, an adjacent creature can use an action to make a Dexterity (Sleight of Hand) or Intelligence (Investigation) check against the monster's save DC. On a success, the countdown ends, the monster loses its reactions until the start of its next turn, and no detonation occurs."
+            }
+          ]
+        },
+        {
+          "targetCr": 15,
+          "bandId": "cr-13-30-catastrophic-fuse",
+          "abilityCount": 1,
+          "abilityIds": [
+            "critical-pressure"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"freeTrigger\",\"usage\":{\"type\":\"limited\",\"uses\":1,\"period\":\"encounter\"},\"trigger\":\"The first time the monster becomes bloodied.\",\"resolution\":{\"type\":\"savingThrow\",\"ability\":\"dexterity\",\"dc\":\"monster\"},\"targeting\":{\"type\":\"area\",\"shape\":\"radius\",\"size\":20,\"unit\":\"ft\",\"targets\":\"other creatures\"},\"areaEffect\":{\"enabled\":true,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":20,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"repeatTiming\":\"endOfNextTurn\",\"targets\":\"other creatures\",\"excludes\":[\"the monster\"],\"text\":\"The visible countdown detonates at the end of the monster's next turn.\"},\"damage\":{\"mode\":\"budget\",\"budgetRole\":\"rechargeBurst\",\"types\":[\"poison\",\"thunder\"],\"scale\":\"standard\",\"budgetShare\":0.8,\"expectedTargets\":2,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[\"prone\"],\"severity\":\"moderate\",\"direction\":\"enemy\",\"duration\":\"until the end of its next turn\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"failure\":\"The target takes {damage} Poison and Thunder damage and has the Prone condition.\",\"success\":\"Half damage only.\",\"effect\":\"The monster drops to 0 Hit Points after the detonation. Before it resolves, an adjacent creature can use an action to make a Dexterity (Sleight of Hand) or Intelligence (Investigation) check against the monster's save DC. On a success, the countdown ends, the monster loses its reactions until the start of its next turn, and no detonation occurs.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "critical-pressure",
+              "renderedText": "The first time the monster becomes bloodied. Dexterity Saving Throw: DC 15, other creatures in a 20-foot Emanation originating from the creature. Failure: The target takes 11 (2d10) Poison and Thunder damage and has the Prone condition. Success: Half damage only. The monster drops to 0 Hit Points after the detonation. Before it resolves, an adjacent creature can use an action to make a Dexterity (Sleight of Hand) or Intelligence (Investigation) check against the monster's save DC. On a success, the countdown ends, the monster loses its reactions until the start of its next turn, and no detonation occurs."
+            }
+          ]
+        }
+      ],
+      "issues": [],
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "version": "monster-twist-graft-editorial-audit-v1.0",
+      "applicable": true,
+      "id": "undead-fortitude",
+      "title": "Undead Fortitude",
+      "source": "decomposition",
+      "decision": "KEEP_CANONICAL",
+      "status": "pass",
+      "pass": true,
+      "abilityCount": 1,
+      "progressionBandCount": 0,
+      "counterplayChannels": [
+        "telegraph",
+        "positioning",
+        "breakCondition",
+        "nonDamage"
+      ],
+      "scaling": {
+        "expected": false,
+        "declared": false,
+        "bandCount": 0,
+        "sampledBandIds": [],
+        "sampledRuleVariants": 1,
+        "pass": true
+      },
+      "snapshots": [
+        {
+          "targetCr": 1,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "undead-fortitude"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"freeTrigger\",\"usage\":{\"type\":\"triggered\"},\"trigger\":\"Damage reduces the monster to 0 Hit Points.\",\"resolution\":{\"type\":\"savingThrow\",\"ability\":\"constitution\",\"dc\":\"special\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"source\":\"manual\",\"manual\":\"If damage reduces the monster to 0 Hit Points, unless the damage is Radiant or from a Critical Hit, the monster makes a Constitution Saving Throw with a DC equal to 5 plus the damage taken. On a success, it drops to 1 Hit Point instead.\",\"failure\":\"The monster remains at 0 Hit Points.\",\"success\":\"The monster drops to 1 Hit Point instead.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "undead-fortitude",
+              "renderedText": "If damage reduces the monster to 0 Hit Points, unless the damage is Radiant or from a Critical Hit, the monster makes a Constitution Saving Throw with a DC equal to 5 plus the damage taken. On a success, it drops to 1 Hit Point instead."
+            }
+          ]
+        },
+        {
+          "targetCr": 5,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "undead-fortitude"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"freeTrigger\",\"usage\":{\"type\":\"triggered\"},\"trigger\":\"Damage reduces the monster to 0 Hit Points.\",\"resolution\":{\"type\":\"savingThrow\",\"ability\":\"constitution\",\"dc\":\"special\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"source\":\"manual\",\"manual\":\"If damage reduces the monster to 0 Hit Points, unless the damage is Radiant or from a Critical Hit, the monster makes a Constitution Saving Throw with a DC equal to 5 plus the damage taken. On a success, it drops to 1 Hit Point instead.\",\"failure\":\"The monster remains at 0 Hit Points.\",\"success\":\"The monster drops to 1 Hit Point instead.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "undead-fortitude",
+              "renderedText": "If damage reduces the monster to 0 Hit Points, unless the damage is Radiant or from a Critical Hit, the monster makes a Constitution Saving Throw with a DC equal to 5 plus the damage taken. On a success, it drops to 1 Hit Point instead."
+            }
+          ]
+        },
+        {
+          "targetCr": 10,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "undead-fortitude"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"freeTrigger\",\"usage\":{\"type\":\"triggered\"},\"trigger\":\"Damage reduces the monster to 0 Hit Points.\",\"resolution\":{\"type\":\"savingThrow\",\"ability\":\"constitution\",\"dc\":\"special\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"source\":\"manual\",\"manual\":\"If damage reduces the monster to 0 Hit Points, unless the damage is Radiant or from a Critical Hit, the monster makes a Constitution Saving Throw with a DC equal to 5 plus the damage taken. On a success, it drops to 1 Hit Point instead.\",\"failure\":\"The monster remains at 0 Hit Points.\",\"success\":\"The monster drops to 1 Hit Point instead.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "undead-fortitude",
+              "renderedText": "If damage reduces the monster to 0 Hit Points, unless the damage is Radiant or from a Critical Hit, the monster makes a Constitution Saving Throw with a DC equal to 5 plus the damage taken. On a success, it drops to 1 Hit Point instead."
+            }
+          ]
+        },
+        {
+          "targetCr": 15,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "undead-fortitude"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"freeTrigger\",\"usage\":{\"type\":\"triggered\"},\"trigger\":\"Damage reduces the monster to 0 Hit Points.\",\"resolution\":{\"type\":\"savingThrow\",\"ability\":\"constitution\",\"dc\":\"special\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"source\":\"manual\",\"manual\":\"If damage reduces the monster to 0 Hit Points, unless the damage is Radiant or from a Critical Hit, the monster makes a Constitution Saving Throw with a DC equal to 5 plus the damage taken. On a success, it drops to 1 Hit Point instead.\",\"failure\":\"The monster remains at 0 Hit Points.\",\"success\":\"The monster drops to 1 Hit Point instead.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "undead-fortitude",
+              "renderedText": "If damage reduces the monster to 0 Hit Points, unless the damage is Radiant or from a Critical Hit, the monster makes a Constitution Saving Throw with a DC equal to 5 plus the damage taken. On a success, it drops to 1 Hit Point instead."
+            }
+          ]
+        }
+      ],
+      "issues": [],
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "version": "monster-twist-graft-editorial-audit-v1.0",
+      "applicable": true,
+      "id": "siege-corpse",
+      "title": "Siege Monster",
+      "source": "decomposition",
+      "decision": "EXPAND_CANONICAL_SCENE_TWIST",
+      "status": "pass",
+      "pass": true,
+      "abilityCount": 2,
+      "progressionBandCount": 0,
+      "counterplayChannels": [
+        "telegraph",
+        "positioning",
+        "breakCondition",
+        "nonDamage"
+      ],
+      "scaling": {
+        "expected": false,
+        "declared": false,
+        "bandCount": 0,
+        "sampledBandIds": [],
+        "sampledRuleVariants": 2,
+        "pass": true
+      },
+      "snapshots": [
+        {
+          "targetCr": 1,
+          "bandId": null,
+          "abilityCount": 2,
+          "abilityIds": [
+            "siege-monster",
+            "breach"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":null,\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster deals double damage to objects and structures.\"}}",
+            "{\"section\":\"trait\",\"actionEconomy\":\"freeTrigger\",\"usage\":{\"type\":\"limited\",\"uses\":1,\"period\":\"encounter\"},\"trigger\":\"The monster destroys a Large or larger object or section of structure.\",\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"area\",\"shape\":\"space\",\"size\":10,\"unit\":\"ft\",\"targets\":\"the destroyed space\"},\"areaEffect\":{\"enabled\":true,\"type\":\"aura\",\"shape\":\"space\",\"size\":10,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"repeatTiming\":\"immediate\",\"targets\":\"the destroyed space\",\"excludes\":[],\"text\":\"The first time each encounter the monster destroys a Large or larger object or section of structure, the resulting 10-foot space becomes difficult terrain and grants Half Cover until cleared.\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The destroyed space becomes difficult terrain and grants Half Cover until a creature clears it using an action or sufficient movement of debris.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "siege-monster",
+              "renderedText": "The monster deals double damage to objects and structures."
+            },
+            {
+              "abilityId": "breach",
+              "renderedText": "The first time each encounter the monster destroys a Large or larger object or section of structure, the resulting 10-foot space becomes difficult terrain and grants Half Cover until cleared."
+            }
+          ]
+        },
+        {
+          "targetCr": 5,
+          "bandId": null,
+          "abilityCount": 2,
+          "abilityIds": [
+            "siege-monster",
+            "breach"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":null,\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster deals double damage to objects and structures.\"}}",
+            "{\"section\":\"trait\",\"actionEconomy\":\"freeTrigger\",\"usage\":{\"type\":\"limited\",\"uses\":1,\"period\":\"encounter\"},\"trigger\":\"The monster destroys a Large or larger object or section of structure.\",\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"area\",\"shape\":\"space\",\"size\":10,\"unit\":\"ft\",\"targets\":\"the destroyed space\"},\"areaEffect\":{\"enabled\":true,\"type\":\"aura\",\"shape\":\"space\",\"size\":10,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"repeatTiming\":\"immediate\",\"targets\":\"the destroyed space\",\"excludes\":[],\"text\":\"The first time each encounter the monster destroys a Large or larger object or section of structure, the resulting 10-foot space becomes difficult terrain and grants Half Cover until cleared.\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The destroyed space becomes difficult terrain and grants Half Cover until a creature clears it using an action or sufficient movement of debris.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "siege-monster",
+              "renderedText": "The monster deals double damage to objects and structures."
+            },
+            {
+              "abilityId": "breach",
+              "renderedText": "The first time each encounter the monster destroys a Large or larger object or section of structure, the resulting 10-foot space becomes difficult terrain and grants Half Cover until cleared."
+            }
+          ]
+        },
+        {
+          "targetCr": 10,
+          "bandId": null,
+          "abilityCount": 2,
+          "abilityIds": [
+            "siege-monster",
+            "breach"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":null,\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster deals double damage to objects and structures.\"}}",
+            "{\"section\":\"trait\",\"actionEconomy\":\"freeTrigger\",\"usage\":{\"type\":\"limited\",\"uses\":1,\"period\":\"encounter\"},\"trigger\":\"The monster destroys a Large or larger object or section of structure.\",\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"area\",\"shape\":\"space\",\"size\":10,\"unit\":\"ft\",\"targets\":\"the destroyed space\"},\"areaEffect\":{\"enabled\":true,\"type\":\"aura\",\"shape\":\"space\",\"size\":10,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"repeatTiming\":\"immediate\",\"targets\":\"the destroyed space\",\"excludes\":[],\"text\":\"The first time each encounter the monster destroys a Large or larger object or section of structure, the resulting 10-foot space becomes difficult terrain and grants Half Cover until cleared.\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The destroyed space becomes difficult terrain and grants Half Cover until a creature clears it using an action or sufficient movement of debris.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "siege-monster",
+              "renderedText": "The monster deals double damage to objects and structures."
+            },
+            {
+              "abilityId": "breach",
+              "renderedText": "The first time each encounter the monster destroys a Large or larger object or section of structure, the resulting 10-foot space becomes difficult terrain and grants Half Cover until cleared."
+            }
+          ]
+        },
+        {
+          "targetCr": 15,
+          "bandId": null,
+          "abilityCount": 2,
+          "abilityIds": [
+            "siege-monster",
+            "breach"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":null,\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster deals double damage to objects and structures.\"}}",
+            "{\"section\":\"trait\",\"actionEconomy\":\"freeTrigger\",\"usage\":{\"type\":\"limited\",\"uses\":1,\"period\":\"encounter\"},\"trigger\":\"The monster destroys a Large or larger object or section of structure.\",\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"area\",\"shape\":\"space\",\"size\":10,\"unit\":\"ft\",\"targets\":\"the destroyed space\"},\"areaEffect\":{\"enabled\":true,\"type\":\"aura\",\"shape\":\"space\",\"size\":10,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"repeatTiming\":\"immediate\",\"targets\":\"the destroyed space\",\"excludes\":[],\"text\":\"The first time each encounter the monster destroys a Large or larger object or section of structure, the resulting 10-foot space becomes difficult terrain and grants Half Cover until cleared.\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The destroyed space becomes difficult terrain and grants Half Cover until a creature clears it using an action or sufficient movement of debris.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "siege-monster",
+              "renderedText": "The monster deals double damage to objects and structures."
+            },
+            {
+              "abilityId": "breach",
+              "renderedText": "The first time each encounter the monster destroys a Large or larger object or section of structure, the resulting 10-foot space becomes difficult terrain and grants Half Cover until cleared."
+            }
+          ]
+        }
+      ],
+      "issues": [],
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "version": "monster-twist-graft-editorial-audit-v1.0",
+      "applicable": true,
+      "id": "flesh-harvest",
+      "title": "Flesh Harvest",
+      "source": "jikininki",
+      "decision": "EXPAND_INTO_PHASE",
+      "status": "pass",
+      "pass": true,
+      "abilityCount": 2,
+      "progressionBandCount": 3,
+      "counterplayChannels": [
+        "telegraph",
+        "positioning",
+        "breakCondition",
+        "nonDamage"
+      ],
+      "scaling": {
+        "expected": true,
+        "declared": true,
+        "bandCount": 3,
+        "sampledBandIds": [
+          "cr-0-4-small-meal",
+          "cr-5-12-full-meal",
+          "cr-13-30-gorged-form"
+        ],
+        "sampledRuleVariants": 4,
+        "pass": true
+      },
+      "snapshots": [
+        {
+          "targetCr": 1,
+          "bandId": "cr-0-4-small-meal",
+          "abilityCount": 2,
+          "abilityIds": [
+            "flesh-harvest",
+            "sated-form"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"action\",\"actionEconomy\":\"action\",\"usage\":{\"type\":\"limited\",\"uses\":1,\"period\":\"encounter\"},\"trigger\":\"A Medium or smaller corpse is within 5 feet.\",\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"object\",\"targets\":\"one Medium or smaller corpse within 5 feet\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"A valid corpse is within 5 feet and can be consumed.\",\"text\":\"The monster consumes the corpse, ends one condition affecting it, and gains 5 temporary Hit Points.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster consumes the corpse, ends one condition affecting it, and gains 5 temporary Hit Points.\"}}",
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"The monster has temporary Hit Points granted by Flesh Harvest.\",\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"The monster has temporary Hit Points granted by Flesh Harvest.\",\"text\":\"The monster's speed increases by 10 feet, and it cannot benefit from being Invisible or disguised. This state ends when those temporary Hit Points are gone.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster's speed increases by 10 feet, and it cannot benefit from being Invisible or disguised. This state ends when those temporary Hit Points are gone.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "flesh-harvest",
+              "renderedText": "The monster consumes the corpse, ends one condition affecting it, and gains 5 temporary Hit Points."
+            },
+            {
+              "abilityId": "sated-form",
+              "renderedText": "The monster's speed increases by 10 feet, and it cannot benefit from being Invisible or disguised. This state ends when those temporary Hit Points are gone."
+            }
+          ]
+        },
+        {
+          "targetCr": 5,
+          "bandId": "cr-5-12-full-meal",
+          "abilityCount": 2,
+          "abilityIds": [
+            "flesh-harvest",
+            "sated-form"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"action\",\"actionEconomy\":\"action\",\"usage\":{\"type\":\"limited\",\"uses\":1,\"period\":\"encounter\"},\"trigger\":\"A Medium or smaller corpse is within 5 feet.\",\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"object\",\"targets\":\"one Medium or smaller corpse within 5 feet\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"A valid corpse is within 5 feet and can be consumed.\",\"text\":\"The monster consumes the corpse, ends one condition affecting it, and gains 5 temporary Hit Points.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster consumes the corpse, ends one condition affecting it, and gains 15 temporary Hit Points.\"}}",
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"The monster has temporary Hit Points granted by Flesh Harvest.\",\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"The monster has temporary Hit Points granted by Flesh Harvest.\",\"text\":\"The monster's speed increases by 10 feet, and it cannot benefit from being Invisible or disguised. This state ends when those temporary Hit Points are gone.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster's speed increases by 10 feet, and it cannot benefit from being Invisible or disguised. This state ends when those temporary Hit Points are gone.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "flesh-harvest",
+              "renderedText": "The monster consumes the corpse, ends one condition affecting it, and gains 5 temporary Hit Points."
+            },
+            {
+              "abilityId": "sated-form",
+              "renderedText": "The monster's speed increases by 10 feet, and it cannot benefit from being Invisible or disguised. This state ends when those temporary Hit Points are gone."
+            }
+          ]
+        },
+        {
+          "targetCr": 10,
+          "bandId": "cr-5-12-full-meal",
+          "abilityCount": 2,
+          "abilityIds": [
+            "flesh-harvest",
+            "sated-form"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"action\",\"actionEconomy\":\"action\",\"usage\":{\"type\":\"limited\",\"uses\":1,\"period\":\"encounter\"},\"trigger\":\"A Medium or smaller corpse is within 5 feet.\",\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"object\",\"targets\":\"one Medium or smaller corpse within 5 feet\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"A valid corpse is within 5 feet and can be consumed.\",\"text\":\"The monster consumes the corpse, ends one condition affecting it, and gains 5 temporary Hit Points.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster consumes the corpse, ends one condition affecting it, and gains 15 temporary Hit Points.\"}}",
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"The monster has temporary Hit Points granted by Flesh Harvest.\",\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"The monster has temporary Hit Points granted by Flesh Harvest.\",\"text\":\"The monster's speed increases by 10 feet, and it cannot benefit from being Invisible or disguised. This state ends when those temporary Hit Points are gone.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster's speed increases by 10 feet, and it cannot benefit from being Invisible or disguised. This state ends when those temporary Hit Points are gone.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "flesh-harvest",
+              "renderedText": "The monster consumes the corpse, ends one condition affecting it, and gains 5 temporary Hit Points."
+            },
+            {
+              "abilityId": "sated-form",
+              "renderedText": "The monster's speed increases by 10 feet, and it cannot benefit from being Invisible or disguised. This state ends when those temporary Hit Points are gone."
+            }
+          ]
+        },
+        {
+          "targetCr": 15,
+          "bandId": "cr-13-30-gorged-form",
+          "abilityCount": 2,
+          "abilityIds": [
+            "flesh-harvest",
+            "sated-form"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"action\",\"actionEconomy\":\"action\",\"usage\":{\"type\":\"limited\",\"uses\":1,\"period\":\"encounter\"},\"trigger\":\"A Medium or smaller corpse is within 5 feet.\",\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"object\",\"targets\":\"one Medium or smaller corpse within 5 feet\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"A valid corpse is within 5 feet and can be consumed.\",\"text\":\"The monster consumes the corpse, ends one condition affecting it, and gains 5 temporary Hit Points.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster consumes the corpse, ends one condition affecting it, and gains 30 temporary Hit Points.\"}}",
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"The monster has temporary Hit Points granted by Flesh Harvest.\",\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"The monster has temporary Hit Points granted by Flesh Harvest.\",\"text\":\"The monster's speed increases by 10 feet, and it cannot benefit from being Invisible or disguised. This state ends when those temporary Hit Points are gone.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster's speed increases by 10 feet, and it cannot benefit from being Invisible or disguised. This state ends when those temporary Hit Points are gone.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "flesh-harvest",
+              "renderedText": "The monster consumes the corpse, ends one condition affecting it, and gains 5 temporary Hit Points."
+            },
+            {
+              "abilityId": "sated-form",
+              "renderedText": "The monster's speed increases by 10 feet, and it cannot benefit from being Invisible or disguised. This state ends when those temporary Hit Points are gone."
+            }
+          ]
+        }
+      ],
+      "issues": [],
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "version": "monster-twist-graft-editorial-audit-v1.0",
+      "applicable": true,
+      "id": "horrific-assault",
+      "title": "Horrific Assault",
+      "source": "jikininki",
+      "decision": "REWRITE_AS_AMBUSH_REVEAL",
+      "status": "pass",
+      "pass": true,
+      "abilityCount": 2,
+      "progressionBandCount": 0,
+      "counterplayChannels": [
+        "telegraph",
+        "positioning",
+        "breakCondition",
+        "nonDamage"
+      ],
+      "scaling": {
+        "expected": false,
+        "declared": false,
+        "bandCount": 0,
+        "sampledBandIds": [],
+        "sampledRuleVariants": 2,
+        "pass": true
+      },
+      "snapshots": [
+        {
+          "targetCr": 1,
+          "bandId": null,
+          "abilityCount": 2,
+          "abilityIds": [
+            "false-corpse",
+            "horrific-assault"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"The monster has not moved, acted, or been identified.\",\"resolution\":{\"type\":\"check\",\"ability\":\"wisdom\",\"dc\":\"monster\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the monster while motionless\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"The monster has not moved or acted.\",\"text\":\"The monster is indistinguishable from an ordinary corpse. A creature within 5 feet can use an action to make a Wisdom (Medicine) or Intelligence (Investigation) check against the monster's save DC, identifying it on a success.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster is indistinguishable from an ordinary corpse. A creature within 5 feet can use an action to make a Wisdom (Medicine) or Intelligence (Investigation) check against the monster's save DC, identifying it on a success.\"}}",
+            "{\"section\":\"trait\",\"actionEconomy\":\"freeTrigger\",\"usage\":{\"type\":\"limited\",\"uses\":1,\"period\":\"encounter\"},\"trigger\":\"False Corpse ends because the monster moves, acts, or is revealed.\",\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"False Corpse has just ended.\",\"text\":\"The monster can move up to half its speed without provoking Opportunity Attacks. A creature that did not identify it cannot take reactions until the start of that creature's next turn.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster can move up to half its speed without provoking Opportunity Attacks. A creature that did not identify it cannot take reactions until the start of that creature's next turn.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "false-corpse",
+              "renderedText": "The monster is indistinguishable from an ordinary corpse. A creature within 5 feet can use an action to make a Wisdom (Medicine) or Intelligence (Investigation) check against the monster's save DC, identifying it on a success."
+            },
+            {
+              "abilityId": "horrific-assault",
+              "renderedText": "The monster can move up to half its speed without provoking Opportunity Attacks. A creature that did not identify it cannot take reactions until the start of that creature's next turn."
+            }
+          ]
+        },
+        {
+          "targetCr": 5,
+          "bandId": null,
+          "abilityCount": 2,
+          "abilityIds": [
+            "false-corpse",
+            "horrific-assault"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"The monster has not moved, acted, or been identified.\",\"resolution\":{\"type\":\"check\",\"ability\":\"wisdom\",\"dc\":\"monster\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the monster while motionless\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"The monster has not moved or acted.\",\"text\":\"The monster is indistinguishable from an ordinary corpse. A creature within 5 feet can use an action to make a Wisdom (Medicine) or Intelligence (Investigation) check against the monster's save DC, identifying it on a success.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster is indistinguishable from an ordinary corpse. A creature within 5 feet can use an action to make a Wisdom (Medicine) or Intelligence (Investigation) check against the monster's save DC, identifying it on a success.\"}}",
+            "{\"section\":\"trait\",\"actionEconomy\":\"freeTrigger\",\"usage\":{\"type\":\"limited\",\"uses\":1,\"period\":\"encounter\"},\"trigger\":\"False Corpse ends because the monster moves, acts, or is revealed.\",\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"False Corpse has just ended.\",\"text\":\"The monster can move up to half its speed without provoking Opportunity Attacks. A creature that did not identify it cannot take reactions until the start of that creature's next turn.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster can move up to half its speed without provoking Opportunity Attacks. A creature that did not identify it cannot take reactions until the start of that creature's next turn.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "false-corpse",
+              "renderedText": "The monster is indistinguishable from an ordinary corpse. A creature within 5 feet can use an action to make a Wisdom (Medicine) or Intelligence (Investigation) check against the monster's save DC, identifying it on a success."
+            },
+            {
+              "abilityId": "horrific-assault",
+              "renderedText": "The monster can move up to half its speed without provoking Opportunity Attacks. A creature that did not identify it cannot take reactions until the start of that creature's next turn."
+            }
+          ]
+        },
+        {
+          "targetCr": 10,
+          "bandId": null,
+          "abilityCount": 2,
+          "abilityIds": [
+            "false-corpse",
+            "horrific-assault"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"The monster has not moved, acted, or been identified.\",\"resolution\":{\"type\":\"check\",\"ability\":\"wisdom\",\"dc\":\"monster\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the monster while motionless\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"The monster has not moved or acted.\",\"text\":\"The monster is indistinguishable from an ordinary corpse. A creature within 5 feet can use an action to make a Wisdom (Medicine) or Intelligence (Investigation) check against the monster's save DC, identifying it on a success.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster is indistinguishable from an ordinary corpse. A creature within 5 feet can use an action to make a Wisdom (Medicine) or Intelligence (Investigation) check against the monster's save DC, identifying it on a success.\"}}",
+            "{\"section\":\"trait\",\"actionEconomy\":\"freeTrigger\",\"usage\":{\"type\":\"limited\",\"uses\":1,\"period\":\"encounter\"},\"trigger\":\"False Corpse ends because the monster moves, acts, or is revealed.\",\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"False Corpse has just ended.\",\"text\":\"The monster can move up to half its speed without provoking Opportunity Attacks. A creature that did not identify it cannot take reactions until the start of that creature's next turn.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster can move up to half its speed without provoking Opportunity Attacks. A creature that did not identify it cannot take reactions until the start of that creature's next turn.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "false-corpse",
+              "renderedText": "The monster is indistinguishable from an ordinary corpse. A creature within 5 feet can use an action to make a Wisdom (Medicine) or Intelligence (Investigation) check against the monster's save DC, identifying it on a success."
+            },
+            {
+              "abilityId": "horrific-assault",
+              "renderedText": "The monster can move up to half its speed without provoking Opportunity Attacks. A creature that did not identify it cannot take reactions until the start of that creature's next turn."
+            }
+          ]
+        },
+        {
+          "targetCr": 15,
+          "bandId": null,
+          "abilityCount": 2,
+          "abilityIds": [
+            "false-corpse",
+            "horrific-assault"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"The monster has not moved, acted, or been identified.\",\"resolution\":{\"type\":\"check\",\"ability\":\"wisdom\",\"dc\":\"monster\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the monster while motionless\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"The monster has not moved or acted.\",\"text\":\"The monster is indistinguishable from an ordinary corpse. A creature within 5 feet can use an action to make a Wisdom (Medicine) or Intelligence (Investigation) check against the monster's save DC, identifying it on a success.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster is indistinguishable from an ordinary corpse. A creature within 5 feet can use an action to make a Wisdom (Medicine) or Intelligence (Investigation) check against the monster's save DC, identifying it on a success.\"}}",
+            "{\"section\":\"trait\",\"actionEconomy\":\"freeTrigger\",\"usage\":{\"type\":\"limited\",\"uses\":1,\"period\":\"encounter\"},\"trigger\":\"False Corpse ends because the monster moves, acts, or is revealed.\",\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"False Corpse has just ended.\",\"text\":\"The monster can move up to half its speed without provoking Opportunity Attacks. A creature that did not identify it cannot take reactions until the start of that creature's next turn.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster can move up to half its speed without provoking Opportunity Attacks. A creature that did not identify it cannot take reactions until the start of that creature's next turn.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "false-corpse",
+              "renderedText": "The monster is indistinguishable from an ordinary corpse. A creature within 5 feet can use an action to make a Wisdom (Medicine) or Intelligence (Investigation) check against the monster's save DC, identifying it on a success."
+            },
+            {
+              "abilityId": "horrific-assault",
+              "renderedText": "The monster can move up to half its speed without provoking Opportunity Attacks. A creature that did not identify it cannot take reactions until the start of that creature's next turn."
+            }
+          ]
+        }
+      ],
+      "issues": [],
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "version": "monster-twist-graft-editorial-audit-v1.0",
+      "applicable": true,
+      "id": "no-witnesses-rage",
+      "title": "Witness Rage",
+      "source": "jikininki",
+      "decision": "RENAME_AND_REWRITE",
+      "status": "pass",
+      "pass": true,
+      "abilityCount": 1,
+      "progressionBandCount": 0,
+      "counterplayChannels": [
+        "telegraph",
+        "positioning",
+        "breakCondition",
+        "nonDamage"
+      ],
+      "scaling": {
+        "expected": false,
+        "declared": false,
+        "bandCount": 0,
+        "sampledBandIds": [],
+        "sampledRuleVariants": 1,
+        "pass": true
+      },
+      "snapshots": [
+        {
+          "targetCr": 1,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "witness-rage"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"reaction\",\"actionEconomy\":\"reaction\",\"usage\":{\"type\":\"limited\",\"uses\":1,\"period\":\"encounter\"},\"trigger\":\"A hostile creature sees the monster consume a corpse or repugnant meal.\",\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"creature\",\"targets\":\"one visible witness\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"computed\",\"budgetRole\":\"minorAttack\",\"types\":[\"necrotic\"],\"scale\":\"minor\",\"budgetShare\":0.2,\"expectedTargets\":1,\"formula\":\"proficiency bonus\",\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"A hostile witness sees the feeding occur.\",\"text\":\"The monster moves up to its speed toward the witness without provoking Opportunity Attacks. For 1 minute, the first time each turn it hits a visible witness, it deals extra Necrotic damage equal to its Proficiency Bonus, and it cannot willingly end its turn farther from every visible witness. The rage ends early if it starts a turn unable to see a witness.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster moves up to its speed toward the witness without provoking Opportunity Attacks. For 1 minute, the first time each turn it hits a visible witness, it deals extra Necrotic damage equal to its Proficiency Bonus, and it cannot willingly end its turn farther from every visible witness. The rage ends early if it starts a turn unable to see a witness.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "witness-rage",
+              "renderedText": "The monster moves up to its speed toward the witness without provoking Opportunity Attacks. For 1 minute, the first time each turn it hits a visible witness, it deals extra Necrotic damage equal to its Proficiency Bonus, and it cannot willingly end its turn farther from every visible witness. The rage ends early if it starts a turn unable to see a witness."
+            }
+          ]
+        },
+        {
+          "targetCr": 5,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "witness-rage"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"reaction\",\"actionEconomy\":\"reaction\",\"usage\":{\"type\":\"limited\",\"uses\":1,\"period\":\"encounter\"},\"trigger\":\"A hostile creature sees the monster consume a corpse or repugnant meal.\",\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"creature\",\"targets\":\"one visible witness\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"computed\",\"budgetRole\":\"minorAttack\",\"types\":[\"necrotic\"],\"scale\":\"minor\",\"budgetShare\":0.2,\"expectedTargets\":1,\"formula\":\"proficiency bonus\",\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"A hostile witness sees the feeding occur.\",\"text\":\"The monster moves up to its speed toward the witness without provoking Opportunity Attacks. For 1 minute, the first time each turn it hits a visible witness, it deals extra Necrotic damage equal to its Proficiency Bonus, and it cannot willingly end its turn farther from every visible witness. The rage ends early if it starts a turn unable to see a witness.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster moves up to its speed toward the witness without provoking Opportunity Attacks. For 1 minute, the first time each turn it hits a visible witness, it deals extra Necrotic damage equal to its Proficiency Bonus, and it cannot willingly end its turn farther from every visible witness. The rage ends early if it starts a turn unable to see a witness.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "witness-rage",
+              "renderedText": "The monster moves up to its speed toward the witness without provoking Opportunity Attacks. For 1 minute, the first time each turn it hits a visible witness, it deals extra Necrotic damage equal to its Proficiency Bonus, and it cannot willingly end its turn farther from every visible witness. The rage ends early if it starts a turn unable to see a witness."
+            }
+          ]
+        },
+        {
+          "targetCr": 10,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "witness-rage"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"reaction\",\"actionEconomy\":\"reaction\",\"usage\":{\"type\":\"limited\",\"uses\":1,\"period\":\"encounter\"},\"trigger\":\"A hostile creature sees the monster consume a corpse or repugnant meal.\",\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"creature\",\"targets\":\"one visible witness\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"computed\",\"budgetRole\":\"minorAttack\",\"types\":[\"necrotic\"],\"scale\":\"minor\",\"budgetShare\":0.2,\"expectedTargets\":1,\"formula\":\"proficiency bonus\",\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"A hostile witness sees the feeding occur.\",\"text\":\"The monster moves up to its speed toward the witness without provoking Opportunity Attacks. For 1 minute, the first time each turn it hits a visible witness, it deals extra Necrotic damage equal to its Proficiency Bonus, and it cannot willingly end its turn farther from every visible witness. The rage ends early if it starts a turn unable to see a witness.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster moves up to its speed toward the witness without provoking Opportunity Attacks. For 1 minute, the first time each turn it hits a visible witness, it deals extra Necrotic damage equal to its Proficiency Bonus, and it cannot willingly end its turn farther from every visible witness. The rage ends early if it starts a turn unable to see a witness.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "witness-rage",
+              "renderedText": "The monster moves up to its speed toward the witness without provoking Opportunity Attacks. For 1 minute, the first time each turn it hits a visible witness, it deals extra Necrotic damage equal to its Proficiency Bonus, and it cannot willingly end its turn farther from every visible witness. The rage ends early if it starts a turn unable to see a witness."
+            }
+          ]
+        },
+        {
+          "targetCr": 15,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "witness-rage"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"reaction\",\"actionEconomy\":\"reaction\",\"usage\":{\"type\":\"limited\",\"uses\":1,\"period\":\"encounter\"},\"trigger\":\"A hostile creature sees the monster consume a corpse or repugnant meal.\",\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"creature\",\"targets\":\"one visible witness\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"computed\",\"budgetRole\":\"minorAttack\",\"types\":[\"necrotic\"],\"scale\":\"minor\",\"budgetShare\":0.2,\"expectedTargets\":1,\"formula\":\"proficiency bonus\",\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"A hostile witness sees the feeding occur.\",\"text\":\"The monster moves up to its speed toward the witness without provoking Opportunity Attacks. For 1 minute, the first time each turn it hits a visible witness, it deals extra Necrotic damage equal to its Proficiency Bonus, and it cannot willingly end its turn farther from every visible witness. The rage ends early if it starts a turn unable to see a witness.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster moves up to its speed toward the witness without provoking Opportunity Attacks. For 1 minute, the first time each turn it hits a visible witness, it deals extra Necrotic damage equal to its Proficiency Bonus, and it cannot willingly end its turn farther from every visible witness. The rage ends early if it starts a turn unable to see a witness.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "witness-rage",
+              "renderedText": "The monster moves up to its speed toward the witness without provoking Opportunity Attacks. For 1 minute, the first time each turn it hits a visible witness, it deals extra Necrotic damage equal to its Proficiency Bonus, and it cannot willingly end its turn farther from every visible witness. The rage ends early if it starts a turn unable to see a witness."
+            }
+          ]
+        }
+      ],
+      "issues": [],
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "version": "monster-twist-graft-editorial-audit-v1.0",
+      "applicable": true,
+      "id": "enrage-broodmother",
+      "title": "Enrage",
+      "source": "wolf-spiders",
+      "decision": "REWRITE_AS_DETERMINISTIC_TRIGGER",
+      "status": "pass",
+      "pass": true,
+      "abilityCount": 1,
+      "progressionBandCount": 0,
+      "counterplayChannels": [
+        "telegraph",
+        "positioning",
+        "breakCondition",
+        "nonDamage"
+      ],
+      "scaling": {
+        "expected": false,
+        "declared": false,
+        "bandCount": 0,
+        "sampledBandIds": [],
+        "sampledRuleVariants": 1,
+        "pass": true
+      },
+      "snapshots": [
+        {
+          "targetCr": 1,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "enrage"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"reaction\",\"actionEconomy\":\"reaction\",\"usage\":{\"type\":\"limited\",\"uses\":1,\"period\":\"encounter\"},\"trigger\":\"A creature destroys an egg carried or guarded by the monster.\",\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"creature\",\"targets\":\"the creature that destroyed the egg\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"A carried or guarded egg has just been destroyed.\",\"text\":\"The monster moves up to half its speed toward the triggering creature without provoking Opportunity Attacks. Until the end of its next turn, its speed increases by 10 feet and it cannot willingly move farther from that creature.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster moves up to half its speed toward the triggering creature without provoking Opportunity Attacks. Until the end of its next turn, its speed increases by 10 feet and it cannot willingly move farther from that creature.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "enrage",
+              "renderedText": "The monster moves up to half its speed toward the triggering creature without provoking Opportunity Attacks. Until the end of its next turn, its speed increases by 10 feet and it cannot willingly move farther from that creature."
+            }
+          ]
+        },
+        {
+          "targetCr": 5,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "enrage"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"reaction\",\"actionEconomy\":\"reaction\",\"usage\":{\"type\":\"limited\",\"uses\":1,\"period\":\"encounter\"},\"trigger\":\"A creature destroys an egg carried or guarded by the monster.\",\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"creature\",\"targets\":\"the creature that destroyed the egg\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"A carried or guarded egg has just been destroyed.\",\"text\":\"The monster moves up to half its speed toward the triggering creature without provoking Opportunity Attacks. Until the end of its next turn, its speed increases by 10 feet and it cannot willingly move farther from that creature.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster moves up to half its speed toward the triggering creature without provoking Opportunity Attacks. Until the end of its next turn, its speed increases by 10 feet and it cannot willingly move farther from that creature.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "enrage",
+              "renderedText": "The monster moves up to half its speed toward the triggering creature without provoking Opportunity Attacks. Until the end of its next turn, its speed increases by 10 feet and it cannot willingly move farther from that creature."
+            }
+          ]
+        },
+        {
+          "targetCr": 10,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "enrage"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"reaction\",\"actionEconomy\":\"reaction\",\"usage\":{\"type\":\"limited\",\"uses\":1,\"period\":\"encounter\"},\"trigger\":\"A creature destroys an egg carried or guarded by the monster.\",\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"creature\",\"targets\":\"the creature that destroyed the egg\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"A carried or guarded egg has just been destroyed.\",\"text\":\"The monster moves up to half its speed toward the triggering creature without provoking Opportunity Attacks. Until the end of its next turn, its speed increases by 10 feet and it cannot willingly move farther from that creature.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster moves up to half its speed toward the triggering creature without provoking Opportunity Attacks. Until the end of its next turn, its speed increases by 10 feet and it cannot willingly move farther from that creature.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "enrage",
+              "renderedText": "The monster moves up to half its speed toward the triggering creature without provoking Opportunity Attacks. Until the end of its next turn, its speed increases by 10 feet and it cannot willingly move farther from that creature."
+            }
+          ]
+        },
+        {
+          "targetCr": 15,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "enrage"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"reaction\",\"actionEconomy\":\"reaction\",\"usage\":{\"type\":\"limited\",\"uses\":1,\"period\":\"encounter\"},\"trigger\":\"A creature destroys an egg carried or guarded by the monster.\",\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"creature\",\"targets\":\"the creature that destroyed the egg\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"A carried or guarded egg has just been destroyed.\",\"text\":\"The monster moves up to half its speed toward the triggering creature without provoking Opportunity Attacks. Until the end of its next turn, its speed increases by 10 feet and it cannot willingly move farther from that creature.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster moves up to half its speed toward the triggering creature without provoking Opportunity Attacks. Until the end of its next turn, its speed increases by 10 feet and it cannot willingly move farther from that creature.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "enrage",
+              "renderedText": "The monster moves up to half its speed toward the triggering creature without provoking Opportunity Attacks. Until the end of its next turn, its speed increases by 10 feet and it cannot willingly move farther from that creature."
+            }
+          ]
+        }
+      ],
+      "issues": [],
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "version": "monster-twist-graft-editorial-audit-v1.0",
+      "applicable": true,
+      "id": "web-architect",
+      "title": "Web Architect",
+      "source": "wolf-spiders",
+      "decision": "EXPAND_INTO_TERRAIN_PHASE",
+      "status": "pass",
+      "pass": true,
+      "abilityCount": 2,
+      "progressionBandCount": 3,
+      "counterplayChannels": [
+        "telegraph",
+        "positioning",
+        "breakCondition",
+        "nonDamage"
+      ],
+      "scaling": {
+        "expected": true,
+        "declared": true,
+        "bandCount": 3,
+        "sampledBandIds": [
+          "cr-0-4-small-network",
+          "cr-5-12-web-plan",
+          "cr-13-30-master-network"
+        ],
+        "sampledRuleVariants": 6,
+        "pass": true
+      },
+      "snapshots": [
+        {
+          "targetCr": 1,
+          "bandId": "cr-0-4-small-network",
+          "abilityCount": 2,
+          "abilityIds": [
+            "web-network",
+            "reconfigure-webs"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"At the start of the encounter.\",\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"object\",\"targets\":\"two visible web anchors on reachable surfaces\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"The encounter area contains reachable surfaces.\",\"text\":\"The monster marks two visible web anchors. Each anchor is a fragile object that can be cut, burned, occupied, or destroyed.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster marks two visible web anchors. Each anchor is a fragile object that can be cut, burned, occupied, or destroyed.\"}}",
+            "{\"section\":\"trait\",\"actionEconomy\":\"freeTrigger\",\"usage\":{\"type\":\"limited\",\"uses\":1,\"period\":\"encounter\"},\"trigger\":\"The first time the monster becomes bloodied.\",\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"area\",\"shape\":\"line\",\"size\":30,\"unit\":\"ft\",\"targets\":\"the space between two surviving anchors\"},\"areaEffect\":{\"enabled\":true,\"type\":\"aura\",\"shape\":\"line\",\"size\":30,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"repeatTiming\":\"immediate\",\"targets\":\"the space between two surviving anchors\",\"excludes\":[],\"text\":\"The first time the monster becomes bloodied, each new wall occupies a 30-foot-long, 5-foot-wide Line between two surviving anchors. The wall is difficult terrain and grants Half Cover through it until an anchor is destroyed or the wall is burned or cut.\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster connects two surviving anchors with one opaque wall of web. The wall is difficult terrain, grants Half Cover through it, and lasts until either anchor is destroyed or the wall is burned or cut.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "web-network",
+              "renderedText": "The monster marks two visible web anchors. Each anchor is a fragile object that can be cut, burned, occupied, or destroyed."
+            },
+            {
+              "abilityId": "reconfigure-webs",
+              "renderedText": "The first time the monster becomes bloodied, each new wall occupies a 30-foot-long, 5-foot-wide Line between two surviving anchors. The wall is difficult terrain and grants Half Cover through it until an anchor is destroyed or the wall is burned or cut."
+            }
+          ]
+        },
+        {
+          "targetCr": 5,
+          "bandId": "cr-5-12-web-plan",
+          "abilityCount": 2,
+          "abilityIds": [
+            "web-network",
+            "reconfigure-webs"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"At the start of the encounter.\",\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"object\",\"targets\":\"two visible web anchors on reachable surfaces\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"The encounter area contains reachable surfaces.\",\"text\":\"The monster marks two visible web anchors. Each anchor is a fragile object that can be cut, burned, occupied, or destroyed.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster marks three visible web anchors. Each anchor is a fragile object that can be cut, burned, occupied, or destroyed.\"}}",
+            "{\"section\":\"trait\",\"actionEconomy\":\"freeTrigger\",\"usage\":{\"type\":\"limited\",\"uses\":1,\"period\":\"encounter\"},\"trigger\":\"The first time the monster becomes bloodied.\",\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"area\",\"shape\":\"line\",\"size\":30,\"unit\":\"ft\",\"targets\":\"the space between two surviving anchors\"},\"areaEffect\":{\"enabled\":true,\"type\":\"aura\",\"shape\":\"line\",\"size\":30,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"repeatTiming\":\"immediate\",\"targets\":\"the space between two surviving anchors\",\"excludes\":[],\"text\":\"The first time the monster becomes bloodied, each new wall occupies a 30-foot-long, 5-foot-wide Line between two surviving anchors. The wall is difficult terrain and grants Half Cover through it until an anchor is destroyed or the wall is burned or cut.\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster connects surviving anchors with up to two opaque walls of web. Each wall is difficult terrain, grants Half Cover through it, and lasts until one of its anchors is destroyed or the web is burned or cut.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "web-network",
+              "renderedText": "The monster marks two visible web anchors. Each anchor is a fragile object that can be cut, burned, occupied, or destroyed."
+            },
+            {
+              "abilityId": "reconfigure-webs",
+              "renderedText": "The first time the monster becomes bloodied, each new wall occupies a 30-foot-long, 5-foot-wide Line between two surviving anchors. The wall is difficult terrain and grants Half Cover through it until an anchor is destroyed or the wall is burned or cut."
+            }
+          ]
+        },
+        {
+          "targetCr": 10,
+          "bandId": "cr-5-12-web-plan",
+          "abilityCount": 2,
+          "abilityIds": [
+            "web-network",
+            "reconfigure-webs"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"At the start of the encounter.\",\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"object\",\"targets\":\"two visible web anchors on reachable surfaces\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"The encounter area contains reachable surfaces.\",\"text\":\"The monster marks two visible web anchors. Each anchor is a fragile object that can be cut, burned, occupied, or destroyed.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster marks three visible web anchors. Each anchor is a fragile object that can be cut, burned, occupied, or destroyed.\"}}",
+            "{\"section\":\"trait\",\"actionEconomy\":\"freeTrigger\",\"usage\":{\"type\":\"limited\",\"uses\":1,\"period\":\"encounter\"},\"trigger\":\"The first time the monster becomes bloodied.\",\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"area\",\"shape\":\"line\",\"size\":30,\"unit\":\"ft\",\"targets\":\"the space between two surviving anchors\"},\"areaEffect\":{\"enabled\":true,\"type\":\"aura\",\"shape\":\"line\",\"size\":30,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"repeatTiming\":\"immediate\",\"targets\":\"the space between two surviving anchors\",\"excludes\":[],\"text\":\"The first time the monster becomes bloodied, each new wall occupies a 30-foot-long, 5-foot-wide Line between two surviving anchors. The wall is difficult terrain and grants Half Cover through it until an anchor is destroyed or the wall is burned or cut.\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster connects surviving anchors with up to two opaque walls of web. Each wall is difficult terrain, grants Half Cover through it, and lasts until one of its anchors is destroyed or the web is burned or cut.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "web-network",
+              "renderedText": "The monster marks two visible web anchors. Each anchor is a fragile object that can be cut, burned, occupied, or destroyed."
+            },
+            {
+              "abilityId": "reconfigure-webs",
+              "renderedText": "The first time the monster becomes bloodied, each new wall occupies a 30-foot-long, 5-foot-wide Line between two surviving anchors. The wall is difficult terrain and grants Half Cover through it until an anchor is destroyed or the wall is burned or cut."
+            }
+          ]
+        },
+        {
+          "targetCr": 15,
+          "bandId": "cr-13-30-master-network",
+          "abilityCount": 2,
+          "abilityIds": [
+            "web-network",
+            "reconfigure-webs"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"At the start of the encounter.\",\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"object\",\"targets\":\"two visible web anchors on reachable surfaces\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"The encounter area contains reachable surfaces.\",\"text\":\"The monster marks two visible web anchors. Each anchor is a fragile object that can be cut, burned, occupied, or destroyed.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster marks four visible web anchors. Each anchor is a fragile object that can be cut, burned, occupied, or destroyed.\"}}",
+            "{\"section\":\"trait\",\"actionEconomy\":\"freeTrigger\",\"usage\":{\"type\":\"limited\",\"uses\":1,\"period\":\"encounter\"},\"trigger\":\"The first time the monster becomes bloodied.\",\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"area\",\"shape\":\"line\",\"size\":30,\"unit\":\"ft\",\"targets\":\"the space between two surviving anchors\"},\"areaEffect\":{\"enabled\":true,\"type\":\"aura\",\"shape\":\"line\",\"size\":30,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"repeatTiming\":\"immediate\",\"targets\":\"the space between two surviving anchors\",\"excludes\":[],\"text\":\"The first time the monster becomes bloodied, each new wall occupies a 30-foot-long, 5-foot-wide Line between two surviving anchors. The wall is difficult terrain and grants Half Cover through it until an anchor is destroyed or the wall is burned or cut.\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster connects surviving anchors with up to three opaque walls of web. Each wall is difficult terrain, grants Half Cover through it, and lasts until one of its anchors is destroyed or the web is burned or cut.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "web-network",
+              "renderedText": "The monster marks two visible web anchors. Each anchor is a fragile object that can be cut, burned, occupied, or destroyed."
+            },
+            {
+              "abilityId": "reconfigure-webs",
+              "renderedText": "The first time the monster becomes bloodied, each new wall occupies a 30-foot-long, 5-foot-wide Line between two surviving anchors. The wall is difficult terrain and grants Half Cover through it until an anchor is destroyed or the wall is burned or cut."
+            }
+          ]
+        }
+      ],
+      "issues": [],
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "version": "monster-twist-graft-editorial-audit-v1.0",
+      "applicable": true,
+      "id": "corrosive-web",
+      "title": "Corrosive Web",
+      "source": "wolf-spiders",
+      "decision": "REWRITE_AS_DESTRUCTION_REVERSAL",
+      "status": "pass",
+      "pass": true,
+      "abilityCount": 1,
+      "progressionBandCount": 2,
+      "counterplayChannels": [
+        "telegraph",
+        "positioning",
+        "breakCondition",
+        "nonDamage"
+      ],
+      "scaling": {
+        "expected": true,
+        "declared": true,
+        "bandCount": 2,
+        "sampledBandIds": [
+          "cr-0-7-acid-pocket",
+          "cr-8-30-acid-spill"
+        ],
+        "sampledRuleVariants": 2,
+        "pass": true
+      },
+      "snapshots": [
+        {
+          "targetCr": 1,
+          "bandId": "cr-0-7-acid-pocket",
+          "abilityCount": 1,
+          "abilityIds": [
+            "corrosive-web"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"freeTrigger\",\"usage\":{\"type\":\"triggered\"},\"trigger\":\"The first time each round a web created by the monster is destroyed.\",\"resolution\":{\"type\":\"savingThrow\",\"ability\":\"dexterity\",\"dc\":\"monster\"},\"targeting\":{\"type\":\"area\",\"shape\":\"radius\",\"size\":5,\"unit\":\"ft\",\"targets\":\"creatures near the destroyed web\"},\"areaEffect\":{\"enabled\":true,\"type\":\"aura\",\"shape\":\"radius\",\"size\":5,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"repeatTiming\":\"immediate\",\"targets\":\"the affected space\",\"excludes\":[],\"text\":\"The affected space is difficult terrain until the end of the monster's next turn.\"},\"damage\":{\"mode\":\"budget\",\"budgetRole\":\"reactionPunish\",\"types\":[\"acid\"],\"scale\":\"minor\",\"budgetShare\":0.35,\"expectedTargets\":1.5,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"failure\":\"The target takes {damage} Acid damage.\",\"success\":\"Half damage only.\",\"effect\":\"The affected space is difficult terrain until the end of the monster's next turn.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "corrosive-web",
+              "renderedText": "The first time each round a web created by the monster is destroyed. Dexterity Saving Throw: DC 15, the affected space in a 5-foot Emanation originating from the creature. Failure: The target takes 3 (1d4) Acid damage. Success: Half damage only. The affected space is difficult terrain until the end of the monster's next turn."
+            }
+          ]
+        },
+        {
+          "targetCr": 5,
+          "bandId": "cr-0-7-acid-pocket",
+          "abilityCount": 1,
+          "abilityIds": [
+            "corrosive-web"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"freeTrigger\",\"usage\":{\"type\":\"triggered\"},\"trigger\":\"The first time each round a web created by the monster is destroyed.\",\"resolution\":{\"type\":\"savingThrow\",\"ability\":\"dexterity\",\"dc\":\"monster\"},\"targeting\":{\"type\":\"area\",\"shape\":\"radius\",\"size\":5,\"unit\":\"ft\",\"targets\":\"creatures near the destroyed web\"},\"areaEffect\":{\"enabled\":true,\"type\":\"aura\",\"shape\":\"radius\",\"size\":5,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"repeatTiming\":\"immediate\",\"targets\":\"the affected space\",\"excludes\":[],\"text\":\"The affected space is difficult terrain until the end of the monster's next turn.\"},\"damage\":{\"mode\":\"budget\",\"budgetRole\":\"reactionPunish\",\"types\":[\"acid\"],\"scale\":\"minor\",\"budgetShare\":0.35,\"expectedTargets\":1.5,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"failure\":\"The target takes {damage} Acid damage.\",\"success\":\"Half damage only.\",\"effect\":\"The affected space is difficult terrain until the end of the monster's next turn.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "corrosive-web",
+              "renderedText": "The first time each round a web created by the monster is destroyed. Dexterity Saving Throw: DC 15, the affected space in a 5-foot Emanation originating from the creature. Failure: The target takes 3 (1d4) Acid damage. Success: Half damage only. The affected space is difficult terrain until the end of the monster's next turn."
+            }
+          ]
+        },
+        {
+          "targetCr": 10,
+          "bandId": "cr-8-30-acid-spill",
+          "abilityCount": 1,
+          "abilityIds": [
+            "corrosive-web"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"freeTrigger\",\"usage\":{\"type\":\"triggered\"},\"trigger\":\"The first time each round a web created by the monster is destroyed.\",\"resolution\":{\"type\":\"savingThrow\",\"ability\":\"dexterity\",\"dc\":\"monster\"},\"targeting\":{\"type\":\"area\",\"shape\":\"radius\",\"size\":10,\"unit\":\"ft\",\"targets\":\"creatures near the destroyed web\"},\"areaEffect\":{\"enabled\":true,\"type\":\"aura\",\"shape\":\"radius\",\"size\":10,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"repeatTiming\":\"immediate\",\"targets\":\"the affected space\",\"excludes\":[],\"text\":\"The affected space is difficult terrain until the end of the monster's next turn.\"},\"damage\":{\"mode\":\"budget\",\"budgetRole\":\"reactionPunish\",\"types\":[\"acid\"],\"scale\":\"minor\",\"budgetShare\":0.35,\"expectedTargets\":1.5,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"failure\":\"The target takes {damage} Acid damage.\",\"success\":\"Half damage only.\",\"effect\":\"The affected space is difficult terrain until the end of the monster's next turn.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "corrosive-web",
+              "renderedText": "The first time each round a web created by the monster is destroyed. Dexterity Saving Throw: DC 15, the affected space in a 10-foot Emanation originating from the creature. Failure: The target takes 3 (1d4) Acid damage. Success: Half damage only. The affected space is difficult terrain until the end of the monster's next turn."
+            }
+          ]
+        },
+        {
+          "targetCr": 15,
+          "bandId": "cr-8-30-acid-spill",
+          "abilityCount": 1,
+          "abilityIds": [
+            "corrosive-web"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"freeTrigger\",\"usage\":{\"type\":\"triggered\"},\"trigger\":\"The first time each round a web created by the monster is destroyed.\",\"resolution\":{\"type\":\"savingThrow\",\"ability\":\"dexterity\",\"dc\":\"monster\"},\"targeting\":{\"type\":\"area\",\"shape\":\"radius\",\"size\":10,\"unit\":\"ft\",\"targets\":\"creatures near the destroyed web\"},\"areaEffect\":{\"enabled\":true,\"type\":\"aura\",\"shape\":\"radius\",\"size\":10,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"repeatTiming\":\"immediate\",\"targets\":\"the affected space\",\"excludes\":[],\"text\":\"The affected space is difficult terrain until the end of the monster's next turn.\"},\"damage\":{\"mode\":\"budget\",\"budgetRole\":\"reactionPunish\",\"types\":[\"acid\"],\"scale\":\"minor\",\"budgetShare\":0.35,\"expectedTargets\":1.5,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"failure\":\"The target takes {damage} Acid damage.\",\"success\":\"Half damage only.\",\"effect\":\"The affected space is difficult terrain until the end of the monster's next turn.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "corrosive-web",
+              "renderedText": "The first time each round a web created by the monster is destroyed. Dexterity Saving Throw: DC 15, the affected space in a 10-foot Emanation originating from the creature. Failure: The target takes 3 (1d4) Acid damage. Success: Half damage only. The affected space is difficult terrain until the end of the monster's next turn."
+            }
+          ]
+        }
+      ],
+      "issues": [],
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "version": "monster-twist-graft-editorial-audit-v1.0",
+      "applicable": true,
+      "id": "mask-phase",
+      "title": "Changing Mask",
+      "source": "wax-death-masks",
+      "decision": "REWRITE_AS_VISIBLE_PHASE_CHOICE",
+      "status": "pass",
+      "pass": true,
+      "abilityCount": 1,
+      "progressionBandCount": 0,
+      "counterplayChannels": [
+        "telegraph",
+        "positioning",
+        "breakCondition",
+        "nonDamage"
+      ],
+      "scaling": {
+        "expected": false,
+        "declared": false,
+        "bandCount": 0,
+        "sampledBandIds": [],
+        "sampledRuleVariants": 1,
+        "pass": true
+      },
+      "snapshots": [
+        {
+          "targetCr": 1,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "changing-mask"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"freeTrigger\",\"usage\":{\"type\":\"limited\",\"uses\":1,\"period\":\"encounter\"},\"trigger\":\"The first time the monster becomes bloodied.\",\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the monster\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[\"grappled\",\"restrained\"],\"severity\":\"moderate\",\"direction\":\"referenceOnly\",\"duration\":\"until the end of its next turn\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"The monster becomes bloodied for the first time.\",\"text\":\"Choose one mask and announce it visibly. Mourner increases the monster's speed by 10 feet and imposes disadvantage on Opportunity Attacks against it. Accuser adds its Proficiency Bonus as Psychic harm to the first hit it scores each turn against a Frightened creature. Saint immediately ends one condition affecting it and grants advantage on its next saving throw before the end of its next turn. The chosen mask lasts until the encounter ends or the mask is removed. Fire exposure suppresses the chosen benefit until the start of the monster's next turn. While the monster has the Grappled or Restrained condition, an adjacent creature can use an action to remove the mask with a successful Strength (Athletics) or Dexterity (Sleight of Hand) check against the monster's save DC.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"Choose one mask and announce it visibly. Mourner increases the monster's speed by 10 feet and imposes disadvantage on Opportunity Attacks against it. Accuser adds its Proficiency Bonus as Psychic harm to the first hit it scores each turn against a Frightened creature. Saint immediately ends one condition affecting it and grants advantage on its next saving throw before the end of its next turn. The chosen mask lasts until the encounter ends or the mask is removed. Fire exposure suppresses the chosen benefit until the start of the monster's next turn. While the monster has the Grappled or Restrained condition, an adjacent creature can use an action to remove the mask with a successful Strength (Athletics) or Dexterity (Sleight of Hand) check against the monster's save DC.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "changing-mask",
+              "renderedText": "Choose one mask and announce it visibly. Mourner increases the monster's speed by 10 feet and imposes disadvantage on Opportunity Attacks against it. Accuser adds its Proficiency Bonus as Psychic harm to the first hit it scores each turn against a Frightened creature. Saint immediately ends one condition affecting it and grants advantage on its next saving throw before the end of its next turn. The chosen mask lasts until the encounter ends or the mask is removed. Fire exposure suppresses the chosen benefit until the start of the monster's next turn. While the monster has the Grappled or Restrained condition, an adjacent creature can use an action to remove the mask with a successful Strength (Athletics) or Dexterity (Sleight of Hand) check against the monster's save DC."
+            }
+          ]
+        },
+        {
+          "targetCr": 5,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "changing-mask"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"freeTrigger\",\"usage\":{\"type\":\"limited\",\"uses\":1,\"period\":\"encounter\"},\"trigger\":\"The first time the monster becomes bloodied.\",\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the monster\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[\"grappled\",\"restrained\"],\"severity\":\"moderate\",\"direction\":\"referenceOnly\",\"duration\":\"until the end of its next turn\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"The monster becomes bloodied for the first time.\",\"text\":\"Choose one mask and announce it visibly. Mourner increases the monster's speed by 10 feet and imposes disadvantage on Opportunity Attacks against it. Accuser adds its Proficiency Bonus as Psychic harm to the first hit it scores each turn against a Frightened creature. Saint immediately ends one condition affecting it and grants advantage on its next saving throw before the end of its next turn. The chosen mask lasts until the encounter ends or the mask is removed. Fire exposure suppresses the chosen benefit until the start of the monster's next turn. While the monster has the Grappled or Restrained condition, an adjacent creature can use an action to remove the mask with a successful Strength (Athletics) or Dexterity (Sleight of Hand) check against the monster's save DC.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"Choose one mask and announce it visibly. Mourner increases the monster's speed by 10 feet and imposes disadvantage on Opportunity Attacks against it. Accuser adds its Proficiency Bonus as Psychic harm to the first hit it scores each turn against a Frightened creature. Saint immediately ends one condition affecting it and grants advantage on its next saving throw before the end of its next turn. The chosen mask lasts until the encounter ends or the mask is removed. Fire exposure suppresses the chosen benefit until the start of the monster's next turn. While the monster has the Grappled or Restrained condition, an adjacent creature can use an action to remove the mask with a successful Strength (Athletics) or Dexterity (Sleight of Hand) check against the monster's save DC.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "changing-mask",
+              "renderedText": "Choose one mask and announce it visibly. Mourner increases the monster's speed by 10 feet and imposes disadvantage on Opportunity Attacks against it. Accuser adds its Proficiency Bonus as Psychic harm to the first hit it scores each turn against a Frightened creature. Saint immediately ends one condition affecting it and grants advantage on its next saving throw before the end of its next turn. The chosen mask lasts until the encounter ends or the mask is removed. Fire exposure suppresses the chosen benefit until the start of the monster's next turn. While the monster has the Grappled or Restrained condition, an adjacent creature can use an action to remove the mask with a successful Strength (Athletics) or Dexterity (Sleight of Hand) check against the monster's save DC."
+            }
+          ]
+        },
+        {
+          "targetCr": 10,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "changing-mask"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"freeTrigger\",\"usage\":{\"type\":\"limited\",\"uses\":1,\"period\":\"encounter\"},\"trigger\":\"The first time the monster becomes bloodied.\",\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the monster\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[\"grappled\",\"restrained\"],\"severity\":\"moderate\",\"direction\":\"referenceOnly\",\"duration\":\"until the end of its next turn\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"The monster becomes bloodied for the first time.\",\"text\":\"Choose one mask and announce it visibly. Mourner increases the monster's speed by 10 feet and imposes disadvantage on Opportunity Attacks against it. Accuser adds its Proficiency Bonus as Psychic harm to the first hit it scores each turn against a Frightened creature. Saint immediately ends one condition affecting it and grants advantage on its next saving throw before the end of its next turn. The chosen mask lasts until the encounter ends or the mask is removed. Fire exposure suppresses the chosen benefit until the start of the monster's next turn. While the monster has the Grappled or Restrained condition, an adjacent creature can use an action to remove the mask with a successful Strength (Athletics) or Dexterity (Sleight of Hand) check against the monster's save DC.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"Choose one mask and announce it visibly. Mourner increases the monster's speed by 10 feet and imposes disadvantage on Opportunity Attacks against it. Accuser adds its Proficiency Bonus as Psychic harm to the first hit it scores each turn against a Frightened creature. Saint immediately ends one condition affecting it and grants advantage on its next saving throw before the end of its next turn. The chosen mask lasts until the encounter ends or the mask is removed. Fire exposure suppresses the chosen benefit until the start of the monster's next turn. While the monster has the Grappled or Restrained condition, an adjacent creature can use an action to remove the mask with a successful Strength (Athletics) or Dexterity (Sleight of Hand) check against the monster's save DC.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "changing-mask",
+              "renderedText": "Choose one mask and announce it visibly. Mourner increases the monster's speed by 10 feet and imposes disadvantage on Opportunity Attacks against it. Accuser adds its Proficiency Bonus as Psychic harm to the first hit it scores each turn against a Frightened creature. Saint immediately ends one condition affecting it and grants advantage on its next saving throw before the end of its next turn. The chosen mask lasts until the encounter ends or the mask is removed. Fire exposure suppresses the chosen benefit until the start of the monster's next turn. While the monster has the Grappled or Restrained condition, an adjacent creature can use an action to remove the mask with a successful Strength (Athletics) or Dexterity (Sleight of Hand) check against the monster's save DC."
+            }
+          ]
+        },
+        {
+          "targetCr": 15,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "changing-mask"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"freeTrigger\",\"usage\":{\"type\":\"limited\",\"uses\":1,\"period\":\"encounter\"},\"trigger\":\"The first time the monster becomes bloodied.\",\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the monster\"},\"areaEffect\":{\"enabled\":false,\"type\":\"aura\",\"shape\":\"emanation\",\"size\":null,\"unit\":\"ft\",\"origin\":\"self\",\"timing\":\"passive\",\"targets\":\"creatures\",\"excludes\":[],\"repeatTiming\":\"passive\",\"text\":\"\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[\"grappled\",\"restrained\"],\"severity\":\"moderate\",\"direction\":\"referenceOnly\",\"duration\":\"until the end of its next turn\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"The monster becomes bloodied for the first time.\",\"text\":\"Choose one mask and announce it visibly. Mourner increases the monster's speed by 10 feet and imposes disadvantage on Opportunity Attacks against it. Accuser adds its Proficiency Bonus as Psychic harm to the first hit it scores each turn against a Frightened creature. Saint immediately ends one condition affecting it and grants advantage on its next saving throw before the end of its next turn. The chosen mask lasts until the encounter ends or the mask is removed. Fire exposure suppresses the chosen benefit until the start of the monster's next turn. While the monster has the Grappled or Restrained condition, an adjacent creature can use an action to remove the mask with a successful Strength (Athletics) or Dexterity (Sleight of Hand) check against the monster's save DC.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"Choose one mask and announce it visibly. Mourner increases the monster's speed by 10 feet and imposes disadvantage on Opportunity Attacks against it. Accuser adds its Proficiency Bonus as Psychic harm to the first hit it scores each turn against a Frightened creature. Saint immediately ends one condition affecting it and grants advantage on its next saving throw before the end of its next turn. The chosen mask lasts until the encounter ends or the mask is removed. Fire exposure suppresses the chosen benefit until the start of the monster's next turn. While the monster has the Grappled or Restrained condition, an adjacent creature can use an action to remove the mask with a successful Strength (Athletics) or Dexterity (Sleight of Hand) check against the monster's save DC.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "changing-mask",
+              "renderedText": "Choose one mask and announce it visibly. Mourner increases the monster's speed by 10 feet and imposes disadvantage on Opportunity Attacks against it. Accuser adds its Proficiency Bonus as Psychic harm to the first hit it scores each turn against a Frightened creature. Saint immediately ends one condition affecting it and grants advantage on its next saving throw before the end of its next turn. The chosen mask lasts until the encounter ends or the mask is removed. Fire exposure suppresses the chosen benefit until the start of the monster's next turn. While the monster has the Grappled or Restrained condition, an adjacent creature can use an action to remove the mask with a successful Strength (Athletics) or Dexterity (Sleight of Hand) check against the monster's save DC."
+            }
+          ]
+        }
+      ],
+      "issues": [],
+      "errors": [],
+      "warnings": []
+    }
+  ],
+  "errors": [],
+  "pass": true
+}

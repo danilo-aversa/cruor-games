@@ -15,6 +15,7 @@ const GRAFT_V2_OPTIONAL_FIELDS = Object.freeze([
   "identity",
   "abilities",
   "routine",
+  "progression",
   "modifiers",
   "compatibility",
   "hooks",

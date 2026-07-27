@@ -10,6 +10,77 @@ import {
 import {
   summarizeMonsterFrameFit,
 } from "../../monster-composer/model/monster-frame-fit.js";
+import {
+  isMonsterGraftV2,
+  validateMonsterGraftV2,
+} from "../../monster-composer/model/monster-graft-v2.schema.js";
+
+
+export const MONSTER_GRAFT_V2_PAYLOAD_FIELDS = Object.freeze([
+  "graftSchemaVersion",
+  "schemaVersion",
+  "kind",
+  "identity",
+  "abilities",
+  "routine",
+  "progression",
+  "modifiers",
+  "compatibility",
+  "hooks",
+  "migration",
+  "balanceProfile",
+  "pressureProfile",
+  "complexityProfile",
+  "counterplayProfile",
+  "spikeRiskProfile",
+  "authoring",
+]);
+
+function copyDefinedFields(source = {}, fields = []) {
+  return fields.reduce((output, field) => {
+    if (source?.[field] !== undefined && source?.[field] !== null) {
+      output[field] = clone(source[field]);
+    }
+    return output;
+  }, {});
+}
+
+export function getStudioMonsterPayload(component = {}) {
+  const semanticMonster = component.semantic?.details?.monster;
+  const generationMonster = component.generation?.monster;
+  const directMonster = component.monster;
+  const legacyFields = copyDefinedFields(component, MONSTER_GRAFT_V2_PAYLOAD_FIELDS);
+  if (component.schemaVersion !== "monster-graft-v2.0") {
+    delete legacyFields.schemaVersion;
+  }
+  const merged = isPlainObject(directMonster)
+    ? clone(directMonster)
+    : {
+        ...legacyFields,
+        ...(isPlainObject(generationMonster) ? clone(generationMonster) : {}),
+        ...(isPlainObject(semanticMonster) ? clone(semanticMonster) : {}),
+      };
+
+  const graftId = merged.graftId || component.id || component.legacyId || "";
+  const slot = merged.slot || component.slot || asArray(component.slots)[0] || "";
+  const section = merged.section || component.section || merged.rules?.section || "";
+
+  return {
+    ...merged,
+    ...(graftId ? { graftId } : {}),
+    ...(slot ? { slot } : {}),
+    ...(section ? { section } : {}),
+  };
+}
+
+export function isStudioMonsterGraftV2(component = {}) {
+  return isMonsterGraftV2(buildMonsterRulesFeature(component, getExplicitMonsterRules(component)));
+}
+
+export function getStudioMonsterGraftValidation(component = {}) {
+  const feature = buildMonsterRulesFeature(component, getExplicitMonsterRules(component));
+  return validateMonsterGraftV2(feature);
+}
 
 export const COMPONENT_TYPE_LABELS = Object.freeze({
   "monster-graft": "Monster Graft",
@@ -140,7 +211,8 @@ export function slugify(value) {
 }
 
 export function getMonsterConstraintSource(component = {}) {
-  return component.monster?.constraints || component.anatomyConstraints || component.constraints || null;
+  const monster = getStudioMonsterPayload(component);
+  return monster.constraints || component.anatomyConstraints || component.constraints || null;
 }
 
 export function getMonsterConstraintSummary(component = {}) {
@@ -148,7 +220,8 @@ export function getMonsterConstraintSummary(component = {}) {
 }
 
 export function getMonsterGrantSource(component = {}) {
-  return component.monster?.anatomyGrants || component.monster?.grants || component.anatomyGrants || null;
+  const monster = getStudioMonsterPayload(component);
+  return monster.anatomyGrants || monster.grants || component.anatomyGrants || null;
 }
 
 export function getMonsterGrantSummary(component = {}) {
@@ -156,7 +229,8 @@ export function getMonsterGrantSummary(component = {}) {
 }
 
 export function getMonsterFrameFitSource(component = {}) {
-  return component.monster?.fit || component.fit || component.frameFit || null;
+  const monster = getStudioMonsterPayload(component);
+  return monster.fit || component.fit || component.frameFit || null;
 }
 
 export function getMonsterFrameFitSummary(component = {}) {
@@ -164,15 +238,21 @@ export function getMonsterFrameFitSummary(component = {}) {
 }
 
 export function getExplicitMonsterRules(component = {}) {
-  const monsterRules = component.monster?.rules;
+  const monsterRules = getStudioMonsterPayload(component).rules;
   if (isPlainObject(monsterRules) && Object.keys(monsterRules).length) return monsterRules;
   if (isPlainObject(component.rules) && Object.keys(component.rules).length) return component.rules;
   return null;
 }
 
 export function buildMonsterRulesFeature(component = {}, explicitRules = null) {
-  const monster = component.monster || {};
+  const monster = getStudioMonsterPayload(component);
+  const graftSchemaVersion = monster.graftSchemaVersion || monster.schemaVersion || "";
   const feature = {
+    ...copyDefinedFields(monster, MONSTER_GRAFT_V2_PAYLOAD_FIELDS),
+    ...(graftSchemaVersion ? {
+      schemaVersion: graftSchemaVersion,
+      graftSchemaVersion,
+    } : {}),
     id: monster.graftId || component.id,
     title: component.title || component.label || monster.graftId || component.id,
     slot: monster.slot || asArray(component.slots)[0],
@@ -184,6 +264,7 @@ export function buildMonsterRulesFeature(component = {}, explicitRules = null) {
     cost: Number(monster.cost || 0),
     complexity: Number(monster.complexity || 0),
     stats: monster.stats || {},
+    balanceProfile: monster.balanceProfile || monster.balance || null,
     summary: component.summary || "",
     mechanics: component.mechanics || component.tableText || "",
     counterplay: component.counterplay || "",

@@ -1,6 +1,6 @@
 import { getBestiaryWordingIssues } from "./monster-bestiary-wording.js";
 
-export const MONSTER_STAT_BLOCK_PARSER_VERSION = "rendered-statblock-parser-v1.36-r2";
+export const MONSTER_STAT_BLOCK_PARSER_VERSION = "rendered-statblock-parser-v1.39-ability-id-first";
 
 const DND_CONDITIONS = Object.freeze([
   "Blinded",
@@ -99,14 +99,26 @@ function buildFeatureMap(selectedFeatures = []) {
 }
 
 function buildAbilityMap(abilityModel = {}) {
-  const byFeatureId = new Map();
+  const byId = new Map();
+  const bySourceGraftId = new Map();
   const byTitle = new Map();
+
   asArray(abilityModel.abilities).forEach((ability) => {
-    if (ability?.sourceGraftId) byFeatureId.set(ability.sourceGraftId, ability);
-    if (ability?.id) byFeatureId.set(ability.id, ability);
-    if (ability?.title) byTitle.set(cleanString(ability.title).toLowerCase(), ability);
+    if (ability?.id) byId.set(ability.id, ability);
+    if (ability?.sourceGraftId) {
+      const sourceAbilities = bySourceGraftId.get(ability.sourceGraftId) || [];
+      sourceAbilities.push(ability);
+      bySourceGraftId.set(ability.sourceGraftId, sourceAbilities);
+    }
+    if (ability?.title) {
+      const titleKey = cleanString(ability.title).toLowerCase();
+      const titleAbilities = byTitle.get(titleKey) || [];
+      titleAbilities.push(ability);
+      byTitle.set(titleKey, titleAbilities);
+    }
   });
-  return { byFeatureId, byTitle };
+
+  return { byId, bySourceGraftId, byTitle };
 }
 
 function findFeatureForItem(item, featureMap) {
@@ -114,7 +126,16 @@ function findFeatureForItem(item, featureMap) {
 }
 
 function findAbilityForItem(item, feature, abilityMap) {
-  return abilityMap.byFeatureId.get(feature?.id) || abilityMap.byFeatureId.get(item.id) || abilityMap.byTitle.get(cleanString(item.title).toLowerCase()) || null;
+  const exactAbility = abilityMap.byId.get(item.id);
+  if (exactAbility) return exactAbility;
+
+  const titleMatches = abilityMap.byTitle.get(cleanString(item.title).toLowerCase()) || [];
+  if (titleMatches.length === 1) return titleMatches[0];
+
+  const sourceMatches = abilityMap.bySourceGraftId.get(feature?.id) || [];
+  if (sourceMatches.length === 1) return sourceMatches[0];
+
+  return null;
 }
 
 function getTextDamagePattern() {

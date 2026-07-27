@@ -1,0 +1,1535 @@
+{
+  "version": "monster-body-graft-editorial-audit-v1.0",
+  "editorialVersion": "monster-body-graft-editorial-v1.1-simple-names",
+  "total": 12,
+  "expectedTotal": 12,
+  "passing": 12,
+  "warning": 0,
+  "error": 0,
+  "abilityCount": 14,
+  "bundleCount": 2,
+  "scaledCount": 3,
+  "byDecision": {
+    "REWRITE_AND_SCALE": 2,
+    "REWRITE": 5,
+    "RENAME_AND_REWRITE": 1,
+    "RENAME_AND_EXPAND_INTO_BUNDLE": 1,
+    "EXPAND_INTO_BUNDLE_AND_SCALE": 1,
+    "EXPAND": 1,
+    "RENAME_AND_EXPAND": 1
+  },
+  "bySource": {
+    "decomposition": 4,
+    "jikininki": 1,
+    "wolf-spiders": 6,
+    "wax-death-masks": 1
+  },
+  "reports": [
+    {
+      "version": "monster-body-graft-editorial-audit-v1.0",
+      "applicable": true,
+      "id": "swollen-corpse",
+      "title": "Swollen Corpse",
+      "source": "decomposition",
+      "slot": "body",
+      "kind": "traitBundle",
+      "decision": "REWRITE_AND_SCALE",
+      "rationale": "The original poison pulse was usable but too small and generic. It is now a clearly telegraphed bloodied-phase positioning event with authored CR scaling.",
+      "status": "pass",
+      "pass": true,
+      "abilityCount": 1,
+      "abilityIds": [
+        "pressure-vent"
+      ],
+      "counterplayChannels": [
+        "telegraph",
+        "positioning",
+        "breakCondition",
+        "nonDamage"
+      ],
+      "scaling": {
+        "expected": true,
+        "declared": true,
+        "bandCount": 3,
+        "sampledBandIds": [
+          "cr-0-4-tight-corpse",
+          "cr-5-12-swollen-vessel",
+          "cr-13-30-pressure-carcass"
+        ],
+        "sampledRuleVariants": 3,
+        "pass": true
+      },
+      "snapshots": [
+        {
+          "targetCr": 1,
+          "bandId": "cr-0-4-tight-corpse",
+          "abilityCount": 1,
+          "abilityIds": [
+            "pressure-vent"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"The first time the creature becomes bloodied.\",\"resolution\":{\"type\":\"savingThrow\",\"ability\":\"constitution\",\"dc\":\"monster\"},\"targeting\":{\"type\":\"area\",\"shape\":\"radius\",\"size\":5,\"unit\":\"ft\",\"targets\":\"other creatures\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[\"poisoned\"],\"severity\":\"moderate\",\"direction\":\"enemy\",\"duration\":\"until the end of its next turn\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"failure\":\"The target has the Poisoned condition until the end of its next turn.\",\"success\":\"No effect.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "pressure-vent",
+              "renderedText": "The first time the creature becomes bloodied. Constitution Saving Throw: DC 15, other creatures in a 5-foot Emanation originating from the creature. Failure: The target has the Poisoned condition until the end of its next turn. Success: No effect."
+            }
+          ]
+        },
+        {
+          "targetCr": 5,
+          "bandId": "cr-5-12-swollen-vessel",
+          "abilityCount": 1,
+          "abilityIds": [
+            "pressure-vent"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"The first time the creature becomes bloodied.\",\"resolution\":{\"type\":\"savingThrow\",\"ability\":\"constitution\",\"dc\":\"monster\"},\"targeting\":{\"type\":\"area\",\"shape\":\"radius\",\"size\":10,\"unit\":\"ft\",\"targets\":\"other creatures\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[\"poisoned\"],\"severity\":\"moderate\",\"direction\":\"enemy\",\"duration\":\"until the end of its next turn\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"failure\":\"The target has the Poisoned condition until the end of its next turn.\",\"success\":\"No effect.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "pressure-vent",
+              "renderedText": "The first time the creature becomes bloodied. Constitution Saving Throw: DC 15, other creatures in a 10-foot Emanation originating from the creature. Failure: The target has the Poisoned condition until the end of its next turn. Success: No effect."
+            }
+          ]
+        },
+        {
+          "targetCr": 10,
+          "bandId": "cr-5-12-swollen-vessel",
+          "abilityCount": 1,
+          "abilityIds": [
+            "pressure-vent"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"The first time the creature becomes bloodied.\",\"resolution\":{\"type\":\"savingThrow\",\"ability\":\"constitution\",\"dc\":\"monster\"},\"targeting\":{\"type\":\"area\",\"shape\":\"radius\",\"size\":10,\"unit\":\"ft\",\"targets\":\"other creatures\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[\"poisoned\"],\"severity\":\"moderate\",\"direction\":\"enemy\",\"duration\":\"until the end of its next turn\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"failure\":\"The target has the Poisoned condition until the end of its next turn.\",\"success\":\"No effect.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "pressure-vent",
+              "renderedText": "The first time the creature becomes bloodied. Constitution Saving Throw: DC 15, other creatures in a 10-foot Emanation originating from the creature. Failure: The target has the Poisoned condition until the end of its next turn. Success: No effect."
+            }
+          ]
+        },
+        {
+          "targetCr": 15,
+          "bandId": "cr-13-30-pressure-carcass",
+          "abilityCount": 1,
+          "abilityIds": [
+            "pressure-vent"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"The first time the creature becomes bloodied.\",\"resolution\":{\"type\":\"savingThrow\",\"ability\":\"constitution\",\"dc\":\"monster\"},\"targeting\":{\"type\":\"area\",\"shape\":\"radius\",\"size\":15,\"unit\":\"ft\",\"targets\":\"other creatures\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[\"poisoned\"],\"severity\":\"moderate\",\"direction\":\"enemy\",\"duration\":\"until the end of its next turn\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"failure\":\"The target has the Poisoned condition and cannot take reactions until the end of its next turn.\",\"success\":\"No effect.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "pressure-vent",
+              "renderedText": "The first time the creature becomes bloodied. Constitution Saving Throw: DC 15, other creatures in a 15-foot Emanation originating from the creature. Failure: The target has the Poisoned condition and cannot take reactions until the end of its next turn. Success: No effect."
+            }
+          ]
+        }
+      ],
+      "issues": [],
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "version": "monster-body-graft-editorial-audit-v1.0",
+      "applicable": true,
+      "id": "fresh-bloat-hide",
+      "title": "Bloat Hide",
+      "source": "decomposition",
+      "slot": "body",
+      "kind": "traitBundle",
+      "decision": "REWRITE",
+      "rationale": "The original phase switch was strong but imprecise. The revised version makes the defensive and mobile phases explicit and gives players a preparation window.",
+      "status": "pass",
+      "pass": true,
+      "abilityCount": 1,
+      "abilityIds": [
+        "body-trait"
+      ],
+      "counterplayChannels": [
+        "telegraph",
+        "positioning",
+        "breakCondition",
+        "nonDamage"
+      ],
+      "scaling": {
+        "expected": false,
+        "declared": false,
+        "bandCount": 0,
+        "sampledBandIds": [],
+        "sampledRuleVariants": 1,
+        "pass": true
+      },
+      "snapshots": [
+        {
+          "targetCr": 1,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "body-trait"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"The first time the creature becomes bloodied.\",\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"While the monster has more than half its Hit Points, it gains a +2 bonus to Armor Class. When it first becomes Bloodied, this bonus ends and its walking speed increases by 10 feet until the end of the encounter.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "body-trait",
+              "renderedText": "While the monster has more than half its Hit Points, it gains a +2 bonus to Armor Class. When it first becomes Bloodied, this bonus ends and its walking speed increases by 10 feet until the end of the encounter."
+            }
+          ]
+        },
+        {
+          "targetCr": 5,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "body-trait"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"The first time the creature becomes bloodied.\",\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"While the monster has more than half its Hit Points, it gains a +2 bonus to Armor Class. When it first becomes Bloodied, this bonus ends and its walking speed increases by 10 feet until the end of the encounter.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "body-trait",
+              "renderedText": "While the monster has more than half its Hit Points, it gains a +2 bonus to Armor Class. When it first becomes Bloodied, this bonus ends and its walking speed increases by 10 feet until the end of the encounter."
+            }
+          ]
+        },
+        {
+          "targetCr": 10,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "body-trait"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"The first time the creature becomes bloodied.\",\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"While the monster has more than half its Hit Points, it gains a +2 bonus to Armor Class. When it first becomes Bloodied, this bonus ends and its walking speed increases by 10 feet until the end of the encounter.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "body-trait",
+              "renderedText": "While the monster has more than half its Hit Points, it gains a +2 bonus to Armor Class. When it first becomes Bloodied, this bonus ends and its walking speed increases by 10 feet until the end of the encounter."
+            }
+          ]
+        },
+        {
+          "targetCr": 15,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "body-trait"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"The first time the creature becomes bloodied.\",\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"While the monster has more than half its Hit Points, it gains a +2 bonus to Armor Class. When it first becomes Bloodied, this bonus ends and its walking speed increases by 10 feet until the end of the encounter.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "body-trait",
+              "renderedText": "While the monster has more than half its Hit Points, it gains a +2 bonus to Armor Class. When it first becomes Bloodied, this bonus ends and its walking speed increases by 10 feet until the end of the encounter."
+            }
+          ]
+        }
+      ],
+      "issues": [],
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "version": "monster-body-graft-editorial-audit-v1.0",
+      "applicable": true,
+      "id": "volatile-immobile-mass",
+      "title": "Corpse Mass",
+      "source": "decomposition",
+      "slot": "body",
+      "kind": "traitBundle",
+      "decision": "RENAME_AND_REWRITE",
+      "rationale": "The old name promised an explosion supplied by another slot. The new chassis is self-contained: immobile, hard to displace, and defined by reach-based zone control.",
+      "status": "pass",
+      "pass": true,
+      "abilityCount": 1,
+      "abilityIds": [
+        "body-trait"
+      ],
+      "counterplayChannels": [
+        "telegraph",
+        "positioning",
+        "breakCondition",
+        "nonDamage"
+      ],
+      "scaling": {
+        "expected": false,
+        "declared": false,
+        "bandCount": 0,
+        "sampledBandIds": [],
+        "sampledRuleVariants": 1,
+        "pass": true
+      },
+      "snapshots": [
+        {
+          "targetCr": 1,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "body-trait"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":null,\"resolution\":{\"type\":\"none\",\"reach\":\"+5 ft.\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster's speed is 0, it is immune to the Prone condition, and the reach of its melee attacks increases by 5 feet. Forced movement moves it only half the normal distance.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "body-trait",
+              "renderedText": "The monster's speed is 0, it is immune to the Prone condition, and the reach of its melee attacks increases by 5 feet. Forced movement moves it only half the normal distance."
+            }
+          ]
+        },
+        {
+          "targetCr": 5,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "body-trait"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":null,\"resolution\":{\"type\":\"none\",\"reach\":\"+5 ft.\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster's speed is 0, it is immune to the Prone condition, and the reach of its melee attacks increases by 5 feet. Forced movement moves it only half the normal distance.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "body-trait",
+              "renderedText": "The monster's speed is 0, it is immune to the Prone condition, and the reach of its melee attacks increases by 5 feet. Forced movement moves it only half the normal distance."
+            }
+          ]
+        },
+        {
+          "targetCr": 10,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "body-trait"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":null,\"resolution\":{\"type\":\"none\",\"reach\":\"+5 ft.\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster's speed is 0, it is immune to the Prone condition, and the reach of its melee attacks increases by 5 feet. Forced movement moves it only half the normal distance.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "body-trait",
+              "renderedText": "The monster's speed is 0, it is immune to the Prone condition, and the reach of its melee attacks increases by 5 feet. Forced movement moves it only half the normal distance."
+            }
+          ]
+        },
+        {
+          "targetCr": 15,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "body-trait"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":null,\"resolution\":{\"type\":\"none\",\"reach\":\"+5 ft.\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster's speed is 0, it is immune to the Prone condition, and the reach of its melee attacks increases by 5 feet. Forced movement moves it only half the normal distance.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "body-trait",
+              "renderedText": "The monster's speed is 0, it is immune to the Prone condition, and the reach of its melee attacks increases by 5 feet. Forced movement moves it only half the normal distance."
+            }
+          ]
+        }
+      ],
+      "issues": [],
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "version": "monster-body-graft-editorial-audit-v1.0",
+      "applicable": true,
+      "id": "skin-slippage",
+      "title": "Shedding Skin",
+      "source": "decomposition",
+      "slot": "body",
+      "kind": "traitBundle",
+      "decision": "REWRITE",
+      "rationale": "The original secondary saving throw added friction without creating a useful decision. The rewrite makes the body fantasy directly produce an escape-and-reposition rule.",
+      "status": "pass",
+      "pass": true,
+      "abilityCount": 1,
+      "abilityIds": [
+        "body-trait"
+      ],
+      "counterplayChannels": [
+        "telegraph",
+        "positioning",
+        "breakCondition",
+        "nonDamage"
+      ],
+      "scaling": {
+        "expected": false,
+        "declared": false,
+        "bandCount": 0,
+        "sampledBandIds": [],
+        "sampledRuleVariants": 1,
+        "pass": true
+      },
+      "snapshots": [
+        {
+          "targetCr": 1,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "body-trait"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"Immediately after the creature ends the Grappled or Restrained condition on itself.\",\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster has Advantage on ability checks and saving throws made to end the Grappled or Restrained condition. Immediately after it ends either condition, it can move up to 10 feet without provoking Opportunity Attacks.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "body-trait",
+              "renderedText": "The monster has Advantage on ability checks and saving throws made to end the Grappled or Restrained condition. Immediately after it ends either condition, it can move up to 10 feet without provoking Opportunity Attacks."
+            }
+          ]
+        },
+        {
+          "targetCr": 5,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "body-trait"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"Immediately after the creature ends the Grappled or Restrained condition on itself.\",\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster has Advantage on ability checks and saving throws made to end the Grappled or Restrained condition. Immediately after it ends either condition, it can move up to 10 feet without provoking Opportunity Attacks.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "body-trait",
+              "renderedText": "The monster has Advantage on ability checks and saving throws made to end the Grappled or Restrained condition. Immediately after it ends either condition, it can move up to 10 feet without provoking Opportunity Attacks."
+            }
+          ]
+        },
+        {
+          "targetCr": 10,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "body-trait"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"Immediately after the creature ends the Grappled or Restrained condition on itself.\",\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster has Advantage on ability checks and saving throws made to end the Grappled or Restrained condition. Immediately after it ends either condition, it can move up to 10 feet without provoking Opportunity Attacks.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "body-trait",
+              "renderedText": "The monster has Advantage on ability checks and saving throws made to end the Grappled or Restrained condition. Immediately after it ends either condition, it can move up to 10 feet without provoking Opportunity Attacks."
+            }
+          ]
+        },
+        {
+          "targetCr": 15,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "body-trait"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"Immediately after the creature ends the Grappled or Restrained condition on itself.\",\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster has Advantage on ability checks and saving throws made to end the Grappled or Restrained condition. Immediately after it ends either condition, it can move up to 10 feet without provoking Opportunity Attacks.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "body-trait",
+              "renderedText": "The monster has Advantage on ability checks and saving throws made to end the Grappled or Restrained condition. Immediately after it ends either condition, it can move up to 10 feet without provoking Opportunity Attacks."
+            }
+          ]
+        }
+      ],
+      "issues": [],
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "version": "monster-body-graft-editorial-audit-v1.0",
+      "applicable": true,
+      "id": "ethereal-sight",
+      "title": "Anchored Spirit",
+      "source": "jikininki",
+      "slot": "body",
+      "kind": "traitBundle",
+      "decision": "RENAME_AND_EXPAND_INTO_BUNDLE",
+      "rationale": "Ethereal Sight alone was a minor sense, not a publishable Body Graft. It now remains as one ability inside a corpse-dependent defensive chassis with explicit object counterplay.",
+      "status": "pass",
+      "pass": true,
+      "abilityCount": 2,
+      "abilityIds": [
+        "grave-sight",
+        "corpse-anchor"
+      ],
+      "counterplayChannels": [
+        "telegraph",
+        "positioning",
+        "breakCondition",
+        "nonDamage"
+      ],
+      "scaling": {
+        "expected": false,
+        "declared": false,
+        "bandCount": 0,
+        "sampledBandIds": [],
+        "sampledRuleVariants": 2,
+        "pass": true
+      },
+      "snapshots": [
+        {
+          "targetCr": 1,
+          "bandId": null,
+          "abilityCount": 2,
+          "abilityIds": [
+            "grave-sight",
+            "corpse-anchor"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":null,\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster can see 60 feet into the Ethereal Plane while it is on the Material Plane. It also knows whether an unattended corpse it can see is inhabited, animated, or spiritually anchored.\"}}",
+            "{\"section\":\"bonusAction\",\"actionEconomy\":\"bonusAction\",\"usage\":{\"type\":\"atWill\"},\"trigger\":null,\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"An unattended Medium or larger corpse is within 5 feet.\",\"text\":\"The monster enters an unattended Medium or larger corpse within 5 feet. While anchored, its speed is 0, it has Half Cover, and it cannot be moved against its will. It can leave the corpse as a Bonus Action. It is expelled into an adjacent space if the corpse is destroyed, burned, or moved more than 10 feet at once.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster enters an unattended Medium or larger corpse within 5 feet. While anchored, its speed is 0, it has Half Cover, and it cannot be moved against its will. It can leave the corpse as a Bonus Action. It is expelled into an adjacent space if the corpse is destroyed, burned, or moved more than 10 feet at once.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "grave-sight",
+              "renderedText": "The monster can see 60 feet into the Ethereal Plane while it is on the Material Plane. It also knows whether an unattended corpse it can see is inhabited, animated, or spiritually anchored."
+            },
+            {
+              "abilityId": "corpse-anchor",
+              "renderedText": "The monster enters an unattended Medium or larger corpse within 5 feet. While anchored, its speed is 0, it has Half Cover, and it cannot be moved against its will. It can leave the corpse as a Bonus Action. It is expelled into an adjacent space if the corpse is destroyed, burned, or moved more than 10 feet at once."
+            }
+          ]
+        },
+        {
+          "targetCr": 5,
+          "bandId": null,
+          "abilityCount": 2,
+          "abilityIds": [
+            "grave-sight",
+            "corpse-anchor"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":null,\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster can see 60 feet into the Ethereal Plane while it is on the Material Plane. It also knows whether an unattended corpse it can see is inhabited, animated, or spiritually anchored.\"}}",
+            "{\"section\":\"bonusAction\",\"actionEconomy\":\"bonusAction\",\"usage\":{\"type\":\"atWill\"},\"trigger\":null,\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"An unattended Medium or larger corpse is within 5 feet.\",\"text\":\"The monster enters an unattended Medium or larger corpse within 5 feet. While anchored, its speed is 0, it has Half Cover, and it cannot be moved against its will. It can leave the corpse as a Bonus Action. It is expelled into an adjacent space if the corpse is destroyed, burned, or moved more than 10 feet at once.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster enters an unattended Medium or larger corpse within 5 feet. While anchored, its speed is 0, it has Half Cover, and it cannot be moved against its will. It can leave the corpse as a Bonus Action. It is expelled into an adjacent space if the corpse is destroyed, burned, or moved more than 10 feet at once.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "grave-sight",
+              "renderedText": "The monster can see 60 feet into the Ethereal Plane while it is on the Material Plane. It also knows whether an unattended corpse it can see is inhabited, animated, or spiritually anchored."
+            },
+            {
+              "abilityId": "corpse-anchor",
+              "renderedText": "The monster enters an unattended Medium or larger corpse within 5 feet. While anchored, its speed is 0, it has Half Cover, and it cannot be moved against its will. It can leave the corpse as a Bonus Action. It is expelled into an adjacent space if the corpse is destroyed, burned, or moved more than 10 feet at once."
+            }
+          ]
+        },
+        {
+          "targetCr": 10,
+          "bandId": null,
+          "abilityCount": 2,
+          "abilityIds": [
+            "grave-sight",
+            "corpse-anchor"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":null,\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster can see 60 feet into the Ethereal Plane while it is on the Material Plane. It also knows whether an unattended corpse it can see is inhabited, animated, or spiritually anchored.\"}}",
+            "{\"section\":\"bonusAction\",\"actionEconomy\":\"bonusAction\",\"usage\":{\"type\":\"atWill\"},\"trigger\":null,\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"An unattended Medium or larger corpse is within 5 feet.\",\"text\":\"The monster enters an unattended Medium or larger corpse within 5 feet. While anchored, its speed is 0, it has Half Cover, and it cannot be moved against its will. It can leave the corpse as a Bonus Action. It is expelled into an adjacent space if the corpse is destroyed, burned, or moved more than 10 feet at once.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster enters an unattended Medium or larger corpse within 5 feet. While anchored, its speed is 0, it has Half Cover, and it cannot be moved against its will. It can leave the corpse as a Bonus Action. It is expelled into an adjacent space if the corpse is destroyed, burned, or moved more than 10 feet at once.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "grave-sight",
+              "renderedText": "The monster can see 60 feet into the Ethereal Plane while it is on the Material Plane. It also knows whether an unattended corpse it can see is inhabited, animated, or spiritually anchored."
+            },
+            {
+              "abilityId": "corpse-anchor",
+              "renderedText": "The monster enters an unattended Medium or larger corpse within 5 feet. While anchored, its speed is 0, it has Half Cover, and it cannot be moved against its will. It can leave the corpse as a Bonus Action. It is expelled into an adjacent space if the corpse is destroyed, burned, or moved more than 10 feet at once."
+            }
+          ]
+        },
+        {
+          "targetCr": 15,
+          "bandId": null,
+          "abilityCount": 2,
+          "abilityIds": [
+            "grave-sight",
+            "corpse-anchor"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":null,\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster can see 60 feet into the Ethereal Plane while it is on the Material Plane. It also knows whether an unattended corpse it can see is inhabited, animated, or spiritually anchored.\"}}",
+            "{\"section\":\"bonusAction\",\"actionEconomy\":\"bonusAction\",\"usage\":{\"type\":\"atWill\"},\"trigger\":null,\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"An unattended Medium or larger corpse is within 5 feet.\",\"text\":\"The monster enters an unattended Medium or larger corpse within 5 feet. While anchored, its speed is 0, it has Half Cover, and it cannot be moved against its will. It can leave the corpse as a Bonus Action. It is expelled into an adjacent space if the corpse is destroyed, burned, or moved more than 10 feet at once.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster enters an unattended Medium or larger corpse within 5 feet. While anchored, its speed is 0, it has Half Cover, and it cannot be moved against its will. It can leave the corpse as a Bonus Action. It is expelled into an adjacent space if the corpse is destroyed, burned, or moved more than 10 feet at once.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "grave-sight",
+              "renderedText": "The monster can see 60 feet into the Ethereal Plane while it is on the Material Plane. It also knows whether an unattended corpse it can see is inhabited, animated, or spiritually anchored."
+            },
+            {
+              "abilityId": "corpse-anchor",
+              "renderedText": "The monster enters an unattended Medium or larger corpse within 5 feet. While anchored, its speed is 0, it has Half Cover, and it cannot be moved against its will. It can leave the corpse as a Bonus Action. It is expelled into an adjacent space if the corpse is destroyed, burned, or moved more than 10 feet at once."
+            }
+          ]
+        }
+      ],
+      "issues": [],
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "version": "monster-body-graft-editorial-audit-v1.0",
+      "applicable": true,
+      "id": "egg-carrier",
+      "title": "Egg Carrier",
+      "source": "wolf-spiders",
+      "slot": "body",
+      "kind": "traitBundle",
+      "decision": "EXPAND_INTO_BUNDLE_AND_SCALE",
+      "rationale": "The previous random table was slow and opaque. The revised clutch is a visible object economy with deterministic turn timing, explicit CR scaling, and a meaningful destroy-eggs-versus-release-speed tradeoff.",
+      "status": "pass",
+      "pass": true,
+      "abilityCount": 2,
+      "abilityIds": [
+        "exposed-clutch",
+        "hatching-cycle"
+      ],
+      "counterplayChannels": [
+        "telegraph",
+        "positioning",
+        "breakCondition",
+        "nonDamage"
+      ],
+      "scaling": {
+        "expected": true,
+        "declared": true,
+        "bandCount": 3,
+        "sampledBandIds": [
+          "cr-0-4-small-clutch",
+          "cr-5-12-living-clutch",
+          "cr-13-30-brood-cascade"
+        ],
+        "sampledRuleVariants": 6,
+        "pass": true
+      },
+      "snapshots": [
+        {
+          "targetCr": 1,
+          "bandId": "cr-0-4-small-clutch",
+          "abilityCount": 2,
+          "abilityIds": [
+            "exposed-clutch",
+            "hatching-cycle"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":null,\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster begins combat carrying two visible eggs. Each egg is a Tiny object with AC 10, 1 Hit Point, immunity to Poison and Psychic damage, and vulnerability to Fire damage. While any eggs remain, the monster's speed is reduced by 10 feet.\"}}",
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"At the start of each of the creature's turns.\",\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":true,\"type\":\"spawn\",\"creatureName\":\"spider minion\",\"count\":\"1 on a 5–6\",\"placement\":\"an adjacent unoccupied space\",\"duration\":\"until destroyed\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"alliedToSummoner\",\"trigger\":\"At the start of each of the monster's turns.\",\"text\":\"Roll a d6. On a 5 or 6, one surviving egg hatches into one spider minion in an adjacent unoccupied space.\",\"creatureRef\":\"\",\"limit\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"Roll a d6. On a 5 or 6, one surviving egg hatches into one spider minion in an adjacent unoccupied space.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "exposed-clutch",
+              "renderedText": "The monster begins combat carrying two visible eggs. Each egg is a Tiny object with AC 10, 1 Hit Point, immunity to Poison and Psychic damage, and vulnerability to Fire damage. While any eggs remain, the monster's speed is reduced by 10 feet."
+            },
+            {
+              "abilityId": "hatching-cycle",
+              "renderedText": "Roll a d6. On a 5 or 6, one surviving egg hatches into one spider minion in an adjacent unoccupied space."
+            }
+          ]
+        },
+        {
+          "targetCr": 5,
+          "bandId": "cr-5-12-living-clutch",
+          "abilityCount": 2,
+          "abilityIds": [
+            "exposed-clutch",
+            "hatching-cycle"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":null,\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster begins combat carrying four visible eggs. Each egg is a Tiny object with AC 10, 1 Hit Point, immunity to Poison and Psychic damage, and vulnerability to Fire damage. While any eggs remain, the monster's speed is reduced by 10 feet.\"}}",
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"At the start of each of the creature's turns.\",\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":true,\"type\":\"spawn\",\"creatureName\":\"spider minion\",\"count\":\"1\",\"placement\":\"an adjacent unoccupied space\",\"duration\":\"until destroyed\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"alliedToSummoner\",\"trigger\":\"At the start of each of the monster's turns.\",\"text\":\"One surviving egg hatches into one spider minion in an adjacent unoccupied space.\",\"creatureRef\":\"\",\"limit\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"One surviving egg hatches into one spider minion in an adjacent unoccupied space.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "exposed-clutch",
+              "renderedText": "The monster begins combat carrying four visible eggs. Each egg is a Tiny object with AC 10, 1 Hit Point, immunity to Poison and Psychic damage, and vulnerability to Fire damage. While any eggs remain, the monster's speed is reduced by 10 feet."
+            },
+            {
+              "abilityId": "hatching-cycle",
+              "renderedText": "One surviving egg hatches into one spider minion in an adjacent unoccupied space."
+            }
+          ]
+        },
+        {
+          "targetCr": 10,
+          "bandId": "cr-5-12-living-clutch",
+          "abilityCount": 2,
+          "abilityIds": [
+            "exposed-clutch",
+            "hatching-cycle"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":null,\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster begins combat carrying four visible eggs. Each egg is a Tiny object with AC 10, 1 Hit Point, immunity to Poison and Psychic damage, and vulnerability to Fire damage. While any eggs remain, the monster's speed is reduced by 10 feet.\"}}",
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"At the start of each of the creature's turns.\",\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":true,\"type\":\"spawn\",\"creatureName\":\"spider minion\",\"count\":\"1\",\"placement\":\"an adjacent unoccupied space\",\"duration\":\"until destroyed\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"alliedToSummoner\",\"trigger\":\"At the start of each of the monster's turns.\",\"text\":\"One surviving egg hatches into one spider minion in an adjacent unoccupied space.\",\"creatureRef\":\"\",\"limit\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"One surviving egg hatches into one spider minion in an adjacent unoccupied space.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "exposed-clutch",
+              "renderedText": "The monster begins combat carrying four visible eggs. Each egg is a Tiny object with AC 10, 1 Hit Point, immunity to Poison and Psychic damage, and vulnerability to Fire damage. While any eggs remain, the monster's speed is reduced by 10 feet."
+            },
+            {
+              "abilityId": "hatching-cycle",
+              "renderedText": "One surviving egg hatches into one spider minion in an adjacent unoccupied space."
+            }
+          ]
+        },
+        {
+          "targetCr": 15,
+          "bandId": "cr-13-30-brood-cascade",
+          "abilityCount": 2,
+          "abilityIds": [
+            "exposed-clutch",
+            "hatching-cycle"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":null,\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster begins combat carrying six visible eggs. Each egg is a Tiny object with AC 12, 1 Hit Point, immunity to Poison and Psychic damage, and vulnerability to Fire damage. While any eggs remain, the monster's speed is reduced by 10 feet.\"}}",
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"At the start of each of the creature's turns.\",\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":true,\"type\":\"spawn\",\"creatureName\":\"spider minion\",\"count\":\"up to 2\",\"placement\":\"an adjacent unoccupied space\",\"duration\":\"until destroyed\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"alliedToSummoner\",\"trigger\":\"At the start of each of the monster's turns.\",\"text\":\"Up to two surviving eggs hatch, each creating one spider minion in an adjacent unoccupied space.\",\"creatureRef\":\"\",\"limit\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"Up to two surviving eggs hatch, each creating one spider minion in an adjacent unoccupied space.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "exposed-clutch",
+              "renderedText": "The monster begins combat carrying six visible eggs. Each egg is a Tiny object with AC 12, 1 Hit Point, immunity to Poison and Psychic damage, and vulnerability to Fire damage. While any eggs remain, the monster's speed is reduced by 10 feet."
+            },
+            {
+              "abilityId": "hatching-cycle",
+              "renderedText": "Up to two surviving eggs hatch, each creating one spider minion in an adjacent unoccupied space."
+            }
+          ]
+        }
+      ],
+      "issues": [],
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "version": "monster-body-graft-editorial-audit-v1.0",
+      "applicable": true,
+      "id": "spider-climb",
+      "title": "Clinging Body",
+      "source": "wolf-spiders",
+      "slot": "body",
+      "kind": "traitBundle",
+      "decision": "EXPAND",
+      "rationale": "Plain Spider Climb was a baseline species trait. Clinging Anatomy adds a posture rule and an explicit detachment counter, making it worth selecting as a Body Graft.",
+      "status": "pass",
+      "pass": true,
+      "abilityCount": 1,
+      "abilityIds": [
+        "body-trait"
+      ],
+      "counterplayChannels": [
+        "telegraph",
+        "positioning",
+        "breakCondition",
+        "nonDamage"
+      ],
+      "scaling": {
+        "expected": false,
+        "declared": false,
+        "bandCount": 0,
+        "sampledBandIds": [],
+        "sampledRuleVariants": 1,
+        "pass": true
+      },
+      "snapshots": [
+        {
+          "targetCr": 1,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "body-trait"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":null,\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster has a climb speed equal to its walking speed and can move across difficult surfaces and ceilings without making an ability check. While touching a wall or ceiling, it is immune to the Prone condition while attached. Forced movement that pulls it away from the surface causes it to fall normally.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "body-trait",
+              "renderedText": "The monster has a climb speed equal to its walking speed and can move across difficult surfaces and ceilings without making an ability check. While touching a wall or ceiling, it is immune to the Prone condition while attached. Forced movement that pulls it away from the surface causes it to fall normally."
+            }
+          ]
+        },
+        {
+          "targetCr": 5,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "body-trait"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":null,\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster has a climb speed equal to its walking speed and can move across difficult surfaces and ceilings without making an ability check. While touching a wall or ceiling, it is immune to the Prone condition while attached. Forced movement that pulls it away from the surface causes it to fall normally.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "body-trait",
+              "renderedText": "The monster has a climb speed equal to its walking speed and can move across difficult surfaces and ceilings without making an ability check. While touching a wall or ceiling, it is immune to the Prone condition while attached. Forced movement that pulls it away from the surface causes it to fall normally."
+            }
+          ]
+        },
+        {
+          "targetCr": 10,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "body-trait"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":null,\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster has a climb speed equal to its walking speed and can move across difficult surfaces and ceilings without making an ability check. While touching a wall or ceiling, it is immune to the Prone condition while attached. Forced movement that pulls it away from the surface causes it to fall normally.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "body-trait",
+              "renderedText": "The monster has a climb speed equal to its walking speed and can move across difficult surfaces and ceilings without making an ability check. While touching a wall or ceiling, it is immune to the Prone condition while attached. Forced movement that pulls it away from the surface causes it to fall normally."
+            }
+          ]
+        },
+        {
+          "targetCr": 15,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "body-trait"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":null,\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster has a climb speed equal to its walking speed and can move across difficult surfaces and ceilings without making an ability check. While touching a wall or ceiling, it is immune to the Prone condition while attached. Forced movement that pulls it away from the surface causes it to fall normally.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "body-trait",
+              "renderedText": "The monster has a climb speed equal to its walking speed and can move across difficult surfaces and ceilings without making an ability check. While touching a wall or ceiling, it is immune to the Prone condition while attached. Forced movement that pulls it away from the surface causes it to fall normally."
+            }
+          ]
+        }
+      ],
+      "issues": [],
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "version": "monster-body-graft-editorial-audit-v1.0",
+      "applicable": true,
+      "id": "web-walker",
+      "title": "Web Sense",
+      "source": "wolf-spiders",
+      "slot": "body",
+      "kind": "traitBundle",
+      "decision": "RENAME_AND_EXPAND",
+      "rationale": "Web Walker was mechanically correct but too generic. It now defines a connected sensory network with an explicit break condition and a stronger identity than simple terrain immunity.",
+      "status": "pass",
+      "pass": true,
+      "abilityCount": 1,
+      "abilityIds": [
+        "body-trait"
+      ],
+      "counterplayChannels": [
+        "telegraph",
+        "positioning",
+        "breakCondition",
+        "nonDamage"
+      ],
+      "scaling": {
+        "expected": false,
+        "declared": false,
+        "bandCount": 0,
+        "sampledBandIds": [],
+        "sampledRuleVariants": 1,
+        "pass": true
+      },
+      "snapshots": [
+        {
+          "targetCr": 1,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "body-trait"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":null,\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster ignores movement restrictions caused by webs. While touching a web, it knows the location of every other creature touching the same connected web and cannot be surprised by any of them.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "body-trait",
+              "renderedText": "The monster ignores movement restrictions caused by webs. While touching a web, it knows the location of every other creature touching the same connected web and cannot be surprised by any of them."
+            }
+          ]
+        },
+        {
+          "targetCr": 5,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "body-trait"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":null,\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster ignores movement restrictions caused by webs. While touching a web, it knows the location of every other creature touching the same connected web and cannot be surprised by any of them.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "body-trait",
+              "renderedText": "The monster ignores movement restrictions caused by webs. While touching a web, it knows the location of every other creature touching the same connected web and cannot be surprised by any of them."
+            }
+          ]
+        },
+        {
+          "targetCr": 10,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "body-trait"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":null,\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster ignores movement restrictions caused by webs. While touching a web, it knows the location of every other creature touching the same connected web and cannot be surprised by any of them.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "body-trait",
+              "renderedText": "The monster ignores movement restrictions caused by webs. While touching a web, it knows the location of every other creature touching the same connected web and cannot be surprised by any of them."
+            }
+          ]
+        },
+        {
+          "targetCr": 15,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "body-trait"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":null,\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster ignores movement restrictions caused by webs. While touching a web, it knows the location of every other creature touching the same connected web and cannot be surprised by any of them.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "body-trait",
+              "renderedText": "The monster ignores movement restrictions caused by webs. While touching a web, it knows the location of every other creature touching the same connected web and cannot be surprised by any of them."
+            }
+          ]
+        }
+      ],
+      "issues": [],
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "version": "monster-body-graft-editorial-audit-v1.0",
+      "applicable": true,
+      "id": "barbed-chitin",
+      "title": "Barbed Chitin",
+      "source": "wolf-spiders",
+      "slot": "body",
+      "kind": "traitBundle",
+      "decision": "REWRITE",
+      "rationale": "The original timing was ambiguous. The new once-per-turn trigger preserves grapple counterplay while preventing repeated damage exploits.",
+      "status": "pass",
+      "pass": true,
+      "abilityCount": 1,
+      "abilityIds": [
+        "body-trait"
+      ],
+      "counterplayChannels": [
+        "telegraph",
+        "positioning",
+        "breakCondition",
+        "nonDamage"
+      ],
+      "scaling": {
+        "expected": false,
+        "declared": false,
+        "bandCount": 0,
+        "sampledBandIds": [],
+        "sampledRuleVariants": 1,
+        "pass": true
+      },
+      "snapshots": [
+        {
+          "targetCr": 1,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "body-trait"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"The first time on a turn that another creature grapples the monster, or starts its turn grappling it or grappled by it.\",\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"single\",\"targets\":\"the triggering creature\"},\"damage\":{\"mode\":\"budget\",\"scale\":\"minor\",\"budgetRole\":\"reactionPunish\",\"types\":[\"piercing\"],\"budgetShare\":0.25,\"expectedTargets\":1,\"roundWeight\":[0.35,0.35,0.35],\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The triggering creature takes {damage} Piercing damage. A creature can take this damage only once per turn.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "body-trait",
+              "renderedText": "The triggering creature takes 3 (1d4) Piercing damage. A creature can take this damage only once per turn."
+            }
+          ]
+        },
+        {
+          "targetCr": 5,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "body-trait"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"The first time on a turn that another creature grapples the monster, or starts its turn grappling it or grappled by it.\",\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"single\",\"targets\":\"the triggering creature\"},\"damage\":{\"mode\":\"budget\",\"scale\":\"minor\",\"budgetRole\":\"reactionPunish\",\"types\":[\"piercing\"],\"budgetShare\":0.25,\"expectedTargets\":1,\"roundWeight\":[0.35,0.35,0.35],\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The triggering creature takes {damage} Piercing damage. A creature can take this damage only once per turn.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "body-trait",
+              "renderedText": "The triggering creature takes 3 (1d4) Piercing damage. A creature can take this damage only once per turn."
+            }
+          ]
+        },
+        {
+          "targetCr": 10,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "body-trait"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"The first time on a turn that another creature grapples the monster, or starts its turn grappling it or grappled by it.\",\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"single\",\"targets\":\"the triggering creature\"},\"damage\":{\"mode\":\"budget\",\"scale\":\"minor\",\"budgetRole\":\"reactionPunish\",\"types\":[\"piercing\"],\"budgetShare\":0.25,\"expectedTargets\":1,\"roundWeight\":[0.35,0.35,0.35],\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The triggering creature takes {damage} Piercing damage. A creature can take this damage only once per turn.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "body-trait",
+              "renderedText": "The triggering creature takes 3 (1d4) Piercing damage. A creature can take this damage only once per turn."
+            }
+          ]
+        },
+        {
+          "targetCr": 15,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "body-trait"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"The first time on a turn that another creature grapples the monster, or starts its turn grappling it or grappled by it.\",\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"single\",\"targets\":\"the triggering creature\"},\"damage\":{\"mode\":\"budget\",\"scale\":\"minor\",\"budgetRole\":\"reactionPunish\",\"types\":[\"piercing\"],\"budgetShare\":0.25,\"expectedTargets\":1,\"roundWeight\":[0.35,0.35,0.35],\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The triggering creature takes {damage} Piercing damage. A creature can take this damage only once per turn.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "body-trait",
+              "renderedText": "The triggering creature takes 3 (1d4) Piercing damage. A creature can take this damage only once per turn."
+            }
+          ]
+        }
+      ],
+      "issues": [],
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "version": "monster-body-graft-editorial-audit-v1.0",
+      "applicable": true,
+      "id": "umbral-skin",
+      "title": "Shadow Skin",
+      "source": "wolf-spiders",
+      "slot": "body",
+      "kind": "traitBundle",
+      "decision": "REWRITE_AND_SCALE",
+      "rationale": "Permanent invisibility in darkness was too binary. The new progression begins with stealth, advances to conditional invisibility, and reserves sustained combat invisibility for high CR while preserving clear counters.",
+      "status": "pass",
+      "pass": true,
+      "abilityCount": 1,
+      "abilityIds": [
+        "umbral-skin"
+      ],
+      "counterplayChannels": [
+        "telegraph",
+        "positioning",
+        "breakCondition",
+        "nonDamage"
+      ],
+      "scaling": {
+        "expected": true,
+        "declared": true,
+        "bandCount": 3,
+        "sampledBandIds": [
+          "cr-0-4-shadowed-hide",
+          "cr-5-12-motionless-shadow",
+          "cr-13-30-living-absence"
+        ],
+        "sampledRuleVariants": 3,
+        "pass": true
+      },
+      "snapshots": [
+        {
+          "targetCr": 1,
+          "bandId": "cr-0-4-shadowed-hide",
+          "abilityCount": 1,
+          "abilityIds": [
+            "umbral-skin"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":null,\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":null,\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"In Dim Light or Darkness, the monster has Advantage on Dexterity (Stealth) checks. Bright Light or Fire or Radiant damage suppresses this benefit until the end of its next turn.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "umbral-skin",
+              "renderedText": "In Dim Light or Darkness, the monster has Advantage on Dexterity (Stealth) checks. Bright Light or Fire or Radiant damage suppresses this benefit until the end of its next turn."
+            }
+          ]
+        },
+        {
+          "targetCr": 5,
+          "bandId": "cr-5-12-motionless-shadow",
+          "abilityCount": 1,
+          "abilityIds": [
+            "umbral-skin"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":null,\"resolution\":{\"type\":\"none\",\"attackType\":\"melee\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[\"invisible\"],\"severity\":\"moderate\",\"direction\":\"self\",\"duration\":\"until it moves, attacks, enters bright light, or takes fire or radiant damage\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"If the monster ends its turn in Darkness after moving no more than half its speed, it has the Invisible condition until it moves, makes an attack roll, enters Bright Light, or takes Fire or Radiant damage.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "umbral-skin",
+              "renderedText": "If the monster ends its turn in Darkness after moving no more than half its speed, it has the Invisible condition until it moves, makes an attack roll, enters Bright Light, or takes Fire or Radiant damage."
+            }
+          ]
+        },
+        {
+          "targetCr": 10,
+          "bandId": "cr-5-12-motionless-shadow",
+          "abilityCount": 1,
+          "abilityIds": [
+            "umbral-skin"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":null,\"resolution\":{\"type\":\"none\",\"attackType\":\"melee\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[\"invisible\"],\"severity\":\"moderate\",\"direction\":\"self\",\"duration\":\"until it moves, attacks, enters bright light, or takes fire or radiant damage\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"If the monster ends its turn in Darkness after moving no more than half its speed, it has the Invisible condition until it moves, makes an attack roll, enters Bright Light, or takes Fire or Radiant damage.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "umbral-skin",
+              "renderedText": "If the monster ends its turn in Darkness after moving no more than half its speed, it has the Invisible condition until it moves, makes an attack roll, enters Bright Light, or takes Fire or Radiant damage."
+            }
+          ]
+        },
+        {
+          "targetCr": 15,
+          "bandId": "cr-13-30-living-absence",
+          "abilityCount": 1,
+          "abilityIds": [
+            "umbral-skin"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":null,\"resolution\":{\"type\":\"none\",\"attackType\":\"melee\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[\"invisible\"],\"severity\":\"major\",\"direction\":\"self\",\"duration\":\"while in darkness, except after attacking\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"While in Darkness, the monster has the Invisible condition. Immediately after it makes an attack roll, it becomes visible until the end of the current turn. Bright Light or Fire or Radiant damage suppresses this trait until the end of its next turn.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "umbral-skin",
+              "renderedText": "While in Darkness, the monster has the Invisible condition. Immediately after it makes an attack roll, it becomes visible until the end of the current turn. Bright Light or Fire or Radiant damage suppresses this trait until the end of its next turn."
+            }
+          ]
+        }
+      ],
+      "issues": [],
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "version": "monster-body-graft-editorial-audit-v1.0",
+      "applicable": true,
+      "id": "malformed-broodling",
+      "title": "Broodling",
+      "source": "wolf-spiders",
+      "slot": "body",
+      "kind": "traitBundle",
+      "decision": "REWRITE",
+      "rationale": "The original healing amount was swingy and the counterplay was only implicit. It is now a bounded temporary-hit-point resource that players can destroy or reposition.",
+      "status": "pass",
+      "pass": true,
+      "abilityCount": 1,
+      "abilityIds": [
+        "body-trait"
+      ],
+      "counterplayChannels": [
+        "telegraph",
+        "positioning",
+        "breakCondition",
+        "nonDamage"
+      ],
+      "scaling": {
+        "expected": false,
+        "declared": false,
+        "bandCount": 0,
+        "sampledBandIds": [],
+        "sampledRuleVariants": 1,
+        "pass": true
+      },
+      "snapshots": [
+        {
+          "targetCr": 1,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "body-trait"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":null,\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"area\",\"shape\":\"radius\",\"size\":5,\"unit\":\"ft\",\"targets\":\"allied spiders\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster has 1 Hit Point. An allied spider within 5 feet can use a Bonus Action to devour it, destroying it and gaining Temporary Hit Points equal to twice that spider's Proficiency Bonus.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "body-trait",
+              "renderedText": "The monster has 1 Hit Point. An allied spider within 5 feet can use a Bonus Action to devour it, destroying it and gaining Temporary Hit Points equal to twice that spider's Proficiency Bonus."
+            }
+          ]
+        },
+        {
+          "targetCr": 5,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "body-trait"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":null,\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"area\",\"shape\":\"radius\",\"size\":5,\"unit\":\"ft\",\"targets\":\"allied spiders\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster has 1 Hit Point. An allied spider within 5 feet can use a Bonus Action to devour it, destroying it and gaining Temporary Hit Points equal to twice that spider's Proficiency Bonus.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "body-trait",
+              "renderedText": "The monster has 1 Hit Point. An allied spider within 5 feet can use a Bonus Action to devour it, destroying it and gaining Temporary Hit Points equal to twice that spider's Proficiency Bonus."
+            }
+          ]
+        },
+        {
+          "targetCr": 10,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "body-trait"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":null,\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"area\",\"shape\":\"radius\",\"size\":5,\"unit\":\"ft\",\"targets\":\"allied spiders\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster has 1 Hit Point. An allied spider within 5 feet can use a Bonus Action to devour it, destroying it and gaining Temporary Hit Points equal to twice that spider's Proficiency Bonus.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "body-trait",
+              "renderedText": "The monster has 1 Hit Point. An allied spider within 5 feet can use a Bonus Action to devour it, destroying it and gaining Temporary Hit Points equal to twice that spider's Proficiency Bonus."
+            }
+          ]
+        },
+        {
+          "targetCr": 15,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "body-trait"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":null,\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"area\",\"shape\":\"radius\",\"size\":5,\"unit\":\"ft\",\"targets\":\"allied spiders\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster has 1 Hit Point. An allied spider within 5 feet can use a Bonus Action to devour it, destroying it and gaining Temporary Hit Points equal to twice that spider's Proficiency Bonus.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "body-trait",
+              "renderedText": "The monster has 1 Hit Point. An allied spider within 5 feet can use a Bonus Action to devour it, destroying it and gaining Temporary Hit Points equal to twice that spider's Proficiency Bonus."
+            }
+          ]
+        }
+      ],
+      "issues": [],
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "version": "monster-body-graft-editorial-audit-v1.0",
+      "applicable": true,
+      "id": "waxen-mask-body",
+      "title": "Waxen Flesh",
+      "source": "wax-death-masks",
+      "slot": "body",
+      "kind": "traitBundle",
+      "decision": "REWRITE",
+      "rationale": "The previous fire vulnerability duplicated the dedicated Weakness slot. The new body supplies durable preservation, a no-healing cost, and a temporary fire suppression window that complements rather than replaces the Weakness Graft.",
+      "status": "pass",
+      "pass": true,
+      "abilityCount": 1,
+      "abilityIds": [
+        "body-trait"
+      ],
+      "counterplayChannels": [
+        "telegraph",
+        "positioning",
+        "breakCondition",
+        "nonDamage"
+      ],
+      "scaling": {
+        "expected": false,
+        "declared": false,
+        "bandCount": 0,
+        "sampledBandIds": [],
+        "sampledRuleVariants": 1,
+        "pass": true
+      },
+      "snapshots": [
+        {
+          "targetCr": 1,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "body-trait"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":null,\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster has Resistance to Cold and Necrotic damage, but it cannot regain Hit Points. After it takes Fire damage, these resistances are suppressed until the start of its next turn.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "body-trait",
+              "renderedText": "The monster has Resistance to Cold and Necrotic damage, but it cannot regain Hit Points. After it takes Fire damage, these resistances are suppressed until the start of its next turn."
+            }
+          ]
+        },
+        {
+          "targetCr": 5,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "body-trait"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":null,\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster has Resistance to Cold and Necrotic damage, but it cannot regain Hit Points. After it takes Fire damage, these resistances are suppressed until the start of its next turn.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "body-trait",
+              "renderedText": "The monster has Resistance to Cold and Necrotic damage, but it cannot regain Hit Points. After it takes Fire damage, these resistances are suppressed until the start of its next turn."
+            }
+          ]
+        },
+        {
+          "targetCr": 10,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "body-trait"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":null,\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster has Resistance to Cold and Necrotic damage, but it cannot regain Hit Points. After it takes Fire damage, these resistances are suppressed until the start of its next turn.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "body-trait",
+              "renderedText": "The monster has Resistance to Cold and Necrotic damage, but it cannot regain Hit Points. After it takes Fire damage, these resistances are suppressed until the start of its next turn."
+            }
+          ]
+        },
+        {
+          "targetCr": 15,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "body-trait"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":null,\"resolution\":{\"type\":\"none\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster has Resistance to Cold and Necrotic damage, but it cannot regain Hit Points. After it takes Fire damage, these resistances are suppressed until the start of its next turn.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "body-trait",
+              "renderedText": "The monster has Resistance to Cold and Necrotic damage, but it cannot regain Hit Points. After it takes Fire damage, these resistances are suppressed until the start of its next turn."
+            }
+          ]
+        }
+      ],
+      "issues": [],
+      "errors": [],
+      "warnings": []
+    }
+  ],
+  "issues": [],
+  "warnings": [],
+  "errors": [],
+  "pass": true
+}

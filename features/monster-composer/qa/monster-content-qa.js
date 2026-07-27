@@ -6,10 +6,22 @@ import {
 import { MONSTER_GRAFT_SOURCE_AUTHORITY_MODES } from "../data/monster-graft-source-authority.js";
 import { SLOTS } from "../monster-composer.workflow.js";
 import { validateMonsterGraftRules } from "../model/monster-graft-rules.schema.js";
+import { renderStructuredRulesText } from "../model/monster-graft-rules.render.js";
+import { buildMonsterRulesParityReport } from "../model/monster-rules-parity.js";
 import {
   isMonsterGraftV2,
   validateMonsterGraftV2,
 } from "../model/monster-graft-v2.schema.js";
+import {
+  buildMonsterAttackPatternCatalogAudit,
+  buildMonsterAttackPatternReport,
+  isMonsterAttackPattern,
+} from "../model/monster-attack-pattern.js";
+import {
+  buildMonsterSupportGraftCatalogAudit,
+  buildMonsterSupportGraftReport,
+  isMonsterSupportGraft,
+} from "../model/monster-support-graft.js";
 import {
   KNOWN_MONSTER_ANATOMY_TAGS,
   KNOWN_MONSTER_BODY_PLAN_IDS,
@@ -121,7 +133,99 @@ function validateGraftV2Semantics(graft, issues) {
       }),
     );
   });
+
+  if (isMonsterAttackPattern(graft)) {
+    const attackPatternReport = buildMonsterAttackPatternReport(graft);
+    attackPatternReport.issues
+      .filter((issue) => String(issue.code || "").startsWith("attack-pattern-"))
+      .forEach((issue) => {
+        issues.push(
+          makeQaIssue({
+            severity: issue.severity,
+            area: "attack-pattern",
+            check: issue.code,
+            id: graft.id,
+            title: graft.title,
+            path: issue.path || "attackPattern",
+            message: issue.message,
+            recommendation:
+              "Repair the authored repertoire, routine, identity, or counterplay contract before publication.",
+            details: issue.details || issue,
+          }),
+        );
+      });
+  }
+
+  if (isMonsterSupportGraft(graft)) {
+    const supportReport = buildMonsterSupportGraftReport(graft);
+    supportReport.issues
+      .filter((issue) => String(issue.code || "").startsWith("support-graft-"))
+      .forEach((issue) => {
+        issues.push(
+          makeQaIssue({
+            severity: issue.severity,
+            area: "support-graft",
+            check: issue.code,
+            id: graft.id,
+            title: graft.title,
+            path: issue.path || "supportGraft",
+            message: issue.message,
+            recommendation:
+              "Repair the support-graft identity, scaling, profile, or runtime contract before publication.",
+            details: issue.details || issue,
+          }),
+        );
+      });
+  }
   return report;
+}
+
+function validateRulesParity(graft, issues) {
+  const features = isMonsterGraftV2(graft)
+    ? asArray(graft.abilities).map((ability) => ({
+        ...ability,
+        id: `${graft.id}:${ability.id}`,
+        source: graft.source,
+        sourceAnchors: graft.sourceAnchors,
+        slot: graft.slot,
+        cost: graft.cost,
+        complexity: graft.complexity,
+      }))
+    : [graft];
+
+  return features.map((feature) => {
+    const renderedText = renderStructuredRulesText(feature, {
+      attack: 5,
+      dc: 13,
+      dpr: 12,
+      targetCr: 2,
+      category: "Zombie",
+      categoryNoun: "zombie",
+      rulesContext: { categoryNoun: "zombie" },
+    });
+    const report = buildMonsterRulesParityReport(feature, {
+      renderedText,
+    });
+    if (!report.applicable) return report;
+
+    report.issues.forEach((issue) => {
+      issues.push(
+        makeQaIssue({
+          severity: issue.severity,
+          area: "rules-parity",
+          check: issue.code || "parity",
+          id: feature.id,
+          title: feature.title,
+          path: issue.path || "rules.parity",
+          message: issue.message,
+          recommendation:
+            "Restore equality between the structured rule, its simulation declaration, and rendered stat-block text.",
+          details: issue,
+        }),
+      );
+    });
+    return report;
+  });
 }
 
 function validateRulesSemantics(graft, issues) {
@@ -295,8 +399,42 @@ function validateFrameFit(graft, issues) {
 
 export function runMonsterContentQa({ grafts = ALL_MONSTER_GRAFTS, sources = ALL_MONSTER_SOURCES, slots = SLOTS } = {}) {
   const issues = [];
+  const parityReports = [];
   const sourceIds = new Set(sources.map((source) => source.id));
   const slotIds = new Set(slots.map((slot) => slot.id));
+  const attackPatternAudit = buildMonsterAttackPatternCatalogAudit(grafts);
+  const supportGraftAudit = buildMonsterSupportGraftCatalogAudit(grafts);
+  attackPatternAudit.errors.forEach((issue) => {
+    issues.push(
+      makeQaIssue({
+        severity: issue.severity || "error",
+        area: "attack-pattern",
+        check: issue.code || "catalog-calibration",
+        id: issue.patternId || null,
+        path: issue.path || "attackPattern",
+        message: issue.message,
+        recommendation:
+          "Repair the CR progression or Bestiary calibration before publication.",
+        details: issue.details || issue,
+      }),
+    );
+  });
+
+  supportGraftAudit.errors.forEach((issue) => {
+    issues.push(
+      makeQaIssue({
+        severity: issue.severity || "error",
+        area: "support-graft",
+        check: issue.code || "catalog",
+        id: issue.graftId || null,
+        path: issue.path || "supportGraft",
+        message: issue.message,
+        recommendation:
+          "Repair the support-graft migration or CR progression before publication.",
+        details: issue.details || issue,
+      }),
+    );
+  });
 
   getDuplicates(grafts.map((graft) => graft.id)).forEach((id) => {
     issues.push(makeQaIssue({ severity: "error", area: "content", check: "duplicate-graft-id", id, message: `Duplicate monster graft id: ${id}` }));
@@ -351,6 +489,7 @@ export function runMonsterContentQa({ grafts = ALL_MONSTER_GRAFTS, sources = ALL
     } else {
       validateRulesSemantics(graft, issues);
     }
+    parityReports.push(...validateRulesParity(graft, issues));
     validateFrameFit(graft, issues);
     validateAnatomyTerms({ graft, issues });
   });
@@ -367,6 +506,30 @@ export function runMonsterContentQa({ grafts = ALL_MONSTER_GRAFTS, sources = ALL
       graftSchema: {
         legacy: grafts.filter((graft) => !isMonsterGraftV2(graft)).length,
         v2: grafts.filter((graft) => isMonsterGraftV2(graft)).length,
+      },
+      rulesParity: {
+        verified: parityReports.filter((report) => report?.applicable).length,
+        passed: parityReports.filter((report) => report?.applicable && report.pass).length,
+        failed: parityReports.filter((report) => report?.applicable && !report.pass).length,
+      },
+      attackPatterns: {
+        total: attackPatternAudit.total,
+        passing: attackPatternAudit.passing,
+        warning: attackPatternAudit.warning,
+        error: attackPatternAudit.error,
+        catalogErrors: attackPatternAudit.errors.length,
+        checkpoints: attackPatternAudit.checkpointSummary,
+      },
+      supportGrafts: {
+        total: supportGraftAudit.total,
+        passing: supportGraftAudit.passing,
+        warning: supportGraftAudit.warning,
+        error: supportGraftAudit.error,
+        scaled: supportGraftAudit.scaled,
+        verifiedParity: supportGraftAudit.verifiedParity,
+        candidateParity: supportGraftAudit.candidateParity,
+        catalogErrors: supportGraftAudit.errors.length,
+        bySlot: supportGraftAudit.bySlot,
       },
       sourceBoundary: {
         selectedNative: MONSTER_GRAFT_SOURCE_BOUNDARY_AUDIT.selectedNative,

@@ -1,10 +1,13 @@
 import {
   BLOCKING_DAMAGE_ISSUE_CODES,
   MONSTER_GRAFT_RULES_SCHEMA_VERSION,
+  getDamageActivationRate,
   getDamageBudgetShare,
   getDamageExpectedTargets,
   getDamageParts,
   getDamageRoundWeight,
+  getMonsterRuleEffects,
+  getMonsterRulesParity,
   normalizeMonsterGraftRules,
   validateMonsterGraftRules,
 } from "./monster-graft-rules.schema.js";
@@ -13,8 +16,11 @@ import {
   normalizeMonsterGraftV2,
   validateMonsterGraftV2,
 } from "./monster-graft-v2.schema.js";
+import {
+  projectMonsterGraftForCr,
+} from "./monster-attack-pattern-progression.js";
 
-export const MONSTER_ABILITY_MODEL_VERSION = "monster-ability-model-v0.4";
+export const MONSTER_ABILITY_MODEL_VERSION = "monster-ability-model-v0.8-cr-scaled-grafts";
 export const MONSTER_ABILITY_BUNDLE_VERSION = "monster-ability-bundle-v1.0";
 
 function asArray(value) {
@@ -66,6 +72,8 @@ function buildDamageEntry({ damage, rules, source, parentId = null, index = 0 })
     types: uniqueArray(damage.types || damage.type),
     abilityBasis: cleanString(damage.abilityBasis || rules.resolution?.abilityBasis || ""),
     modifierPolicy: cleanString(damage.modifierPolicy || ""),
+    activation: damage.activation || null,
+    activationRate: getDamageActivationRate(damage),
     damage,
   };
 }
@@ -226,8 +234,14 @@ function buildAbilityRecord(
     ? []
     : collectDamageEntries(rules);
   const conditions = buildConditionEntries(rules.condition);
+  const effects = getMonsterRuleEffects(rules);
+  const parity = getMonsterRulesParity(rules);
   const resolution = buildResolutionProfile(rules);
   const tags = buildAbilityTags({ rules, damageEntries, conditions, resolution });
+  effects.forEach((effect) => {
+    tags.push(`effect:${effect.type || "custom"}`);
+    tags.push(`effect_simulation:${effect.simulation?.policy || "unmodeled"}`);
+  });
   const resolvedGraftId = cleanString(sourceGraftId || feature.sourceGraftId || feature.id);
   const resolvedLocalId = cleanString(localAbilityId || feature.localAbilityId || feature.id);
   const resolvedRuntimeId =
@@ -262,6 +276,8 @@ function buildAbilityRecord(
       damageTypes: uniqueArray(damageEntries.flatMap((entry) => entry.types)),
     },
     conditions,
+    effects,
+    parity,
     counterplay: rules.counterplay || {},
     multiattack: rules.multiattack || null,
     multiattackParticipation: rules.multiattackParticipation || null,
@@ -271,6 +287,12 @@ function buildAbilityRecord(
     procedure: rules.procedure || null,
     ongoing: rules.ongoing || null,
     references: rules.references || [],
+    patternRole: cleanString(feature.patternRole) || null,
+    patternRoutine: feature.patternRoutine || null,
+    patternIdentity: feature.patternIdentity || null,
+    patternCounterplay: feature.patternCounterplay || null,
+    progression: feature.progression || null,
+    patternProgression: feature.patternProgression || null,
     rules,
     rulesValidation,
     tags,
@@ -316,7 +338,7 @@ function buildLegacyAbility(feature = {}, { index = 0 } = {}) {
   });
 }
 
-function buildV2AbilityFeature(graft = {}, descriptor = {}, runtimeId = "") {
+function buildV2AbilityFeature(graft = {}, descriptor = {}, runtimeId = "", normalized = null) {
   const sourceAnchor = getPrimarySourceAnchor(graft);
   const rules = {
     schemaVersion:
@@ -336,6 +358,12 @@ function buildV2AbilityFeature(graft = {}, descriptor = {}, runtimeId = "") {
     section: descriptor.section || rules.section || graft.section || "trait",
     mechanics: descriptor.mechanics || "",
     counterplay: descriptor.counterplay || "",
+    patternRole: descriptor.patternRole || descriptor.role || null,
+    patternRoutine: normalized?.kind === "attackPattern" ? normalized.routine : null,
+    patternIdentity: normalized?.kind === "attackPattern" ? normalized.identity : null,
+    patternCounterplay: normalized?.kind === "attackPattern" ? normalized.counterplayProfile : null,
+    progression: descriptor.progression || null,
+    patternProgression: normalized?.kind === "attackPattern" ? normalized.progression : null,
     rules,
   };
 }
@@ -350,9 +378,22 @@ function buildRoutineMultiattackDescriptor(graft = {}, normalized = {}) {
   const titles = new Map(
     normalized.abilities.map((ability) => [ability.id, ability.title]),
   );
+  const multiattackBands = (normalized.progression?.bands || []).filter(
+    (band) => band.multiattack?.enabled,
+  );
+  const multiattackProgression = multiattackBands.length
+    ? {
+        schemaVersion: normalized.progression?.schemaVersion,
+        basis: normalized.progression?.basis || "targetCr",
+        minCr: Math.min(...multiattackBands.map((band) => Number(band.minCr || 0))),
+        maxCr: Math.max(...multiattackBands.map((band) => Number(band.maxCr ?? 30))),
+        bandIds: multiattackBands.map((band) => band.id),
+      }
+    : null;
   return {
     id: localId,
     title: "Multiattack",
+    progression: multiattackProgression,
     section: "action",
     authored: false,
     synthetic: true,
@@ -396,6 +437,7 @@ function buildRoutineMultiattackDescriptor(graft = {}, normalized = {}) {
             replacement.label ||
             titles.get(replacement.with) ||
             replacement.with,
+          availability: replacement.availability || "always",
         })),
       },
       multiattackParticipation: null,
@@ -416,7 +458,7 @@ function buildRoutineMultiattackDescriptor(graft = {}, normalized = {}) {
 
 export function buildMonsterAbilityBundleFromGraft(
   feature = {},
-  { index = 0 } = {},
+  { index = 0, targetCr = null } = {},
 ) {
   if (!isMonsterGraftV2(feature)) {
     const ability = buildLegacyAbility(feature, { index });
@@ -444,10 +486,14 @@ export function buildMonsterAbilityBundleFromGraft(
   }
 
   const report = validateMonsterGraftV2(feature);
-  const normalized = report.normalized || normalizeMonsterGraftV2(feature);
+  const hasCrContext = targetCr !== null && targetCr !== undefined && targetCr !== "" && Number.isFinite(Number(targetCr));
+  const compiledGraft = hasCrContext
+    ? projectMonsterGraftForCr(feature, { targetCr: Number(targetCr) })
+    : feature;
+  const normalized = normalizeMonsterGraftV2(compiledGraft) || report.normalized;
   const authoredDescriptors = normalized?.abilities || [];
   const routineDescriptor = buildRoutineMultiattackDescriptor(
-    feature,
+    compiledGraft,
     normalized || {},
   );
   const descriptors = [
@@ -457,13 +503,14 @@ export function buildMonsterAbilityBundleFromGraft(
   const abilities = descriptors.map((descriptor, abilityIndex) => {
     const runtimeId = `${feature.id}:${descriptor.id}`;
     const compiledFeature = buildV2AbilityFeature(
-      feature,
+      compiledGraft,
       descriptor,
       runtimeId,
+      normalized,
     );
     return buildAbilityRecord(compiledFeature, {
       runtimeId,
-      sourceGraftId: feature.id,
+      sourceGraftId: compiledGraft.id,
       localAbilityId: descriptor.id,
       index: abilityIndex,
       compilation: "graft-v2-bundle",
@@ -494,12 +541,14 @@ export function buildMonsterAbilityBundleFromGraft(
     version: MONSTER_ABILITY_BUNDLE_VERSION,
     schemaVersion: normalized?.schemaVersion || null,
     graftId: normalized?.id || cleanString(feature.id) || `graft-${index + 1}`,
-    sourceComponentId: getSourceComponentId(feature),
-    sourceAnchor: getPrimarySourceAnchor(feature) || null,
+    sourceComponentId: getSourceComponentId(compiledGraft),
+    sourceAnchor: getPrimarySourceAnchor(compiledGraft) || null,
     kind: normalized?.kind || null,
     identity: normalized?.identity || null,
     compilation: "graft-v2-bundle",
     routine: normalized?.routine || null,
+    progression: normalized?.progression || null,
+    projection: compiledGraft.projection || null,
     abilities,
     primaryAbility,
     validation: {
@@ -511,13 +560,21 @@ export function buildMonsterAbilityBundleFromGraft(
   };
 }
 
-export function buildMonsterAbilityFromGraft(feature = {}, { index = 0 } = {}) {
-  return buildMonsterAbilityBundleFromGraft(feature, { index }).primaryAbility;
+export function buildMonsterAbilityFromGraft(feature = {}, { index = 0, targetCr = null } = {}) {
+  return buildMonsterAbilityBundleFromGraft(feature, { index, targetCr }).primaryAbility;
 }
 
-export function buildMonsterAbilitiesFromFeatures(features = []) {
+export function expandMonsterFeaturesForStatBlock(features = [], { targetCr = null } = {}) {
+  return asArray(features).flatMap((feature, index) => {
+    if (!isMonsterGraftV2(feature)) return [feature];
+    const bundle = buildMonsterAbilityBundleFromGraft(feature, { index, targetCr });
+    return bundle.abilities.length ? bundle.abilities : [feature];
+  });
+}
+
+export function buildMonsterAbilitiesFromFeatures(features = [], { targetCr = null } = {}) {
   const bundles = asArray(features).map((feature, index) =>
-    buildMonsterAbilityBundleFromGraft(feature, { index }),
+    buildMonsterAbilityBundleFromGraft(feature, { index, targetCr }),
   );
   const abilities = bundles.flatMap((bundle) => bundle.abilities);
   const errors = bundles.flatMap((bundle) =>
@@ -578,8 +635,8 @@ export function buildMonsterAbilitiesFromFeatures(features = []) {
   };
 }
 
-export function summarizeMonsterAbilities(features = []) {
-  const model = buildMonsterAbilitiesFromFeatures(features);
+export function summarizeMonsterAbilities(features = [], options = {}) {
+  const model = buildMonsterAbilitiesFromFeatures(features, options);
   return {
     version: model.version,
     bundleVersion: model.bundleVersion,

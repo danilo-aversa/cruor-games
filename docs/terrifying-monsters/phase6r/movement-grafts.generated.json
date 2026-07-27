@@ -1,0 +1,1426 @@
+{
+  "version": "monster-movement-graft-editorial-audit-v1.0",
+  "editorialVersion": "monster-movement-graft-editorial-v1.0",
+  "total": 11,
+  "expectedTotal": 11,
+  "passing": 11,
+  "warning": 0,
+  "error": 0,
+  "abilityCount": 13,
+  "bundleCount": 2,
+  "scaledCount": 6,
+  "byDecision": {
+    "REWRITE_INTO_PATTERN": 1,
+    "REWRITE_AND_SCALE": 3,
+    "REWRITE_INTO_ROUTE_PATTERN": 1,
+    "EXPAND_STANDARD_TRAIT_INTO_PATTERN": 1,
+    "REWRITE_STANDARD_FEATURE_INTO_PATTERN": 1,
+    "RENAME_AND_EXPAND_INTO_BUNDLE": 2,
+    "RENAME_AND_REWRITE_AND_SCALE": 1,
+    "RENAME_AND_REFINE_AND_SCALE": 1
+  },
+  "bySource": {
+    "decomposition": 3,
+    "jikininki": 3,
+    "wolf-spiders": 4,
+    "wax-death-masks": 1
+  },
+  "reports": [
+    {
+      "version": "monster-movement-graft-editorial-audit-v1.0",
+      "applicable": true,
+      "id": "stumbling-mass",
+      "title": "Dead March",
+      "source": "decomposition",
+      "slot": "movement",
+      "kind": "movementPattern",
+      "decision": "REWRITE_INTO_PATTERN",
+      "rationale": "The original terrain immunity was mechanically thin. Dead March now produces a predictable route decision that the GM can run instantly and the players can manipulate.",
+      "status": "pass",
+      "pass": true,
+      "abilityCount": 1,
+      "abilityIds": [
+        "dead-march"
+      ],
+      "counterplayChannels": [
+        "telegraph",
+        "positioning",
+        "breakCondition",
+        "nonDamage"
+      ],
+      "scaling": {
+        "expected": false,
+        "declared": false,
+        "bandCount": 0,
+        "sampledBandIds": [],
+        "sampledRuleVariants": 1,
+        "pass": true
+      },
+      "snapshots": [
+        {
+          "targetCr": 1,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "dead-march"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":null,\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"At the start of the monster's turn.\",\"text\":\"At the start of its turn, the monster chooses a destination it can see. Until the end of the turn, it follows the shortest passable route toward that destination and cannot willingly change destinations. It ignores nonmagical difficult terrain created by rubble, corpses, mud, or loose bones while moving along that route.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"At the start of its turn, the monster chooses a destination it can see. Until the end of the turn, it follows the shortest passable route toward that destination and cannot willingly change destinations. It ignores nonmagical difficult terrain created by rubble, corpses, mud, or loose bones while moving along that route.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "dead-march",
+              "renderedText": "At the start of its turn, the monster chooses a destination it can see. Until the end of the turn, it follows the shortest passable route toward that destination and cannot willingly change destinations. It ignores nonmagical difficult terrain created by rubble, corpses, mud, or loose bones while moving along that route."
+            }
+          ]
+        },
+        {
+          "targetCr": 5,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "dead-march"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":null,\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"At the start of the monster's turn.\",\"text\":\"At the start of its turn, the monster chooses a destination it can see. Until the end of the turn, it follows the shortest passable route toward that destination and cannot willingly change destinations. It ignores nonmagical difficult terrain created by rubble, corpses, mud, or loose bones while moving along that route.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"At the start of its turn, the monster chooses a destination it can see. Until the end of the turn, it follows the shortest passable route toward that destination and cannot willingly change destinations. It ignores nonmagical difficult terrain created by rubble, corpses, mud, or loose bones while moving along that route.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "dead-march",
+              "renderedText": "At the start of its turn, the monster chooses a destination it can see. Until the end of the turn, it follows the shortest passable route toward that destination and cannot willingly change destinations. It ignores nonmagical difficult terrain created by rubble, corpses, mud, or loose bones while moving along that route."
+            }
+          ]
+        },
+        {
+          "targetCr": 10,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "dead-march"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":null,\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"At the start of the monster's turn.\",\"text\":\"At the start of its turn, the monster chooses a destination it can see. Until the end of the turn, it follows the shortest passable route toward that destination and cannot willingly change destinations. It ignores nonmagical difficult terrain created by rubble, corpses, mud, or loose bones while moving along that route.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"At the start of its turn, the monster chooses a destination it can see. Until the end of the turn, it follows the shortest passable route toward that destination and cannot willingly change destinations. It ignores nonmagical difficult terrain created by rubble, corpses, mud, or loose bones while moving along that route.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "dead-march",
+              "renderedText": "At the start of its turn, the monster chooses a destination it can see. Until the end of the turn, it follows the shortest passable route toward that destination and cannot willingly change destinations. It ignores nonmagical difficult terrain created by rubble, corpses, mud, or loose bones while moving along that route."
+            }
+          ]
+        },
+        {
+          "targetCr": 15,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "dead-march"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":null,\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"At the start of the monster's turn.\",\"text\":\"At the start of its turn, the monster chooses a destination it can see. Until the end of the turn, it follows the shortest passable route toward that destination and cannot willingly change destinations. It ignores nonmagical difficult terrain created by rubble, corpses, mud, or loose bones while moving along that route.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"At the start of its turn, the monster chooses a destination it can see. Until the end of the turn, it follows the shortest passable route toward that destination and cannot willingly change destinations. It ignores nonmagical difficult terrain created by rubble, corpses, mud, or loose bones while moving along that route.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "dead-march",
+              "renderedText": "At the start of its turn, the monster chooses a destination it can see. Until the end of the turn, it follows the shortest passable route toward that destination and cannot willingly change destinations. It ignores nonmagical difficult terrain created by rubble, corpses, mud, or loose bones while moving along that route."
+            }
+          ]
+        }
+      ],
+      "issues": [],
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "version": "monster-movement-graft-editorial-audit-v1.0",
+      "applicable": true,
+      "id": "rupture-charge",
+      "title": "Rupture Charge",
+      "source": "decomposition",
+      "slot": "movement",
+      "kind": "movementPattern",
+      "decision": "REWRITE_AND_SCALE",
+      "rationale": "The old version depended on an unrelated Unstable reaction and added opaque damage. The revision is self-contained, telegraphed, spatially interactive, and scales only the forced movement.",
+      "status": "pass",
+      "pass": true,
+      "abilityCount": 1,
+      "abilityIds": [
+        "rupture-charge"
+      ],
+      "counterplayChannels": [
+        "telegraph",
+        "positioning",
+        "breakCondition",
+        "nonDamage"
+      ],
+      "scaling": {
+        "expected": true,
+        "declared": true,
+        "bandCount": 2,
+        "sampledBandIds": [
+          "cr-0-7-shove",
+          "cr-8-30-crash"
+        ],
+        "sampledRuleVariants": 2,
+        "pass": true
+      },
+      "snapshots": [
+        {
+          "targetCr": 1,
+          "bandId": "cr-0-7-shove",
+          "abilityCount": 1,
+          "abilityIds": [
+            "rupture-charge"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"bonusAction\",\"actionEconomy\":\"bonusAction\",\"usage\":{\"type\":\"atWill\"},\"trigger\":null,\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"The monster has a straight, passable lane.\",\"text\":\"The monster moves up to half its speed in a straight line without provoking Opportunity Attacks. If it moves at least 15 feet and then hits with a melee attack before the end of the turn, it pushes the target 5 feet. The monster cannot take reactions until the start of its next turn.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster moves up to half its speed in a straight line without provoking Opportunity Attacks. If it moves at least 15 feet and then hits with a melee attack before the end of the turn, it pushes the target 5 feet. The monster cannot take reactions until the start of its next turn.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "rupture-charge",
+              "renderedText": "The monster moves up to half its speed in a straight line without provoking Opportunity Attacks. If it moves at least 15 feet and then hits with a melee attack before the end of the turn, it pushes the target 5 feet. The monster cannot take reactions until the start of its next turn."
+            }
+          ]
+        },
+        {
+          "targetCr": 5,
+          "bandId": "cr-0-7-shove",
+          "abilityCount": 1,
+          "abilityIds": [
+            "rupture-charge"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"bonusAction\",\"actionEconomy\":\"bonusAction\",\"usage\":{\"type\":\"atWill\"},\"trigger\":null,\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"The monster has a straight, passable lane.\",\"text\":\"The monster moves up to half its speed in a straight line without provoking Opportunity Attacks. If it moves at least 15 feet and then hits with a melee attack before the end of the turn, it pushes the target 5 feet. The monster cannot take reactions until the start of its next turn.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster moves up to half its speed in a straight line without provoking Opportunity Attacks. If it moves at least 15 feet and then hits with a melee attack before the end of the turn, it pushes the target 5 feet. The monster cannot take reactions until the start of its next turn.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "rupture-charge",
+              "renderedText": "The monster moves up to half its speed in a straight line without provoking Opportunity Attacks. If it moves at least 15 feet and then hits with a melee attack before the end of the turn, it pushes the target 5 feet. The monster cannot take reactions until the start of its next turn."
+            }
+          ]
+        },
+        {
+          "targetCr": 10,
+          "bandId": "cr-8-30-crash",
+          "abilityCount": 1,
+          "abilityIds": [
+            "rupture-charge"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"bonusAction\",\"actionEconomy\":\"bonusAction\",\"usage\":{\"type\":\"atWill\"},\"trigger\":null,\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"The monster has a straight, passable lane.\",\"text\":\"The monster moves up to half its speed in a straight line without provoking Opportunity Attacks. If it moves at least 15 feet and then hits with a melee attack before the end of the turn, it pushes the target 10 feet. The monster cannot take reactions until the start of its next turn.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster moves up to half its speed in a straight line without provoking Opportunity Attacks. If it moves at least 15 feet and then hits with a melee attack before the end of the turn, it pushes the target 10 feet. The monster cannot take reactions until the start of its next turn.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "rupture-charge",
+              "renderedText": "The monster moves up to half its speed in a straight line without provoking Opportunity Attacks. If it moves at least 15 feet and then hits with a melee attack before the end of the turn, it pushes the target 10 feet. The monster cannot take reactions until the start of its next turn."
+            }
+          ]
+        },
+        {
+          "targetCr": 15,
+          "bandId": "cr-8-30-crash",
+          "abilityCount": 1,
+          "abilityIds": [
+            "rupture-charge"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"bonusAction\",\"actionEconomy\":\"bonusAction\",\"usage\":{\"type\":\"atWill\"},\"trigger\":null,\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"The monster has a straight, passable lane.\",\"text\":\"The monster moves up to half its speed in a straight line without provoking Opportunity Attacks. If it moves at least 15 feet and then hits with a melee attack before the end of the turn, it pushes the target 10 feet. The monster cannot take reactions until the start of its next turn.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster moves up to half its speed in a straight line without provoking Opportunity Attacks. If it moves at least 15 feet and then hits with a melee attack before the end of the turn, it pushes the target 10 feet. The monster cannot take reactions until the start of its next turn.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "rupture-charge",
+              "renderedText": "The monster moves up to half its speed in a straight line without provoking Opportunity Attacks. If it moves at least 15 feet and then hits with a melee attack before the end of the turn, it pushes the target 10 feet. The monster cannot take reactions until the start of its next turn."
+            }
+          ]
+        }
+      ],
+      "issues": [],
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "version": "monster-movement-graft-editorial-audit-v1.0",
+      "applicable": true,
+      "id": "collapsed-crawler",
+      "title": "Crawling Ruin",
+      "source": "decomposition",
+      "slot": "movement",
+      "kind": "movementPattern",
+      "decision": "REWRITE_INTO_ROUTE_PATTERN",
+      "rationale": "The original permanent speed loss created bookkeeping without an interesting decision. Crawling Ruin now gains distinctive low routes and an explicit vertical weakness.",
+      "status": "pass",
+      "pass": true,
+      "abilityCount": 1,
+      "abilityIds": [
+        "low-crawl"
+      ],
+      "counterplayChannels": [
+        "telegraph",
+        "positioning",
+        "breakCondition",
+        "nonDamage"
+      ],
+      "scaling": {
+        "expected": false,
+        "declared": false,
+        "bandCount": 0,
+        "sampledBandIds": [],
+        "sampledRuleVariants": 1,
+        "pass": true
+      },
+      "snapshots": [
+        {
+          "targetCr": 1,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "low-crawl"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":null,\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster can move through openings as though it were one size smaller and can move through the spaces of prone or dead creatures, treating those spaces as difficult terrain. It is immune to the Prone condition, but it cannot climb or jump farther than 5 feet.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "low-crawl",
+              "renderedText": "The monster can move through openings as though it were one size smaller and can move through the spaces of prone or dead creatures, treating those spaces as difficult terrain. It is immune to the Prone condition, but it cannot climb or jump farther than 5 feet."
+            }
+          ]
+        },
+        {
+          "targetCr": 5,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "low-crawl"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":null,\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster can move through openings as though it were one size smaller and can move through the spaces of prone or dead creatures, treating those spaces as difficult terrain. It is immune to the Prone condition, but it cannot climb or jump farther than 5 feet.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "low-crawl",
+              "renderedText": "The monster can move through openings as though it were one size smaller and can move through the spaces of prone or dead creatures, treating those spaces as difficult terrain. It is immune to the Prone condition, but it cannot climb or jump farther than 5 feet."
+            }
+          ]
+        },
+        {
+          "targetCr": 10,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "low-crawl"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":null,\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster can move through openings as though it were one size smaller and can move through the spaces of prone or dead creatures, treating those spaces as difficult terrain. It is immune to the Prone condition, but it cannot climb or jump farther than 5 feet.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "low-crawl",
+              "renderedText": "The monster can move through openings as though it were one size smaller and can move through the spaces of prone or dead creatures, treating those spaces as difficult terrain. It is immune to the Prone condition, but it cannot climb or jump farther than 5 feet."
+            }
+          ]
+        },
+        {
+          "targetCr": 15,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "low-crawl"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":null,\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster can move through openings as though it were one size smaller and can move through the spaces of prone or dead creatures, treating those spaces as difficult terrain. It is immune to the Prone condition, but it cannot climb or jump farther than 5 feet.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "low-crawl",
+              "renderedText": "The monster can move through openings as though it were one size smaller and can move through the spaces of prone or dead creatures, treating those spaces as difficult terrain. It is immune to the Prone condition, but it cannot climb or jump farther than 5 feet."
+            }
+          ]
+        }
+      ],
+      "issues": [],
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "version": "monster-movement-graft-editorial-audit-v1.0",
+      "applicable": true,
+      "id": "incorporeal-movement",
+      "title": "Ghost Passage",
+      "source": "jikininki",
+      "slot": "movement",
+      "kind": "movementPattern",
+      "decision": "EXPAND_STANDARD_TRAIT_INTO_PATTERN",
+      "rationale": "Standard incorporeal movement lacked table interaction. The visible exit preserves the ghost fantasy while making wall passage readable and answerable.",
+      "status": "pass",
+      "pass": true,
+      "abilityCount": 1,
+      "abilityIds": [
+        "ghost-passage"
+      ],
+      "counterplayChannels": [
+        "telegraph",
+        "positioning",
+        "breakCondition",
+        "nonDamage"
+      ],
+      "scaling": {
+        "expected": false,
+        "declared": false,
+        "bandCount": 0,
+        "sampledBandIds": [],
+        "sampledRuleVariants": 1,
+        "pass": true
+      },
+      "snapshots": [
+        {
+          "targetCr": 1,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "ghost-passage"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":null,\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"The monster enters a creature or solid object during movement.\",\"text\":\"The monster can move through creatures and objects as if they were difficult terrain, but it cannot end its turn inside an object. The first time each turn it enters a solid object, a visible frost outline appears on the surface nearest its intended exit and remains until it emerges or the turn ends.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster can move through creatures and objects as if they were difficult terrain, but it cannot end its turn inside an object. The first time each turn it enters a solid object, a visible frost outline appears on the surface nearest its intended exit and remains until it emerges or the turn ends.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "ghost-passage",
+              "renderedText": "The monster can move through creatures and objects as if they were difficult terrain, but it cannot end its turn inside an object. The first time each turn it enters a solid object, a visible frost outline appears on the surface nearest its intended exit and remains until it emerges or the turn ends."
+            }
+          ]
+        },
+        {
+          "targetCr": 5,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "ghost-passage"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":null,\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"The monster enters a creature or solid object during movement.\",\"text\":\"The monster can move through creatures and objects as if they were difficult terrain, but it cannot end its turn inside an object. The first time each turn it enters a solid object, a visible frost outline appears on the surface nearest its intended exit and remains until it emerges or the turn ends.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster can move through creatures and objects as if they were difficult terrain, but it cannot end its turn inside an object. The first time each turn it enters a solid object, a visible frost outline appears on the surface nearest its intended exit and remains until it emerges or the turn ends.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "ghost-passage",
+              "renderedText": "The monster can move through creatures and objects as if they were difficult terrain, but it cannot end its turn inside an object. The first time each turn it enters a solid object, a visible frost outline appears on the surface nearest its intended exit and remains until it emerges or the turn ends."
+            }
+          ]
+        },
+        {
+          "targetCr": 10,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "ghost-passage"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":null,\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"The monster enters a creature or solid object during movement.\",\"text\":\"The monster can move through creatures and objects as if they were difficult terrain, but it cannot end its turn inside an object. The first time each turn it enters a solid object, a visible frost outline appears on the surface nearest its intended exit and remains until it emerges or the turn ends.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster can move through creatures and objects as if they were difficult terrain, but it cannot end its turn inside an object. The first time each turn it enters a solid object, a visible frost outline appears on the surface nearest its intended exit and remains until it emerges or the turn ends.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "ghost-passage",
+              "renderedText": "The monster can move through creatures and objects as if they were difficult terrain, but it cannot end its turn inside an object. The first time each turn it enters a solid object, a visible frost outline appears on the surface nearest its intended exit and remains until it emerges or the turn ends."
+            }
+          ]
+        },
+        {
+          "targetCr": 15,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "ghost-passage"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":null,\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"The monster enters a creature or solid object during movement.\",\"text\":\"The monster can move through creatures and objects as if they were difficult terrain, but it cannot end its turn inside an object. The first time each turn it enters a solid object, a visible frost outline appears on the surface nearest its intended exit and remains until it emerges or the turn ends.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster can move through creatures and objects as if they were difficult terrain, but it cannot end its turn inside an object. The first time each turn it enters a solid object, a visible frost outline appears on the surface nearest its intended exit and remains until it emerges or the turn ends.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "ghost-passage",
+              "renderedText": "The monster can move through creatures and objects as if they were difficult terrain, but it cannot end its turn inside an object. The first time each turn it enters a solid object, a visible frost outline appears on the surface nearest its intended exit and remains until it emerges or the turn ends."
+            }
+          ]
+        }
+      ],
+      "issues": [],
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "version": "monster-movement-graft-editorial-audit-v1.0",
+      "applicable": true,
+      "id": "vanish-spirit",
+      "title": "Vanish",
+      "source": "jikininki",
+      "slot": "movement",
+      "kind": "movementPattern",
+      "decision": "REWRITE_AND_SCALE",
+      "rationale": "The old long-duration invisibility was not a movement pattern and competed with stealth Body/Mind effects. Vanish is now a bounded reposition with visible environmental tells.",
+      "status": "pass",
+      "pass": true,
+      "abilityCount": 1,
+      "abilityIds": [
+        "vanish"
+      ],
+      "counterplayChannels": [
+        "telegraph",
+        "positioning",
+        "breakCondition",
+        "nonDamage"
+      ],
+      "scaling": {
+        "expected": true,
+        "declared": true,
+        "bandCount": 3,
+        "sampledBandIds": [
+          "cr-0-4-single-vanish",
+          "cr-5-12-three-vanishes",
+          "cr-13-30-recharging-vanish"
+        ],
+        "sampledRuleVariants": 3,
+        "pass": true
+      },
+      "snapshots": [
+        {
+          "targetCr": 1,
+          "bandId": "cr-0-4-single-vanish",
+          "abilityCount": 1,
+          "abilityIds": [
+            "vanish"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"bonusAction\",\"actionEconomy\":\"bonusAction\",\"usage\":{\"type\":\"limited\",\"uses\":1,\"period\":\"day\"},\"trigger\":null,\"resolution\":{\"type\":\"automatic\",\"attackType\":\"melee\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[\"invisible\"],\"severity\":\"moderate\",\"direction\":\"self\",\"duration\":\"until the movement ends, the monster enters bright light, or it makes an attack roll\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"The monster is not in bright light.\",\"text\":\"The monster has the Invisible condition and moves up to half its speed without provoking Opportunity Attacks. The Invisible condition ends when this movement ends, if the monster enters bright light, or immediately after it makes an attack roll.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster has the Invisible condition and moves up to half its speed without provoking Opportunity Attacks. The Invisible condition ends when this movement ends, if the monster enters bright light, or immediately after it makes an attack roll.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "vanish",
+              "renderedText": "The monster has the Invisible condition and moves up to half its speed without provoking Opportunity Attacks. The Invisible condition ends when this movement ends, if the monster enters bright light, or immediately after it makes an attack roll."
+            }
+          ]
+        },
+        {
+          "targetCr": 5,
+          "bandId": "cr-5-12-three-vanishes",
+          "abilityCount": 1,
+          "abilityIds": [
+            "vanish"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"bonusAction\",\"actionEconomy\":\"bonusAction\",\"usage\":{\"type\":\"limited\",\"uses\":3,\"period\":\"day\"},\"trigger\":null,\"resolution\":{\"type\":\"automatic\",\"attackType\":\"melee\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[\"invisible\"],\"severity\":\"moderate\",\"direction\":\"self\",\"duration\":\"until the movement ends, the monster enters bright light, or it makes an attack roll\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"The monster is not in bright light.\",\"text\":\"The monster has the Invisible condition and moves up to half its speed without provoking Opportunity Attacks. The Invisible condition ends when this movement ends, if the monster enters bright light, or immediately after it makes an attack roll.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster has the Invisible condition and moves up to half its speed without provoking Opportunity Attacks. The Invisible condition ends when this movement ends, if the monster enters bright light, or immediately after it makes an attack roll.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "vanish",
+              "renderedText": "The monster has the Invisible condition and moves up to half its speed without provoking Opportunity Attacks. The Invisible condition ends when this movement ends, if the monster enters bright light, or immediately after it makes an attack roll."
+            }
+          ]
+        },
+        {
+          "targetCr": 10,
+          "bandId": "cr-5-12-three-vanishes",
+          "abilityCount": 1,
+          "abilityIds": [
+            "vanish"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"bonusAction\",\"actionEconomy\":\"bonusAction\",\"usage\":{\"type\":\"limited\",\"uses\":3,\"period\":\"day\"},\"trigger\":null,\"resolution\":{\"type\":\"automatic\",\"attackType\":\"melee\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[\"invisible\"],\"severity\":\"moderate\",\"direction\":\"self\",\"duration\":\"until the movement ends, the monster enters bright light, or it makes an attack roll\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"The monster is not in bright light.\",\"text\":\"The monster has the Invisible condition and moves up to half its speed without provoking Opportunity Attacks. The Invisible condition ends when this movement ends, if the monster enters bright light, or immediately after it makes an attack roll.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster has the Invisible condition and moves up to half its speed without provoking Opportunity Attacks. The Invisible condition ends when this movement ends, if the monster enters bright light, or immediately after it makes an attack roll.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "vanish",
+              "renderedText": "The monster has the Invisible condition and moves up to half its speed without provoking Opportunity Attacks. The Invisible condition ends when this movement ends, if the monster enters bright light, or immediately after it makes an attack roll."
+            }
+          ]
+        },
+        {
+          "targetCr": 15,
+          "bandId": "cr-13-30-recharging-vanish",
+          "abilityCount": 1,
+          "abilityIds": [
+            "vanish"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"bonusAction\",\"actionEconomy\":\"bonusAction\",\"usage\":{\"type\":\"recharge\",\"uses\":1,\"period\":\"day\",\"recharge\":\"5-6\"},\"trigger\":null,\"resolution\":{\"type\":\"automatic\",\"attackType\":\"melee\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[\"invisible\"],\"severity\":\"moderate\",\"direction\":\"self\",\"duration\":\"until the movement ends, the monster enters bright light, or it makes an attack roll\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"The monster is not in bright light.\",\"text\":\"The monster has the Invisible condition and moves up to half its speed without provoking Opportunity Attacks. The Invisible condition ends when this movement ends, if the monster enters bright light, or immediately after it makes an attack roll.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster has the Invisible condition and moves up to half its speed without provoking Opportunity Attacks. The Invisible condition ends when this movement ends, if the monster enters bright light, or immediately after it makes an attack roll.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "vanish",
+              "renderedText": "The monster has the Invisible condition and moves up to half its speed without provoking Opportunity Attacks. The Invisible condition ends when this movement ends, if the monster enters bright light, or immediately after it makes an attack roll."
+            }
+          ]
+        }
+      ],
+      "issues": [],
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "version": "monster-movement-graft-editorial-audit-v1.0",
+      "applicable": true,
+      "id": "cunning-action-spirit",
+      "title": "Cunning Hunt",
+      "source": "jikininki",
+      "slot": "movement",
+      "kind": "movementPattern",
+      "decision": "REWRITE_STANDARD_FEATURE_INTO_PATTERN",
+      "rationale": "Generic Cunning Action was a borrowed class feature. The new three-mode pattern is readable, bounded, and directly tied to encounter positioning.",
+      "status": "pass",
+      "pass": true,
+      "abilityCount": 1,
+      "abilityIds": [
+        "cunning-hunt"
+      ],
+      "counterplayChannels": [
+        "telegraph",
+        "positioning",
+        "breakCondition",
+        "nonDamage"
+      ],
+      "scaling": {
+        "expected": false,
+        "declared": false,
+        "bandCount": 0,
+        "sampledBandIds": [],
+        "sampledRuleVariants": 1,
+        "pass": true
+      },
+      "snapshots": [
+        {
+          "targetCr": 1,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "cunning-hunt"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"bonusAction\",\"actionEconomy\":\"bonusAction\",\"usage\":{\"type\":\"atWill\"},\"trigger\":null,\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"Choose Rush, Slip, or Stalk when the bonus action is used.\",\"text\":\"The monster chooses one option: Rush, moving up to half its speed toward a visible enemy; Slip, moving up to 10 feet without provoking Opportunity Attacks; or Stalk, taking the Hide action if it is obscured or behind cover.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster chooses one option: Rush, moving up to half its speed toward a visible enemy; Slip, moving up to 10 feet without provoking Opportunity Attacks; or Stalk, taking the Hide action if it is obscured or behind cover.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "cunning-hunt",
+              "renderedText": "The monster chooses one option: Rush, moving up to half its speed toward a visible enemy; Slip, moving up to 10 feet without provoking Opportunity Attacks; or Stalk, taking the Hide action if it is obscured or behind cover."
+            }
+          ]
+        },
+        {
+          "targetCr": 5,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "cunning-hunt"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"bonusAction\",\"actionEconomy\":\"bonusAction\",\"usage\":{\"type\":\"atWill\"},\"trigger\":null,\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"Choose Rush, Slip, or Stalk when the bonus action is used.\",\"text\":\"The monster chooses one option: Rush, moving up to half its speed toward a visible enemy; Slip, moving up to 10 feet without provoking Opportunity Attacks; or Stalk, taking the Hide action if it is obscured or behind cover.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster chooses one option: Rush, moving up to half its speed toward a visible enemy; Slip, moving up to 10 feet without provoking Opportunity Attacks; or Stalk, taking the Hide action if it is obscured or behind cover.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "cunning-hunt",
+              "renderedText": "The monster chooses one option: Rush, moving up to half its speed toward a visible enemy; Slip, moving up to 10 feet without provoking Opportunity Attacks; or Stalk, taking the Hide action if it is obscured or behind cover."
+            }
+          ]
+        },
+        {
+          "targetCr": 10,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "cunning-hunt"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"bonusAction\",\"actionEconomy\":\"bonusAction\",\"usage\":{\"type\":\"atWill\"},\"trigger\":null,\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"Choose Rush, Slip, or Stalk when the bonus action is used.\",\"text\":\"The monster chooses one option: Rush, moving up to half its speed toward a visible enemy; Slip, moving up to 10 feet without provoking Opportunity Attacks; or Stalk, taking the Hide action if it is obscured or behind cover.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster chooses one option: Rush, moving up to half its speed toward a visible enemy; Slip, moving up to 10 feet without provoking Opportunity Attacks; or Stalk, taking the Hide action if it is obscured or behind cover.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "cunning-hunt",
+              "renderedText": "The monster chooses one option: Rush, moving up to half its speed toward a visible enemy; Slip, moving up to 10 feet without provoking Opportunity Attacks; or Stalk, taking the Hide action if it is obscured or behind cover."
+            }
+          ]
+        },
+        {
+          "targetCr": 15,
+          "bandId": null,
+          "abilityCount": 1,
+          "abilityIds": [
+            "cunning-hunt"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"bonusAction\",\"actionEconomy\":\"bonusAction\",\"usage\":{\"type\":\"atWill\"},\"trigger\":null,\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"Choose Rush, Slip, or Stalk when the bonus action is used.\",\"text\":\"The monster chooses one option: Rush, moving up to half its speed toward a visible enemy; Slip, moving up to 10 feet without provoking Opportunity Attacks; or Stalk, taking the Hide action if it is obscured or behind cover.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster chooses one option: Rush, moving up to half its speed toward a visible enemy; Slip, moving up to 10 feet without provoking Opportunity Attacks; or Stalk, taking the Hide action if it is obscured or behind cover.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "cunning-hunt",
+              "renderedText": "The monster chooses one option: Rush, moving up to half its speed toward a visible enemy; Slip, moving up to 10 feet without provoking Opportunity Attacks; or Stalk, taking the Hide action if it is obscured or behind cover."
+            }
+          ]
+        }
+      ],
+      "issues": [],
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "version": "monster-movement-graft-editorial-audit-v1.0",
+      "applicable": true,
+      "id": "wall-crawler",
+      "title": "Wall Stalker",
+      "source": "wolf-spiders",
+      "slot": "movement",
+      "kind": "movementPattern",
+      "decision": "RENAME_AND_EXPAND_INTO_BUNDLE",
+      "rationale": "The original climb speed duplicated a Body chassis. Wall Stalker now describes an approach cycle: traverse vertically, descend, and exploit a landing lane.",
+      "status": "pass",
+      "pass": true,
+      "abilityCount": 2,
+      "abilityIds": [
+        "wall-route",
+        "drop-route"
+      ],
+      "counterplayChannels": [
+        "telegraph",
+        "positioning",
+        "breakCondition",
+        "nonDamage"
+      ],
+      "scaling": {
+        "expected": false,
+        "declared": false,
+        "bandCount": 0,
+        "sampledBandIds": [],
+        "sampledRuleVariants": 2,
+        "pass": true
+      },
+      "snapshots": [
+        {
+          "targetCr": 1,
+          "bandId": null,
+          "abilityCount": 2,
+          "abilityIds": [
+            "wall-route",
+            "drop-route"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":null,\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster has a climb speed equal to its walking speed and can move across walls and ceilings without making an ability check.\"}}",
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"The monster descends at least 10 feet from a wall or ceiling during its turn.\",\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"The monster descended at least 10 feet from a wall or ceiling this turn.\",\"text\":\"Once on each of its turns after descending at least 10 feet from a wall or ceiling, the monster can move up to 10 additional feet on the ground without provoking Opportunity Attacks.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"Once on each of its turns after descending at least 10 feet from a wall or ceiling, the monster can move up to 10 additional feet on the ground without provoking Opportunity Attacks.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "wall-route",
+              "renderedText": "The monster has a climb speed equal to its walking speed and can move across walls and ceilings without making an ability check."
+            },
+            {
+              "abilityId": "drop-route",
+              "renderedText": "Once on each of its turns after descending at least 10 feet from a wall or ceiling, the monster can move up to 10 additional feet on the ground without provoking Opportunity Attacks."
+            }
+          ]
+        },
+        {
+          "targetCr": 5,
+          "bandId": null,
+          "abilityCount": 2,
+          "abilityIds": [
+            "wall-route",
+            "drop-route"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":null,\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster has a climb speed equal to its walking speed and can move across walls and ceilings without making an ability check.\"}}",
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"The monster descends at least 10 feet from a wall or ceiling during its turn.\",\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"The monster descended at least 10 feet from a wall or ceiling this turn.\",\"text\":\"Once on each of its turns after descending at least 10 feet from a wall or ceiling, the monster can move up to 10 additional feet on the ground without provoking Opportunity Attacks.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"Once on each of its turns after descending at least 10 feet from a wall or ceiling, the monster can move up to 10 additional feet on the ground without provoking Opportunity Attacks.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "wall-route",
+              "renderedText": "The monster has a climb speed equal to its walking speed and can move across walls and ceilings without making an ability check."
+            },
+            {
+              "abilityId": "drop-route",
+              "renderedText": "Once on each of its turns after descending at least 10 feet from a wall or ceiling, the monster can move up to 10 additional feet on the ground without provoking Opportunity Attacks."
+            }
+          ]
+        },
+        {
+          "targetCr": 10,
+          "bandId": null,
+          "abilityCount": 2,
+          "abilityIds": [
+            "wall-route",
+            "drop-route"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":null,\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster has a climb speed equal to its walking speed and can move across walls and ceilings without making an ability check.\"}}",
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"The monster descends at least 10 feet from a wall or ceiling during its turn.\",\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"The monster descended at least 10 feet from a wall or ceiling this turn.\",\"text\":\"Once on each of its turns after descending at least 10 feet from a wall or ceiling, the monster can move up to 10 additional feet on the ground without provoking Opportunity Attacks.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"Once on each of its turns after descending at least 10 feet from a wall or ceiling, the monster can move up to 10 additional feet on the ground without provoking Opportunity Attacks.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "wall-route",
+              "renderedText": "The monster has a climb speed equal to its walking speed and can move across walls and ceilings without making an ability check."
+            },
+            {
+              "abilityId": "drop-route",
+              "renderedText": "Once on each of its turns after descending at least 10 feet from a wall or ceiling, the monster can move up to 10 additional feet on the ground without provoking Opportunity Attacks."
+            }
+          ]
+        },
+        {
+          "targetCr": 15,
+          "bandId": null,
+          "abilityCount": 2,
+          "abilityIds": [
+            "wall-route",
+            "drop-route"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":null,\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster has a climb speed equal to its walking speed and can move across walls and ceilings without making an ability check.\"}}",
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":\"The monster descends at least 10 feet from a wall or ceiling during its turn.\",\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"The monster descended at least 10 feet from a wall or ceiling this turn.\",\"text\":\"Once on each of its turns after descending at least 10 feet from a wall or ceiling, the monster can move up to 10 additional feet on the ground without provoking Opportunity Attacks.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"Once on each of its turns after descending at least 10 feet from a wall or ceiling, the monster can move up to 10 additional feet on the ground without provoking Opportunity Attacks.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "wall-route",
+              "renderedText": "The monster has a climb speed equal to its walking speed and can move across walls and ceilings without making an ability check."
+            },
+            {
+              "abilityId": "drop-route",
+              "renderedText": "Once on each of its turns after descending at least 10 feet from a wall or ceiling, the monster can move up to 10 additional feet on the ground without provoking Opportunity Attacks."
+            }
+          ]
+        }
+      ],
+      "issues": [],
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "version": "monster-movement-graft-editorial-audit-v1.0",
+      "applicable": true,
+      "id": "web-dancer",
+      "title": "Web Swing",
+      "source": "wolf-spiders",
+      "slot": "movement",
+      "kind": "movementPattern",
+      "decision": "RENAME_AND_EXPAND_INTO_BUNDLE",
+      "rationale": "Web Dancer was a single free movement button. Web Swing now creates a persistent, visible route network whose growth and destruction shape the encounter.",
+      "status": "pass",
+      "pass": true,
+      "abilityCount": 2,
+      "abilityIds": [
+        "cast-line",
+        "web-route"
+      ],
+      "counterplayChannels": [
+        "telegraph",
+        "positioning",
+        "breakCondition",
+        "nonDamage"
+      ],
+      "scaling": {
+        "expected": true,
+        "declared": true,
+        "bandCount": 3,
+        "sampledBandIds": [
+          "cr-0-4-short-line",
+          "cr-5-12-long-line",
+          "cr-13-30-vault-line"
+        ],
+        "sampledRuleVariants": 4,
+        "pass": true
+      },
+      "snapshots": [
+        {
+          "targetCr": 1,
+          "bandId": "cr-0-4-short-line",
+          "abilityCount": 2,
+          "abilityIds": [
+            "cast-line",
+            "web-route"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"bonusAction\",\"actionEconomy\":\"bonusAction\",\"usage\":{\"type\":\"atWill\"},\"trigger\":null,\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"A visible surface is within range and can anchor the line.\",\"text\":\"The monster creates a web line between itself and a surface within 30 feet it can see, then moves along the line up to its remaining speed without provoking Opportunity Attacks. The line remains as a visible fragile object vulnerable to fire until destroyed.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster creates a web line between itself and a surface within 30 feet it can see, then moves along the line up to its remaining speed without provoking Opportunity Attacks. The line remains as a visible fragile object vulnerable to fire until destroyed.\"}}",
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":null,\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster can move along any intact web line it created as though the line were a climbable surface. It ignores movement restrictions caused by its own web lines.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "cast-line",
+              "renderedText": "The monster creates a web line between itself and a surface within 30 feet it can see, then moves along the line up to its remaining speed without provoking Opportunity Attacks. The line remains as a visible fragile object vulnerable to fire until destroyed."
+            },
+            {
+              "abilityId": "web-route",
+              "renderedText": "The monster can move along any intact web line it created as though the line were a climbable surface. It ignores movement restrictions caused by its own web lines."
+            }
+          ]
+        },
+        {
+          "targetCr": 5,
+          "bandId": "cr-5-12-long-line",
+          "abilityCount": 2,
+          "abilityIds": [
+            "cast-line",
+            "web-route"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"bonusAction\",\"actionEconomy\":\"bonusAction\",\"usage\":{\"type\":\"atWill\"},\"trigger\":null,\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"A visible surface is within range and can anchor the line.\",\"text\":\"The monster creates a web line between itself and a surface within 60 feet it can see, then moves along the line up to its remaining speed without provoking Opportunity Attacks. The line remains as a visible fragile object vulnerable to fire until destroyed.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster creates a web line between itself and a surface within 60 feet it can see, then moves along the line up to its remaining speed without provoking Opportunity Attacks. The line remains as a visible fragile object vulnerable to fire until destroyed.\"}}",
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":null,\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster can move along any intact web line it created as though the line were a climbable surface. It ignores movement restrictions caused by its own web lines.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "cast-line",
+              "renderedText": "The monster creates a web line between itself and a surface within 60 feet it can see, then moves along the line up to its remaining speed without provoking Opportunity Attacks. The line remains as a visible fragile object vulnerable to fire until destroyed."
+            },
+            {
+              "abilityId": "web-route",
+              "renderedText": "The monster can move along any intact web line it created as though the line were a climbable surface. It ignores movement restrictions caused by its own web lines."
+            }
+          ]
+        },
+        {
+          "targetCr": 10,
+          "bandId": "cr-5-12-long-line",
+          "abilityCount": 2,
+          "abilityIds": [
+            "cast-line",
+            "web-route"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"bonusAction\",\"actionEconomy\":\"bonusAction\",\"usage\":{\"type\":\"atWill\"},\"trigger\":null,\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"A visible surface is within range and can anchor the line.\",\"text\":\"The monster creates a web line between itself and a surface within 60 feet it can see, then moves along the line up to its remaining speed without provoking Opportunity Attacks. The line remains as a visible fragile object vulnerable to fire until destroyed.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster creates a web line between itself and a surface within 60 feet it can see, then moves along the line up to its remaining speed without provoking Opportunity Attacks. The line remains as a visible fragile object vulnerable to fire until destroyed.\"}}",
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":null,\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster can move along any intact web line it created as though the line were a climbable surface. It ignores movement restrictions caused by its own web lines.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "cast-line",
+              "renderedText": "The monster creates a web line between itself and a surface within 60 feet it can see, then moves along the line up to its remaining speed without provoking Opportunity Attacks. The line remains as a visible fragile object vulnerable to fire until destroyed."
+            },
+            {
+              "abilityId": "web-route",
+              "renderedText": "The monster can move along any intact web line it created as though the line were a climbable surface. It ignores movement restrictions caused by its own web lines."
+            }
+          ]
+        },
+        {
+          "targetCr": 15,
+          "bandId": "cr-13-30-vault-line",
+          "abilityCount": 2,
+          "abilityIds": [
+            "cast-line",
+            "web-route"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"bonusAction\",\"actionEconomy\":\"bonusAction\",\"usage\":{\"type\":\"atWill\"},\"trigger\":null,\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"A visible surface is within range and can anchor the line.\",\"text\":\"The monster creates a web line between itself and a surface within 90 feet it can see, then moves along the line up to its remaining speed without provoking Opportunity Attacks. The line remains as a visible fragile object vulnerable to fire until destroyed.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster creates a web line between itself and a surface within 90 feet it can see, then moves along the line up to its remaining speed without provoking Opportunity Attacks. The line remains as a visible fragile object vulnerable to fire until destroyed.\"}}",
+            "{\"section\":\"trait\",\"actionEconomy\":\"passive\",\"usage\":{\"type\":\"passive\"},\"trigger\":null,\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster can move along any intact web line it created as though the line were a climbable surface. It ignores movement restrictions caused by its own web lines.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "cast-line",
+              "renderedText": "The monster creates a web line between itself and a surface within 90 feet it can see, then moves along the line up to its remaining speed without provoking Opportunity Attacks. The line remains as a visible fragile object vulnerable to fire until destroyed."
+            },
+            {
+              "abilityId": "web-route",
+              "renderedText": "The monster can move along any intact web line it created as though the line were a climbable surface. It ignores movement restrictions caused by its own web lines."
+            }
+          ]
+        }
+      ],
+      "issues": [],
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "version": "monster-movement-graft-editorial-audit-v1.0",
+      "applicable": true,
+      "id": "shadow-jump",
+      "title": "Shadow Step",
+      "source": "wolf-spiders",
+      "slot": "movement",
+      "kind": "movementPattern",
+      "decision": "RENAME_AND_REWRITE_AND_SCALE",
+      "rationale": "The teleport already had a strong core, but no telegraph beyond darkness. Shadow Step preserves scaling while exposing a preventable destination.",
+      "status": "pass",
+      "pass": true,
+      "abilityCount": 1,
+      "abilityIds": [
+        "shadow-step"
+      ],
+      "counterplayChannels": [
+        "telegraph",
+        "positioning",
+        "breakCondition",
+        "nonDamage"
+      ],
+      "scaling": {
+        "expected": true,
+        "declared": true,
+        "bandCount": 3,
+        "sampledBandIds": [
+          "cr-0-4-short-step",
+          "cr-5-12-shadow-step",
+          "cr-13-30-deep-step"
+        ],
+        "sampledRuleVariants": 3,
+        "pass": true
+      },
+      "snapshots": [
+        {
+          "targetCr": 1,
+          "bandId": "cr-0-4-short-step",
+          "abilityCount": 1,
+          "abilityIds": [
+            "shadow-step"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"bonusAction\",\"actionEconomy\":\"bonusAction\",\"usage\":{\"type\":\"limited\",\"uses\":1,\"period\":\"day\"},\"trigger\":null,\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"Both the source and destination are in darkness.\",\"text\":\"The monster chooses an unoccupied space in darkness within 20 feet that it can see. The source and destination shadows visibly stretch toward each other, then the monster teleports to the destination. Bright light on either space before the teleport resolves prevents the movement without expending the use.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster chooses an unoccupied space in darkness within 20 feet that it can see. The source and destination shadows visibly stretch toward each other, then the monster teleports to the destination. Bright light on either space before the teleport resolves prevents the movement without expending the use.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "shadow-step",
+              "renderedText": "The monster chooses an unoccupied space in darkness within 20 feet that it can see. The source and destination shadows visibly stretch toward each other, then the monster teleports to the destination. Bright light on either space before the teleport resolves prevents the movement without expending the use."
+            }
+          ]
+        },
+        {
+          "targetCr": 5,
+          "bandId": "cr-5-12-shadow-step",
+          "abilityCount": 1,
+          "abilityIds": [
+            "shadow-step"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"bonusAction\",\"actionEconomy\":\"bonusAction\",\"usage\":{\"type\":\"limited\",\"uses\":3,\"period\":\"day\"},\"trigger\":null,\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"Both the source and destination are in darkness.\",\"text\":\"The monster chooses an unoccupied space in darkness within 40 feet that it can see. The source and destination shadows visibly stretch toward each other, then the monster teleports to the destination. Bright light on either space before the teleport resolves prevents the movement without expending the use.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster chooses an unoccupied space in darkness within 40 feet that it can see. The source and destination shadows visibly stretch toward each other, then the monster teleports to the destination. Bright light on either space before the teleport resolves prevents the movement without expending the use.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "shadow-step",
+              "renderedText": "The monster chooses an unoccupied space in darkness within 40 feet that it can see. The source and destination shadows visibly stretch toward each other, then the monster teleports to the destination. Bright light on either space before the teleport resolves prevents the movement without expending the use."
+            }
+          ]
+        },
+        {
+          "targetCr": 10,
+          "bandId": "cr-5-12-shadow-step",
+          "abilityCount": 1,
+          "abilityIds": [
+            "shadow-step"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"bonusAction\",\"actionEconomy\":\"bonusAction\",\"usage\":{\"type\":\"limited\",\"uses\":3,\"period\":\"day\"},\"trigger\":null,\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"Both the source and destination are in darkness.\",\"text\":\"The monster chooses an unoccupied space in darkness within 40 feet that it can see. The source and destination shadows visibly stretch toward each other, then the monster teleports to the destination. Bright light on either space before the teleport resolves prevents the movement without expending the use.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster chooses an unoccupied space in darkness within 40 feet that it can see. The source and destination shadows visibly stretch toward each other, then the monster teleports to the destination. Bright light on either space before the teleport resolves prevents the movement without expending the use.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "shadow-step",
+              "renderedText": "The monster chooses an unoccupied space in darkness within 40 feet that it can see. The source and destination shadows visibly stretch toward each other, then the monster teleports to the destination. Bright light on either space before the teleport resolves prevents the movement without expending the use."
+            }
+          ]
+        },
+        {
+          "targetCr": 15,
+          "bandId": "cr-13-30-deep-step",
+          "abilityCount": 1,
+          "abilityIds": [
+            "shadow-step"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"bonusAction\",\"actionEconomy\":\"bonusAction\",\"usage\":{\"type\":\"atWill\",\"uses\":1,\"period\":\"day\"},\"trigger\":null,\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"Both the source and destination are in darkness.\",\"text\":\"The monster chooses an unoccupied space in darkness within 60 feet that it can see. The source and destination shadows visibly stretch toward each other, then the monster teleports to the destination. Bright light on either space before the teleport resolves prevents the movement without expending the use.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster chooses an unoccupied space in darkness within 60 feet that it can see. The source and destination shadows visibly stretch toward each other, then the monster teleports to the destination. Bright light on either space before the teleport resolves prevents the movement without expending the use.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "shadow-step",
+              "renderedText": "The monster chooses an unoccupied space in darkness within 60 feet that it can see. The source and destination shadows visibly stretch toward each other, then the monster teleports to the destination. Bright light on either space before the teleport resolves prevents the movement without expending the use."
+            }
+          ]
+        }
+      ],
+      "issues": [],
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "version": "monster-movement-graft-editorial-audit-v1.0",
+      "applicable": true,
+      "id": "predatory-jump",
+      "title": "Predatory Leap",
+      "source": "wolf-spiders",
+      "slot": "movement",
+      "kind": "movementPattern",
+      "decision": "REWRITE_AND_SCALE",
+      "rationale": "The original leap was functional but automatic. The announced landing creates immediate counterplay, while the isolated-prey reward appears only from CR 5 onward so low-CR builds do not gain hidden offensive reliability.",
+      "status": "pass",
+      "pass": true,
+      "abilityCount": 1,
+      "abilityIds": [
+        "predatory-leap"
+      ],
+      "counterplayChannels": [
+        "telegraph",
+        "positioning",
+        "breakCondition",
+        "nonDamage"
+      ],
+      "scaling": {
+        "expected": true,
+        "declared": true,
+        "bandCount": 3,
+        "sampledBandIds": [
+          "cr-0-4-short-leap",
+          "cr-5-12-hunting-leap",
+          "cr-13-30-great-leap"
+        ],
+        "sampledRuleVariants": 3,
+        "pass": true
+      },
+      "snapshots": [
+        {
+          "targetCr": 1,
+          "bandId": "cr-0-4-short-leap",
+          "abilityCount": 1,
+          "abilityIds": [
+            "predatory-leap"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"bonusAction\",\"actionEconomy\":\"bonusAction\",\"usage\":{\"type\":\"atWill\"},\"trigger\":null,\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"The monster can see an unoccupied landing space within range.\",\"text\":\"The monster chooses an unoccupied landing space within 20 feet that it can see, visibly crouches toward it, and jumps there without provoking Opportunity Attacks.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster chooses an unoccupied landing space within 20 feet that it can see, visibly crouches toward it, and jumps there without provoking Opportunity Attacks.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "predatory-leap",
+              "renderedText": "The monster chooses an unoccupied landing space within 20 feet that it can see, visibly crouches toward it, and jumps there without provoking Opportunity Attacks."
+            }
+          ]
+        },
+        {
+          "targetCr": 5,
+          "bandId": "cr-5-12-hunting-leap",
+          "abilityCount": 1,
+          "abilityIds": [
+            "predatory-leap"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"bonusAction\",\"actionEconomy\":\"bonusAction\",\"usage\":{\"type\":\"atWill\"},\"trigger\":null,\"resolution\":{\"type\":\"automatic\",\"attackType\":\"melee\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"The monster can see an unoccupied landing space within range.\",\"text\":\"The monster chooses an unoccupied landing space within 30 feet that it can see, visibly crouches toward it, and jumps there without provoking Opportunity Attacks. If it lands within 5 feet of an isolated enemy, it has advantage on the next attack roll it makes against that enemy before the end of the turn.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster chooses an unoccupied landing space within 30 feet that it can see, visibly crouches toward it, and jumps there without provoking Opportunity Attacks. If it lands within 5 feet of an isolated enemy, it has advantage on the next attack roll it makes against that enemy before the end of the turn.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "predatory-leap",
+              "renderedText": "The monster chooses an unoccupied landing space within 30 feet that it can see, visibly crouches toward it, and jumps there without provoking Opportunity Attacks. If it lands within 5 feet of an isolated enemy, it has advantage on the next attack roll it makes against that enemy before the end of the turn."
+            }
+          ]
+        },
+        {
+          "targetCr": 10,
+          "bandId": "cr-5-12-hunting-leap",
+          "abilityCount": 1,
+          "abilityIds": [
+            "predatory-leap"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"bonusAction\",\"actionEconomy\":\"bonusAction\",\"usage\":{\"type\":\"atWill\"},\"trigger\":null,\"resolution\":{\"type\":\"automatic\",\"attackType\":\"melee\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"The monster can see an unoccupied landing space within range.\",\"text\":\"The monster chooses an unoccupied landing space within 30 feet that it can see, visibly crouches toward it, and jumps there without provoking Opportunity Attacks. If it lands within 5 feet of an isolated enemy, it has advantage on the next attack roll it makes against that enemy before the end of the turn.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster chooses an unoccupied landing space within 30 feet that it can see, visibly crouches toward it, and jumps there without provoking Opportunity Attacks. If it lands within 5 feet of an isolated enemy, it has advantage on the next attack roll it makes against that enemy before the end of the turn.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "predatory-leap",
+              "renderedText": "The monster chooses an unoccupied landing space within 30 feet that it can see, visibly crouches toward it, and jumps there without provoking Opportunity Attacks. If it lands within 5 feet of an isolated enemy, it has advantage on the next attack roll it makes against that enemy before the end of the turn."
+            }
+          ]
+        },
+        {
+          "targetCr": 15,
+          "bandId": "cr-13-30-great-leap",
+          "abilityCount": 1,
+          "abilityIds": [
+            "predatory-leap"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"bonusAction\",\"actionEconomy\":\"bonusAction\",\"usage\":{\"type\":\"atWill\"},\"trigger\":null,\"resolution\":{\"type\":\"automatic\",\"attackType\":\"melee\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"The monster can see an unoccupied landing space within range.\",\"text\":\"The monster chooses an unoccupied landing space within 45 feet that it can see, visibly crouches toward it, and jumps there without provoking Opportunity Attacks. If it lands within 5 feet of an isolated enemy, it has advantage on the next attack roll it makes against that enemy before the end of the turn.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"The monster chooses an unoccupied landing space within 45 feet that it can see, visibly crouches toward it, and jumps there without provoking Opportunity Attacks. If it lands within 5 feet of an isolated enemy, it has advantage on the next attack roll it makes against that enemy before the end of the turn.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "predatory-leap",
+              "renderedText": "The monster chooses an unoccupied landing space within 45 feet that it can see, visibly crouches toward it, and jumps there without provoking Opportunity Attacks. If it lands within 5 feet of an isolated enemy, it has advantage on the next attack roll it makes against that enemy before the end of the turn."
+            }
+          ]
+        }
+      ],
+      "issues": [],
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "version": "monster-movement-graft-editorial-audit-v1.0",
+      "applicable": true,
+      "id": "shadow-stillness",
+      "title": "Unseen Advance",
+      "source": "wax-death-masks",
+      "slot": "movement",
+      "kind": "movementPattern",
+      "decision": "RENAME_AND_REFINE_AND_SCALE",
+      "rationale": "The existing concept was already a genuine Movement Pattern. The revision simplifies its name, clarifies interruption during movement, and strengthens the observer-based counterplay.",
+      "status": "pass",
+      "pass": true,
+      "abilityCount": 1,
+      "abilityIds": [
+        "unseen-advance"
+      ],
+      "counterplayChannels": [
+        "telegraph",
+        "positioning",
+        "breakCondition",
+        "nonDamage"
+      ],
+      "scaling": {
+        "expected": true,
+        "declared": true,
+        "bandCount": 2,
+        "sampledBandIds": [
+          "cr-0-7-half-step",
+          "cr-8-30-full-step"
+        ],
+        "sampledRuleVariants": 2,
+        "pass": true
+      },
+      "snapshots": [
+        {
+          "targetCr": 1,
+          "bandId": "cr-0-7-half-step",
+          "abilityCount": 1,
+          "abilityIds": [
+            "unseen-advance"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"bonusAction\",\"actionEconomy\":\"bonusAction\",\"usage\":{\"type\":\"atWill\"},\"trigger\":\"No conscious hostile creature has line of sight to the monster.\",\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"No conscious hostile creature has line of sight to the monster.\",\"text\":\"Once per round, when no conscious hostile creature has line of sight to it, the monster can move up to half its speed without provoking Opportunity Attacks. This movement ends immediately if a conscious hostile creature regains line of sight to it.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"Once per round, when no conscious hostile creature has line of sight to it, the monster can move up to half its speed without provoking Opportunity Attacks. This movement ends immediately if a conscious hostile creature regains line of sight to it.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "unseen-advance",
+              "renderedText": "Once per round, when no conscious hostile creature has line of sight to it, the monster can move up to half its speed without provoking Opportunity Attacks. This movement ends immediately if a conscious hostile creature regains line of sight to it."
+            }
+          ]
+        },
+        {
+          "targetCr": 5,
+          "bandId": "cr-0-7-half-step",
+          "abilityCount": 1,
+          "abilityIds": [
+            "unseen-advance"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"bonusAction\",\"actionEconomy\":\"bonusAction\",\"usage\":{\"type\":\"atWill\"},\"trigger\":\"No conscious hostile creature has line of sight to the monster.\",\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"No conscious hostile creature has line of sight to the monster.\",\"text\":\"Once per round, when no conscious hostile creature has line of sight to it, the monster can move up to half its speed without provoking Opportunity Attacks. This movement ends immediately if a conscious hostile creature regains line of sight to it.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"Once per round, when no conscious hostile creature has line of sight to it, the monster can move up to half its speed without provoking Opportunity Attacks. This movement ends immediately if a conscious hostile creature regains line of sight to it.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "unseen-advance",
+              "renderedText": "Once per round, when no conscious hostile creature has line of sight to it, the monster can move up to half its speed without provoking Opportunity Attacks. This movement ends immediately if a conscious hostile creature regains line of sight to it."
+            }
+          ]
+        },
+        {
+          "targetCr": 10,
+          "bandId": "cr-8-30-full-step",
+          "abilityCount": 1,
+          "abilityIds": [
+            "unseen-advance"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"bonusAction\",\"actionEconomy\":\"bonusAction\",\"usage\":{\"type\":\"atWill\"},\"trigger\":\"No conscious hostile creature has line of sight to the monster.\",\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"No conscious hostile creature has line of sight to the monster.\",\"text\":\"Once per round, when no conscious hostile creature has line of sight to it, the monster can move up to its speed without provoking Opportunity Attacks. This movement ends immediately if a conscious hostile creature regains line of sight to it.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"Once per round, when no conscious hostile creature has line of sight to it, the monster can move up to its speed without provoking Opportunity Attacks. This movement ends immediately if a conscious hostile creature regains line of sight to it.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "unseen-advance",
+              "renderedText": "Once per round, when no conscious hostile creature has line of sight to it, the monster can move up to its speed without provoking Opportunity Attacks. This movement ends immediately if a conscious hostile creature regains line of sight to it."
+            }
+          ]
+        },
+        {
+          "targetCr": 15,
+          "bandId": "cr-8-30-full-step",
+          "abilityCount": 1,
+          "abilityIds": [
+            "unseen-advance"
+          ],
+          "ruleSignatures": [
+            "{\"section\":\"bonusAction\",\"actionEconomy\":\"bonusAction\",\"usage\":{\"type\":\"atWill\"},\"trigger\":\"No conscious hostile creature has line of sight to the monster.\",\"resolution\":{\"type\":\"automatic\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"damage\":{\"mode\":\"none\",\"budgetRole\":\"none\",\"types\":[],\"scale\":\"standard\",\"budgetShare\":null,\"expectedTargets\":null,\"parts\":[],\"activation\":null},\"condition\":{\"names\":[],\"severity\":\"minor\",\"direction\":\"referenceOnly\",\"duration\":\"\",\"special\":[],\"sizeLimit\":\"\",\"escape\":null,\"repeatSave\":null},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"No conscious hostile creature has line of sight to the monster.\",\"text\":\"Once per round, when no conscious hostile creature has line of sight to it, the monster can move up to its speed without provoking Opportunity Attacks. This movement ends immediately if a conscious hostile creature regains line of sight to it.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"effects\":[],\"text\":{\"effect\":\"Once per round, when no conscious hostile creature has line of sight to it, the monster can move up to its speed without provoking Opportunity Attacks. This movement ends immediately if a conscious hostile creature regains line of sight to it.\"}}"
+          ],
+          "validationStatus": "pass",
+          "validationErrors": [],
+          "parityPass": true,
+          "parityIssues": [],
+          "renderedAbilities": [
+            {
+              "abilityId": "unseen-advance",
+              "renderedText": "Once per round, when no conscious hostile creature has line of sight to it, the monster can move up to its speed without provoking Opportunity Attacks. This movement ends immediately if a conscious hostile creature regains line of sight to it."
+            }
+          ]
+        }
+      ],
+      "issues": [],
+      "errors": [],
+      "warnings": []
+    }
+  ],
+  "issues": [],
+  "warnings": [],
+  "errors": [],
+  "pass": true
+}
