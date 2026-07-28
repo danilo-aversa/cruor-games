@@ -26,8 +26,6 @@ import {
   Activity,
   ChevronRight,
   FileText,
-  Flame,
-  RotateCcw,
   SlidersHorizontal,
   Sparkles,
 } from "lucide-react";
@@ -706,55 +704,42 @@ function MonsterNameEditor({ value, onChange }) {
   );
 }
 
-function GraftActionPanel({ composerStarted, onForgeMonster, onOpenExport, onStartOver }) {
+function GraftActionPanel({
+  onForgeMonster,
+  onShowBuildGuide,
+  showBuildGuide = true,
+}) {
   return (
-    <section className="cruor-composer-rail-card monster-frame-info-card monster-graft-action-card" aria-label="Build actions">
+    <section
+      className="cruor-composer-rail-card monster-frame-info-card monster-graft-action-card"
+      aria-label="Build actions"
+    >
       <button
         className="monster-graft-action-btn is-primary tooltip-btn"
         type="button"
         aria-label="Forge Monster"
         data-key="tooltip-generic"
-        data-tooltip="Auto-build a playable first draft from the current Monster Frame. You can customize every anatomy slot afterward."
-        data-tooltip-description="Fills the anatomy slots with compatible grafts based on the current chassis, role, danger, and CR."
+        data-tooltip="Forge Monster"
+        data-tooltip-description="Auto-build a playable first draft from the current Monster Frame. The anatomy slots remain editable afterward."
         onClick={onForgeMonster}
       >
-        <Flame aria-hidden="true" />
+        <i className="fa-solid fa-wand-magic-sparkles" aria-hidden="true" />
         <span>Forge Monster</span>
       </button>
-      <button
-        className={`monster-graft-action-btn tooltip-btn ${composerStarted ? "" : "is-disabled"}`}
-        type="button"
-        aria-label="Export Monster"
-        aria-disabled={!composerStarted}
-        data-key="tooltip-generic"
-        data-tooltip={
-          composerStarted
-            ? "Open the complete monster export sheet."
-            : "Start or forge a monster before opening Export."
-        }
-        data-tooltip-description="Moves to the export-ready stat block and table handoff view."
-        onClick={composerStarted ? onOpenExport : undefined}
-      >
-        <FileText aria-hidden="true" />
-        <span>Export Monster</span>
-      </button>
-      <button
-        className={`monster-graft-action-btn tooltip-btn ${composerStarted ? "" : "is-disabled"}`}
-        type="button"
-        aria-label="Start Over"
-        aria-disabled={!composerStarted}
-        data-key="tooltip-generic"
-        data-tooltip={
-          composerStarted
-            ? "Return to the initial Template / Scratch choice and clear the current build."
-            : "Start a build before using Start Over."
-        }
-        data-tooltip-description="Clears the current build and returns to the first start screen."
-        onClick={composerStarted ? onStartOver : undefined}
-      >
-        <RotateCcw aria-hidden="true" />
-        <span>Start Over</span>
-      </button>
+      {!showBuildGuide ? (
+        <button
+          className="monster-graft-action-btn tooltip-btn"
+          type="button"
+          aria-label="Show Build Guide"
+          data-key="tooltip-generic"
+          data-tooltip="Show Build Guide"
+          data-tooltip-description="Restore the optional contextual guide in the center of the Composer."
+          onClick={onShowBuildGuide}
+        >
+          <i className="fa-solid fa-book-open" aria-hidden="true" />
+          <span>Show Build Guide</span>
+        </button>
+      ) : null}
     </section>
   );
 }
@@ -1917,10 +1902,7 @@ function GraftInfoPanel({
   computed,
   monsterName,
   onMonsterNameChange,
-  composerStarted,
   onForgeMonster,
-  onOpenExport,
-  onStartOver,
   creatureType,
   category,
   role,
@@ -1930,21 +1912,10 @@ function GraftInfoPanel({
   tempoProfile,
   danger,
   selected,
-  activeSlot,
-  features = [],
+  onShowBuildGuide,
+  showBuildGuide = true,
   workflowFooter = null,
 }) {
-  const slot = SLOTS.find((item) => item.id === activeSlot) || null;
-  const availableFeatures = Array.isArray(features) ? features : [];
-  const slotFeatures = slot
-    ? getSelectedIdsForSlot(selected, slot.id)
-        .map((id) => availableFeatures.find((feature) => feature.id === id))
-        .filter(Boolean)
-    : [];
-  const candidates = slot
-    ? availableFeatures.filter((feature) => feature.slot === slot.id).length
-    : SLOTS.reduce((total, item) => total + availableFeatures.filter((feature) => feature.slot === item.id).length, 0);
-
   return (
     <ComposerRail
       side="right"
@@ -1971,24 +1942,15 @@ function GraftInfoPanel({
         </div>
       </section>
 
-      <section className="cruor-composer-rail-card monster-frame-info-card">
-        <div className="monster-graft-focus">
-          <span>Focused Slot</span>
-          <strong>{slot ? slot.label : "No Slot Selected"}</strong>
-          <p>{slot ? slotFeatures[0]?.title || slot.hint : "Choose a graft slot to inspect its installed feature and compatible alternatives."}</p>
-          <em>{slot ? slotFeatures.length ? `${slotFeatures.length} installed` : `${candidates} compatible grafts` : `${candidates} compatible grafts available`}</em>
-        </div>
-      </section>
 
       <section className="cruor-composer-rail-card monster-frame-info-card">
         <FrameMeter label="Pressure" value={computed.pressure} max={computed.pressureLimit} />
         <FrameMeter label="Complexity" value={computed.complexity} max={computed.complexityCap} />
       </section>
       <GraftActionPanel
-        composerStarted={composerStarted}
         onForgeMonster={onForgeMonster}
-        onOpenExport={onOpenExport}
-        onStartOver={onStartOver}
+        showBuildGuide={showBuildGuide}
+        onShowBuildGuide={onShowBuildGuide}
       />
     </ComposerRail>
   );
@@ -2012,9 +1974,6 @@ export function MonsterSilhouetteMap({
   onMonsterNameChange,
   onForgeMonster,
   onOpenComponents,
-  onOpenExport,
-  onStartOver,
-  composerStarted,
   creatureType,
   role,
   roleId,
@@ -2277,10 +2236,7 @@ export function MonsterSilhouetteMap({
                   computed={computed}
                   monsterName={monsterName}
                   onMonsterNameChange={onMonsterNameChange}
-                  composerStarted={composerStarted}
                   onForgeMonster={onForgeMonster}
-                  onOpenExport={onOpenExport}
-                  onStartOver={onStartOver}
                   onSetStageMode={onSetStageMode}
                   creatureType={safeCreatureType}
                   category={category}
@@ -2291,8 +2247,8 @@ export function MonsterSilhouetteMap({
                   tempoProfile={safeTempoProfile}
                   danger={safeDanger}
                   selected={selected}
-                  activeSlot={activeSlot}
-                  features={availableFeatures}
+                  showBuildGuide={showBuildGuide}
+                  onShowBuildGuide={() => onShowBuildGuideChange?.(true)}
                   workflowFooter={workflowFooter}
                 />
               </div>

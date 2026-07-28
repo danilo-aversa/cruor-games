@@ -23396,3 +23396,662 @@ _Nessun file aggiunto._
 - `~package.json`
 - `~scripts/monster/report-monster-pressure-complexity.mjs`
 
+
+---
+
+## 27/07/2026, 23:37:43
+
+**Operazione:** Apply ZIP from ChatGPT Workbench
+
+**Versione script:** `workbench-0.3.4`
+
+**ZIP applicato:** `cruor-games-graft-selector-v1.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Documenti\GitHub\_downloads\cruor-games-graft-selector-v1.zip`
+
+**Repo:** `H:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\chatgpt-workbench-apply-PmocTT`
+
+**Decisione struttura:** `Preserved top-level repo folder: features`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 2
+
+- `~features/monster-composer/components/monster-composer.navigator.jsx`
+- `~features/monster-composer/monster-composer.styles.css`
+
+
+---
+
+## 28/07/2026, 11:05:03
+
+**Operazione:** Apply ZIP from ChatGPT Workbench
+
+**Versione script:** `workbench-0.3.4`
+
+**ZIP applicato:** `cruor-games-graft-selector-v2-layout-fix.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Documenti\GitHub\_downloads\cruor-games-graft-selector-v2-layout-fix.zip`
+
+**Repo:** `H:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\chatgpt-workbench-apply-z8BMSq`
+
+**Decisione struttura:** `Preserved top-level repo folder: features`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 2
+
+- `~features/monster-composer/components/monster-composer.navigator.jsx`
+- `~features/monster-composer/monster-composer.styles.css`
+
+
+---
+
+## 28/07/2026, 11:39:24
+
+**Operazione:** Apply ZIP from ChatGPT Workbench
+
+**Versione script:** `workbench-0.4.0`
+
+**ZIP applicato:** `cruor-games-graft-selector-v3-isolated-layout.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Documenti\GitHub\_downloads\cruor-games-graft-selector-v3-isolated-layout.zip`
+
+**Repo:** `H:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\chatgpt-workbench-apply-tkYuvT`
+
+**Decisione struttura:** `Preserved top-level repo folder: features`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 2
+
+- `~features/monster-composer/components/monster-composer.navigator.jsx`
+- `~features/monster-composer/monster-composer.styles.css`
+
+
+---
+
+## 28/07/2026, 12:01:30
+
+**Operazione:** Apply ZIP from ChatGPT Workbench
+
+**Versione script:** `workbench-0.4.1`
+
+**ZIP applicato:** `cruor-games-graft-selector-v4-readability-details.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Documenti\GitHub\_downloads\cruor-games-graft-selector-v4-readability-details.zip`
+
+**Repo:** `H:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\chatgpt-workbench-apply-ojMJlm`
+
+**Decisione struttura:** `Preserved top-level repo folder: features`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 2
+
+- `~features/monster-composer/components/monster-composer.navigator.jsx`
+- `~features/monster-composer/monster-composer.styles.css`
+
+
+---
+
+## 28/07/2026, 12:25:55
+
+**Operazione:** Apply ZIP from ChatGPT Workbench
+
+**Versione script:** `workbench-0.4.2`
+
+**ZIP applicato:** `cruor-games-graft-selector-v5-dynamic-cards-filters.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Documenti\GitHub\_downloads\cruor-games-graft-selector-v5-dynamic-cards-filters.zip`
+
+**Repo:** `H:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\chatgpt-workbench-apply-Fz2elr`
+
+**Decisione struttura:** `Preserved top-level repo folder: features`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 2
+
+- `~features/monster-composer/components/monster-composer.navigator.jsx`
+- `~features/monster-composer/monster-composer.styles.css`
+
+
+---
+
+## 28/07/2026, 12:42:11
+
+**Operazione:** Apply ZIP from ChatGPT Workbench
+
+**Versione script:** `workbench-0.4.2`
+
+**ZIP applicato:** `cruor-games-graft-selector-v6-tooltip-flat-detail.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Documenti\GitHub\_downloads\cruor-games-graft-selector-v6-tooltip-flat-detail.zip`
+
+**Repo:** `H:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\chatgpt-workbench-apply-w29vRt`
+
+**Decisione struttura:** `Preserved top-level repo folder: features`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 2
+
+- `~features/monster-composer/components/monster-composer.navigator.jsx`
+- `~features/monster-composer/monster-composer.styles.css`
+
+
+---
+
+## 28/07/2026, 13:28:11
+
+**Operazione:** Apply ZIP from ChatGPT Workbench
+
+**Versione script:** `workbench-0.4.2`
+
+**ZIP applicato:** `cruor-games-graft-selector-v7-tooltip-filters-ux.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Documenti\GitHub\_downloads\cruor-games-graft-selector-v7-tooltip-filters-ux.zip`
+
+**Repo:** `H:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\chatgpt-workbench-apply-DUogxk`
+
+**Decisione struttura:** `Preserved top-level repo folder: features`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 2
+
+- `~features/monster-composer/components/monster-composer.navigator.jsx`
+- `~features/monster-composer/monster-composer.styles.css`
+
+
+---
+
+## 28/07/2026, 14:01:34
+
+**Operazione:** Apply ZIP from ChatGPT Workbench
+
+**Versione script:** `workbench-0.4.2`
+
+**ZIP applicato:** `cruor-games-graft-selector-v8-detail-impact-action.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Documenti\GitHub\_downloads\cruor-games-graft-selector-v8-detail-impact-action.zip`
+
+**Repo:** `H:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\chatgpt-workbench-apply-KbmMhX`
+
+**Decisione struttura:** `Preserved top-level repo folder: features`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 2
+
+- `~features/monster-composer/components/monster-composer.navigator.jsx`
+- `~features/monster-composer/monster-composer.styles.css`
+
+
+---
+
+## 28/07/2026, 14:22:58
+
+**Operazione:** Apply ZIP from ChatGPT Workbench
+
+**Versione script:** `workbench-0.5.0`
+
+**ZIP applicato:** `cruor-games-graft-selector-v9-impact-layout.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Documenti\GitHub\_downloads\cruor-games-graft-selector-v9-impact-layout.zip`
+
+**Repo:** `H:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\chatgpt-workbench-apply-2p0iyr`
+
+**Decisione struttura:** `Preserved top-level repo folder: features`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 2
+
+- `~features/monster-composer/components/monster-composer.navigator.jsx`
+- `~features/monster-composer/monster-composer.styles.css`
+
+
+---
+
+## 28/07/2026, 14:58:46
+
+**Operazione:** Apply ZIP from ChatGPT Workbench
+
+**Versione script:** `workbench-0.5.1`
+
+**ZIP applicato:** `cruor-games-graft-selector-v10-aligned-impact-cards.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Documenti\GitHub\_downloads\cruor-games-graft-selector-v10-aligned-impact-cards.zip`
+
+**Repo:** `H:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\chatgpt-workbench-apply-QV62RD`
+
+**Decisione struttura:** `Preserved top-level repo folder: features`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 2
+
+- `~features/monster-composer/components/monster-composer.navigator.jsx`
+- `~features/monster-composer/monster-composer.styles.css`
+
+
+---
+
+## 28/07/2026, 15:22:51
+
+**Operazione:** Apply ZIP from ChatGPT Workbench
+
+**Versione script:** `workbench-0.5.1`
+
+**ZIP applicato:** `cruor-games-graft-selector-v11-uniform-numeric-impact.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Documenti\GitHub\_downloads\cruor-games-graft-selector-v11-uniform-numeric-impact.zip`
+
+**Repo:** `H:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\chatgpt-workbench-apply-i9DbJJ`
+
+**Decisione struttura:** `Preserved top-level repo folder: features`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 2
+
+- `~features/monster-composer/components/monster-composer.navigator.jsx`
+- `~features/monster-composer/monster-composer.styles.css`
+
+
+---
+
+## 28/07/2026, 15:39:30
+
+**Operazione:** Apply ZIP from ChatGPT Workbench
+
+**Versione script:** `workbench-0.5.1`
+
+**ZIP applicato:** `cruor-games-graft-selector-v12-collapsible-impact-warnings.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Documenti\GitHub\_downloads\cruor-games-graft-selector-v12-collapsible-impact-warnings.zip`
+
+**Repo:** `H:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\chatgpt-workbench-apply-zjpFlg`
+
+**Decisione struttura:** `Preserved top-level repo folder: features`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 2
+
+- `~features/monster-composer/components/monster-composer.navigator.jsx`
+- `~features/monster-composer/monster-composer.styles.css`
+
+
+---
+
+## 28/07/2026, 15:58:21
+
+**Operazione:** Apply ZIP from ChatGPT Workbench
+
+**Versione script:** `workbench-0.5.1`
+
+**ZIP applicato:** `cruor-games-graft-selector-v13-stat-block-preview.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Documenti\GitHub\_downloads\cruor-games-graft-selector-v13-stat-block-preview.zip`
+
+**Repo:** `H:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\chatgpt-workbench-apply-fz9gvg`
+
+**Decisione struttura:** `Preserved top-level repo folder: features`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 2
+
+- `~features/monster-composer/components/monster-composer.navigator.jsx`
+- `~features/monster-composer/monster-composer.styles.css`
+
+
+---
+
+## 28/07/2026, 16:15:46
+
+**Operazione:** Apply ZIP from ChatGPT Workbench
+
+**Versione script:** `workbench-0.5.1`
+
+**ZIP applicato:** `cruor-games-graft-selector-v14-engine-accurate-preview.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Documenti\GitHub\_downloads\cruor-games-graft-selector-v14-engine-accurate-preview.zip`
+
+**Repo:** `H:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\chatgpt-workbench-apply-vseNpq`
+
+**Decisione struttura:** `Preserved top-level repo folder: features`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 1
+
+- `~features/monster-composer/components/monster-composer.navigator.jsx`
+
+
+---
+
+## 28/07/2026, 16:37:51
+
+**Operazione:** Apply ZIP from ChatGPT Workbench
+
+**Versione script:** `workbench-0.5.1`
+
+**ZIP applicato:** `cruor-games-graft-selector-v15-tristate-context-filters.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Documenti\GitHub\_downloads\cruor-games-graft-selector-v15-tristate-context-filters.zip`
+
+**Repo:** `H:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\chatgpt-workbench-apply-B7XRRw`
+
+**Decisione struttura:** `Preserved top-level repo folder: features`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 2
+
+- `~features/monster-composer/components/monster-composer.navigator.jsx`
+- `~features/monster-composer/monster-composer.styles.css`
+
+
+---
+
+## 28/07/2026, 16:47:41
+
+**Operazione:** Apply ZIP from ChatGPT Workbench
+
+**Versione script:** `workbench-0.5.1`
+
+**ZIP applicato:** `cruor-games-graft-selector-v16-filter-sidebar-scroll-states.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Documenti\GitHub\_downloads\cruor-games-graft-selector-v16-filter-sidebar-scroll-states.zip`
+
+**Repo:** `H:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\chatgpt-workbench-apply-b0WMxX`
+
+**Decisione struttura:** `Preserved top-level repo folder: features`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 2
+
+- `~features/monster-composer/components/monster-composer.navigator.jsx`
+- `~features/monster-composer/monster-composer.styles.css`
+
+
+---
+
+## 28/07/2026, 17:06:45
+
+**Operazione:** Apply ZIP from ChatGPT Workbench
+
+**Versione script:** `workbench-0.5.1`
+
+**ZIP applicato:** `cruor-games-graft-selector-v17-motion-impact-visibility.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Documenti\GitHub\_downloads\cruor-games-graft-selector-v17-motion-impact-visibility.zip`
+
+**Repo:** `H:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\chatgpt-workbench-apply-ArIFhh`
+
+**Decisione struttura:** `Preserved top-level repo folder: features`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 2
+
+- `~features/monster-composer/components/monster-composer.navigator.jsx`
+- `~features/monster-composer/monster-composer.styles.css`
+
+
+---
+
+## 28/07/2026, 18:58:44
+
+**Operazione:** Apply ZIP from ChatGPT Workbench
+
+**Versione script:** `workbench-0.7.0`
+
+**ZIP applicato:** `cruor-games-graft-selector-v18-contextual-signatures.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Documenti\GitHub\_downloads\cruor-games-graft-selector-v18-contextual-signatures.zip`
+
+**Repo:** `H:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\chatgpt-workbench-apply-IJs5ZA`
+
+**Decisione struttura:** `Preserved top-level repo folder: features`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 2
+
+- `~features/monster-composer/components/monster-composer.navigator.jsx`
+- `~features/monster-composer/monster-composer.styles.css`
+
+**File eliminati:** 0
+
+_Nessun file eliminato._
+
+**File rinominati:** 0
+
+_Nessun file rinominato._
+
+
+---
+
+## 28/07/2026, 19:07:04
+
+**Operazione:** Apply ZIP from ChatGPT Workbench
+
+**Versione script:** `workbench-0.7.0`
+
+**ZIP applicato:** `cruor-games-graft-selector-v19-font-awesome-signatures.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Documenti\GitHub\_downloads\cruor-games-graft-selector-v19-font-awesome-signatures.zip`
+
+**Repo:** `H:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\chatgpt-workbench-apply-lQJvdR`
+
+**Decisione struttura:** `Preserved top-level repo folder: features`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 1
+
+- `~features/monster-composer/components/monster-composer.navigator.jsx`
+
+**File eliminati:** 0
+
+_Nessun file eliminato._
+
+**File rinominati:** 0
+
+_Nessun file rinominato._
+
+
+---
+
+## 28/07/2026, 19:10:42
+
+**Operazione:** Apply ZIP from ChatGPT Workbench
+
+**Versione script:** `workbench-0.7.0`
+
+**ZIP applicato:** `cruor-games-graft-selector-v20-build-warning-position.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Documenti\GitHub\_downloads\cruor-games-graft-selector-v20-build-warning-position.zip`
+
+**Repo:** `H:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\chatgpt-workbench-apply-pZZE7E`
+
+**Decisione struttura:** `Preserved top-level repo folder: features`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 2
+
+- `~features/monster-composer/components/monster-composer.navigator.jsx`
+- `~features/monster-composer/monster-composer.styles.css`
+
+**File eliminati:** 0
+
+_Nessun file eliminato._
+
+**File rinominati:** 0
+
+_Nessun file rinominato._
+
+
+---
+
+## 28/07/2026, 19:24:14
+
+**Operazione:** Apply ZIP from ChatGPT Workbench
+
+**Versione script:** `workbench-0.7.0`
+
+**ZIP applicato:** `cruor-games-graft-selector-v21-impact-new-row.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Documenti\GitHub\_downloads\cruor-games-graft-selector-v21-impact-new-row.zip`
+
+**Repo:** `H:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\chatgpt-workbench-apply-xPhPTe`
+
+**Decisione struttura:** `Preserved top-level repo folder: features`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 1
+
+- `~features/monster-composer/monster-composer.styles.css`
+
+**File eliminati:** 0
+
+_Nessun file eliminato._
+
+**File rinominati:** 0
+
+_Nessun file rinominato._
+

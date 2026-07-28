@@ -76,6 +76,7 @@ export function GuidedFlowPanel({
       primaryAction={bindAction(guidedFlow.primaryAction)}
       productLabel="Terrifying Monsters"
       showBuildGuide={showBuildGuide}
+      showHiddenTrigger={false}
       stages={guidedFlow.stages || []}
       tasks={tasks}
       onShowBuildGuideChange={onShowBuildGuideChange}

@@ -5348,14 +5348,6 @@
   white-space: nowrap;
 }
 
-.monster-shell .monster-graft-focus span {
-  color: var(--cruor-color-hex-8f7278);
-  font-size: var(--text-size-xxs);
-  font-weight: 950;
-  letter-spacing: 0.12em;
-  line-height: 1;
-  text-transform: uppercase;
-}
 
 
 .monster-shell .monster-frame-option {
@@ -5586,14 +5578,6 @@
   text-transform: uppercase;
 }
 
-.monster-shell .monster-graft-focus em {
-  color: var(--cruor-color-hex-d0a2aa);
-  font-size: var(--text-size-s);
-  font-style: normal;
-  font-weight: 950;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
 
 .monster-shell .monster-frame-info-grid:not(.cruor-composer-fact-grid) {
   display: grid;
@@ -5621,25 +5605,8 @@
   white-space: nowrap;
 }
 
-.monster-shell .monster-graft-focus {
-  display: grid;
-  gap: 7px;
-}
 
-.monster-shell .monster-graft-focus strong {
-  color: var(--cruor-color-hex-fff0f2);
-  font-size: var(--text-size-5xl);
-  font-weight: 950;
-  letter-spacing: -0.03em;
-  line-height: 1;
-}
 
-.monster-shell .monster-graft-focus p {
-  margin: 0;
-  color: var(--cruor-color-text-a560);
-  font-size: var(--text-size-l);
-  line-height: 1.35;
-}
 
 .monster-shell .monster-silhouette-stage[data-stage-mode="frame"] .monster-silhouette-svg {
   cursor: default;
@@ -6717,7 +6684,7 @@
 }
 
 /* Monster Graft Actions — consolidated single source of truth */
-/* Build actions are icon-only; chassis/graft flow actions remain icon + text. */
+/* Right-rail build actions mirror the full-width Dark Places action language. */
 .monster-shell .monster-graft-action-card {
   box-sizing: border-box;
   display: grid;
@@ -6788,8 +6755,16 @@
 }
 
 .monster-shell .monster-graft-action-card[aria-label="Build actions"] .monster-graft-action-btn {
+  display: grid;
+  grid-template-columns: 20px minmax(0, 1fr);
+  align-items: center;
+  justify-content: stretch;
+  gap: 9px;
   min-height: 40px;
-  padding: 0;
+  padding: 0 10px;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
 }
 
 .monster-shell .monster-graft-action-card[aria-label="Graft flow actions"] .monster-graft-action-btn,
@@ -6799,11 +6774,19 @@
   padding: 0 12px;
 }
 
-.monster-shell .monster-graft-action-card .monster-graft-action-btn svg {
+.monster-shell .monster-graft-action-card .monster-graft-action-btn svg,
+.monster-shell .monster-graft-action-card .monster-graft-action-btn i {
   flex: 0 0 auto;
   width: 16px;
   height: 16px;
   color: var(--cruor-color-hex-b33b4e);
+}
+
+.monster-shell .monster-graft-action-card .monster-graft-action-btn i {
+  display: inline-grid;
+  place-items: center;
+  font-size: 14px;
+  line-height: 1;
 }
 
 .monster-shell .monster-graft-action-card .monster-graft-action-btn span {
@@ -6816,7 +6799,12 @@
 }
 
 .monster-shell .monster-graft-action-card[aria-label="Build actions"] .monster-graft-action-btn span {
-  display: none;
+  display: block;
+  font-size: var(--text-size-s);
+  font-weight: 900;
+  letter-spacing: 0.07em;
+  line-height: 1;
+  text-transform: uppercase;
 }
 
 .monster-shell .monster-graft-action-card .monster-graft-action-btn:hover,
@@ -6830,9 +6818,16 @@
   transform: translateY(-1px);
 }
 
+.monster-shell .monster-graft-action-card[aria-label="Build actions"] .monster-graft-action-btn.is-primary:not(:hover):not(:focus-visible) {
+  transform: none;
+}
+
 .monster-shell .monster-graft-action-card .monster-graft-action-btn:hover svg,
 .monster-shell .monster-graft-action-card .monster-graft-action-btn:focus-visible svg,
-.monster-shell .monster-graft-action-card .monster-graft-action-btn.is-primary svg {
+.monster-shell .monster-graft-action-card .monster-graft-action-btn.is-primary svg,
+.monster-shell .monster-graft-action-card .monster-graft-action-btn:hover i,
+.monster-shell .monster-graft-action-card .monster-graft-action-btn:focus-visible i,
+.monster-shell .monster-graft-action-card .monster-graft-action-btn.is-primary i {
   color: var(--cruor-color-hex-f0b9c2);
 }
 
@@ -11524,6 +11519,12 @@
   animation-delay: 120ms;
 }
 
+@media (max-width: 520px) {
+  .monster-graft-selector-portal .monster-graft-selector-detail__impact-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .monster-shell .monster-silhouette-stage[data-stage-transition$="-exit"] *,
   .monster-shell .monster-silhouette-stage[data-stage-transition$="-enter"] * {
@@ -11787,5 +11788,1387 @@
   .monster-shell .meter.is-over .meter__track > span {
     filter: brightness(1.18);
     box-shadow: 0 0 10px rgba(143, 36, 60, 0.34);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Monster Composer — Graft Selector overlay
+   -------------------------------------------------------------------------- */
+
+body:has(.monster-graft-selector-portal) > .cruor-tooltip-portal {
+  z-index: 5200;
+}
+
+.monster-shell .anatomy-stage__grid--grafts.has-navigator:has(.monster-graft-selector__mount) {
+  --stage-center-width: calc(
+    100vw - var(--stage-left-width) - var(--stage-right-width) -
+    var(--stage-pad) - var(--stage-pad) - var(--stage-gap) - var(--stage-gap)
+  );
+  grid-template-areas: "left center right";
+  grid-template-columns:
+    var(--stage-left-width)
+    var(--stage-center-column-width, minmax(0, 1fr))
+    var(--stage-right-width);
+  grid-template-rows: minmax(0, 1fr);
+  align-items: stretch;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.monster-shell
+  .anatomy-stage__grid--grafts.has-navigator:has(.monster-graft-selector__mount)
+  .anatomy-stage__navigator-column,
+.monster-shell
+  .anatomy-stage__grid--grafts.has-navigator:has(.monster-graft-selector__mount)
+  .anatomy-stage__navigator-focus-overlay,
+.monster-shell
+  .anatomy-stage__grid--grafts.has-navigator:has(.monster-graft-selector__mount)
+  .anatomy-stage__column--left::before {
+  display: none;
+}
+
+.monster-shell
+  .anatomy-stage__grid--grafts.has-navigator:has(.monster-graft-selector__mount)
+  .cruor-composer-slot-card {
+  filter: none;
+  opacity: 1;
+}
+
+.monster-graft-selector-portal {
+  position: fixed;
+  inset: var(--cruor-site-topbar-height, 64px) 0 0;
+  z-index: var(--cruor-z-fullscreen-modal, 2400);
+  min-width: 0;
+  min-height: 0;
+  background: transparent;
+  pointer-events: none;
+}
+
+.monster-graft-selector-portal::before {
+  display: none;
+}
+
+.monster-graft-selector-portal .monster-graft-selector {
+  position: fixed;
+  inset: var(--cruor-site-topbar-height, 64px) 0 0;
+  z-index: 3200;
+  display: grid;
+  place-items: stretch center;
+  min-width: 0;
+  min-height: 0;
+  padding: 14px 16px 16px;
+  pointer-events: none;
+}
+
+.monster-graft-selector-portal .monster-graft-selector__scrim {
+  position: fixed;
+  inset: var(--cruor-site-topbar-height, 64px) 0 0;
+  display: block;
+  border: 0;
+  background: var(--cruor-color-black-a760, rgba(0, 0, 0, 0.76));
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  pointer-events: auto;
+}
+
+.monster-graft-selector-portal .monster-graft-selector__panel {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  width: min(1740px, 100%);
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  margin-inline: auto;
+  overflow: hidden;
+  border: 1px solid var(--cruor-color-rose-a220, rgba(208, 162, 170, 0.22));
+  background:
+    var(--cruor-gradient-linear-020-984b6edd),
+    var(--cruor-gradient-radial-021-910b9ce8),
+    var(--cruor-color-r6-g5-b6-a960, rgba(6, 5, 6, 0.96));
+  padding: 0;
+  box-shadow: var(--cruor-shadow-box-009);
+  backdrop-filter: var(--cruor-filter-glass-18-125);
+  -webkit-backdrop-filter: var(--cruor-filter-glass-18-125);
+  font-size: var(--text-size-2xl, 1.1rem);
+  pointer-events: auto;
+}
+
+.monster-graft-selector-portal .monster-graft-selector__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  min-height: 82px;
+  border-bottom: 1px solid var(--cruor-color-milk-a090, rgba(255, 240, 242, 0.09));
+  background: var(--cruor-gradient-linear-030-454f26b3), var(--cruor-color-surface-soft);
+  padding: 14px 18px 14px 24px;
+}
+
+.monster-graft-selector-portal .monster-graft-selector__header-copy {
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+}
+
+.monster-graft-selector-portal .monster-graft-selector__header-copy h2 {
+  margin: 0;
+  color: var(--cruor-color-hex-fff0f2, #fff0f2);
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: clamp(2rem, 1.8vw, 2.65rem);
+  font-weight: 800;
+  line-height: 1.04;
+  letter-spacing: -0.035em;
+}
+
+.monster-graft-selector-portal .monster-graft-selector__header-copy > span {
+  color: var(--cruor-color-text-a650, rgba(240, 232, 234, 0.65));
+  font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+  font-size: var(--text-size-xl, 1rem);
+  font-weight: 600;
+}
+
+.monster-graft-selector-portal .monster-graft-selector__header-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.monster-graft-selector-portal .monster-graft-selector__header-actions .cruor-composer-icon-button {
+  width: 42px;
+  height: 42px;
+}
+
+.monster-graft-selector-portal .monster-graft-selector__header-actions svg {
+  width: 20px;
+  height: 20px;
+}
+
+.monster-graft-selector-portal .monster-graft-selector__workspace {
+  display: grid;
+  grid-template-columns:
+    minmax(260px, 0.66fr)
+    minmax(500px, 1.08fr)
+    minmax(660px, 1.56fr);
+  column-gap: 0;
+  row-gap: 18px;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  padding: 16px;
+  transition: grid-template-columns 280ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.monster-graft-selector-portal
+  .monster-graft-selector[data-filters-open="false"]
+  .monster-graft-selector__workspace {
+  grid-template-columns: minmax(0, 0fr) minmax(520px, 0.92fr) minmax(720px, 1.38fr);
+}
+
+.monster-graft-selector-portal .monster-graft-selector__filters,
+.monster-graft-selector-portal .monster-graft-selector__results,
+.monster-graft-selector-portal .monster-graft-selector__detail {
+  min-width: 0;
+  min-height: 0;
+  border: 1px solid var(--cruor-color-milk-a080, rgba(255, 240, 242, 0.08));
+  background: var(--cruor-gradient-linear-094-26e867cb), var(--cruor-surface-card);
+}
+
+.monster-graft-selector-portal .monster-graft-selector__results,
+.monster-graft-selector-portal .monster-graft-selector__detail {
+  margin-left: 18px;
+  transition: margin-left 280ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.monster-graft-selector-portal
+  .monster-graft-selector[data-filters-open="false"]
+  .monster-graft-selector__results {
+  margin-left: 0;
+}
+
+.monster-graft-selector-portal
+  .monster-graft-selector[data-filters-open="false"]
+  .monster-graft-selector__filters {
+  visibility: hidden;
+  opacity: 0;
+  transform: translateX(-12px);
+  pointer-events: none;
+  border-color: transparent;
+  padding-inline: 0;
+  transition:
+    opacity 150ms ease,
+    transform 220ms cubic-bezier(0.16, 1, 0.3, 1),
+    padding 220ms cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 150ms ease,
+    visibility 0s linear 220ms;
+}
+
+/* Filters ----------------------------------------------------------------- */
+
+.monster-graft-selector-portal .monster-graft-selector__filters {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  align-content: stretch;
+  gap: 10px;
+  overflow: hidden;
+  padding: 12px;
+  opacity: 1;
+  transform: translateX(0);
+  transition:
+    opacity 180ms ease 80ms,
+    transform 260ms cubic-bezier(0.16, 1, 0.3, 1),
+    padding 260ms cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 180ms ease,
+    visibility 0s linear 0s;
+}
+
+.monster-graft-selector-portal .monster-graft-selector__filter-toolbar {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+  align-items: center;
+}
+
+.monster-graft-selector-portal .monster-graft-selector__filter-toolbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.monster-graft-selector-portal .monster-graft-selector__filter-bulk-action {
+  width: 34px;
+  height: 34px;
+  min-width: 34px;
+  padding: 0;
+}
+
+.monster-graft-selector-portal .monster-graft-selector__filter-bulk-action svg {
+  width: 16px;
+  height: 16px;
+}
+
+.monster-graft-selector-portal .monster-graft-selector__search-field {
+  min-width: 0;
+}
+
+.monster-graft-selector-portal .monster-graft-selector__search-field input {
+  min-height: 36px;
+  padding-inline: 10px;
+  font-size: var(--text-size-l, 0.94rem);
+  font-weight: 500;
+}
+
+.monster-graft-selector-portal .monster-graft-selector__filter-groups {
+  display: grid;
+  grid-auto-rows: max-content;
+  align-content: start;
+  align-items: start;
+  gap: 8px;
+  min-width: 0;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+  padding-right: 4px;
+}
+
+.monster-graft-selector-portal .monster-graft-selector__filter-section {
+  align-self: start;
+  width: 100%;
+  height: auto;
+  min-height: 0;
+  gap: 5px;
+  padding: 9px 10px;
+}
+
+.monster-graft-selector-portal
+  .monster-graft-selector__filter-section
+  .cruor-composer-collapsible-section__trigger {
+  min-height: 28px;
+  margin: -2px -4px;
+  padding: 4px 4px 6px;
+}
+
+.monster-graft-selector-portal
+  .monster-graft-selector__filter-section
+  .cruor-composer-collapsible-section__title {
+  color: var(--cruor-color-r208-g162-b170-a820, rgba(208, 162, 170, 0.82));
+  font-size: var(--text-size-l, 0.94rem);
+  font-weight: 800;
+  letter-spacing: 0.075em;
+}
+
+.monster-graft-selector-portal
+  .monster-graft-selector__filter-section
+  .cruor-composer-collapsible-section__region {
+  margin-top: 5px;
+}
+
+.monster-graft-selector-portal .monster-graft-selector__filter-options {
+  display: grid;
+  grid-auto-rows: max-content;
+  gap: 6px;
+  min-width: 0;
+}
+
+.monster-graft-selector-portal .monster-graft-selector__filter-row {
+  appearance: none;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-width: 0;
+  min-height: 34px;
+  border: 0;
+  border-left: 4px solid var(--cruor-color-milk-a140, rgba(255, 240, 242, 0.14));
+  border-radius: 0;
+  background: transparent;
+  color: inherit;
+  padding: 7px 9px;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 140ms ease, background 140ms ease, color 140ms ease;
+}
+
+.monster-graft-selector-portal .monster-graft-selector__filter-row:is(:hover, :focus-visible) {
+  border-left-color: var(--cruor-color-milk-a300, rgba(255, 240, 242, 0.3));
+  background: var(--cruor-color-white-a025, rgba(255, 255, 255, 0.025));
+  outline: none;
+}
+
+.monster-graft-selector-portal .monster-graft-selector__filter-row.is-include {
+  border-left-color: rgba(130, 185, 135, 0.88);
+}
+
+.monster-graft-selector-portal .monster-graft-selector__filter-row.is-include:is(:hover, :focus-visible) {
+  border-left-color: rgba(166, 214, 171, 1);
+  background: rgba(54, 105, 61, 0.08);
+}
+
+.monster-graft-selector-portal .monster-graft-selector__filter-row.is-exclude {
+  border-left-color: var(--cruor-color-rose-a820, rgba(208, 75, 96, 0.82));
+}
+
+.monster-graft-selector-portal .monster-graft-selector__filter-row.is-exclude:is(:hover, :focus-visible) {
+  border-left-color: var(--cruor-color-hex-f0b9c2, #f0b9c2);
+  background: var(--cruor-color-blood-bright-a090, rgba(111, 12, 29, 0.09));
+}
+
+.monster-graft-selector-portal .monster-graft-selector__filter-row-leading {
+  display: inline-grid;
+  grid-template-columns: 14px 17px;
+  align-items: center;
+  gap: 5px;
+  flex: 0 0 auto;
+  color: var(--cruor-color-r208-g162-b170-a720, rgba(208, 162, 170, 0.72));
+}
+
+.monster-graft-selector-portal .monster-graft-selector__filter-row-leading svg {
+  width: 15px;
+  height: 15px;
+  stroke-width: 1.8;
+}
+
+.monster-graft-selector-portal .monster-graft-selector__filter-direction-icon {
+  opacity: 0.7;
+}
+
+.monster-graft-selector-portal .monster-graft-selector__filter-metric-icon {
+  opacity: 0.95;
+}
+
+.monster-graft-selector-portal .monster-graft-selector__filter-row.is-include .monster-graft-selector__filter-row-leading {
+  color: rgba(166, 214, 171, 0.94);
+}
+
+.monster-graft-selector-portal .monster-graft-selector__filter-row.is-exclude .monster-graft-selector__filter-row-leading {
+  color: var(--cruor-color-hex-f0b9c2, #f0b9c2);
+}
+
+.monster-graft-selector-portal .monster-graft-selector__filter-row-label {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--cruor-color-text-a760, rgba(240, 232, 234, 0.76));
+  font-size: var(--text-size-l, 0.94rem);
+  font-weight: 600;
+  letter-spacing: 0;
+  line-height: 1.25;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.monster-graft-selector-portal .monster-graft-selector__filter-row.is-include .monster-graft-selector__filter-row-label {
+  color: rgba(194, 226, 197, 0.94);
+}
+
+.monster-graft-selector-portal .monster-graft-selector__filter-row.is-exclude .monster-graft-selector__filter-row-label {
+  color: var(--cruor-color-hex-f0b9c2, #f0b9c2);
+}
+
+/* Results ----------------------------------------------------------------- */
+
+.monster-graft-selector-portal .monster-graft-selector__results {
+  display: grid;
+  grid-template-rows: minmax(0, 1fr);
+  overflow: hidden;
+}
+
+.monster-graft-selector-portal .monster-graft-selector__list {
+  display: grid;
+  grid-auto-rows: max-content;
+  align-content: start;
+  gap: 12px;
+  min-width: 0;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 14px;
+}
+
+/* Reuse the exact site-wide slot-card surface and state classes. This block
+   only adapts the internal geometry needed by a richer selectable result. */
+.monster-graft-selector-portal .monster-graft-selector-candidate.cruor-composer-slot-card {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  overflow: visible !important;
+  padding: 0;
+  text-align: left;
+  transition:
+    border-color 180ms ease,
+    background 180ms ease,
+    box-shadow 180ms ease,
+    opacity 160ms ease;
+}
+
+.monster-graft-selector-portal .monster-graft-selector-candidate__select {
+  appearance: none;
+  display: grid;
+  grid-template-columns: 52px minmax(0, 1fr);
+  align-items: start;
+  gap: 14px;
+  width: 100%;
+  height: auto;
+  min-height: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  padding: 16px 16px 10px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.monster-graft-selector-portal .monster-graft-selector-candidate__select:focus-visible {
+  outline: 1px solid var(--cruor-color-blood-glow-a760, rgba(143, 36, 60, 0.76));
+  outline-offset: -2px;
+}
+
+.monster-graft-selector-portal .monster-graft-selector-candidate__icon-stack {
+  display: grid;
+  justify-items: center;
+  align-content: start;
+  gap: 5px;
+  width: 52px;
+  min-width: 52px;
+}
+
+.monster-graft-selector-portal .monster-graft-selector-candidate__icon {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border: 1px solid var(--cruor-color-milk-a100, rgba(255, 240, 242, 0.1));
+  background: var(--cruor-color-black-a260, rgba(0, 0, 0, 0.26));
+  color: var(--cruor-color-r240-g215-b220-a860, rgba(240, 215, 220, 0.86));
+}
+
+.monster-graft-selector-portal .monster-graft-selector-candidate__icon svg {
+  width: 25px;
+  height: 25px;
+}
+
+.monster-graft-selector-portal .monster-graft-selector-candidate__copy {
+  display: grid;
+  gap: 7px;
+  min-width: 0;
+}
+
+.monster-graft-selector-portal .monster-graft-selector-candidate__title-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.monster-graft-selector-portal .monster-graft-selector-candidate__title-row > strong {
+  color: var(--cruor-color-hex-fff0f2, #fff0f2);
+  font-size: var(--text-size-3xl, 1.24rem);
+  font-weight: 820;
+  line-height: 1.2;
+}
+
+.monster-graft-selector-portal .monster-graft-selector-candidate__title-status {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 7px;
+  min-width: 0;
+}
+
+.monster-graft-selector-portal .monster-graft-selector-candidate__status-icon {
+  display: inline-grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border: 0;
+  background: transparent;
+  color: var(--cruor-color-r216-g173-b91-a900, rgba(216, 173, 91, 0.9));
+  cursor: help;
+}
+
+.monster-graft-selector-portal .monster-graft-selector-candidate__status-icon:is(.is-incompatible, .is-danger) {
+  color: var(--cruor-color-hex-f0b9c2, #f0b9c2);
+}
+
+.monster-graft-selector-portal .monster-graft-selector-candidate__status-icon svg {
+  width: 16px;
+  height: 16px;
+}
+
+.monster-graft-selector-portal .monster-graft-selector-candidate__status-icon:focus-visible {
+  outline: 1px solid currentColor;
+  outline-offset: 2px;
+}
+
+.monster-graft-selector-portal .monster-graft-selector-candidate__installed {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--cruor-color-r208-g162-b170-a820, rgba(208, 162, 170, 0.82));
+  font-size: var(--text-size-m, 0.86rem);
+  font-weight: 700;
+}
+
+.monster-graft-selector-portal .monster-graft-selector-candidate__installed svg {
+  width: 14px;
+  height: 14px;
+}
+
+.monster-graft-selector-portal .monster-graft-selector-candidate__summary {
+  display: block;
+  overflow: visible;
+  color: var(--cruor-color-text-a760, rgba(240, 232, 234, 0.76));
+  font-size: var(--text-size-2xl, 1.1rem);
+  font-weight: 450;
+  line-height: 1.48;
+  overflow-wrap: anywhere;
+  white-space: normal;
+  -webkit-box-orient: initial;
+  -webkit-line-clamp: unset;
+}
+
+.monster-graft-selector-portal .monster-graft-selector-candidate__meta-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: start;
+  gap: 8px;
+  min-width: 0;
+  padding: 0 16px 14px 82px;
+}
+
+.monster-graft-selector-portal .monster-graft-selector-candidate__signature {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 0;
+  min-width: 0;
+  overflow: hidden;
+  color: var(--cruor-color-r240-g215-b220-a620, rgba(240, 215, 220, 0.62));
+}
+
+.monster-graft-selector-portal .monster-graft-selector-candidate__signature-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex: 0 1 auto;
+  min-width: 0;
+  color: inherit;
+  font-size: var(--text-size-m, 0.86rem);
+  font-weight: 650;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.monster-graft-selector-portal .monster-graft-selector-candidate__signature-item + .monster-graft-selector-candidate__signature-item::before {
+  content: "";
+  display: block;
+  width: 1px;
+  height: 13px;
+  margin: 0 10px 0 9px;
+  background: var(--cruor-color-milk-a120, rgba(255, 240, 242, 0.12));
+}
+
+.monster-graft-selector-portal .monster-graft-selector-candidate__signature-item > svg {
+  flex: 0 0 auto;
+  width: 15px;
+  height: 15px;
+  color: var(--cruor-color-r208-g162-b170-a760, rgba(208, 162, 170, 0.76));
+}
+
+.monster-graft-selector-portal .monster-graft-selector-candidate__signature-item > span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.monster-graft-selector-portal .monster-graft-selector-chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  height: auto;
+  border: 1px solid var(--cruor-color-milk-a090, rgba(255, 240, 242, 0.09));
+  background: var(--cruor-color-white-a026, rgba(255, 255, 255, 0.026));
+  color: var(--cruor-color-text-a760, rgba(240, 232, 234, 0.76));
+  padding: 4px 8px;
+  font-size: var(--text-size-m, 0.86rem);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: 0.015em;
+  text-transform: none;
+  white-space: normal;
+}
+
+.monster-graft-selector-portal .monster-graft-selector-impact {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 7px;
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  pointer-events: auto;
+  animation: monsterGraftImpactDockIn 180ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes monsterGraftImpactDockIn {
+  from {
+    opacity: 0;
+    transform: translateX(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.monster-graft-selector-portal .monster-graft-selector-impact__metric {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  min-width: 28px;
+  height: 28px;
+  min-height: 28px;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  color: inherit;
+  padding: 4px 7px;
+  font: inherit;
+  line-height: 1;
+  cursor: help;
+}
+
+.monster-graft-selector-portal .monster-graft-selector-impact__metric:is(:hover, :focus-visible) {
+  border-color: transparent;
+  background: transparent;
+  color: var(--cruor-color-hex-fff0f2, #fff0f2);
+  outline: 1px solid var(--cruor-color-blood-glow-a620, rgba(143, 36, 60, 0.62));
+  outline-offset: 2px;
+}
+
+.monster-graft-selector-portal .monster-graft-selector-impact__icon {
+  display: grid;
+  place-items: center;
+  width: 16px;
+  height: 16px;
+  border: 0;
+  background: transparent;
+  opacity: 0.92;
+}
+
+.monster-graft-selector-portal .monster-graft-selector-impact__icon svg {
+  width: 16px;
+  height: 16px;
+}
+
+.monster-graft-selector-portal .monster-graft-selector-impact__metric > strong {
+  color: var(--cruor-color-hex-f0d7dc, #f0d7dc);
+  font-size: var(--text-size-l, 0.94rem);
+  font-weight: 750;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.monster-graft-selector-portal .monster-graft-selector-impact__metric--counterplay {
+  width: 28px;
+  min-width: 28px;
+  padding: 4px;
+}
+
+.monster-graft-selector-portal .monster-graft-selector-impact__metric--pressure {
+  color: var(--cruor-color-r235-g78-b115-a900, rgba(235, 78, 115, 0.9));
+}
+
+.monster-graft-selector-portal .monster-graft-selector-impact__metric--complexity {
+  color: var(--cruor-color-r190-g126-b216-a900, rgba(190, 126, 216, 0.9));
+}
+
+.monster-graft-selector-portal .monster-graft-selector-impact__metric--hp {
+  color: rgba(221, 97, 112, 0.94);
+}
+
+.monster-graft-selector-portal .monster-graft-selector-impact__metric--ac {
+  color: rgba(112, 164, 202, 0.94);
+}
+
+.monster-graft-selector-portal .monster-graft-selector-impact__metric--dpr {
+  color: rgba(224, 137, 89, 0.94);
+}
+
+.monster-graft-selector-portal .monster-graft-selector-impact__metric--warnings {
+  color: rgba(216, 173, 91, 0.94);
+}
+
+.monster-graft-selector-portal .monster-graft-selector-impact__metric--counterplay.is-positive {
+  color: var(--cruor-color-r130-g185-b135-a900, rgba(130, 185, 135, 0.9));
+}
+
+.monster-graft-selector-portal .monster-graft-selector-impact__metric--counterplay.is-negative {
+  color: var(--cruor-color-r216-g173-b91-a900, rgba(216, 173, 91, 0.9));
+}
+
+/* Detail ------------------------------------------------------------------ */
+
+.monster-graft-selector-portal .monster-graft-selector__detail {
+  overflow: hidden;
+  background:
+    linear-gradient(180deg, rgba(51, 3, 12, 0.2), transparent 240px),
+    var(--cruor-surface-card);
+}
+
+.monster-graft-selector-portal .monster-graft-selector__detail-transition {
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+}
+
+.monster-graft-selector-portal .monster-graft-selector-detail__content {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+}
+
+.monster-graft-selector-portal .monster-graft-selector-detail__hero {
+  display: grid;
+  grid-template-columns: 78px minmax(0, 1fr);
+  gap: 18px;
+  align-items: stretch;
+  padding: 22px 24px 18px;
+}
+
+.monster-graft-selector-portal .monster-graft-selector-detail__icon {
+  display: grid;
+  place-items: center;
+  align-self: stretch;
+  width: 78px;
+  height: auto;
+  min-height: 100%;
+  color: var(--cruor-color-r240-g215-b220-a900, rgba(240, 215, 220, 0.9));
+}
+
+.monster-graft-selector-portal .monster-graft-selector-detail__icon svg {
+  width: 44px;
+  height: 44px;
+}
+
+.monster-graft-selector-portal .monster-graft-selector-detail__hero-copy {
+  display: grid;
+  gap: 9px;
+  min-width: 0;
+}
+
+.monster-graft-selector-portal .monster-graft-selector-detail__hero-copy h3 {
+  margin: 0;
+  color: var(--cruor-color-hex-fff0f2, #fff0f2);
+  font-size: clamp(1.8rem, 1.6vw, 2.35rem);
+  font-weight: 860;
+  line-height: 1.08;
+  letter-spacing: -0.025em;
+}
+
+.monster-graft-selector-portal .monster-graft-selector-detail__hero-copy p {
+  margin: 0;
+  color: var(--cruor-color-text-a760, rgba(240, 232, 234, 0.76));
+  font-size: var(--text-size-2xl, 1.1rem);
+  font-weight: 450;
+  line-height: 1.52;
+}
+
+.monster-graft-selector-portal .monster-graft-selector-detail__badges {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+  padding-top: 3px;
+}
+
+.monster-graft-selector-portal .monster-graft-selector-detail__scroll {
+  display: grid;
+  grid-auto-rows: max-content;
+  align-content: start;
+  gap: 10px;
+  min-width: 0;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 8px 24px 94px;
+}
+
+.monster-graft-selector-portal .monster-graft-selector-detail__section {
+  width: 100%;
+  height: auto;
+  min-height: 0;
+  max-height: none;
+}
+
+.monster-graft-selector-portal .monster-graft-selector-detail__section-body {
+  display: grid;
+  grid-auto-rows: max-content;
+  gap: 12px;
+  min-width: 0;
+  overflow: visible;
+}
+
+.monster-graft-selector-portal
+  .monster-graft-selector-detail__section
+  > .cruor-composer-collapsible-section__region {
+  margin-top: 7px;
+}
+
+.monster-graft-selector-portal .monster-graft-selector-detail__prose p {
+  margin: 0;
+  color: var(--cruor-color-text-a820, rgba(240, 232, 234, 0.82));
+  font-size: var(--text-size-2xl, 1.1rem);
+  line-height: 1.62;
+}
+
+.monster-graft-selector-portal .monster-graft-selector-detail__counterplay-result {
+  color: var(--cruor-color-hex-f0d7dc, #f0d7dc);
+  font-weight: 700;
+}
+
+.monster-graft-selector-portal .monster-graft-selector-detail__rules-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px 24px;
+}
+
+.monster-graft-selector-portal .monster-graft-selector-detail__rules-grid--single {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 8px;
+}
+
+.monster-graft-selector-portal .monster-graft-selector-detail__rules-row {
+  display: grid;
+  grid-template-columns: minmax(110px, 0.44fr) minmax(0, 1fr);
+  align-items: start;
+  gap: 12px;
+  min-height: 0;
+  border: 0;
+  padding: 5px 0;
+}
+
+.monster-graft-selector-portal
+  .monster-graft-selector-detail__rules-grid--single
+  .monster-graft-selector-detail__rules-row {
+  grid-template-columns: minmax(120px, 168px) minmax(0, 1fr);
+}
+
+.monster-graft-selector-portal .monster-graft-selector-detail__rules-label {
+  color: var(--cruor-color-text-a580, rgba(240, 232, 234, 0.58));
+  font-size: var(--text-size-xl, 1rem);
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.monster-graft-selector-portal .monster-graft-selector-detail__rules-value {
+  color: var(--cruor-color-hex-f0d7dc, #f0d7dc);
+  font-size: var(--text-size-xl, 1rem);
+  font-weight: 500;
+  line-height: 1.35;
+  text-align: left;
+  overflow-wrap: anywhere;
+}
+
+.monster-graft-selector-portal strong.monster-graft-selector-detail__rules-value {
+  font-weight: 750;
+}
+
+.monster-graft-selector-portal .monster-graft-selector-detail__rules-row:is(.is-soft, .is-avoid, .is-missing, .is-incompatible, .is-discouraged) > .monster-graft-selector-detail__rules-label {
+  color: var(--cruor-color-r216-g173-b91-a900, rgba(216, 173, 91, 0.9));
+}
+
+.monster-graft-selector-portal .monster-graft-selector-detail__rules-row.is-recommended > .monster-graft-selector-detail__rules-label {
+  color: var(--cruor-color-r130-g185-b135-a900, rgba(130, 185, 135, 0.9));
+}
+
+.monster-graft-selector-portal .monster-graft-selector-detail__impact-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  align-items: stretch;
+  gap: 10px;
+}
+
+.monster-graft-selector-portal .monster-graft-selector-detail__change-card {
+  --impact-color: var(--cruor-color-hex-f0d7dc, #f0d7dc);
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  grid-template-rows: auto auto auto;
+  align-content: center;
+  justify-items: center;
+  gap: 7px;
+  min-width: 0;
+  min-height: 96px;
+  overflow: visible;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  padding: 8px 6px;
+  text-align: center;
+}
+
+.monster-graft-selector-portal .monster-graft-selector-detail__change-title {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  color: var(--impact-color);
+  font-size: var(--text-size-m, 0.86rem);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  line-height: 1.1;
+  text-transform: uppercase;
+}
+
+.monster-graft-selector-portal .monster-graft-selector-detail__change-title svg {
+  flex: 0 0 auto;
+  width: 16px;
+  height: 16px;
+  stroke-width: 1.8;
+}
+
+.monster-graft-selector-portal .monster-graft-selector-detail__change-result {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  min-width: 0;
+  color: var(--impact-color);
+  font-size: clamp(1.02rem, 0.86vw, 1.2rem);
+  font-style: normal;
+  font-weight: 700;
+  line-height: 1;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+.monster-graft-selector-portal .monster-graft-selector-detail__change-values {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-width: 0;
+  width: 100%;
+}
+
+.monster-graft-selector-portal .monster-graft-selector-detail__change-values > span,
+.monster-graft-selector-portal .monster-graft-selector-detail__change-values > strong {
+  color: var(--cruor-color-hex-fff0f2, #fff0f2);
+  font-size: var(--text-size-l, 0.94rem);
+  font-style: normal;
+  font-weight: 650;
+  line-height: 1.1;
+  overflow-wrap: anywhere;
+}
+
+.monster-graft-selector-portal .monster-graft-selector-detail__change-values > strong {
+  color: var(--impact-color);
+  font-weight: 700;
+}
+
+.monster-graft-selector-portal .monster-graft-selector-detail__change-values svg {
+  flex: 0 0 auto;
+  width: 14px;
+  height: 14px;
+  color: var(--cruor-color-text-a420, rgba(240, 232, 234, 0.42));
+}
+
+.monster-graft-selector-portal .monster-graft-selector-detail__change-card.is-pressure {
+  --impact-color: rgba(235, 78, 115, 0.94);
+}
+
+.monster-graft-selector-portal .monster-graft-selector-detail__change-card.is-complexity {
+  --impact-color: rgba(190, 126, 216, 0.94);
+}
+
+.monster-graft-selector-portal .monster-graft-selector-detail__change-card.is-hp {
+  --impact-color: rgba(221, 97, 112, 0.94);
+}
+
+.monster-graft-selector-portal .monster-graft-selector-detail__change-card.is-ac {
+  --impact-color: rgba(112, 164, 202, 0.94);
+}
+
+.monster-graft-selector-portal .monster-graft-selector-detail__change-card.is-dpr {
+  --impact-color: rgba(224, 137, 89, 0.94);
+}
+
+.monster-graft-selector-portal .monster-graft-selector-detail__change-card.is-warnings {
+  --impact-color: rgba(216, 173, 91, 0.94);
+}
+
+.monster-graft-selector-portal .monster-graft-selector-detail__change-card.is-over-limit {
+  --impact-color: var(--cruor-color-hex-f0b9c2, #f0b9c2);
+  border: none;
+  background: transparent;
+  cursor: help;
+  animation: cruor-monster-meter-over-ring-pulse 1.55s ease-in-out infinite;
+  will-change: box-shadow;
+}
+
+.monster-graft-selector-portal .monster-graft-selector-detail__change-card.is-over-limit:is(:hover, :focus-visible) {
+  background: transparent;
+  outline: none;
+}
+
+/* Candidate stat-block output preview ------------------------------------- */
+
+.monster-graft-selector-portal .monster-graft-selector-detail__stat-block-preview {
+  display: grid;
+  gap: 14px;
+  min-width: 0;
+  padding: 2px 0 4px;
+}
+
+.monster-graft-selector-portal .monster-graft-selector-detail__stat-block-preview .cruor-stat-block__section {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+  padding: 0;
+}
+
+.monster-graft-selector-portal .monster-graft-selector-detail__stat-block-preview .cruor-stat-block__section h2 {
+  margin: 0 0 2px;
+  border-bottom: 1px solid var(--cruor-color-blood-strong-a540);
+  padding: 0 0 6px;
+  color: var(--cruor-color-hex-b33b4e);
+  font-family: var(--font);
+  font-size: var(--text-size-3xl);
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.monster-graft-selector-portal .monster-graft-selector-detail__stat-block-preview .cruor-stat-block__section p {
+  margin: 0;
+  color: var(--cruor-color-text-a900);
+  font-size: var(--text-size-xl-plus, 1.02rem);
+  font-weight: 450;
+  line-height: 1.52;
+}
+
+.monster-graft-selector-portal .monster-graft-selector-detail__stat-block-preview .cruor-stat-block__section p > strong:first-child {
+  color: var(--cruor-color-white, #fff);
+  font-weight: 700;
+}
+
+.monster-graft-selector-portal .monster-graft-selector-detail__stat-block-preview .cruor-stat-block__section em {
+  color: inherit;
+  font-style: italic;
+  font-weight: inherit;
+}
+
+.monster-graft-selector-portal .monster-graft-selector-detail__meta-list {
+  display: grid;
+  gap: 7px;
+  min-width: 0;
+}
+
+.monster-graft-selector-portal .monster-graft-selector-detail__meta-list .cruor-composer-meta-row {
+  display: grid;
+  grid-template-columns: minmax(120px, 160px) minmax(0, 1fr);
+  gap: 14px;
+  min-width: 0;
+  min-height: 0;
+  border: 0;
+  padding: 4px 0;
+}
+
+.monster-graft-selector-portal .monster-graft-selector-detail__meta-list .cruor-composer-meta-label {
+  color: var(--cruor-color-text-a580, rgba(240, 232, 234, 0.58));
+  font-size: var(--text-size-xl, 1rem);
+  font-weight: 600;
+}
+
+.monster-graft-selector-portal .monster-graft-selector-detail__meta-list .cruor-composer-meta-values {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  gap: 7px;
+  min-width: 0;
+}
+
+/* Single square action anchored to the modal, not to the scrollable detail. */
+.monster-graft-selector-portal .monster-graft-selector-detail__install {
+  appearance: none;
+  position: absolute;
+  right: 24px;
+  bottom: 22px;
+  z-index: 8;
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  min-width: 52px;
+  min-height: 52px;
+  border: 1px solid var(--cruor-color-blood-glow-a780, rgba(143, 36, 60, 0.78));
+  border-radius: 0;
+  background: var(--cruor-gradient-linear-006-1c0ba33e), var(--cruor-color-r51-g3-b12-a860, rgba(51, 3, 12, 0.86));
+  color: var(--cruor-color-hex-fff0f2, #fff0f2);
+  padding: 0;
+  cursor: pointer;
+  box-shadow: var(--cruor-shadow-box-001);
+}
+
+.monster-graft-selector-portal .monster-graft-selector-detail__install svg {
+  width: 24px;
+  height: 24px;
+}
+
+.monster-graft-selector-portal .monster-graft-selector-detail__install:is(:hover, :focus-visible):not(.is-disabled) {
+  border-color: var(--cruor-color-blood-glow-a950, rgba(190, 64, 82, 0.95));
+  background: var(--cruor-composer-control-bg-active);
+  color: var(--cruor-composer-control-text-active);
+  box-shadow: var(--cruor-shadow-box-008);
+  outline: none;
+}
+
+.monster-graft-selector-portal .monster-graft-selector-detail__install.is-disabled {
+  cursor: not-allowed;
+  opacity: 0.42;
+}
+
+.monster-graft-selector-portal .monster-graft-selector-detail__empty,
+.monster-graft-selector-portal .monster-graft-selector__results .empty {
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 7px;
+  min-height: 100%;
+  padding: 34px;
+  color: var(--cruor-color-text-a580, rgba(240, 232, 234, 0.58));
+  font-size: var(--text-size-xl, 1rem);
+  text-align: center;
+}
+
+@media (max-width: 1420px) {
+  .monster-graft-selector-portal .monster-graft-selector__workspace {
+    grid-template-columns: minmax(230px, 0.58fr) minmax(430px, 0.92fr) minmax(570px, 1.25fr);
+  }
+
+  .monster-graft-selector-portal
+    .monster-graft-selector[data-filters-open="false"]
+    .monster-graft-selector__workspace {
+    grid-template-columns: minmax(0, 0fr) minmax(430px, 0.86fr) minmax(590px, 1.14fr);
+  }
+}
+
+@media (max-width: 1120px) {
+  .monster-graft-selector-portal .monster-graft-selector__workspace {
+    grid-template-columns: minmax(0, 1fr) minmax(500px, 1.2fr);
+    grid-template-rows: minmax(0, 300px) minmax(0, 1fr);
+    column-gap: 18px;
+  }
+
+  .monster-graft-selector-portal .monster-graft-selector__filters {
+    grid-column: 1 / -1;
+    grid-row: 1;
+    max-height: 300px;
+  }
+
+  .monster-graft-selector-portal .monster-graft-selector__results,
+  .monster-graft-selector-portal .monster-graft-selector__detail {
+    margin-left: 0;
+  }
+
+  .monster-graft-selector-portal .monster-graft-selector__results {
+    grid-column: 1;
+    grid-row: 2;
+  }
+
+  .monster-graft-selector-portal .monster-graft-selector__detail {
+    grid-column: 2;
+    grid-row: 2;
+  }
+
+  .monster-graft-selector-portal
+    .monster-graft-selector[data-filters-open="false"]
+    .monster-graft-selector__workspace {
+    grid-template-columns: minmax(380px, 0.86fr) minmax(500px, 1.14fr);
+    grid-template-rows: minmax(0, 0px) minmax(0, 1fr);
+  }
+
+  .monster-graft-selector-portal .monster-graft-selector-detail__rules-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 980px) {
+  .monster-graft-selector-portal .monster-graft-selector-detail__impact-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 820px) {
+  .monster-graft-selector-portal .monster-graft-selector__panel {
+    overflow-y: auto;
+  }
+
+  .monster-graft-selector-portal .monster-graft-selector__workspace,
+  .monster-graft-selector-portal
+    .monster-graft-selector[data-filters-open="false"]
+    .monster-graft-selector__workspace {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto minmax(440px, 52vh) minmax(640px, auto);
+    overflow: visible;
+  }
+
+  .monster-graft-selector-portal .monster-graft-selector__filters,
+  .monster-graft-selector-portal .monster-graft-selector__results,
+  .monster-graft-selector-portal .monster-graft-selector__detail {
+    grid-column: 1;
+  }
+
+  .monster-graft-selector-portal .monster-graft-selector__filters {
+    grid-row: 1;
+    max-height: none;
+  }
+
+  .monster-graft-selector-portal .monster-graft-selector__results {
+    grid-row: 2;
+  }
+
+  .monster-graft-selector-portal .monster-graft-selector__detail {
+    grid-row: 3;
+    min-height: 640px;
+  }
+
+  .monster-graft-selector-portal
+    .monster-graft-selector[data-filters-open="false"]
+    .monster-graft-selector__workspace {
+    grid-template-rows: minmax(440px, 52vh) minmax(640px, auto);
+  }
+
+  .monster-graft-selector-portal
+    .monster-graft-selector[data-filters-open="false"]
+    .monster-graft-selector__results {
+    grid-row: 1;
+  }
+
+  .monster-graft-selector-portal
+    .monster-graft-selector[data-filters-open="false"]
+    .monster-graft-selector__detail {
+    grid-row: 2;
+  }
+
+  .monster-graft-selector-portal .monster-graft-selector-candidate__meta-row {
+    grid-template-columns: minmax(0, 1fr);
+    padding-left: 16px;
+  }
+
+  .monster-graft-selector-portal .monster-graft-selector-impact {
+    justify-content: flex-start;
+  }
+
+  .monster-graft-selector-portal .monster-graft-selector-detail__hero {
+    grid-template-columns: 56px minmax(0, 1fr);
+    padding-inline: 16px;
+  }
+
+  .monster-graft-selector-portal .monster-graft-selector-detail__icon {
+    width: 56px;
+  }
+
+  .monster-graft-selector-portal .monster-graft-selector-detail__scroll {
+    padding-inline: 16px;
+  }
+
+  .monster-graft-selector-portal .monster-graft-selector-detail__install {
+    right: 18px;
+    bottom: 18px;
+  }
+}
+
+html[data-a11y-motion="reduced"] .monster-graft-selector-portal :where(
+  .monster-graft-selector__workspace,
+  .monster-graft-selector__filters,
+  .monster-graft-selector__results,
+  .monster-graft-selector__detail,
+  .monster-graft-selector-candidate,
+  .monster-graft-selector-impact
+) {
+  animation: none !important;
+  transition: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html:not([data-a11y-motion="full"]) .monster-graft-selector-portal :where(
+    .monster-graft-selector__workspace,
+    .monster-graft-selector__filters,
+    .monster-graft-selector__results,
+    .monster-graft-selector__detail,
+    .monster-graft-selector-candidate,
+    .monster-graft-selector-impact
+  ) {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  .monster-graft-selector-portal .monster-graft-selector-detail__change-card.is-over-limit {
+    animation: none;
+    box-shadow:
+      0 0 0 2px rgba(143, 36, 60, 0.46),
+      0 0 16px rgba(143, 36, 60, 0.48);
   }
 }
