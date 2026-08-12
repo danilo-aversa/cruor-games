@@ -1,0 +1,22 @@
+{
+  "schema": "gpt-workbench-diagnostics/v1",
+  "producer": "gpt-workbench-task:vitest",
+  "generatedAt": "2026-07-31T11:03:35.961Z",
+  "summary": {
+    "diagnosticCount": 0,
+    "occurrenceCount": 0,
+    "errorCount": 0,
+    "warningCount": 0,
+    "infoCount": 0,
+    "browserCategories": {},
+    "taskId": "task-ms8mucis-a4xei",
+    "status": "passed",
+    "durationMs": 16501
+  },
+  "diagnostics": [],
+  "baseline": {
+    "artifact": "authorized-task-task-ms8mucis-a4xei-latest",
+    "retainedAt": "2026-07-31T12:26:08.351Z",
+    "retention": "bounded-local-history"
+  }
+}

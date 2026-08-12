@@ -11,13 +11,11 @@ function runMonsterFlowAction(action, handlers) {
   if (action.kind === "chassis") handlers.onOpenChassis?.();
   if (action.kind === "grafts") handlers.onOpenGrafts?.();
   if (action.kind === "slot" && action.slotId) handlers.onFocusSlot?.(action.slotId);
-  if (action.kind === "review") handlers.onOpenBalance?.();
   if (action.kind === "export") handlers.onOpenExport?.();
 }
 
 export function GuidedFlowPanel({
   guidedFlow,
-  onOpenBalance,
   onOpenChassis,
   onOpenExport,
   onOpenGrafts,
@@ -29,7 +27,6 @@ export function GuidedFlowPanel({
 }) {
   const handlers = {
     onFocusSlot,
-    onOpenBalance,
     onOpenChassis,
     onOpenExport,
     onOpenGrafts,
@@ -66,10 +63,10 @@ export function GuidedFlowPanel({
   return (
     <ComposerWorkflowFooter
       blocker={blocker}
-      centerAnchorSelector=".anatomy-stage__center, .balance-workbench, .export-stat-preview"
+      centerAnchorSelector=".anatomy-stage__center, .export-stat-preview"
       context={guidedFlow.context || []}
       currentStageId={guidedFlow.activeStageId}
-      navigationAnchorSelector=".anatomy-stage__column--right, .monster-balance-details-rail, .monster-export-details-rail"
+      navigationAnchorSelector=".anatomy-stage__column--right, .monster-export-details-rail"
       nextAction={bindAction(guidedFlow.nextAction)}
       objective={guidedFlow.objective}
       previousAction={bindAction(guidedFlow.previousAction)}

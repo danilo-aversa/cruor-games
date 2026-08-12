@@ -1,0 +1,22 @@
+{
+  "schema": "gpt-workbench-diagnostics/v1",
+  "producer": "gpt-workbench-task:package-script",
+  "generatedAt": "2026-07-31T17:18:34.649Z",
+  "summary": {
+    "diagnosticCount": 0,
+    "occurrenceCount": 0,
+    "errorCount": 0,
+    "warningCount": 0,
+    "infoCount": 0,
+    "browserCategories": {},
+    "taskId": "monster-basic-attack",
+    "status": "failed",
+    "durationMs": 400
+  },
+  "diagnostics": [],
+  "baseline": {
+    "artifact": "authorized-task-monster-basic-attack-latest",
+    "retainedAt": "2026-07-31T17:38:49.752Z",
+    "retention": "bounded-local-history"
+  }
+}

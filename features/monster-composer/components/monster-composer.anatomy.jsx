@@ -11,6 +11,7 @@ import {
 } from "../monster-composer.workflow.js";
 import { getSelectedIdsForSlot, hasSelectedSlot } from "../model/monster-composer.selection.js";
 import { normalizeMonsterReferences } from "../model/monster-composer.export.js";
+import { formatCounterplayIssues } from "../model/monster-composer.balance.js";
 import { getSilhouetteAnchor, getSilhouetteDecorations, getSilhouetteId, getSilhouetteProfile } from "../model/anatomy.js";
 import {
   CREATURE_TYPES,
@@ -686,6 +687,193 @@ function FrameSummaryRow({ label, value }) {
       <small className="cruor-composer-fact-label">{label}</small>
       <strong className="cruor-composer-fact-value">{value}</strong>
     </span>
+  );
+}
+
+const BUILD_GUIDANCE_SEVERITY_ORDER = {
+  critical: 3,
+  major: 2,
+  minor: 1,
+};
+
+function BuildStatusMetric({ label, value, max }) {
+  const numericValue = Number(value || 0);
+  const numericMax = Math.max(0, Number(max || 0));
+  const over = numericValue > numericMax;
+  const percent = numericMax > 0 ? clamp((numericValue / numericMax) * 100, 0, 100) : 0;
+
+  const description = label === "Pressure"
+    ? "Tactical load placed on the players."
+    : "Operational load placed on the DM.";
+
+  return (
+    <div
+      className={`monster-build-status__metric ${over ? "is-over" : "is-within"}`}
+      aria-label={`${label}: ${numericValue} of ${numericMax}${over ? ", above guidance" : ", within guidance"}`}
+      title={description}
+    >
+      <div className="monster-build-status__metric-head">
+        <span>{label}</span>
+        <strong>
+          {numericValue}
+          <small> / {numericMax}</small>
+        </strong>
+      </div>
+      <span className="monster-build-status__metric-track" aria-hidden="true">
+        <i style={{ width: `${percent}%` }} />
+      </span>
+      <em>{over ? "Above guidance" : "Within guidance"}</em>
+    </div>
+  );
+}
+
+function BuildGuidanceItem({ recommendation, onAction, condensed = false }) {
+  const action = recommendation.actions?.[0] || null;
+  const severity = recommendation.severity || "minor";
+
+  return (
+    <article className={`monster-build-guidance-item is-${severity} ${condensed ? "is-condensed" : ""}`.trim()}>
+      <i
+        className={`fa-solid ${severity === "critical" ? "fa-triangle-exclamation" : "fa-circle-exclamation"}`}
+        aria-hidden="true"
+      />
+      <div className="monster-build-guidance-item__body">
+        <strong>{recommendation.title}</strong>
+        {recommendation.detail ? <p>{recommendation.detail}</p> : null}
+        {action ? (
+          <button type="button" onClick={() => onAction?.(action)}>
+            <span>{action.label}</span>
+            <ChevronRight aria-hidden="true" />
+          </button>
+        ) : null}
+      </div>
+    </article>
+  );
+}
+
+function BuildGuidancePanel({ computed, onAction }) {
+  const recommendations = Array.isArray(computed.balanceRecommendations)
+    ? [...computed.balanceRecommendations]
+    : [];
+  const counterplayRating = computed.counterplayAudit?.rating || "Not evaluated";
+  const counterplayReady = ["Strong", "Playable"].includes(counterplayRating);
+  const hasCounterplayGuidance = recommendations.some((item) =>
+    /counterplay|weakness|release-valve|condition-break/i.test(item.id || item.title),
+  );
+
+  if (!counterplayReady && !hasCounterplayGuidance) {
+    recommendations.unshift({
+      id: "counterplay-needs-guidance",
+      severity: "critical",
+      title: "Counterplay Needs Work",
+      detail: formatCounterplayIssues(computed.counterplayAudit?.issues || []),
+      actions: [
+        { label: "Open Weakness / Tell", kind: "slot", slotId: "weakness" },
+      ],
+    });
+  }
+
+  recommendations.sort(
+    (left, right) =>
+      (BUILD_GUIDANCE_SEVERITY_ORDER[right.severity] || 0) -
+      (BUILD_GUIDANCE_SEVERITY_ORDER[left.severity] || 0),
+  );
+
+  const primaryRecommendation = recommendations[0] || null;
+  const secondaryRecommendations = recommendations.slice(1);
+  const criticalCount = recommendations.filter((item) => item.severity === "critical").length;
+  const majorCount = recommendations.filter((item) => item.severity === "major").length;
+  const state = criticalCount
+    ? "critical"
+    : majorCount
+      ? "major"
+      : recommendations.length
+        ? "minor"
+        : "ready";
+  const statusLabel = {
+    critical: "Needs Attention",
+    major: "Needs Tuning",
+    minor: "Advisory",
+    ready: "On Target",
+  }[state];
+
+  return (
+    <section
+      className={`cruor-composer-rail-card monster-frame-info-card monster-build-guidance-card is-${state}`}
+      aria-label="Live build status"
+    >
+      <header className="monster-build-guidance-card__head" aria-live="polite">
+        <div>
+          <span>Build Status</span>
+          <strong>{statusLabel}</strong>
+        </div>
+        <span className={`monster-build-guidance-card__status is-${state}`}>
+          <i
+            className={`fa-solid ${state === "ready" ? "fa-check" : "fa-exclamation"}`}
+            aria-hidden="true"
+          />
+          {recommendations.length ? `${recommendations.length} active` : "Clear"}
+        </span>
+      </header>
+
+      <div className="monster-build-status__metrics" aria-label="Current build load">
+        <BuildStatusMetric
+          label="Pressure"
+          value={computed.pressure}
+          max={computed.pressureLimit}
+        />
+        <BuildStatusMetric
+          label="Complexity"
+          value={computed.complexity}
+          max={computed.complexityCap}
+        />
+      </div>
+
+      <div
+        className={`monster-build-status__counterplay ${counterplayReady ? "is-ready" : "is-alert"}`}
+        title="How clearly players can understand and answer the monster's mechanics."
+      >
+        <span>
+          <i className={`fa-solid ${counterplayReady ? "fa-shield-halved" : "fa-shield"}`} aria-hidden="true" />
+          Counterplay
+        </span>
+        <strong>{counterplayRating}</strong>
+      </div>
+
+      {primaryRecommendation ? (
+        <div className="monster-build-guidance-card__priority">
+          <span>Next Priority</span>
+          <BuildGuidanceItem
+            recommendation={primaryRecommendation}
+            onAction={onAction}
+          />
+        </div>
+      ) : (
+        <div className="monster-build-guidance-card__ready-note">
+          <i className="fa-solid fa-circle-check" aria-hidden="true" />
+          <p>No active balance guidance. Continue building or open the Stat Block.</p>
+        </div>
+      )}
+
+      {secondaryRecommendations.length ? (
+        <details className="monster-build-guidance-card__more">
+          <summary>
+            <span>More guidance</span>
+            <strong>{secondaryRecommendations.length}</strong>
+          </summary>
+          <div className="monster-build-guidance-card__more-list">
+            {secondaryRecommendations.map((recommendation) => (
+              <BuildGuidanceItem
+                key={recommendation.id}
+                recommendation={recommendation}
+                onAction={onAction}
+                condensed
+              />
+            ))}
+          </div>
+        </details>
+      ) : null}
+    </section>
   );
 }
 
@@ -1913,6 +2101,7 @@ function GraftInfoPanel({
   danger,
   selected,
   onShowBuildGuide,
+  onRecommendationAction,
   showBuildGuide = true,
   workflowFooter = null,
 }) {
@@ -1943,10 +2132,10 @@ function GraftInfoPanel({
       </section>
 
 
-      <section className="cruor-composer-rail-card monster-frame-info-card">
-        <FrameMeter label="Pressure" value={computed.pressure} max={computed.pressureLimit} />
-        <FrameMeter label="Complexity" value={computed.complexity} max={computed.complexityCap} />
-      </section>
+      <BuildGuidancePanel
+        computed={computed}
+        onAction={onRecommendationAction}
+      />
       <GraftActionPanel
         onForgeMonster={onForgeMonster}
         showBuildGuide={showBuildGuide}
@@ -1992,6 +2181,7 @@ export function MonsterSilhouetteMap({
   onShowBuildGuideChange,
   onOpenFrame,
   onFocusSlot,
+  onRecommendationAction,
   selectType,
   setCategory,
   setActivePresetId,
@@ -2249,6 +2439,7 @@ export function MonsterSilhouetteMap({
                   selected={selected}
                   showBuildGuide={showBuildGuide}
                   onShowBuildGuide={() => onShowBuildGuideChange?.(true)}
+                  onRecommendationAction={onRecommendationAction}
                   workflowFooter={workflowFooter}
                 />
               </div>

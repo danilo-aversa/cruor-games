@@ -79,7 +79,7 @@ function createSlotTask(slotId, selected, { required = false, current = false } 
   };
 }
 
-function buildReviewChecks(computed) {
+function buildContinuousChecks(computed) {
   const pressureReady = Number(computed.pressure || 0) <= Number(computed.pressureLimit ?? 0);
   const complexityReady = Number(computed.complexity || 0) <= Number(computed.complexityCap || 0);
   const counterplayReady = ["Strong", "Playable"].includes(computed.counterplayAudit?.rating);
@@ -105,9 +105,12 @@ function buildReviewChecks(computed) {
     complexityReady,
     counterplayReady,
     guidanceReady: pressureReady && complexityReady && counterplayReady,
-    balanceReady: counterplayReady,
     handoffReady: counterplayReady,
     advisories,
+    values: {
+      pressure: `${computed.pressure || 0}/${computed.pressureLimit || 0}`,
+      complexity: `${computed.complexity || 0}/${computed.complexityCap || 0}`,
+    },
     tasks: [
       {
         id: "pressure",
@@ -116,7 +119,7 @@ function buildReviewChecks(computed) {
         required: false,
         advisory: !pressureReady,
         status: pressureReady ? "complete" : "open",
-        action: pressureReady ? null : { kind: "review" },
+        action: null,
       },
       {
         id: "complexity",
@@ -125,7 +128,7 @@ function buildReviewChecks(computed) {
         required: false,
         advisory: !complexityReady,
         status: complexityReady ? "complete" : "open",
-        action: complexityReady ? null : { kind: "review" },
+        action: null,
       },
       {
         id: "counterplay",
@@ -133,35 +136,41 @@ function buildReviewChecks(computed) {
         detail: computed.counterplayAudit?.rating || "Not evaluated",
         required: true,
         status: counterplayReady ? "complete" : "current",
-        action: counterplayReady ? null : { kind: "review" },
+        action: counterplayReady ? null : { kind: "slot", slotId: "weakness" },
       },
     ],
   };
 }
 
-function getStructuredBlocker({ coreReady, missingCoreSlotId, review }) {
+function getStructuredBlocker({ coreReady, missingCoreSlotId, checks }) {
   if (!coreReady && missingCoreSlotId) {
     return {
       id: `missing-${missingCoreSlotId}`,
       title: `${slotLabel(missingCoreSlotId)} is still missing`,
       detail: "The monster needs Body and Weakness / Tell. A baseline attack is compiled automatically when no Attack Pattern is selected.",
-      action: { kind: "slot", slotId: missingCoreSlotId, label: SLOT_COPY[missingCoreSlotId]?.cta || "Add Graft" },
+      action: {
+        kind: "slot",
+        slotId: missingCoreSlotId,
+        label: SLOT_COPY[missingCoreSlotId]?.cta || "Add Graft",
+      },
     };
   }
 
-
-  if (!review.counterplayReady) {
+  if (!checks.counterplayReady) {
     return {
-      id: "counterplay-needs-review",
+      id: "counterplay-needs-guidance",
       title: "Counterplay is not yet reliable",
       detail: "The build needs a visible tell, break condition, or repeatable player response.",
-      action: { kind: "review", label: "Review Counterplay" },
+      action: {
+        kind: "slot",
+        slotId: "weakness",
+        label: "Open Weakness / Tell",
+      },
     };
   }
 
   return null;
 }
-
 
 export function buildGuidedFlow({
   activePreset,
@@ -175,28 +184,21 @@ export function buildGuidedFlow({
 }) {
   const safeSelected = selected || {};
   const safeComputed = computed || {};
-  const review = buildReviewChecks(safeComputed);
-  review.values = {
-    pressure: `${safeComputed.pressure || 0}/${safeComputed.pressureLimit || 0}`,
-    complexity: `${safeComputed.complexity || 0}/${safeComputed.complexityCap || 0}`,
-  };
-
+  const checks = buildContinuousChecks(safeComputed);
   const missingCoreSlotId = CORE_SLOT_IDS.find((slotId) => !hasSelectedSlot(safeSelected, slotId)) || "";
   const recommendedOptionalSlotId = OPTIONAL_SLOT_PRIORITY.find((slotId) => !hasSelectedSlot(safeSelected, slotId)) || "";
   const recommendedSlotId = missingCoreSlotId || recommendedOptionalSlotId || null;
   const coreReady = !missingCoreSlotId;
   const completedSlots = SLOTS.filter((slot) => hasSelectedSlot(safeSelected, slot.id)).length;
   const hasSetpieceSlot = ["twist", "death", "lair"].some((slotId) => hasSelectedSlot(safeSelected, slotId));
-  const exportReady = Boolean(composerStarted && coreReady && review.handoffReady);
+  const exportReady = Boolean(composerStarted && coreReady && checks.handoffReady);
   const activeStageId = !composerStarted
     ? "chassis"
-    : viewMode === "balance"
-      ? "review"
-      : viewMode === "export"
-        ? "stat-block"
-        : stageMode === "grafts"
-          ? "grafts"
-          : "chassis";
+    : viewMode === "export"
+      ? "stat-block"
+      : stageMode === "grafts"
+        ? "grafts"
+        : "chassis";
 
   const frameTasks = [
     {
@@ -225,12 +227,10 @@ export function buildGuidedFlow({
     },
   ];
 
-  const graftTasks = [
-    ...CORE_SLOT_IDS.map((slotId) => createSlotTask(slotId, safeSelected, {
-      required: true,
-      current: slotId === missingCoreSlotId,
-    })),
-  ];
+  const graftTasks = CORE_SLOT_IDS.map((slotId) => createSlotTask(slotId, safeSelected, {
+    required: true,
+    current: slotId === missingCoreSlotId,
+  }));
 
   if (recommendedOptionalSlotId) {
     graftTasks.push(createSlotTask(recommendedOptionalSlotId, safeSelected, {
@@ -239,8 +239,8 @@ export function buildGuidedFlow({
     }));
   }
 
-  const blocker = activeStageId === "grafts" || activeStageId === "review"
-    ? getStructuredBlocker({ coreReady, missingCoreSlotId, review })
+  const blocker = activeStageId === "grafts"
+    ? getStructuredBlocker({ coreReady, missingCoreSlotId, checks })
     : null;
   const stages = [
     {
@@ -253,23 +253,15 @@ export function buildGuidedFlow({
     {
       id: "grafts",
       label: "Grafts",
-      detail: "Build the playable anatomy and core combat loop.",
-      status: coreReady ? "complete" : activeStageId === "grafts" ? "current" : "open",
+      detail: "Build the playable anatomy while guidance updates in context.",
+      status: exportReady ? "complete" : activeStageId === "grafts" ? "current" : coreReady ? "open" : "blocked",
       disabled: !composerStarted,
       action: { kind: "grafts" },
     },
     {
-      id: "review",
-      label: "Review",
-      detail: "Check player Pressure, DM Complexity, and counterplay. Load limits are advisory.",
-      status: review.handoffReady ? "complete" : coreReady ? "open" : "blocked",
-      disabled: !composerStarted,
-      action: { kind: "review" },
-    },
-    {
       id: "stat-block",
       label: "Stat Block",
-      detail: "Review and copy the final monster output.",
+      detail: "Inspect readiness and copy the final monster output.",
       status: exportReady ? "complete" : "open",
       disabled: !composerStarted,
       action: { kind: "export" },
@@ -330,10 +322,10 @@ export function buildGuidedFlow({
     };
   } else if (activeStageId === "grafts") {
     objective = {
-      title: missingCoreSlotId ? `Complete the ${slotLabel(missingCoreSlotId)} slot` : "Review the playable anatomy",
+      title: missingCoreSlotId ? `Complete the ${slotLabel(missingCoreSlotId)} slot` : "Shape the playable anatomy",
       detail: missingCoreSlotId
         ? "Install the next required graft. The guide opens the correct component pipeline directly."
-        : "The core combat loop is present. Add an optional signature graft or continue to Review.",
+        : "Pressure, Complexity, counterplay, and build recommendations update here as the anatomy changes.",
     };
     tasks = graftTasks;
 
@@ -345,21 +337,21 @@ export function buildGuidedFlow({
         title: SLOT_COPY[missingCoreSlotId]?.actionTitle || `Add ${slotLabel(missingCoreSlotId)}`,
         detail: SLOT_COPY[missingCoreSlotId]?.detail || "Install the next required graft.",
       };
-    } else if (!review.balanceReady) {
+    } else if (!checks.handoffReady) {
       primaryAction = {
-        kind: "review",
-        label: "Review Build",
-        title: blocker?.title || "Review balance",
-        detail: blocker?.detail || "Review pressure, complexity, and counterplay.",
+        ...blocker.action,
+        label: blocker.action.label,
+        title: blocker.title,
+        detail: blocker.detail,
       };
     } else {
       primaryAction = {
         kind: "export",
         label: "Open Stat Block",
-        title: exportReady ? "Monster ready" : "Review the draft stat block",
+        title: exportReady ? "Monster ready" : "Inspect the draft stat block",
         detail: exportReady
-          ? "The core anatomy and build checks are ready for handoff."
-          : "The monster is usable, but non-blocking warnings remain.",
+          ? "The core anatomy and continuous build checks are ready for handoff."
+          : "The output remains available while non-blocking guidance is still active.",
       };
     }
 
@@ -368,56 +360,26 @@ export function buildGuidedFlow({
       label: "Chassis",
       detail: "Return to the combat frame without clearing grafts.",
     };
-    nextAction = {
-      kind: "review",
-      label: "Review",
-      detail: coreReady
-        ? "Review pressure, complexity, and counterplay."
-        : "Core grafts are still missing, but the draft can still be reviewed.",
-    };
-  } else if (activeStageId === "review") {
-    objective = {
-      title: review.handoffReady
-        ? review.advisories.length
-          ? "Review the load advisory"
-          : "Confirm the playable profile"
-        : "Resolve the counterplay check",
-      detail: review.handoffReady
-        ? review.advisories.length
-          ? "Pressure or Complexity is above its recommendation. This is guidance, not a lock; continue when the additional load is intentional."
-          : "Pressure, Complexity, and counterplay are within the selected guidance."
-        : "Counterplay still needs a visible tell, break condition, or repeatable player response.",
-    };
-    tasks = review.tasks;
-    primaryAction = review.handoffReady
+    nextAction = exportReady
       ? {
           kind: "export",
-          label: "Open Stat Block",
-          title: "Review complete",
-          detail: "Move to the final stat block without changing the current build.",
+          label: "Stat Block",
+          detail: "Inspect readiness and use the current output.",
         }
-      : {
-          kind: "review",
-          label: blocker?.action?.label || "Review Build",
-          title: blocker?.title || "Review the build",
-          detail: blocker?.detail || "Resolve pressure, complexity, or counterplay.",
-        };
-    previousAction = {
-      kind: "grafts",
-      label: "Grafts",
-      detail: "Return to anatomy authoring.",
-    };
-    nextAction = {
-      kind: "export",
-      label: "Stat Block",
-      detail: "Open the current final output.",
-    };
+      : blocker?.action
+        ? {
+            ...blocker.action,
+            label: blocker.action.label,
+            detail: blocker.detail,
+          }
+        : null;
   } else {
+    const statBlockBlocker = getStructuredBlocker({ coreReady, missingCoreSlotId, checks });
     objective = {
-      title: exportReady ? "Use the finished monster" : "Review the draft stat block",
+      title: exportReady ? "Use the finished monster" : "Resolve the remaining build guidance",
       detail: exportReady
         ? "The stat block is ready to copy or export."
-        : "The current stat block remains usable while non-blocking warnings are reviewed.",
+        : "Readiness is shown beside the output; return directly to the relevant graft when a change is required.",
     };
     tasks = [
       {
@@ -428,7 +390,7 @@ export function buildGuidedFlow({
         status: coreReady ? "complete" : "current",
         action: coreReady ? null : { kind: "grafts" },
       },
-      ...review.tasks,
+      ...checks.tasks,
     ];
     primaryAction = exportReady
       ? {
@@ -438,15 +400,15 @@ export function buildGuidedFlow({
           detail: "The final output is already open.",
         }
       : {
-          kind: "review",
-          label: "Review Build",
-          title: "Review remaining warnings",
-          detail: "Return to Review without changing the current stat block.",
+          ...(statBlockBlocker?.action || { kind: "grafts" }),
+          label: statBlockBlocker?.action?.label || "Resolve in Grafts",
+          title: statBlockBlocker?.title || "Resolve build guidance",
+          detail: statBlockBlocker?.detail || "Return to anatomy authoring without changing the current output.",
         };
     previousAction = {
-      kind: "review",
-      label: "Review",
-      detail: "Return to pressure, complexity, and counterplay checks.",
+      kind: "grafts",
+      label: "Grafts",
+      detail: "Return directly to anatomy authoring.",
     };
     nextAction = null;
   }
@@ -456,13 +418,14 @@ export function buildGuidedFlow({
     context.category,
     context.role,
     context.targetCr ? `CR ${context.targetCr}` : "",
-    ["grafts", "review", "stat-block"].includes(activeStageId) ? `${completedSlots} graft${completedSlots === 1 ? "" : "s"}` : "",
-    ["grafts", "review", "stat-block"].includes(activeStageId) && context.source ? context.source : "",
+    ["grafts", "stat-block"].includes(activeStageId) ? `${completedSlots} graft${completedSlots === 1 ? "" : "s"}` : "",
+    ["grafts", "stat-block"].includes(activeStageId) && context.source ? context.source : "",
   ].filter(Boolean).slice(0, 4);
 
   return {
     activeStageId,
     blocker,
+    checks,
     context: contextItems,
     coreReady,
     exportReady,
@@ -472,7 +435,6 @@ export function buildGuidedFlow({
     previousAction,
     nextAction,
     recommendedSlotId,
-    review,
     stages,
     tasks,
   };

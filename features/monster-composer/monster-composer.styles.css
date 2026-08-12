@@ -1319,12 +1319,12 @@
   color: var(--cruor-color-hex-bec8c5);
 }
 
-.monster-shell .balance-recommendation-list {
+.monster-shell .monster-guidance-list {
   display: grid;
   gap: 9px;
 }
 
-.monster-shell .balance-recommendation {
+.monster-shell .monster-guidance {
   display: grid;
   gap: 10px;
   border: 1px solid var(--cruor-color-blood-glow-a440);
@@ -1332,54 +1332,54 @@
   padding: 10px;
 }
 
-.monster-shell .balance-recommendation > svg {
+.monster-shell .monster-guidance > svg {
   width: 15px;
   height: 15px;
   margin-top: 2px;
   color: var(--cruor-color-hex-b33b4e);
 }
 
-.monster-shell .balance-recommendation--ok {
+.monster-shell .monster-guidance--ok {
   border-color: var(--cruor-color-good-a360);
   background: var(--cruor-color-good-a060);
 }
 
-.monster-shell .balance-recommendation--ok > svg {
+.monster-shell .monster-guidance--ok > svg {
   color: var(--cruor-color-hex-bec8c5);
 }
 
-.monster-shell .balance-recommendation__body {
+.monster-shell .monster-guidance__body {
   display: grid;
   gap: 5px;
   min-width: 0;
 }
 
-.monster-shell .balance-recommendation__body > span {
+.monster-shell .monster-guidance__body > span {
   display: none;
 }
 
-.monster-shell .balance-recommendation__body strong {
+.monster-shell .monster-guidance__body strong {
   color: var(--cruor-color-hex-fff0f2);
   font-size: var(--text-size-xl);
   font-weight: 950;
   line-height: 1.15;
 }
 
-.monster-shell .balance-recommendation__body p {
+.monster-shell .monster-guidance__body p {
   margin: 0;
   color: var(--cruor-color-text-a560);
   font-size: var(--text-size-l);
   line-height: 1.42;
 }
 
-.monster-shell .balance-recommendation__actions {
+.monster-shell .monster-guidance__actions {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
   margin-top: 3px;
 }
 
-.monster-shell .balance-recommendation__actions button {
+.monster-shell .monster-guidance__actions button {
   min-height: 28px;
   border: 1px solid var(--cruor-color-blood-glow-a460);
   background: var(--cruor-color-blood-strong-a220);
@@ -1391,24 +1391,428 @@
   text-transform: uppercase;
 }
 
-.monster-shell .balance-recommendation__actions button:hover {
+.monster-shell .monster-guidance__actions button:hover {
   border-color: var(--cruor-color-rose-a680);
   background: var(--cruor-color-blood-bright-a340);
   color: var(--cruor-color-hex-fff0f2);
 }
 
-.monster-shell .balance-recommendation.is-critical {
+.monster-shell .monster-guidance.is-critical {
   border-color: var(--cruor-color-rose-a640);
   background: var(--cruor-color-blood-bright-a240);
 }
 
-.monster-shell .balance-recommendation.is-major {
+.monster-shell .monster-guidance.is-major {
   border-color: var(--cruor-color-blood-glow-a500);
 }
 
-.monster-shell .balance-recommendation.is-minor {
+.monster-shell .monster-guidance.is-minor {
   border-color: var(--cruor-color-milk-a080);
   background: var(--cruor-color-white-a022);
+}
+
+.monster-shell .monster-build-guidance-card {
+  display: grid;
+  gap: 12px;
+  border-color: var(--cruor-color-milk-a090);
+  background:
+    linear-gradient(180deg, var(--cruor-color-white-a025), transparent 34%),
+    var(--cruor-surface-card);
+}
+
+.monster-shell .monster-build-guidance-card.is-critical {
+  border-color: var(--cruor-color-rose-a560);
+}
+
+.monster-shell .monster-build-guidance-card.is-major {
+  border-color: var(--cruor-color-blood-glow-a440);
+}
+
+.monster-shell .monster-build-guidance-card.is-ready {
+  border-color: var(--cruor-color-good-a300);
+}
+
+.monster-shell .monster-build-guidance-card__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 11px;
+  border-bottom: 1px solid var(--cruor-color-milk-a070);
+}
+
+.monster-shell .monster-build-guidance-card__head > div {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+
+.monster-shell .monster-build-guidance-card__head > div > span,
+.monster-shell .monster-build-guidance-card__priority > span {
+  color: var(--cruor-color-text-a560);
+  font-size: var(--text-size-s, 0.72rem);
+  font-weight: 900;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.monster-shell .monster-build-guidance-card__head > div > strong {
+  color: var(--cruor-color-hex-fff0f2);
+  font-size: var(--text-size-xl);
+  font-weight: 950;
+  line-height: 1.15;
+}
+
+.monster-shell .monster-build-guidance-card__status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex: 0 0 auto;
+  min-height: 28px;
+  border: 1px solid var(--cruor-color-milk-a090);
+  background: var(--cruor-color-white-a025);
+  color: var(--cruor-color-text-a680);
+  padding: 0 8px;
+  font-size: var(--text-size-s, 0.72rem);
+  font-weight: 850;
+  line-height: 1;
+}
+
+.monster-shell .monster-build-guidance-card__status i {
+  font-size: 11px;
+}
+
+.monster-shell .monster-build-guidance-card__status.is-critical,
+.monster-shell .monster-build-guidance-card__status.is-major {
+  border-color: var(--cruor-color-blood-glow-a420);
+  background: var(--cruor-color-blood-a180);
+  color: var(--cruor-color-hex-f0b9c2);
+}
+
+.monster-shell .monster-build-guidance-card__status.is-minor {
+  color: var(--cruor-color-hex-d0a2aa);
+}
+
+.monster-shell .monster-build-guidance-card__status.is-ready {
+  border-color: var(--cruor-color-good-a300);
+  background: var(--cruor-color-good-a060);
+  color: var(--cruor-color-good-a760);
+}
+
+.monster-shell .monster-build-status__metrics {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.monster-shell .monster-build-status__metric {
+  display: grid;
+  gap: 7px;
+  min-width: 0;
+  border: 1px solid var(--cruor-color-milk-a070);
+  background: var(--cruor-color-black-a180);
+  padding: 9px;
+}
+
+.monster-shell .monster-build-status__metric.is-over {
+  border-color: var(--cruor-color-blood-glow-a440);
+  background: var(--cruor-color-blood-a140);
+}
+
+.monster-shell .monster-build-status__metric-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.monster-shell .monster-build-status__metric-head span {
+  color: var(--cruor-color-text-a680);
+  font-size: var(--text-size-m, 0.78rem);
+  font-weight: 850;
+}
+
+.monster-shell .monster-build-status__metric-head strong {
+  color: var(--cruor-color-hex-fff0f2);
+  font-size: var(--text-size-l);
+  font-weight: 950;
+  white-space: nowrap;
+}
+
+.monster-shell .monster-build-status__metric-head small {
+  color: var(--cruor-color-text-a480);
+  font-size: inherit;
+  font-weight: 750;
+}
+
+.monster-shell .monster-build-status__metric-track {
+  display: block;
+  height: 4px;
+  overflow: hidden;
+  background: var(--cruor-color-white-a050);
+}
+
+.monster-shell .monster-build-status__metric-track i {
+  display: block;
+  height: 100%;
+  background: var(--cruor-color-hex-8f243c);
+}
+
+.monster-shell .monster-build-status__metric.is-within .monster-build-status__metric-track i {
+  background: var(--cruor-color-hex-8f7278);
+}
+
+.monster-shell .monster-build-status__metric em {
+  color: var(--cruor-color-text-a460);
+  font-size: var(--text-size-s, 0.72rem);
+  font-style: normal;
+  line-height: 1.2;
+}
+
+.monster-shell .monster-build-status__metric.is-over em {
+  color: var(--cruor-color-hex-f0b9c2);
+}
+
+.monster-shell .monster-build-status__counterplay {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-height: 38px;
+  border: 1px solid var(--cruor-color-milk-a070);
+  background: var(--cruor-color-black-a140);
+  padding: 0 10px;
+}
+
+.monster-shell .monster-build-status__counterplay > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--cruor-color-text-a680);
+  font-size: var(--text-size-m, 0.78rem);
+  font-weight: 850;
+}
+
+.monster-shell .monster-build-status__counterplay > strong {
+  color: var(--cruor-color-hex-fff0f2);
+  font-size: var(--text-size-m, 0.78rem);
+  font-weight: 950;
+}
+
+.monster-shell .monster-build-status__counterplay.is-ready > span i,
+.monster-shell .monster-build-status__counterplay.is-ready > strong {
+  color: var(--cruor-color-good-a760);
+}
+
+.monster-shell .monster-build-status__counterplay.is-alert {
+  border-color: var(--cruor-color-blood-glow-a440);
+  background: var(--cruor-color-blood-a140);
+}
+
+.monster-shell .monster-build-status__counterplay.is-alert > span i,
+.monster-shell .monster-build-status__counterplay.is-alert > strong {
+  color: var(--cruor-color-hex-f0b9c2);
+}
+
+.monster-shell .monster-build-guidance-card__priority {
+  display: grid;
+  gap: 7px;
+}
+
+.monster-shell .monster-build-guidance-item {
+  display: grid;
+  grid-template-columns: 18px minmax(0, 1fr);
+  gap: 9px;
+  border-left: 3px solid var(--cruor-color-blood-glow-a520);
+  background: var(--cruor-color-blood-a120);
+  padding: 10px 10px 10px 9px;
+}
+
+.monster-shell .monster-build-guidance-item.is-major {
+  border-left-color: var(--cruor-color-hex-8f243c);
+}
+
+.monster-shell .monster-build-guidance-item.is-minor {
+  border-left-color: var(--cruor-color-hex-8f7278);
+  background: var(--cruor-color-white-a020);
+}
+
+.monster-shell .monster-build-guidance-item > i {
+  margin-top: 2px;
+  color: var(--cruor-color-hex-b33b4e);
+  font-size: 13px;
+  text-align: center;
+}
+
+.monster-shell .monster-build-guidance-item.is-minor > i {
+  color: var(--cruor-color-hex-8f7278);
+}
+
+.monster-shell .monster-build-guidance-item__body {
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+}
+
+.monster-shell .monster-build-guidance-item__body > strong {
+  color: var(--cruor-color-hex-fff0f2);
+  font-size: var(--text-size-l);
+  font-weight: 950;
+  line-height: 1.2;
+}
+
+.monster-shell .monster-build-guidance-item__body > p {
+  margin: 0;
+  color: var(--cruor-color-text-a580);
+  font-size: var(--text-size-m, 0.78rem);
+  line-height: 1.38;
+}
+
+.monster-shell .monster-build-guidance-item__body > button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+  min-height: 32px;
+  margin-top: 3px;
+  border: 1px solid var(--cruor-color-blood-glow-a360);
+  background: var(--cruor-color-blood-strong-a180);
+  color: var(--cruor-color-hex-f0d7dc);
+  padding: 0 9px;
+  font-size: var(--text-size-m, 0.78rem);
+  font-weight: 850;
+  text-align: left;
+}
+
+.monster-shell .monster-build-guidance-item__body > button:hover {
+  border-color: var(--cruor-color-rose-a620);
+  background: var(--cruor-color-blood-bright-a260);
+  color: var(--cruor-color-hex-fff0f2);
+}
+
+.monster-shell .monster-build-guidance-item__body > button svg {
+  flex: 0 0 auto;
+  width: 14px;
+  height: 14px;
+}
+
+.monster-shell .monster-build-guidance-card__ready-note {
+  display: grid;
+  grid-template-columns: 18px minmax(0, 1fr);
+  gap: 9px;
+  align-items: start;
+  border: 1px solid var(--cruor-color-good-a240);
+  background: var(--cruor-color-good-a050);
+  padding: 10px;
+}
+
+.monster-shell .monster-build-guidance-card__ready-note i {
+  margin-top: 2px;
+  color: var(--cruor-color-good-a760);
+  font-size: 14px;
+}
+
+.monster-shell .monster-build-guidance-card__ready-note p {
+  margin: 0;
+  color: var(--cruor-color-text-a640);
+  font-size: var(--text-size-m, 0.78rem);
+  line-height: 1.4;
+}
+
+.monster-shell .monster-build-guidance-card__more {
+  border-top: 1px solid var(--cruor-color-milk-a070);
+  padding-top: 9px;
+}
+
+.monster-shell .monster-build-guidance-card__more > summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-height: 30px;
+  color: var(--cruor-color-text-a620);
+  font-size: var(--text-size-m, 0.78rem);
+  font-weight: 850;
+  cursor: pointer;
+  list-style: none;
+}
+
+.monster-shell .monster-build-guidance-card__more > summary::-webkit-details-marker {
+  display: none;
+}
+
+.monster-shell .monster-build-guidance-card__more > summary::after {
+  content: "+";
+  margin-left: auto;
+  color: var(--cruor-color-hex-d0a2aa);
+  font-size: 16px;
+  line-height: 1;
+}
+
+.monster-shell .monster-build-guidance-card__more[open] > summary::after {
+  content: "−";
+}
+
+.monster-shell .monster-build-guidance-card__more > summary strong {
+  display: inline-grid;
+  place-items: center;
+  min-width: 22px;
+  height: 22px;
+  margin-left: 4px;
+  background: var(--cruor-color-white-a040);
+  color: var(--cruor-color-hex-d0a2aa);
+  font-size: var(--text-size-s, 0.72rem);
+}
+
+.monster-shell .monster-build-guidance-card__more-list {
+  display: grid;
+  gap: 7px;
+  padding-top: 8px;
+}
+
+.monster-shell .monster-build-guidance-item.is-condensed {
+  padding-block: 9px;
+}
+
+.monster-shell .monster-build-guidance-item.is-condensed .monster-build-guidance-item__body > strong {
+  font-size: var(--text-size-m, 0.78rem);
+}
+
+.monster-shell .monster-build-guidance-item.is-condensed .monster-build-guidance-item__body > p {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.monster-shell .monster-guidance-list.is-compact {
+  gap: 7px;
+}
+
+.monster-shell .monster-guidance.is-compact {
+  grid-template-columns: 16px minmax(0, 1fr);
+  gap: 8px;
+  padding: 9px;
+}
+
+.monster-shell .monster-guidance.is-compact > svg {
+  width: 14px;
+  height: 14px;
+}
+
+.monster-shell .monster-guidance.is-compact .monster-guidance__body strong {
+  font-size: var(--text-size-l);
+}
+
+.monster-shell .monster-guidance.is-compact .monster-guidance__body p {
+  font-size: var(--text-size-m);
+  line-height: 1.38;
+}
+
+.monster-shell .monster-guidance.is-compact .monster-guidance__actions button {
+  min-height: 30px;
+  padding-inline: 8px;
 }
 
 .monster-shell .run-mode-workbench {
@@ -4474,7 +4878,7 @@
   border-color: var(--cruor-ui-control-border);
 }
 
-.monster-shell .export-review-btn {
+.monster-shell .export-resolve-btn {
   min-height: 34px;
   border: 1px solid var(--cruor-color-blood-glow-a460);
   background: var(--cruor-ui-control-bg);
@@ -4568,7 +4972,7 @@
   box-shadow: var(--cruor-shadow-box-001);
 }
 
-.monster-shell .export-review-btn:hover {
+.monster-shell .export-resolve-btn:hover {
   border-color: var(--cruor-ui-control-border-active);
   background: var(--cruor-ui-control-bg-active);
   color: var(--cruor-ui-control-text-active);
@@ -11662,6 +12066,8 @@
 .monster-shell .anatomy-stage__column--right.cruor-composer-rail--with-footer {
   height: 100%;
   max-height: 100%;
+  width: 100%;
+  max-width: 100%;
 }
 
 @media (max-width: 1080px) {

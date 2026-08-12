@@ -195,7 +195,7 @@ describe("monster attack routine planner", () => {
     expect(routine.source).toBe("none");
   });
 
-  it("keeps an authored manual Multiattack override authoritative", () => {
+  it("keeps an authored manual Multiattack override authoritative and serializable", () => {
     const slam = buildAttack("slam", "Slam");
     const manual = {
       id: "authored-multiattack",
@@ -240,10 +240,17 @@ describe("monster attack routine planner", () => {
     ]);
     expect(
       buildGeneratedMultiattackFeature(routine, { categoryNoun: "zombie" }),
-    ).toBeNull();
+    ).toEqual(
+      expect.objectContaining({
+        id: "generated-multiattack",
+        title: "Multiattack",
+        section: "action",
+        mechanics: "The zombie makes two Slam attacks.",
+      }),
+    );
   });
 
-  it("creates a synthetic output action only for automatic routines", () => {
+  it("creates a synthetic output action for automatic routines", () => {
     const routine = buildMonsterAttackRoutine({
       abilities: [buildAttack("slam", "Slam")],
       targetCr: 5,
@@ -262,5 +269,15 @@ describe("monster attack routine planner", () => {
         mechanics: "The zombie makes two Slam attacks.",
       }),
     );
+  });
+
+  it("does not create an output action when the routine is disabled", () => {
+    expect(
+      buildGeneratedMultiattackFeature({
+        enabled: false,
+        source: "authored-pattern",
+        count: 1,
+      }),
+    ).toBeNull();
   });
 });

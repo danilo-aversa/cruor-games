@@ -1,0 +1,33 @@
+{
+  "schema": "gpt-workbench-diagnostics/v1",
+  "producer": "gpt-workbench-task:vitest",
+  "generatedAt": "2026-07-31T11:14:54.792Z",
+  "summary": {
+    "diagnosticCount": 1,
+    "occurrenceCount": 3,
+    "errorCount": 1,
+    "warningCount": 0,
+    "infoCount": 0,
+    "browserCategories": {},
+    "taskId": "vitest-all",
+    "status": "failed",
+    "durationMs": 3066
+  },
+  "diagnostics": [
+    {
+      "kind": "test",
+      "severity": "error",
+      "code": "TEST_FAILED",
+      "message": "TypeError: Cannot read properties of undefined (reading 'allocationKeys')",
+      "testName": "Monster Attack Patterns v2 keeps choice repertoires as distinct DPR allocations",
+      "testStatus": "failed",
+      "durationMs": 4.247900000000072,
+      "occurrences": 3
+    }
+  ],
+  "baseline": {
+    "artifact": "authorized-task-vitest-all-latest",
+    "retainedAt": "2026-07-31T12:26:27.050Z",
+    "retention": "bounded-local-history"
+  }
+}

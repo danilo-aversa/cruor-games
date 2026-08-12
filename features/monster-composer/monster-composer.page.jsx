@@ -105,7 +105,6 @@ import { GuidedFlowPanel, TemplatePickerModal } from "./components/monster-compo
 import { MonsterSilhouetteMap } from "./components/monster-composer.anatomy.jsx";
 import { ComponentNavigatorDrawer } from "./components/monster-composer.navigator.jsx";
 import {
-  BalanceWorkbench,
   ExportWorkbench,
   RenderedStatBlock,
   RunModePanel,
@@ -2119,8 +2118,6 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
     setCustomMode((current) => !current);
   }
 
-  const pressurePercent = clamp((computed.pressure / computed.pressureLimit) * 100, 0, 160);
-  const complexityPercent = clamp((computed.complexity / computed.complexityCap) * 100, 0, 160);
   const abilityProfile = computed.abilityProfile || buildAbilityProfile(
     typeId,
     category,
@@ -2363,7 +2360,6 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
       guidedFlow={guidedFlow}
       onOpenStart={openTemplatePicker}
       onFocusSlot={openSlotNavigator}
-      onOpenBalance={() => setViewMode("balance")}
       onOpenExport={() => setViewMode("export")}
       onOpenTemplates={openTemplatePicker}
       onOpenChassis={() => {
@@ -2392,7 +2388,10 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
       uiMode={uiMode}
       onSetStatBlockMode={setStatBlockMode}
       onCopyExportPayload={copyExportPayload}
-      onOpenBalance={() => setViewMode("balance")}
+      onResolveReadiness={() => {
+        setViewMode("composer");
+        setComposerStageModeImmediately("grafts");
+      }}
       viewToolbar={includeViewToolbar ? monsterViewToolbar : null}
       liveExportButton={includeViewToolbar ? liveExportButton : null}
       workflowFooter={monsterWorkflowFooter}
@@ -2508,15 +2507,16 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
     };
   }, [componentNavigatorOpen]);
 
-  function handleBalanceRecommendationAction(action) {
+  function handleBuildGuidanceAction(action) {
     if (!action) return;
 
     if (action.kind === "addFeature" && action.featureId) {
       const feature = FEATURES.find((item) => item.id === action.featureId);
       if (!feature) return;
       addFeature(feature);
+      setViewMode("composer");
+      setComposerStageModeImmediately("grafts", { clearSlot: false });
       setActiveSlot(feature.slot);
-      setViewMode("balance");
       return;
     }
 
@@ -2524,7 +2524,9 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
       const feature = FEATURES.find((item) => item.id === action.featureId);
       if (!feature) return;
       removeFeature(feature.slot, feature.id);
-      setViewMode("balance");
+      setViewMode("composer");
+      setComposerStageModeImmediately("grafts", { clearSlot: false });
+      setActiveSlot(feature.slot);
       return;
     }
 
@@ -2542,8 +2544,9 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
         if (currentIds.length >= slotCap) return next;
         return { ...next, [addTarget.slot]: [...currentIds, addTarget.id] };
       });
+      setViewMode("composer");
+      setComposerStageModeImmediately("grafts", { clearSlot: false });
       setActiveSlot(addTarget.slot);
-      setViewMode("balance");
       return;
     }
 
@@ -2556,19 +2559,27 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
     if (action.kind === "tier" && action.tierId) {
       setMonsterTierId(action.tierId);
       setActivePresetId("");
-      setViewMode("balance");
+      setViewMode("composer");
+      setComposerStageModeImmediately("grafts", { clearSlot: false });
       return;
     }
 
     if (action.kind === "advanced") {
       if (!advancedMode) handleAdvancedModeToggle();
-      setViewMode("balance");
+      setViewMode("composer");
+      setComposerStageModeImmediately("grafts", { clearSlot: false });
       return;
     }
 
     if (action.kind === "frame") {
-      setComposerStageMode("frame");
       setViewMode("composer");
+      setComposerStageModeFromNavigation("frame");
+      return;
+    }
+
+    if (action.kind === "grafts") {
+      setViewMode("composer");
+      setComposerStageModeFromNavigation("grafts");
       return;
     }
 
@@ -2712,6 +2723,7 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
                 onForgeMonster={forgeMonster}
                 onOpenComponents={openGlobalNavigator}
                 onOpenExport={() => setViewMode("export")}
+                onRecommendationAction={handleBuildGuidanceAction}
                 onStartOver={composerStarted ? startOver : undefined}
                 composerStarted={composerStarted}
                 onPickTemplate={openTemplatePicker}
@@ -2749,16 +2761,6 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
 
         {persistentViewToolbar}
 
-        {viewMode === "balance" && (
-          <BalanceWorkbench
-            computed={computed}
-            pressurePercent={pressurePercent}
-            complexityPercent={complexityPercent}
-            showDiagnostics={uiMode === "debug"}
-            onRecommendationAction={handleBalanceRecommendationAction}
-            workflowFooter={monsterWorkflowFooter}
-          />
-        )}
 
         {uiMode === "debug" && viewMode === "run" &&
           (() => {
@@ -2781,10 +2783,9 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
               <RunModePanel
                 sheet={runSheet}
                 recommendations={computed.balanceRecommendations}
-                onAction={handleBalanceRecommendationAction}
+                onAction={handleBuildGuidanceAction}
                 onOpenComposer={() => setViewMode("composer")}
-                onOpenBalance={() => setViewMode("balance")}
-                onOpenExport={() => setViewMode("export")}
+                          onOpenExport={() => setViewMode("export")}
               />
             );
           })()}
@@ -2823,7 +2824,6 @@ function MonsterPersistentViewToolbar({
 }) {
   const views = [
     ["composer", "Composer"],
-    ["balance", "Review"],
     ...(uiMode === "debug" ? [["run", "Run"]] : []),
     ["export", "Stat Block"],
   ];

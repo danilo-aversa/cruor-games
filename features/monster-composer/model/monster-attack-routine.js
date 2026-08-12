@@ -736,7 +736,7 @@ export function renderMonsterAttackRoutineText(routine = {}, computed = {}) {
 }
 
 export function buildGeneratedMultiattackFeature(routine = {}, computed = {}) {
-  if (!routine?.enabled || routine.source === "manual") return null;
+  if (!routine?.enabled) return null;
   return {
     id: "generated-multiattack",
     title: "Multiattack",

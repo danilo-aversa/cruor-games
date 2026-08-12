@@ -13,6 +13,19 @@ function computed(overrides = {}) {
   };
 }
 
+function collectActionKinds(flow) {
+  return [
+    flow.primaryAction,
+    flow.previousAction,
+    flow.nextAction,
+    flow.blocker?.action,
+    ...(flow.stages || []).map((stage) => stage.action),
+    ...(flow.tasks || []).map((task) => task.action),
+  ]
+    .filter(Boolean)
+    .map((action) => action.kind);
+}
+
 const coreSelection = { body: "body-1", weakness: "weakness-1" };
 
 describe("Monster command flow", () => {
@@ -35,7 +48,7 @@ describe("Monster command flow", () => {
     expect(flow.blocker).toMatchObject({ id: "missing-body" });
   });
 
-  it("treats Pressure and Complexity overages as advisories rather than blockers", () => {
+  it("treats Pressure and Complexity overages as continuous advisories rather than blockers", () => {
     const flow = buildGuidedFlow({
       composerStarted: true,
       stageMode: "grafts",
@@ -44,11 +57,11 @@ describe("Monster command flow", () => {
     });
 
     expect(flow.coreReady).toBe(true);
-    expect(flow.review.pressureReady).toBe(false);
-    expect(flow.review.complexityReady).toBe(false);
-    expect(flow.review.advisories).toHaveLength(2);
-    expect(flow.review.tasks.find((task) => task.id === "pressure")).toMatchObject({ required: false, advisory: true });
-    expect(flow.review.tasks.find((task) => task.id === "complexity")).toMatchObject({ required: false, advisory: true });
+    expect(flow.checks.pressureReady).toBe(false);
+    expect(flow.checks.complexityReady).toBe(false);
+    expect(flow.checks.advisories).toHaveLength(2);
+    expect(flow.checks.tasks.find((task) => task.id === "pressure")).toMatchObject({ required: false, advisory: true, action: null });
+    expect(flow.checks.tasks.find((task) => task.id === "complexity")).toMatchObject({ required: false, advisory: true, action: null });
     expect(flow.blocker).toBeNull();
     expect(flow.exportReady).toBe(true);
     expect(flow.primaryAction.kind).toBe("export");
@@ -67,7 +80,7 @@ describe("Monster command flow", () => {
     expect(flow.exportReady).toBe(true);
   });
 
-  it("still blocks a core-ready build when counterplay is not reliable", () => {
+  it("routes unreliable counterplay directly to the Weakness slot", () => {
     const flow = buildGuidedFlow({
       composerStarted: true,
       stageMode: "grafts",
@@ -75,12 +88,15 @@ describe("Monster command flow", () => {
       computed: computed({ counterplayAudit: { rating: "Weak" } }),
     });
 
-    expect(flow.blocker).toMatchObject({ id: "counterplay-needs-review" });
+    expect(flow.blocker).toMatchObject({
+      id: "counterplay-needs-guidance",
+      action: { kind: "slot", slotId: "weakness" },
+    });
     expect(flow.exportReady).toBe(false);
-    expect(flow.primaryAction.kind).toBe("review");
+    expect(flow.primaryAction).toMatchObject({ kind: "slot", slotId: "weakness" });
   });
 
-  it("hands a clean build to the final stat block", () => {
+  it("hands a clean build directly to the final stat block", () => {
     const flow = buildGuidedFlow({
       composerStarted: true,
       stageMode: "grafts",
@@ -89,6 +105,7 @@ describe("Monster command flow", () => {
     });
 
     expect(flow.primaryAction.kind).toBe("export");
+    expect(flow.nextAction.kind).toBe("export");
     expect(flow.blocker).toBeNull();
   });
 
@@ -107,14 +124,25 @@ describe("Monster command flow", () => {
 });
 
 describe("Monster command flow views", () => {
-  it("tracks Review and Stat Block as real active stages", () => {
+  it("uses a three-stage flow without Review", () => {
     const base = {
       composerStarted: true,
       stageMode: "grafts",
       selected: coreSelection,
       computed: computed(),
     };
-    expect(buildGuidedFlow({ ...base, viewMode: "balance" }).activeStageId).toBe("review");
-    expect(buildGuidedFlow({ ...base, viewMode: "export" }).activeStageId).toBe("stat-block");
+    const graftFlow = buildGuidedFlow(base);
+    const statBlockFlow = buildGuidedFlow({ ...base, viewMode: "export" });
+
+    expect(graftFlow.activeStageId).toBe("grafts");
+    expect(statBlockFlow.activeStageId).toBe("stat-block");
+    expect(graftFlow.stages.map((stage) => stage.id)).toEqual([
+      "chassis",
+      "grafts",
+      "stat-block",
+    ]);
+    expect(collectActionKinds(graftFlow)).not.toContain("review");
+    expect(collectActionKinds(statBlockFlow)).not.toContain("review");
+    expect(statBlockFlow.previousAction).toMatchObject({ kind: "grafts" });
   });
 });

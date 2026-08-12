@@ -5,49 +5,9 @@ import {
   ComposerFactRow,
   ComposerRail,
 } from "../../../components/ui/composer-rail.jsx";
-import { formatCounterplayIssues } from "../model/monster-composer.balance.js";
 
 function modText(value) {
   return value >= 0 ? `+${value}` : `−${Math.abs(value)}`;
-}
-
-function Meter({ label, value, max, percent }) {
-  const over = Number(value || 0) > Number(max || 0);
-  const excess = Math.max(0, Number(value || 0) - Number(max || 0));
-  return (
-    <div
-      className={`meter ${over ? "is-over" : ""}`.trim()}
-      aria-label={`${label}: ${value} of ${max}${over ? `, recommended limit exceeded by ${excess}` : ""}`}
-      data-meter-status={over ? "over" : "within"}
-    >
-      <div
-        className="meter__track"
-        role="progressbar"
-        aria-valuemin="0"
-        aria-valuemax={Math.max(Number(max || 0), Number(value || 0))}
-        aria-valuenow={value}
-        aria-valuetext={`${value} of recommended ${max}${over ? `; exceeded by ${excess}` : ""}`}
-      >
-        <span style={{ width: `${Math.min(Number(percent || 0), 100)}%` }} />
-      </div>
-      <div className="meter__meta">
-        <span>{value}</span>
-        <span>{max}</span>
-      </div>
-      {over ? (
-        <p className="meter__advisory">Recommended limit exceeded by {excess}. The build remains available.</p>
-      ) : null}
-    </div>
-  );
-}
-
-function CompiledMeta({ label, value }) {
-  return (
-    <div>
-      <span>{label}</span>
-      <strong>{value}</strong>
-    </div>
-  );
 }
 
 const ABILITY_ROWS = [
@@ -150,183 +110,11 @@ function StatBlockChallengeLine({ challenge }) {
   );
 }
 
-function WarningList({ warnings }) {
-  if (!warnings.length) {
-    return (
-      <div className="monster-ready-note">
-        <Shield aria-hidden="true" />
-        <span>
-          The monster has a weakness/tell and a playable counterplay loop. Pressure and Complexity
-          remain guidance rather than hard locks.
-        </span>
-      </div>
-    );
-  }
-
-  return (
-    <div className="monster-warning-list">
-      {warnings.map((warning) => (
-        <div key={warning} className="monster-warning">
-          <AlertTriangle aria-hidden="true" />
-          <span>{warning}</span>
-        </div>
-      ))}
-    </div>
-  );
-}
-
-export function BalanceWorkbench({
-  computed,
-  pressurePercent,
-  complexityPercent,
-  onRecommendationAction,
-  showDiagnostics = false,
-  workflowFooter = null,
-}) {
-  return (
-    <section className="monster-balance-layout">
-      <section className="panel balance-workbench" aria-label="Monster balance review">
-      <div className="balance-hero">
-        <div>
-          <h2>Balance Review</h2>
-        </div>
-        <span className={`balance-verdict ${computed.warnings.length ? "needs-review" : "ready"}`}>
-          <Shield aria-hidden="true" /> {computed.warnings.length ? "Needs Review" : "Ready"}
-        </span>
-      </div>
-      <div className="balance-grid balance-grid--simplified">
-        <article className="balance-card balance-wide-card balance-recommendations-card">
-          <div className="balance-card__head">
-            <span>Fix These First</span>
-            <strong>{computed.balanceRecommendations.length || "Clear"}</strong>
-          </div>
-          <BalanceRecommendationList
-            recommendations={computed.balanceRecommendations}
-            onAction={onRecommendationAction}
-          />
-        </article>
-        <article className="balance-card">
-          <div className="balance-card__head">
-            <span>Pressure</span>
-            <strong>{computed.pressureProfile.label}</strong>
-          </div>
-          <Meter
-            label="Pressure"
-            value={computed.pressure}
-            max={computed.pressureLimit}
-            percent={pressurePercent}
-          />
-          <p className="balance-note">
-            {computed.pressureProfile.sources.join(" · ") || "No pressure sources yet."}
-          </p>
-        </article>
-        <article className="balance-card">
-          <div className="balance-card__head">
-            <span>Complexity</span>
-            <strong>{computed.complexityProfile.label}</strong>
-          </div>
-          <Meter
-            label="Complexity"
-            value={computed.complexity}
-            max={computed.complexityCap}
-            percent={complexityPercent}
-          />
-          <p className="balance-note">
-            {computed.complexityProfile.sources.join(" · ") || "No complexity sources yet."}
-          </p>
-        </article>
-        <article className="balance-card">
-          <div className="balance-card__head">
-            <span>Counterplay</span>
-            <strong>{computed.counterplayAudit.rating}</strong>
-          </div>
-          <div
-            className="balance-progress-ring"
-            style={{ "--progress": `${computed.counterplayAudit.score}%` }}
-          >
-            <span>{computed.counterplayAudit.score}</span>
-          </div>
-          <p className="balance-note">
-            {formatCounterplayIssues(computed.counterplayAudit.issues)}
-          </p>
-        </article>
-        {showDiagnostics && (
-          <details className="balance-diagnostics balance-wide-card">
-            <summary>Raw Diagnostics</summary>
-            <div className="balance-diagnostics__grid">
-              <article className="balance-card">
-                <div className="balance-card__head">
-                  <span>Warnings</span>
-                  <strong>{computed.warnings.length}</strong>
-                </div>
-                <WarningList warnings={computed.warnings} />
-              </article>
-              <article className="balance-card">
-                <div className="balance-card__head">
-                  <span>Baseline</span>
-                  <strong>CR {computed.targetCr}</strong>
-                </div>
-                <div className="compiled-meta-grid balance-meta-grid">
-                  <CompiledMeta label="Ruleset" value={computed.ruleset?.label || computed.rulesetId || "D&D 5E 2024"} />
-                  <CompiledMeta label="Abilities" value={`${computed.abilityModel?.total ?? 0} / ${computed.abilityModel?.damaging ?? 0} dmg`} />
-                  <CompiledMeta label="AC" value={`${computed.ac} / ${computed.baseline.ac}`} />
-                  <CompiledMeta label="HP" value={`${computed.hp} / ${computed.baseline.hp}`} />
-                  <CompiledMeta label="Eff. HP" value={computed.effectiveProfile?.effectiveHp ?? computed.hp} />
-                  <CompiledMeta
-                    label="DPR"
-                    value={`${computed.effectiveProfile.effectiveDpr3Round} / ${computed.baseline.dpr}`}
-                  />
-                  <CompiledMeta
-                    label="Attack"
-                    value={`${modText(computed.attack)} / ${modText(computed.baseline.attackBonus)}`}
-                  />
-                  <CompiledMeta label="DC" value={`${computed.dc} / ${computed.baseline.saveDc}`} />
-                  <CompiledMeta label="Burst" value={computed.effectiveProfile.burstDpr} />
-                  <CompiledMeta label="Control" value={`+${computed.effectiveProfile?.conditionProfile?.crAdjustment ?? 0} CR`} />
-                  <CompiledMeta
-                    label="CR Split"
-                    value={`${computed.crValidation?.defensive?.cr ?? "—"} / ${computed.crValidation?.offensive?.cr ?? "—"}`}
-                  />
-                  <CompiledMeta label="Est. CR" value={computed.crValidation?.estimatedCr ?? computed.estimatedCr} />
-                </div>
-              </article>
-            </div>
-          </details>
-        )}
-      </div>
-      </section>
-
-      <ComposerRail
-        side="right"
-        variant="info"
-        scrollable
-        footer={workflowFooter}
-        className="monster-balance-details-rail"
-        aria-label="Monster review summary"
-      >
-        <section className="cruor-composer-rail-card cruor-composer-rail-card--hero">
-          <span className="cruor-composer-rail-card__eyebrow">Review</span>
-          <strong>{computed.warnings.length ? "Needs Review" : "Ready"}</strong>
-          <em className="cruor-composer-rail-card__meta">Pressure · Complexity · Counterplay</em>
-        </section>
-        <section className="cruor-composer-rail-card">
-          <div className="cruor-composer-fact-grid">
-            <span className="cruor-composer-fact-row"><small className="cruor-composer-fact-label">Pressure</small><strong className="cruor-composer-fact-value">{computed.pressure}/{computed.pressureLimit}</strong></span>
-            <span className="cruor-composer-fact-row"><small className="cruor-composer-fact-label">Complexity</small><strong className="cruor-composer-fact-value">{computed.complexity}/{computed.complexityCap}</strong></span>
-            <span className="cruor-composer-fact-row"><small className="cruor-composer-fact-label">Counterplay</small><strong className="cruor-composer-fact-value">{computed.counterplayAudit.rating}</strong></span>
-          </div>
-        </section>
-      </ComposerRail>
-    </section>
-  );
-}
-
 export function RunModePanel({
   sheet,
   recommendations,
   onAction,
   onOpenComposer,
-  onOpenBalance,
   onOpenExport,
 }) {
   return (
@@ -339,9 +127,6 @@ export function RunModePanel({
         <div className="run-mode-actions" aria-label="Run mode actions">
           <button type="button" onClick={onOpenComposer}>
             Composer
-          </button>
-          <button type="button" onClick={onOpenBalance}>
-            Balance
           </button>
           <button type="button" onClick={onOpenExport}>
             Export
@@ -369,7 +154,7 @@ export function RunModePanel({
             <h3>Fix Before Table</h3>
             <strong>{recommendations.length || "Clear"}</strong>
           </div>
-          <BalanceRecommendationList
+          <MonsterGuidanceList
             recommendations={recommendations.slice(0, 3)}
             onAction={onAction}
           />
@@ -430,16 +215,17 @@ function RunModeTriggerSection({ items }) {
   );
 }
 
-function BalanceRecommendationList({ recommendations, onAction }) {
+export function MonsterGuidanceList({ recommendations, onAction, compact = false }) {
   if (!recommendations.length) {
     return (
-      <div className="balance-recommendation balance-recommendation--ok">
+      <div className={`monster-guidance monster-guidance--ok ${compact ? "is-compact" : ""}`.trim()}>
         <Shield aria-hidden="true" />
         <div>
           <strong>No changes required</strong>
           <p>
-            The monster is within the current pressure and complexity targets, and the counterplay
-            audit is playable.
+            {compact
+              ? "No active warnings. Pressure, Complexity, and counterplay update continuously."
+              : "The monster is within the current pressure and complexity targets, and the counterplay audit is playable."}
           </p>
         </div>
       </div>
@@ -447,19 +233,19 @@ function BalanceRecommendationList({ recommendations, onAction }) {
   }
 
   return (
-    <div className="balance-recommendation-list">
+    <div className={`monster-guidance-list ${compact ? "is-compact" : ""}`.trim()}>
       {recommendations.map((recommendation) => (
         <article
           key={recommendation.id}
-          className={`balance-recommendation is-${recommendation.severity}`}
+          className={`monster-guidance is-${recommendation.severity} ${compact ? "is-compact" : ""}`.trim()}
         >
           <AlertTriangle aria-hidden="true" />
-          <div className="balance-recommendation__body">
+          <div className="monster-guidance__body">
             <span>{recommendation.severity}</span>
             <strong>{recommendation.title}</strong>
             <p>{recommendation.detail}</p>
             {recommendation.actions?.length > 0 && (
-              <div className="balance-recommendation__actions">
+              <div className="monster-guidance__actions">
                 {recommendation.actions.map((action) => (
                   <button
                     key={`${recommendation.id}-${action.label}`}
@@ -468,7 +254,7 @@ function BalanceRecommendationList({ recommendations, onAction }) {
                     title={action.label}
                     onClick={() => onAction?.(action)}
                   >
-                    {action.kind === "slot" ? "Go" : action.label}
+                    {action.label}
                   </button>
                 ))}
               </div>
@@ -532,7 +318,7 @@ export function ExportWorkbench({
   uiMode = "simple",
   onSetStatBlockMode,
   onCopyExportPayload,
-  onOpenBalance,
+  onResolveReadiness,
   viewToolbar,
   liveExportButton,
   workflowFooter = null,
@@ -589,7 +375,7 @@ export function ExportWorkbench({
             </div>
           </ComposerCollapsibleSection>
 
-          <ExportReadinessPanel readiness={exportReadiness} onOpenBalance={onOpenBalance} />
+          <ExportReadinessPanel readiness={exportReadiness} onResolveReadiness={onResolveReadiness} />
 
           <ExportRunSheet items={exportRunSheet} />
 
@@ -688,7 +474,7 @@ function RenderedStatBlockSection({ title, items, highlight }) {
   );
 }
 
-function ExportReadinessPanel({ readiness, onOpenBalance }) {
+function ExportReadinessPanel({ readiness, onResolveReadiness }) {
   const passedChecks = readiness.checks.filter((check) => check.ready).length;
 
   return (
@@ -729,9 +515,9 @@ function ExportReadinessPanel({ readiness, onOpenBalance }) {
         ))}
       </div>
 
-      {!readiness.ready && onOpenBalance && (
-        <button className="export-review-btn" type="button" onClick={onOpenBalance}>
-          Review Balance Recommendations
+      {!readiness.ready && onResolveReadiness && (
+        <button className="export-resolve-btn" type="button" onClick={onResolveReadiness}>
+          Resolve in Grafts
         </button>
       )}
     </ComposerCollapsibleSection>
